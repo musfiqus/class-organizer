@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="weekdays">
+        <item>Saturday</item>
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+    </string-array>
+    <string-array name="level_array">
+        <item>Level 1</item>
+        <item>Level 2</item>
+        <item>Level 3</item>
+        <item>Level 4</item>
+    </string-array>
+    <string-array name="term_array">
+        <item>Term 1</item>
+        <item>Term 2</item>
+        <item>Term 3</item>
+    </string-array>
+    <string-array name="section_array">
+        <item>A</item>
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
+        <item>E</item>
+        <item>F</item>
+        <item>G</item>
+        <item>H</item>
+        <item>I</item>
+        <item>J</item>
+        <item>K</item>
+        <item>L</item>
+        <item>M</item>
+        <item>N</item>
+        <item>O</item>
+        <item>P</item>
+        <item>Q</item>
+        <item>R</item>
+        <item>S</item>
+        <item>T</item>
+        <item>U</item>
+        <item>V</item>
+        <item>W</item>
+        <item>X</item>
+        <item>Y</item>
+        <item>Z</item>
+    </string-array>
+
+    <!--Start of semester courses-->
+    <string-array name="semester_one">
+        <item>CSE112</item>
+        <item>MAT111</item>
+        <item>ENG113</item>
+        <item>PHY113</item>
+    </string-array>
+    <string-array name="semester_two">
+        <item>MAT121</item>
+        <item>CSE122</item>
+        <item>CSE123</item>
+        <item>PHY123</item>
+        <item>PHY124</item>
+        <item>ENG123</item>
+    </string-array>
+    <string-array name="semester_three">
+        <item>CSE131</item>
+        <item>CSE132</item>
+        <item>CSE133</item>
+        <item>CSE134</item>
+        <item>CSE135</item>
+        <item>MAT131</item>
+    </string-array>
+    <string-array name="semester_four">
+        <item>MAT211</item>
+        <item>CSE212</item>
+        <item>CSE213</item>
+        <item>CSE214</item>
+        <item>CSE215</item>
+        <item>GED201</item>
+    </string-array>
+    <string-array name="semester_five">
+        <item>CSE221</item>
+        <item>CSE222</item>
+        <item>STA133</item>
+        <item>CSE224</item>
+        <item>CSE225</item>
+    </string-array>
+    <string-array name="semester_six">
+        <item>CSE231</item>
+        <item>CSE232</item>
+        <item>CSE233</item>
+        <item>CSE234</item>
+        <item>CSE235</item>
+    </string-array>
+    <string-array name="semester_seven">
+        <item>CSE311</item>
+        <item>CSE312</item>
+        <item>CSE313</item>
+        <item>CSE314</item>
+        <item>ECO314</item>
+    </string-array>
+    <string-array name="semester_eight">
+        <item>CSE321</item>
+        <item>CSE322</item>
+        <item>CSE323</item>
+        <item>CSE324</item>
+        <item>GED321</item>
+    </string-array>
+    <string-array name="semester_nine">
+        <item>CSE331</item>
+        <item>CSE332</item>
+        <item>CSE333</item>
+        <item>CSE334</item>
+        <item>ACT301</item>
+    </string-array>
+    <string-array name="semester_ten">
+        <item>CSE412</item>
+        <item>CSE413</item>
+        <item>CSE414</item>
+        <item>CSE415</item>
+        <item>CSE417</item>
+        <item>CSE418</item>
+    </string-array>
+    <string-array name="semester_eleven">
+        <item>CSE421</item>
+        <item>CSE422</item>
+        <item>CSE423</item>
+        <item>CSEXXX</item>
+        <item>CSE499</item>
+    </string-array>
+    <string-array name="semester_twelve">
+        <item>CSE498</item>
+        <item>CSEXXX</item>
+        <item>CSE499</item>
+    </string-array>
+</resources>

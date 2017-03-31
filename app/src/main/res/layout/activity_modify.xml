@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="bd.edu.daffodilvarsity.classorganizer.ModifyActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:orientation="vertical"
+        android:paddingLeft="36dp"
+        android:paddingRight="16dp"
+        android:paddingTop="108dp">
+
+        <TextView
+            android:id="@+id/course_code_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="CSE XXX"
+            android:textColor="@android:color/white"
+            android:textSize="32sp" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/edit_initial_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:paddingBottom="8dp">
+
+            <EditText
+                android:id="@+id/edit_initial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Teacher's initial"
+                android:textColor="@android:color/white"
+                android:theme="@style/Theme.edit.darkback" />
+        </android.support.design.widget.TextInputLayout>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="36dp"
+            android:layout_marginRight="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="3dp"
+                android:paddingTop="16dp"
+                android:text="Weekday"
+                android:textColor="#9E9E9E"
+                android:textSize="12sp" />
+
+            <Spinner
+                android:id="@+id/edit_week_day"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="left"
+                android:paddingLeft="3dp"></Spinner>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/edit_room_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp">
+
+                <EditText
+                    android:id="@+id/edit_room"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="Room no" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/edit_time_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp">
+
+                <EditText
+                    android:id="@+id/edit_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="Time" />
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
