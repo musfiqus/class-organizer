@@ -31,6 +31,8 @@ public class ModifyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modify);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         prefManager = new PrefManager(this);
         Bundle extras = getIntent().getExtras();
         dayData = extras.getParcelable("DAYDATA");

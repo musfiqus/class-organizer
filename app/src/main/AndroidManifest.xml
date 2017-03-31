@@ -28,9 +28,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ModifyActivity">
-
-        </activity>
+        <activity
+            android:name=".ModifyActivity"
+            android:label="@string/modify_title" />
     </application>
 
 </manifest>

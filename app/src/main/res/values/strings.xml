@@ -42,5 +42,6 @@
     <string name="section_title">Enter your section</string>
     <string name="drawer_app_title">DIU Class Organizer</string>
     <string name="drawer_dev_email">musfiqus@gmail.com</string>
+    <string name="title_activity_settings">Settings</string>
 
 </resources>
