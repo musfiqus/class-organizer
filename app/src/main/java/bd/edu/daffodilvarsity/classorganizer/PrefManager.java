@@ -16,9 +16,14 @@ import java.util.ArrayList;
 
 public class PrefManager {
     // Shared preferences file name
-    private static final String PREF_NAME = "diu-class-organizer-intro";
+    private static final String PREF_NAME = "diu-class-organizer";
     private static final String IS_FIRST_TIME_LAUNCH = "IsFirstTimeLaunch";
     private static final String SAVE_DAYDATA = "dayData";
+    private static final String SAVE_LEVEL = "level";
+    private static final String SAVE_TERM = "term";
+    private static final String SAVE_SECTION = "section";
+    private static final String SAVE_RECREATE = "recreate";
+
     SharedPreferences pref;
     SharedPreferences.Editor editor;
     Context _context;
@@ -27,7 +32,7 @@ public class PrefManager {
 
     public PrefManager(Context context) {
         this._context = context;
-        pref = _context.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
+        pref = _context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = pref.edit();
     }
 
@@ -37,15 +42,16 @@ public class PrefManager {
 
     public void setFirstTimeLaunch(boolean isFirstTime) {
         editor.putBoolean(IS_FIRST_TIME_LAUNCH, isFirstTime);
-        editor.commit();
+        editor.apply();
     }
 
     public void saveDayData(ArrayList<DayData> daydata) {
+        editor.remove(SAVE_DAYDATA).apply();
         Log.e("PREF", "SAVE CALLED");
         Gson gson = new Gson();
         String json = gson.toJson(daydata);
         editor.putString(SAVE_DAYDATA, json);
-        editor.commit();
+        editor.apply();
     }
 
     public ArrayList<DayData> getSavedDayData() {
@@ -56,5 +62,44 @@ public class PrefManager {
         return gson.fromJson(json, type);
     }
 
+    public void saveSection(String section) {
+        editor.remove(SAVE_SECTION).apply();
+        editor.putString(SAVE_SECTION, section);
+        editor.apply();
+    }
+
+    public void saveTerm(int term) {
+        editor.remove(SAVE_TERM).apply();
+        editor.putInt(SAVE_TERM, term);
+        editor.apply();
+    }
+
+    public void saveLevel(int level) {
+        editor.remove(SAVE_LEVEL).apply();
+        editor.putInt(SAVE_LEVEL, level);
+        editor.apply();
+    }
+
+    public String getSection() {
+        return pref.getString(SAVE_SECTION, null);
+    }
+
+    public int getTerm() {
+        return pref.getInt(SAVE_TERM, -1);
+    }
+
+    public int getLevel() {
+        return pref.getInt(SAVE_LEVEL, -1);
+    }
+
+    public void saveReCreate(boolean value) {
+        editor.remove(SAVE_RECREATE).apply();
+        editor.putBoolean(SAVE_RECREATE, value);
+        editor.apply();
+    }
+
+    public boolean getReCreate() {
+        return pref.getBoolean(SAVE_RECREATE, false);
+    }
 }
 

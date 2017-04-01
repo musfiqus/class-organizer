@@ -44,6 +44,9 @@ class DatabaseHelper extends SQLiteAssetHelper {
 
     public ArrayList<DayData> getDayData(ArrayList<String> courseCodes, String section) {
         SQLiteDatabase db = this.getReadableDatabase();
+        if (finalDayData != null) {
+            finalDayData.clear();
+        }
         for (String eachCourse : courseCodes) {
             String id = eachCourse + section;
             Cursor cursor = db.query(TABLE_ROUTINE, new String[]{COLUMN_COURSE_CODE,

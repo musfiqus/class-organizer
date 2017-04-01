@@ -1,74 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_screen2">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:padding="48dp">
-
-        <TextView
-            android:id="@+id/section_spinner_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:gravity="center_vertical"
-            android:text="@string/section_title"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
-
-        <Spinner
-            android:id="@+id/section_selection"
-            android:layout_width="72dp"
-            android:layout_height="32dp"
-            android:layout_weight="1"
-            android:background="@android:color/white"
-            android:completionThreshold="1" />
-
-        <TextView
-            android:id="@+id/level_spinner_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginTop="16dp"
-            android:gravity="center_vertical"
-            android:text="@string/level_title"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"
-            tools:text="Select your level" />
-
-        <Spinner
-            android:id="@+id/level_spinner"
-            android:layout_width="72dp"
-            android:layout_height="32dp"
-            android:layout_weight="1"
-            android:background="@android:color/white" />
-
-        <TextView
-            android:id="@+id/term_spinner_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginTop="16dp"
-            android:gravity="center_vertical"
-            android:text="@string/term_title"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
-
-        <Spinner
-            android:id="@+id/term_spinner"
-            android:layout_width="72dp"
-            android:layout_height="32dp"
-            android:layout_marginBottom="16dp"
-            android:layout_weight="1"
-            android:background="@android:color/white" />
-
-
-    </LinearLayout>
+    <include layout="@layout/spinner_layout" />
 </RelativeLayout>

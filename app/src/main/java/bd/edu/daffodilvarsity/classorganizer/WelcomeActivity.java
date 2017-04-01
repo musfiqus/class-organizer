@@ -111,7 +111,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                 if (current == layouts.length - 1) {
                     myViewPagerAdapter.loadSemester();
                     if (myViewPagerAdapter.isTempLock()) {
-                        Toast.makeText(getApplicationContext(), "Section " + myViewPagerAdapter.getSection() + " currently doesn't exist on level " + myViewPagerAdapter.getLevel() + " term " + myViewPagerAdapter.getTerm() + ". Please select the correct level, term & section. Or contact the developer to add your section.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Section " + myViewPagerAdapter.getSection() + " currently doesn't exist on level " + (myViewPagerAdapter.getLevel() + 1) + " term " + (myViewPagerAdapter.getTerm() + 1) + ". Please select the correct level, term & section. Or contact the developer to add your section.", Toast.LENGTH_LONG).show();
                         viewPager.setCurrentItem(current - 1);
                     } else {
                         viewPager.setCurrentItem(current);

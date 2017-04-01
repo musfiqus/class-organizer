@@ -10,21 +10,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 /**
  * Created by musfiqus on 3/26/2017.
  */
 
 public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnItemSelectedListener {
-    ArrayList<String> courseCodes;
     private LayoutInflater layoutInflater;
     private Context context;
     private int[] layouts;
     private int level;
     private int term;
-    private int semester;
     private String section;
     private boolean tempLock = true;
 
@@ -98,9 +93,10 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
         } else {
             Log.e("Spinner", "Invalid selection");
         }
-        setSemester();
-//        courseCodeGenerator(semester);
-//        loadRoutine(courseCodes, section);
+        PrefManager prefManager = new PrefManager(context);
+        prefManager.saveSection(section);
+        prefManager.saveTerm(term);
+        prefManager.saveLevel(level);
     }
 
     @Override
@@ -108,73 +104,10 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
 
     }
 
-    private void setSemester() {
-        if (this.level == 0) {
-            semester = 1 + this.term;
-        } else if (this.level == 1) {
-            semester = 4 + this.term;
-        } else if (this.level == 2) {
-            semester = 7 + this.term;
-        } else {
-            semester = 10 + this.term;
-        }
-    }
-
-    public void courseCodeGenerator(int semester) {
-        if (semester == 1) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_one);
-            courseCodes = new ArrayList<>(Arrays.asList(semesterData));
-        } else if (semester == 2) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_two);
-            courseCodes = new ArrayList<>(Arrays.asList(semesterData));
-        } else if (semester == 3) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_three);
-            courseCodes = new ArrayList<>(Arrays.asList(semesterData));
-        } else if (semester == 4) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_four);
-            courseCodes = new ArrayList<>(Arrays.asList(semesterData));
-        } else if (semester == 5) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_five);
-            courseCodes = new ArrayList<>(Arrays.asList(semesterData));
-        } else if (semester == 6) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_six);
-            courseCodes = new ArrayList<>(Arrays.asList(semesterData));
-        } else if (semester == 7) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_seven);
-            courseCodes = new ArrayList<>(Arrays.asList(semesterData));
-        } else if (semester == 8) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_eight);
-            courseCodes = new ArrayList<>(Arrays.asList(semesterData));
-        } else if (semester == 9) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_nine);
-            courseCodes = new ArrayList<>(Arrays.asList(semesterData));
-        } else if (semester == 10) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_ten);
-            courseCodes = new ArrayList<>(Arrays.asList(semesterData));
-        } else if (semester == 11) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_eleven);
-            courseCodes = new ArrayList<>(Arrays.asList(semesterData));
-        } else if (semester == 12) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_twelve);
-            courseCodes = new ArrayList<>(Arrays.asList(semesterData));
-        }
-    }
-
-    private void loadRoutine(ArrayList<String> courseCodes, String section) {
-        DatabaseHelper db = DatabaseHelper.getInstance(context);
-        ArrayList<DayData> mDayData = db.getDayData(courseCodes, section);
-        Log.e("Daydata size ", "" + mDayData.size());
-        Log.e("TEMPLOCX", "" + this.tempLock);
-        this.tempLock = mDayData.size() <= 0;
-        Log.e("TEMPLOCX", "" + this.tempLock);
-        PrefManager prefManager = new PrefManager(context);
-        prefManager.saveDayData(mDayData);
-    }
-
     //loading semester on button press
     public void loadSemester() {
-        courseCodeGenerator(semester);
-        loadRoutine(courseCodes, section);
+        RoutineLoader routineLoader = new RoutineLoader(level, term, section, context);
+        this.tempLock = routineLoader.loadRoutine();
     }
 
     public boolean isTempLock() {

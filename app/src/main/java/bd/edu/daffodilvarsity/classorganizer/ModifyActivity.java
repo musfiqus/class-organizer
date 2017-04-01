@@ -1,12 +1,16 @@
 package bd.edu.daffodilvarsity.classorganizer;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -25,6 +29,7 @@ public class ModifyActivity extends AppCompatActivity {
     private int position = -1;
     private ArrayList<DayData> dayDatas;
     private DayData dayData = null;
+    private RoutineLoader routineLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +41,7 @@ public class ModifyActivity extends AppCompatActivity {
         prefManager = new PrefManager(this);
         Bundle extras = getIntent().getExtras();
         dayData = extras.getParcelable("DAYDATA");
+        routineLoader = new RoutineLoader(this);
         dayDatas = prefManager.getSavedDayData();
         for (int i = 0; i < dayDatas.size(); i++) {
             if (dayDatas.get(i).getCourseCode().equalsIgnoreCase(dayData.getCourseCode())) {
@@ -112,12 +118,9 @@ public class ModifyActivity extends AppCompatActivity {
                 dayDatas.set(position, editedDay);
             }
             prefManager.saveDayData(dayDatas);
-            //Refreshing data on screen by restarting activity, because nothing else seems to work for now
-            MainActivity.getInstance().finish();
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.putExtra("SNACKBAR", "Saved");
-            startActivity(intent);
-            finish();
+            prefManager.saveReCreate(true);
+            showSnackBar(this, "Saved");
+
         } else if (item.getItemId() == R.id.delete_button) {
             //Show confirmation
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -132,11 +135,9 @@ public class ModifyActivity extends AppCompatActivity {
                         dayDatas.remove(position);
                     }
                     prefManager.saveDayData(dayDatas);
-
                     //Refreshing data on screen by restarting activity, because nothing else seems to work for now
                     MainActivity.getInstance().finish();
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    intent.putExtra("SNACKBAR", "Deleted");
                     startActivity(intent);
                     finish();
                     dialog.dismiss();
@@ -160,5 +161,24 @@ public class ModifyActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (prefManager.getReCreate()) {
+            Log.e("Pause", "Called");
+            prefManager.saveReCreate(false);
+            //Refreshing data on screen by restarting activity, because nothing else seems to work for now
+            MainActivity.getInstance().finish();
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.putExtra("SNACKBAR", "Saved");
+            startActivity(intent);
+            finish();
+        }
+    }
 
+    //Method to display snackbar properly
+    public void showSnackBar(Activity activity, String message) {
+        View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+        Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT).show();
+    }
 }
