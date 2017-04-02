@@ -9,14 +9,16 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import org.polaric.colorful.Colorful;
+import org.polaric.colorful.ColorfulActivity;
+
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends ColorfulActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static MainActivity mainActivity;
     private PrefManager prefManager;
     private DayFragmentPagerAdapter adapter;
@@ -31,9 +33,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Colorful.applyTheme(this);
         setContentView(R.layout.activity_main);
         mainActivity = this;
         prefManager = new PrefManager(this);
+        Log.e("Colorful",""+Colorful.getThemeDelegate().getPrimaryColor().getColorRes());
+
 
         //Getting any arguments
         //TODO will show snackbar later with shared pref
@@ -103,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Log.e("OnResume", "Called");
             loadData();
         }
-
     }
 
     public void loadData() {
@@ -138,5 +142,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //      by calling onPageTitle()
         tabLayout.setupWithViewPager(viewPager);
     }
+
+
 
 }

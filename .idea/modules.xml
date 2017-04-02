@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/DIUClassOrganizer.iml" filepath="$PROJECT_DIR$/DIUClassOrganizer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/library/Colorful.iml" filepath="$PROJECT_DIR$/library/Colorful.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/diu-class-organizer.iml" filepath="$PROJECT_DIR$/diu-class-organizer.iml" />
     </modules>
   </component>
 </project>

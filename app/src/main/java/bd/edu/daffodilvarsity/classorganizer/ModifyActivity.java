@@ -16,9 +16,12 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import org.polaric.colorful.Colorful;
+import org.polaric.colorful.ColorfulActivity;
+
 import java.util.ArrayList;
 
-public class ModifyActivity extends AppCompatActivity {
+public class ModifyActivity extends ColorfulActivity {
 
     private PrefManager prefManager;
     private TextView courseCodeText;
@@ -34,8 +37,10 @@ public class ModifyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Colorful.applyTheme(this);
         setContentView(R.layout.activity_modify);
-
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_modify);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         prefManager = new PrefManager(this);

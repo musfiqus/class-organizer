@@ -24,10 +24,7 @@
             style="@style/DayTab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
             android:elevation="10dp"
-            app:tabBackground="@color/colorPrimary"
-            app:tabIndicatorColor="@color/colorAccent"
             app:tabMode="scrollable" />
 
     </android.support.design.widget.AppBarLayout>

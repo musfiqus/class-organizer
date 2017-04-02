@@ -3,36 +3,48 @@ package bd.edu.daffodilvarsity.classorganizer;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.TypedArray;
+import android.os.Build;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
+
+import org.polaric.colorful.ColorPickerDialog;
+import org.polaric.colorful.ColorPickerPreference;
+import org.polaric.colorful.Colorful;
+import org.polaric.colorful.ColorfulActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends ColorfulActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_settings);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+        switch (item.getItemId()) {
+            case android.R.id.home: onBackPressed();
         }
         return true;
     }
@@ -51,12 +63,13 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    public static class SettingsFragment extends PreferenceFragment {
+    public static class SettingsFragment extends PreferenceFragmentCompat {
+
         @Override
-        public void onCreate(final Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.main_settings);
 
+            //Getting prefmanager to get existing data
             final PrefManager prefManager = new PrefManager(getActivity());
 
             //Designing routine preference
@@ -64,11 +77,10 @@ public class SettingsActivity extends AppCompatActivity {
             final String sectionRoot = prefManager.getSection();
             final int levelRoot = prefManager.getLevel();
             final int termRoot = prefManager.getTerm();
-
             routinePreference.setSummary("Current Section " + sectionRoot + ", Level " + (levelRoot + 1) + ", Term " + (termRoot + 1));
             routinePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
-                public boolean onPreferenceClick(final Preference preference) {
+                public boolean onPreferenceClick(Preference preference) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     final View dialogView = getActivity().getLayoutInflater().inflate(R.layout.spinner_layout, null);
                     builder.setTitle("Choose your current class");
@@ -131,9 +143,8 @@ public class SettingsActivity extends AppCompatActivity {
                                 prefManager.saveTerm(term);
                                 prefManager.saveSection(section);
                                 routinePreference.setSummary("Current Section " + section + ", Level " + (level + 1) + ", Term " + (term + 1));
-                                onCreate(Bundle.EMPTY);
                                 prefManager.saveReCreate(true);
-
+                                onCreate(Bundle.EMPTY);
                                 //SHOWING SNACKBAR
                                 showSnackBar(getActivity(), "Saved");
                                 dialog.dismiss();
@@ -158,15 +169,38 @@ public class SettingsActivity extends AppCompatActivity {
 
                     AlertDialog dialog = builder.create();
                     dialog.show();
+
+
+                    return true;
+                }
+            });
+
+
+            //  Changing preview of primary color chooser
+            ColorPickerPreference primaryColorPref = (ColorPickerPreference) findPreference("primary");
+            primaryColorPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    onCreate(Bundle.EMPTY);
+                    return true;
+                }
+            });
+
+            //  Changing preview of accent color chooser
+            ColorPickerPreference accentColorPref = (ColorPickerPreference) findPreference("accent");
+            accentColorPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    onCreate(Bundle.EMPTY);
                     return true;
                 }
             });
         }
+    }
 
-        //Method to display snackbar properly
-        public void showSnackBar(Activity activity, String message) {
-            View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
-            Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT).show();
-        }
+    //Method to display snackbar properly
+    public static void showSnackBar(Activity activity, String message) {
+        View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+        Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT).show();
     }
 }

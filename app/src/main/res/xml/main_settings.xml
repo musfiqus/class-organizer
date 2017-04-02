@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Routine">
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:colorpicker="http://schemas.android.com/apk/res-auto">
+    <android.support.v7.preference.PreferenceCategory
+        android:title="Routine">
         <Preference
             android:key="routine_preference"
             android:summary="Place holder summary"
-            android:title="Select app theme" />
-    </PreferenceCategory>
-</PreferenceScreen>
+            android:title="Choose your routine" />
+    </android.support.v7.preference.PreferenceCategory>
+    <android.support.v7.preference.PreferenceCategory
+        android:title="Appearance">
+        <org.polaric.colorful.ColorPickerPreference
+            android:title="Choose Primary Color"
+            android:summary="Changes background, course code header etc. color"
+            colorpicker:primary_color="true"
+            android:key="primary"/>
+        <org.polaric.colorful.ColorPickerPreference
+            android:title="Choose accent"
+            android:summary="Changes tab indicator color, text input's title color"
+            colorpicker:accent_color="true"
+            android:key="accent"/>
+    </android.support.v7.preference.PreferenceCategory>
+</android.support.v7.preference.PreferenceScreen>
