@@ -98,7 +98,10 @@ public class ModifyActivity extends ColorfulActivity {
         String room = editRoom.getText().toString();
         String time = editTime.getText().toString();
         String day = weekDaySpinner.getSelectedItem().toString();
-        return new DayData(courseCode, initial, room, time, day);
+
+        //TODO SEND NEW TIME WEIGHT
+
+        return new DayData(courseCode, initial, room, time, day, 1.0);
     }
 
     @Override

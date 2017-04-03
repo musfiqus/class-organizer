@@ -13,21 +13,16 @@ import java.util.Arrays;
 
 public class RoutineLoader {
 
-    private static final String SAVE_ROUTINE = "daydata.dat";
-    private static final String SAVE_SECTION = "section.dat";
-    private static final String SAVE_TERM = "term.dat";
     private int level;
     private int term;
     private String section;
     private Context context;
-    private File file;
 
     public RoutineLoader(int level, int term, String section, Context context) {
         this.level = level;
         this.term = term;
         this.section = section;
         this.context = context;
-        file = new File(context.getFilesDir(), SAVE_ROUTINE);
     }
 
     public RoutineLoader(Context context) {
@@ -96,40 +91,10 @@ public class RoutineLoader {
 
         //Generating course codes from generated semester
         ArrayList<String> courseCodes = courseCodeGenerator(setSemester());
-        Log.e("COURSECODE", "SIZE " + courseCodes.size());
 
         ArrayList<DayData> mDayData = db.getDayData(courseCodes, section);
-        Log.e("LOADDAYDATA", "SIZE " + mDayData.size());
         prefManager.saveDayData(mDayData);
         //returning if loading was successful or not
         return mDayData.size() <= 0;
     }
-
-//    public void writeRoutine(ArrayList<DayData> dayDatas) {
-//        Log.e("WRITE", "SIZE "+dayDatas.size());
-//
-//        try {
-//            FileOutputStream fos = new FileOutputStream(file, false);
-//            ObjectOutputStream oos = new ObjectOutputStream(fos);
-//            oos.writeObject(dayDatas);
-//            Log.e("WRITE", "CALLED");
-//            oos.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public ArrayList<DayData> readRoutine() {
-//        ArrayList<DayData> loadedData = new ArrayList<>();
-//        try {
-//            FileInputStream fis = context.openFileInput(SAVE_ROUTINE);
-//            ObjectInputStream ois = new ObjectInputStream(fis);
-//            loadedData = (ArrayList<DayData>) ois.readObject();
-//            Log.e("READROUTINE", "SIZE: "+loadedData.size());
-//            ois.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return loadedData;
-//    }
 }

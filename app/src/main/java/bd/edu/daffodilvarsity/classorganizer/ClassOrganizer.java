@@ -13,8 +13,8 @@ public class ClassOrganizer extends Application {
     public void onCreate() {
         super.onCreate();
         Colorful.defaults()
-                .primaryColor(Colorful.ThemeColor.BLUE_GREY)
-                .accentColor(Colorful.ThemeColor.BLUE)
+                .primaryColor(Colorful.ThemeColor.DEEP_PURPLE)
+                .accentColor(Colorful.ThemeColor.RED)
                 .translucent(true)
                 .dark(false);
 

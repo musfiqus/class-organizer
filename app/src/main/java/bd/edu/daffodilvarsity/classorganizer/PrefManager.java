@@ -47,7 +47,6 @@ public class PrefManager {
 
     public void saveDayData(ArrayList<DayData> daydata) {
         editor.remove(SAVE_DAYDATA).apply();
-        Log.e("PREF", "SAVE CALLED");
         Gson gson = new Gson();
         String json = gson.toJson(daydata);
         editor.putString(SAVE_DAYDATA, json);

@@ -55,13 +55,24 @@ class DatabaseHelper extends SQLiteAssetHelper {
 
             if (cursor.moveToFirst()) {
                 do {
-                    DayData newDaydata = new DayData(getCourseCode(eachCourse), cursor.getString(1), cursor.getString(3), getTime(cursor.getString(4)), cursor.getString(2));
+                    DayData newDaydata = new DayData(getCourseCode(eachCourse), cursor.getString(1), cursor.getString(3), getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)));
                     finalDayData.add(newDaydata);
                 } while (cursor.moveToNext());
             }
             cursor.close();
         }
         return finalDayData;
+    }
+
+    private double getTimeWeight(String weight) {
+        weight = weight.replace("\\s+","");
+        double timeWeight = 0;
+        try {
+            timeWeight = Double.parseDouble(weight);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return timeWeight;
     }
 
     private String getCourseCode(String courseCode) {

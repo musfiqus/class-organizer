@@ -37,11 +37,6 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         setContentView(R.layout.activity_main);
         mainActivity = this;
         prefManager = new PrefManager(this);
-        Log.e("Colorful",""+Colorful.getThemeDelegate().getPrimaryColor().getColorRes());
-
-
-        //Getting any arguments
-        //TODO will show snackbar later with shared pref
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -50,7 +45,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -58,7 +53,6 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
 
         loadData();
         onCreate = true;
-        Log.e("OnCreate", "Called");
     }
 
     @Override
@@ -95,7 +89,6 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         super.onStart();
         if (!onCreate) {
             loadData();
-            Log.e("OnStart", "Called");
         }
         //won't run again on onResume
         onStart = true;
@@ -105,7 +98,6 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     protected void onResume() {
         super.onResume();
         if (!onStart) {
-            Log.e("OnResume", "Called");
             loadData();
         }
     }
@@ -118,8 +110,6 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         }
 
         mDayData = prefManager.getSavedDayData();
-
-        Log.e("DAYDATAMAIN", "SIZE " + mDayData.size());
 
         // Find the view pager that will allow the user to swipe between fragments
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);

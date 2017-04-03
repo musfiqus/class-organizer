@@ -7,6 +7,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import static bd.edu.daffodilvarsity.classorganizer.R.string.saturday;
 
@@ -16,6 +18,7 @@ import static bd.edu.daffodilvarsity.classorganizer.R.string.saturday;
 
 public class DayFragmentPagerAdapter extends FragmentPagerAdapter {
 
+    private static String BUNDLE_TAG = "anyDay";
     private ArrayList<DayData> dayData = new ArrayList<>();
     private ArrayList<Bundle> bundles = new ArrayList<>();
     private ArrayList<DayData> satDayData = new ArrayList<>();
@@ -99,43 +102,86 @@ public class DayFragmentPagerAdapter extends FragmentPagerAdapter {
         //Setting dynamic page count, titles and bundles
         if (hasSatDay) {
             pageCount++;
+
+            //Sort daydata by time weight, ascending order
+            Collections.sort(satDayData, new Comparator<DayData>() {
+                @Override
+                public int compare(DayData o1, DayData o2) {
+                    return Double.valueOf(o1.getTimeWeight()).compareTo(o2.getTimeWeight());
+                }
+            });
             Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList("anyDay", satDayData);
+            bundle.putParcelableArrayList(BUNDLE_TAG, satDayData);
             bundles.add(bundle);
             titles.add(context.getString(saturday));
         }
         if (hasSunDay) {
             pageCount++;
+            //Sort daydata by time weight, ascending order
+            Collections.sort(sunDayData, new Comparator<DayData>() {
+                @Override
+                public int compare(DayData o1, DayData o2) {
+                    return Double.valueOf(o1.getTimeWeight()).compareTo(o2.getTimeWeight());
+                }
+            });
             Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList("anyDay", sunDayData);
+            bundle.putParcelableArrayList(BUNDLE_TAG, sunDayData);
             bundles.add(bundle);
             titles.add(context.getString(R.string.sunday));
         }
         if (hasMonDay) {
             pageCount++;
+            //Sort daydata by time weight, ascending order
+            Collections.sort(monDayData, new Comparator<DayData>() {
+                @Override
+                public int compare(DayData o1, DayData o2) {
+                    return Double.valueOf(o1.getTimeWeight()).compareTo(o2.getTimeWeight());
+                }
+            });
             Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList("anyDay", monDayData);
+            bundle.putParcelableArrayList(BUNDLE_TAG, monDayData);
             bundles.add(bundle);
             titles.add(context.getString(R.string.monday));
         }
         if (hasTueDay) {
             pageCount++;
+            //Sort daydata by time weight, ascending order
+            Collections.sort(tueDayData, new Comparator<DayData>() {
+                @Override
+                public int compare(DayData o1, DayData o2) {
+                    return Double.valueOf(o1.getTimeWeight()).compareTo(o2.getTimeWeight());
+                }
+            });
             Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList("anyDay", tueDayData);
+            bundle.putParcelableArrayList(BUNDLE_TAG, tueDayData);
             bundles.add(bundle);
             titles.add(context.getString(R.string.tuesday));
         }
         if (hasWedDay) {
             pageCount++;
+            //Sort daydata by time weight, ascending order
+            Collections.sort(wedDayData, new Comparator<DayData>() {
+                @Override
+                public int compare(DayData o1, DayData o2) {
+                    return Double.valueOf(o1.getTimeWeight()).compareTo(o2.getTimeWeight());
+                }
+            });
             Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList("anyDay", wedDayData);
+            bundle.putParcelableArrayList(BUNDLE_TAG, wedDayData);
             bundles.add(bundle);
             titles.add(context.getString(R.string.wednesday));
         }
         if (hasThuDay) {
             pageCount++;
+            //Sort daydata by time weight, ascending order
+            Collections.sort(thuDayData, new Comparator<DayData>() {
+                @Override
+                public int compare(DayData o1, DayData o2) {
+                    return Double.valueOf(o1.getTimeWeight()).compareTo(o2.getTimeWeight());
+                }
+            });
             Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList("anyDay", thuDayData);
+            bundle.putParcelableArrayList(BUNDLE_TAG, thuDayData);
             bundles.add(bundle);
             titles.add(context.getString(R.string.thursday));
         }
