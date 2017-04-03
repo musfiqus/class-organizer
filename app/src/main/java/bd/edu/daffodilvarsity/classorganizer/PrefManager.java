@@ -2,7 +2,6 @@ package bd.edu.daffodilvarsity.classorganizer;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -27,8 +26,6 @@ public class PrefManager {
     SharedPreferences pref;
     SharedPreferences.Editor editor;
     Context _context;
-    // shared pref mode
-    int PRIVATE_MODE = 0;
 
     public PrefManager(Context context) {
         this._context = context;

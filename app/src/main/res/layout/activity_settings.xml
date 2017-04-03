@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="bd.edu.daffodilvarsity.classorganizer.SettingsActivity">
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/settings_appbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:elevation="0dp"
         android:theme="@style/AppTheme.AppBarOverlay">
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_settings"
@@ -20,14 +21,14 @@
     </android.support.design.widget.AppBarLayout>
 
     <FrameLayout
+        android:layout_below="@id/settings_appbar_layout"
         android:id="@+id/fragment_container_settings"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="48dp">
+        android:layout_height="match_parent">
         <fragment
             android:id="@+id/fragment_settings"
             android:name="bd.edu.daffodilvarsity.classorganizer.SettingsActivity$SettingsFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </FrameLayout>
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>

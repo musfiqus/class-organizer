@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,8 +26,9 @@ public class ModifyActivity extends ColorfulActivity {
     private TextView courseCodeText;
     private EditText editInitial;
     private EditText editRoom;
-    private EditText editTime;
     private Spinner weekDaySpinner;
+    private Spinner startTimeSpinner;
+    private Spinner endTimeSpinner;
     private int position = -1;
     private ArrayList<DayData> dayDatas;
     private DayData dayData = null;
@@ -41,6 +41,7 @@ public class ModifyActivity extends ColorfulActivity {
         setContentView(R.layout.activity_modify);
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_modify);
         setSupportActionBar(toolbar);
+        findViewById(R.id.modify_appbar_layout).bringToFront();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         prefManager = new PrefManager(this);
@@ -76,9 +77,6 @@ public class ModifyActivity extends ColorfulActivity {
         editRoom = (EditText) findViewById(R.id.edit_room);
         editRoom.setText(dayData.getRoomNo());
 
-        editTime = (EditText) findViewById(R.id.edit_time);
-        editTime.setText(dayData.getTime());
-
         //Term spinner
         weekDaySpinner = (Spinner) findViewById(R.id.edit_week_day);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -90,18 +88,74 @@ public class ModifyActivity extends ColorfulActivity {
         // Apply the adapter to the spinner
         weekDaySpinner.setAdapter(termAdapter);
         weekDaySpinner.setSelection(spinnerPos);
+
+        String[] startEndTime = timeSplitter(dayData.getTime());
+        String startTime = startEndTime[0];
+        String endTime = startEndTime[1];
+
+        //Start time spinner
+        startTimeSpinner = (Spinner) findViewById(R.id.modify_time_start);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> startTimeAdapter = ArrayAdapter.createFromResource(this, R.array.start_time, R.layout.spinner_row);
+        //Getting the position of start time in spinner
+        int startTimePos = startTimeAdapter.getPosition(startTime);
+        startTimeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        startTimeSpinner.setAdapter(startTimeAdapter);
+        startTimeSpinner.setSelection(startTimePos);
+
+        //End time spinner
+        endTimeSpinner = (Spinner) findViewById(R.id.modify_time_end);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> endTimeAdapter = ArrayAdapter.createFromResource(this, R.array.end_time, R.layout.spinner_row);
+        //Getting the position of start time in spinner
+        int endTimePos = endTimeAdapter.getPosition(endTime);
+        endTimeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        endTimeSpinner.setAdapter(endTimeAdapter);
+        endTimeSpinner.setSelection(endTimePos);
+    }
+
+    private String timeJoiner(String startTime, String endTime) {
+        return startTime + "-" + endTime;
+    }
+
+    private String[] timeSplitter(String time) {
+        return time.split("-");
     }
 
     private DayData getEditedDay() {
         String courseCode = courseCodeText.getText().toString();
         String initial = editInitial.getText().toString();
         String room = editRoom.getText().toString();
-        String time = editTime.getText().toString();
+        String time = timeJoiner(startTimeSpinner.getSelectedItem().toString(), endTimeSpinner.getSelectedItem().toString());
         String day = weekDaySpinner.getSelectedItem().toString();
+        double timeWeight = timeWeight(startTimeSpinner.getSelectedItem().toString());
+        return new DayData(courseCode, initial, room, time, day, timeWeight);
+    }
 
-        //TODO SEND NEW TIME WEIGHT
-
-        return new DayData(courseCode, initial, room, time, day, 1.0);
+    private double timeWeight(String startTime) {
+        switch (startTime) {
+            case "08.30":
+                return 1.0;
+            case "10.00":
+                return 2.0;
+            case "11.30":
+                return 3.0;
+            case "01.00":
+                return 4.0;
+            case "02.30":
+                return 5.0;
+            case "04.00":
+                return 6.0;
+            case "09.00":
+                return 1.5;
+            case "11.00":
+                return 2.5;
+            case "03.00":
+                return 4.5;
+            default:
+                Log.e("ModifyActivity", "INVALID START TIME");
+                return 0;
+        }
     }
 
     @Override

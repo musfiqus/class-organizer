@@ -15,7 +15,7 @@ public class ClassOrganizer extends Application {
         Colorful.defaults()
                 .primaryColor(Colorful.ThemeColor.DEEP_PURPLE)
                 .accentColor(Colorful.ThemeColor.RED)
-                .translucent(true)
+                .translucent(false)
                 .dark(false);
 
         Colorful.init(this);
