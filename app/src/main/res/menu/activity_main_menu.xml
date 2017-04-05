@@ -1,0 +1,8 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/add_button"
+        android:icon="@drawable/ic_calendar_plus_white_24dp"
+        android:title="Add"
+        app:showAsAction="ifRoom" />
+</menu>

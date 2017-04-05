@@ -161,7 +161,7 @@ public class ModifyActivity extends ColorfulActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // create an action bar button, done
-        getMenuInflater().inflate(R.menu.activity_modify_done, menu);
+        getMenuInflater().inflate(R.menu.activity_modify_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -201,6 +201,8 @@ public class ModifyActivity extends ColorfulActivity {
                     MainActivity.getInstance().finish();
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
+                    prefManager.saveSnackData("Deleted");
+                    prefManager.saveShowSnack(true);
                     finish();
                     dialog.dismiss();
                 }

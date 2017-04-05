@@ -25,7 +25,7 @@
         <item name="elevation">0dp</item>
     </style>
 
-    <!-- Style for a tab that displays a category name -->
+    <!-- Style for a tab that displays weekdays name -->
     <style name="DayTab" parent="Widget.Design.TabLayout">
         <item name="tabBackground">?attr/colorPrimary</item>
         <item name="android:background">?attr/colorPrimary</item>
@@ -34,12 +34,12 @@
         <item name="tabTextAppearance">@style/CategoryTabTextAppearance</item>
     </style>
 
-    <!-- Text appearance style for a category tab -->
+    <!-- Text appearance style for a tab -->
     <style name="CategoryTabTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="android:textColor">#BDBDBD</item>
     </style>
 
-    <!--//Edit text-->
+    <!--//Edit text color in modify activity-->
     <style name="Theme.edit.darkback" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorControlNormal">#c5c5c5</item>
         <item name="colorControlActivated">@android:color/white</item>

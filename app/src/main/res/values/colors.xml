@@ -5,125 +5,29 @@
     <color name="colorAccent">#2278d4</color>
 
     <!-- Screens background color-->
-    <color name="bg_screen1">#f64c73</color>
-    <color name="bg_screen2">#20d2bb</color>
-    <color name="bg_screen3">#3395ff</color>
-    <color name="bg_screen4">#c873f4</color>
+    <color name="bg_screen1">#E91E63</color>
+    <color name="bg_screen2">#3395ff</color>
+    <color name="bg_screen3">#20d2bb</color>
 
     <!-- dots inactive colors -->
-    <color name="dot_dark_screen1">#d1395c</color>#512DA8
-    <color name="dot_dark_screen2">#14a895</color>
-    <color name="dot_dark_screen3">#2278d4</color>
-    <color name="dot_dark_screen4">#a854d4</color>
+    <color name="dot_dark_screen1">#AD1457</color>
+    <color name="dot_dark_screen2">#2278d4</color>
+    <color name="dot_dark_screen3">#14a895</color>
 
     <!-- dots active colors -->
     <color name="dot_light_screen1">#f98da5</color>
-    <color name="dot_light_screen2">#8cf9eb</color>
-    <color name="dot_light_screen3">#93c6fd</color>
-    <color name="dot_light_screen4">#e4b5fc</color>
+    <color name="dot_light_screen2">#93c6fd</color>
+    <color name="dot_light_screen3">#8cf9eb</color>
 
     <array name="array_dot_active">
         <item>@color/dot_light_screen1</item>
         <item>@color/dot_light_screen2</item>
         <item>@color/dot_light_screen3</item>
-        <item>@color/dot_light_screen4</item>
     </array>
 
     <array name="array_dot_inactive">
         <item>@color/dot_dark_screen1</item>
         <item>@color/dot_dark_screen2</item>
         <item>@color/dot_dark_screen3</item>
-        <item>@color/dot_dark_screen4</item>
     </array>
-
-    <array name="theme_color_presets">
-        <item>@color/md_red_500</item>
-        <item>@color/md_pink_500</item>
-        <item>@color/md_purple_500</item>
-        <item>@color/md_deep_purple_500</item>
-        <item>@color/md_indigo_500</item>
-        <item>@color/md_blue_500</item>
-        <item>@color/md_light_blue_500</item>
-        <item>@color/md_cyan_500</item>
-        <item>@color/md_teal_500</item>
-        <item>@color/md_green_500</item>
-        <item>@color/md_light_green_500</item>
-        <item>@color/md_lime_500</item>
-        <item>@color/md_yellow_500</item>
-        <item>@color/md_amber_500</item>
-        <item>@color/md_orange_500</item>
-        <item>@color/md_deep_orange_500</item>
-        <item>@color/md_brown_500</item>
-        <item>@color/md_grey_500</item>
-        <item>@color/md_blue_grey_500</item>
-        <item>@color/md_white</item>
-    </array>
-
-    <!-- red -->
-    <color name="md_red_500">#f44336</color>
-
-    <!-- pink -->
-    <color name="md_pink_500">#e91e63</color>
-
-    <!-- purple -->
-    <color name="md_purple_500">#9c27b0</color>
-
-    <!-- deep_purple -->
-    <color name="md_deep_purple_500">#673ab7</color>
-
-    <!-- indigo -->
-    <color name="md_indigo_500">#1a237e</color>
-
-    <!-- blue -->
-    <color name="md_blue_500">#2196f3</color>
-
-    <!-- light_blue -->
-    <color name="md_light_blue_500">#03a9f4</color>
-
-    <!-- cyan -->
-    <color name="md_cyan_500">#00bcd4</color>
-
-    <!-- teal -->
-    <color name="md_teal_500">#009688</color>
-
-    <!-- green -->
-    <color name="md_green_500">#4caf50</color>
-
-    <!-- light_green -->
-    <color name="md_light_green_500">#8bc34a</color>
-
-    <!-- lime -->
-    <color name="md_lime_500">#cddc39</color>
-
-    <!-- yellow -->
-    <color name="md_yellow_500">#ffeb3b</color>
-
-    <!-- amber -->
-    <color name="md_amber_500">#ffc107</color>
-
-    <!-- orange -->
-    <color name="md_orange_500">#ff9800</color>
-
-    <!-- deep_orange -->
-    <color name="md_deep_orange_500">#ff5722</color>
-
-    <!-- brown -->
-    <color name="md_brown_500">#795548</color>
-
-    <!-- grey -->
-    <color name="md_grey_500">#9e9e9e</color>
-
-    <color name="md_grey_300">#E0E0E0</color>
-
-    <!-- <color name="md_grey_1000">#000000</color> -->
-    <color name="md_black">#000000</color>
-    <!-- <color name="md_grey_1000">#ffffff</color> -->
-    <color name="md_white">#ffffff</color>
-
-    <!-- blue_grey -->
-    <color name="md_blue_grey_500">#607d8b</color>
-
-    <!--Translucent color-->
-    <color name="trans_tint">#40000000</color>
-
 </resources>

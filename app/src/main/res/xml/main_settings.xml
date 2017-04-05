@@ -6,7 +6,7 @@ xmlns:colorpicker="http://schemas.android.com/apk/res-auto">
         <Preference
             android:key="routine_preference"
             android:summary="Place holder summary"
-            android:title="Choose your routine" />
+            android:title="Choose Your Routine" />
     </android.support.v7.preference.PreferenceCategory>
     <android.support.v7.preference.PreferenceCategory
         android:title="Appearance">
@@ -16,9 +16,19 @@ xmlns:colorpicker="http://schemas.android.com/apk/res-auto">
             colorpicker:primary_color="true"
             android:key="primary"/>
         <org.polaric.colorful.ColorPickerPreference
-            android:title="Choose accent"
+            android:title="Choose Accent"
             android:summary="Changes tab indicator color, text input's title color"
             colorpicker:accent_color="true"
             android:key="accent"/>
+    </android.support.v7.preference.PreferenceCategory>
+    <android.support.v7.preference.PreferenceCategory android:title="About">
+        <Preference
+            android:key="about_preference"
+            android:summary="1.0"
+            android:title="Current Version" />
+        <Preference
+            android:key="developer_preference"
+            android:summary="Mushfiqus Salehin"
+            android:title="Developer" />
     </android.support.v7.preference.PreferenceCategory>
 </android.support.v7.preference.PreferenceScreen>

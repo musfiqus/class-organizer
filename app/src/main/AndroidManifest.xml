@@ -34,6 +34,9 @@
             android:name=".ModifyActivity"
             android:label="@string/modify_title" />
         <activity
+            android:name=".AddActivity"
+            android:label="@string/add_title" />
+        <activity
             android:name=".SettingsActivity"
             android:label="@string/settings_title"
             android:theme="@style/AppTheme" />

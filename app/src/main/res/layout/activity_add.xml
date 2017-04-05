@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     tools:context="bd.edu.daffodilvarsity.classorganizer.ModifyActivity">
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/modify_appbar_layout"
         android:layout_width="match_parent"
@@ -13,6 +14,7 @@
         app:elevation="0dp"
         android:background="?attr/colorPrimary"
         android:theme="@style/AppTheme.AppBarOverlay">
+
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_modify"
             android:layout_width="match_parent"
@@ -20,6 +22,7 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </android.support.design.widget.AppBarLayout>
+
     <LinearLayout
         android:layout_below="@id/modify_appbar_layout"
         android:layout_width="match_parent"
@@ -27,7 +30,7 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:paddingTop="32dp"
+            android:paddingTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
@@ -35,15 +38,8 @@
             android:paddingLeft="36dp"
             android:paddingStart="36dp"
             android:paddingRight="16dp"
-            android:paddingEnd="16dp">
-
-            <TextView
-                android:id="@+id/course_code_title"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:text="CSE XXX"
-                android:textColor="@android:color/white"
-                android:textSize="32sp" />
+            android:paddingEnd="16dp"
+            android:paddingBottom="8dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -51,12 +47,31 @@
                 android:paddingLeft="3dp"
                 android:paddingStart="3dp"
                 android:paddingTop="16dp"
-                android:text="@string/edit_initial_label"
+                android:text="Enter course code"
                 android:textColor="#E0E0E0"
                 android:textSize="14sp" />
 
             <EditText
-                android:id="@+id/edit_initial"
+                android:id="@+id/add_course_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Course code"
+                android:textColor="@android:color/white"
+                android:theme="@style/Theme.edit.darkback" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="3dp"
+                android:paddingStart="3dp"
+                android:paddingTop="16dp"
+                android:text="Enter initial"
+                android:textColor="#E0E0E0"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/add_initial"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -88,7 +103,7 @@
                     android:textSize="14sp" />
 
                 <Spinner
-                    android:id="@+id/edit_week_day"
+                    android:id="@+id/add_week_day"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
                     android:layout_marginBottom="8dp"
@@ -103,12 +118,12 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="3dp"
                     android:paddingTop="16dp"
-                    android:text="@string/edit_room_no_label"
+                    android:text="Enter room no"
                     android:textColor="#9E9E9E"
                     android:textSize="14sp" />
 
                 <EditText
-                    android:id="@+id/edit_room"
+                    android:id="@+id/add_room"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -131,12 +146,12 @@
                             android:layout_height="wrap_content"
                             android:paddingLeft="3dp"
                             android:paddingTop="16dp"
-                            android:text="@string/start_time_label"
+                            android:text="Starting time"
                             android:textColor="#9E9E9E"
                             android:textSize="14sp" />
 
                         <Spinner
-                            android:id="@+id/modify_time_start"
+                            android:id="@+id/add_time_start"
                             android:layout_width="wrap_content"
                             android:layout_height="32dp"
                             android:layout_marginBottom="8dp"
@@ -155,12 +170,12 @@
                             android:layout_height="wrap_content"
                             android:paddingLeft="3dp"
                             android:paddingTop="16dp"
-                            android:text="@string/end_time_label"
+                            android:text="Ending time"
                             android:textColor="#9E9E9E"
                             android:textSize="14sp" />
 
                         <Spinner
-                            android:id="@+id/modify_time_end"
+                            android:id="@+id/add_time_end"
                             android:layout_width="wrap_content"
                             android:layout_height="32dp"
                             android:layout_marginBottom="8dp"
