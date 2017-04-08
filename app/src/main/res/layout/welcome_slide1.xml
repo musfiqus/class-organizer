@@ -11,10 +11,10 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <!--<ImageView-->
-        <!--android:layout_width="@dimen/img_width_height"-->
-        <!--android:layout_height="@dimen/img_width_height"-->
-        <!--android:src="@drawable/ic_food" />-->
+        <ImageView
+            android:layout_width="@dimen/img_width_height"
+            android:layout_height="@dimen/img_width_height"
+            android:src="@drawable/ic_welcome" />
 
         <TextView
             android:layout_width="wrap_content"

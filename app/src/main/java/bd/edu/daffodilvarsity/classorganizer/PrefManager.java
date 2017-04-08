@@ -24,6 +24,7 @@ public class PrefManager {
     private static final String SAVE_RECREATE = "recreate";
     private static final String SAVE_SNACK_TAG = "SnackTag";
     private static final String SAVE_SNACK = "Snack";
+    private static final String SAVE_CONTACT = "Contact";
 
     SharedPreferences pref;
     SharedPreferences.Editor editor;
@@ -118,6 +119,16 @@ public class PrefManager {
 
     public boolean showSnack() {
         return pref.getBoolean(SAVE_SNACK, false);
+    }
+
+    public void saveShowContact(boolean value) {
+        editor.remove(SAVE_CONTACT).apply();
+        editor.putBoolean(SAVE_CONTACT, value);
+        editor.apply();
+    }
+
+    public boolean showContact() {
+        return pref.getBoolean(SAVE_CONTACT, false);
     }
 }
 

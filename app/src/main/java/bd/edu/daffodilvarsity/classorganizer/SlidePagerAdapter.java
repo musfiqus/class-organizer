@@ -21,6 +21,7 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
     private int level;
     private int term;
     private String section;
+    private View view;
     private boolean tempLock = true;
 
     public SlidePagerAdapter(Context context, int[] layouts) {
@@ -32,9 +33,15 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
     public Object instantiateItem(ViewGroup container, int position) {
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View view = layoutInflater.inflate(layouts[position], container, false);
+        view = layoutInflater.inflate(layouts[position], container, false);
         container.addView(view);
         if (layouts[position] == R.layout.welcome_slide2) {
+            //Program selection (COMING SOON TODO)
+//            Spinner programText = (Spinner) view.findViewById(R.id.program_selection);
+//            ArrayAdapter<CharSequence> programAdapter = ArrayAdapter.createFromResource(context, R.array.program_array, R.layout.spinner_row);
+//            programText.setAdapter(programAdapter);
+//            programText.setOnItemSelectedListener(this);
+
             //Level spinner
             Spinner levelSpinner = (Spinner) view.findViewById(R.id.level_spinner);
             // Create an ArrayAdapter using the string array and a default spinner layout
@@ -63,7 +70,6 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
         }
         return view;
     }
-
 
     @Override
     public int getCount() {
@@ -125,6 +131,10 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
 
     public int getTerm() {
         return term;
+    }
+
+    public View getView() {
+        return view;
     }
 }
 

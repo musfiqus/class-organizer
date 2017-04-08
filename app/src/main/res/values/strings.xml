@@ -41,7 +41,8 @@
     <!-- Spinner label -->
     <string name="level_title">Select your level</string>
     <string name="term_title">and current term</string>
-    <string name="section_title">Enter your section</string>
+    <string name="section_title">Select your section</string>
+    <string name="program_title">Select your program</string>
     <string name="drawer_app_title">DIU Class Organizer</string>
     <string name="drawer_dev_email">musfiqus@gmail.com</string>
     <string name="title_activity_settings">Settings</string>
@@ -52,5 +53,9 @@
     <string name="room_no_hint">Room no</string>
     <string name="start_time_label">Start</string>
     <string name="end_time_label">End</string>
+
+    <!-- Share Link -->
+    <string name="share_title">Share link using</string>
+    <string name="share_text_extra">Check out this awesome class routine android app for DIU CSE students at https://play.google.com/store/apps/details?id=bd.edu.daffodilvarsity.classorganizer</string>
 
 </resources>

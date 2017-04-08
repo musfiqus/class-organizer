@@ -3,12 +3,10 @@ package bd.edu.daffodilvarsity.classorganizer;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.TypedArray;
-import android.os.Build;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
@@ -16,15 +14,11 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
-import org.polaric.colorful.ColorPickerDialog;
 import org.polaric.colorful.ColorPickerPreference;
-import org.polaric.colorful.Colorful;
 import org.polaric.colorful.ColorfulActivity;
 
 import java.util.ArrayList;
@@ -84,6 +78,14 @@ public class SettingsActivity extends ColorfulActivity {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     final View dialogView = getActivity().getLayoutInflater().inflate(R.layout.spinner_layout, null);
                     builder.setTitle("Choose your current class");
+
+                    //Program selection (COMING SOON TODO)
+//                    TextView programLabel = (TextView) dialogView.findViewById(R.id.program_spinner_label);
+//                    programLabel.setTextColor(getResources().getColor(android.R.color.black));
+//
+//                    Spinner programText = (Spinner) dialogView.findViewById(R.id.program_selection);
+//                    ArrayAdapter<CharSequence> programAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.program_array, R.layout.spinner_row);
+//                    programText.setAdapter(programAdapter);
 
                     //Level spinner
                     TextView levelLabel = (TextView) dialogView.findViewById(R.id.level_spinner_label);
@@ -195,6 +197,20 @@ public class SettingsActivity extends ColorfulActivity {
                     return true;
                 }
             });
+
+            //Displaying app version in about section
+            Preference versionPreference = findPreference("version_preference");
+            PackageInfo packageInfo = null;
+            try {
+                packageInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            if (packageInfo != null) {
+                versionPreference.setSummary(packageInfo.versionName);
+            }
+
         }
     }
 

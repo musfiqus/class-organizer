@@ -79,13 +79,13 @@ public class Colorful {
         PURPLE(R.color.md_purple_500, R.color.md_purple_700),
         DEEP_PURPLE(R.color.md_deep_purple_500, R.color.md_deep_purple_700),
         INDIGO(R.color.md_indigo_500, R.color.md_indigo_700),
-        BLUE(R.color.md_blue_500, R.color.md_blue_700),
+        BLUE(R.color.md_blue_A400, R.color.md_blue_A700),
         REALLY_BLUE(R.color.md_indigo_A700, R.color.md_blue_900),
         LIGHT_BLUE(R.color.md_light_blue_500, R.color.md_light_blue_700),
         CYAN(R.color.md_cyan_500, R.color.md_cyan_700),
         TEAL(R.color.md_teal_500, R.color.md_teal_700),
         GREEN(R.color.md_green_500, R.color.md_green_700),
-        LIGHT_GREEN(R.color.md_light_green_500, R.color.md_light_green_700),
+        TEAL_CUSTOM(R.color.md_teal_custom, R.color.md_teal_A700),
         LIME(R.color.md_lime_500, R.color.md_lime_700),
         AMBER(R.color.md_amber_500, R.color.md_amber_700),
         ORANGE(R.color.md_orange_500, R.color.md_orange_700),
@@ -93,7 +93,7 @@ public class Colorful {
         BROWN(R.color.md_brown_500, R.color.md_brown_700),
         GREY(R.color.md_grey_500, R.color.md_grey_700),
         BLUE_GREY(R.color.md_blue_grey_500, R.color.md_blue_grey_700),
-        BLACK(R.color.md_black_1000, R.color.md_black_1000);
+        BLUE_GREY_CUSTOM(R.color.md_blue_grey_custom, R.color.md_blue_grey_custom_dark);
 
         @ColorRes private int colorRes;
         @ColorRes private int darkColorRes;

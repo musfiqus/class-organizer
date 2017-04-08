@@ -3,6 +3,7 @@ package bd.edu.daffodilvarsity.classorganizer;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -49,6 +50,18 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //If primary color and accent are same we are setting tab indicator to white
+
+        if (Colorful.getThemeDelegate().getAccentColor() == Colorful.getThemeDelegate().getPrimaryColor()) {
+            TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+            tabLayout.setSelectedTabIndicatorColor(getResources().getColor(android.R.color.white));
+        }
+
+        // Making navigation bar colored
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setNavigationBarColor(getResources().getColor(Colorful.getThemeDelegate().getPrimaryColor().getColorRes()));
+        }
 
         //Setting drawer up
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -99,7 +112,10 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_share) {
-
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.share_text_extra));
+            startActivity(Intent.createChooser(shareIntent, getResources().getString(R.string.share_title)));
         } else if (id == R.id.nav_send) {
             composeEmail();
         }

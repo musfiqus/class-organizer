@@ -2,6 +2,7 @@ package bd.edu.daffodilvarsity.classorganizer;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -111,7 +112,11 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                 if (current == layouts.length - 1) {
                     myViewPagerAdapter.loadSemester();
                     if (myViewPagerAdapter.isTempLock()) {
-                        Toast.makeText(getApplicationContext(), "Section " + myViewPagerAdapter.getSection() + " currently doesn't exist on level " + (myViewPagerAdapter.getLevel() + 1) + " term " + (myViewPagerAdapter.getTerm() + 1) + ". Please select the correct level, term & section. Or contact the developer to add your section.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Section " + myViewPagerAdapter.getSection() + " currently doesn't exist on level " + (myViewPagerAdapter.getLevel() + 1) + " term " + (myViewPagerAdapter.getTerm() + 1) + ". Please select the correct level, term & section. Or contact the developer to add your section.", Toast.LENGTH_SHORT).show();
+                        if (prefManager.showContact()) {
+                            Toast.makeText(getApplicationContext(), "Email: musfiqus@gmail.com", Toast.LENGTH_LONG).show();
+                        }
+                        prefManager.saveShowContact(true);
                         viewPager.setCurrentItem(current - 1);
                     } else {
                         viewPager.setCurrentItem(current);
@@ -183,6 +188,19 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
         }
     }
 
+    public void composeEmail() {
+        String message = "Please attach the routine of your section to speed up the process";
+        String subject = "Add my section to DIU Class Organizer";
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"musfiqus@gmail.com"});
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, message);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
@@ -192,4 +210,5 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
 }

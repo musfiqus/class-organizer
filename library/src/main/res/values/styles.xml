@@ -54,12 +54,12 @@
     </style>
 
     <style name="primary5">
-        <item name="colorPrimary">@color/md_blue_500</item>
-        <item name="colorPrimaryDark">@color/md_blue_700</item>
+        <item name="colorPrimary">@color/md_blue_A400</item>
+        <item name="colorPrimaryDark">@color/md_blue_A700</item>
     </style>
 
     <style name="accent5">
-        <item name="colorAccent">@color/md_blue_500</item>
+        <item name="colorAccent">@color/md_blue_A400</item>
     </style>
 
     <style name="primary6">
@@ -108,12 +108,12 @@
     </style>
 
     <style name="primary11">
-        <item name="colorPrimary">@color/md_light_green_500</item>
-        <item name="colorPrimaryDark">@color/md_light_green_700</item>
+        <item name="colorPrimary">@color/md_teal_custom</item>
+        <item name="colorPrimaryDark">@color/md_teal_custom_dark</item>
     </style>
 
     <style name="accent11">
-        <item name="colorAccent">@color/md_light_green_500</item>
+        <item name="colorAccent">@color/md_teal_custom</item>
     </style>
 
     <style name="primary12">
@@ -181,12 +181,12 @@
 
 
     <style name="primary19">
-        <item name="colorPrimary">@color/md_black_1000</item>
-        <item name="colorPrimaryDark">@color/md_black_1000</item>
+        <item name="colorPrimary">@color/md_blue_grey_custom</item>
+        <item name="colorPrimaryDark">@color/md_blue_grey_custom_dark</item>
     </style>
 
     <style name="accent19">
-        <item name="colorAccent">@color/md_black_1000</item>
+        <item name="colorAccent">@color/md_blue_grey_custom</item>
     </style>
 
 </resources>

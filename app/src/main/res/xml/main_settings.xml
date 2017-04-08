@@ -23,12 +23,16 @@ xmlns:colorpicker="http://schemas.android.com/apk/res-auto">
     </android.support.v7.preference.PreferenceCategory>
     <android.support.v7.preference.PreferenceCategory android:title="About">
         <Preference
-            android:key="about_preference"
-            android:summary="1.0"
+            android:key="version_preference"
+            android:summary="X"
             android:title="Current Version" />
         <Preference
             android:key="developer_preference"
             android:summary="Mushfiqus Salehin"
-            android:title="Developer" />
+            android:title="Developed by" />
+        <Preference
+            android:key="icon_preference"
+            android:summary="Raisul Haque Rajon"
+            android:title="Icon Design by" />
     </android.support.v7.preference.PreferenceCategory>
 </android.support.v7.preference.PreferenceScreen>
