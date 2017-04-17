@@ -151,26 +151,30 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
 
         mDayData = prefManager.getSavedDayData();
 
-        // Find the view pager that will allow the user to swipe between fragments
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        if (mDayData != null) {
 
-        // Create an adapter that knows which fragment should be shown on each page
-        adapter = new DayFragmentPagerAdapter(this, getSupportFragmentManager(), mDayData);
-        adapter.notifyDataSetChanged();
+            // Find the view pager that will allow the user to swipe between fragments
+            ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
 
-        // Set the adapter onto the view pager
-        viewPager.setAdapter(adapter);
-        viewPager.getAdapter().notifyDataSetChanged();
+            // Create an adapter that knows which fragment should be shown on each page
+            adapter = new DayFragmentPagerAdapter(this, getSupportFragmentManager(), mDayData);
+            adapter.notifyDataSetChanged();
 
-        // Find the tab layout that shows the tabs
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+            // Set the adapter onto the view pager
+            viewPager.setAdapter(adapter);
+            viewPager.getAdapter().notifyDataSetChanged();
 
-        // Connect the tab layout with the view pager. This will
-        //   1. Update the tab layout when the view pager is swiped
-        //   2. Update the view pager when a tab is selected
-        //   3. Set the tab layout's tab names with the view pager's adapter's titles
-        //      by calling onPageTitle()
-        tabLayout.setupWithViewPager(viewPager);
+            // Find the tab layout that shows the tabs
+            TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+
+            // Connect the tab layout with the view pager. This will
+            //   1. Update the tab layout when the view pager is swiped
+            //   2. Update the view pager when a tab is selected
+            //   3. Set the tab layout's tab names with the view pager's adapter's titles
+            //      by calling onPageTitle()
+            tabLayout.setupWithViewPager(viewPager);
+        }
+
     }
 
     public void composeEmail() {
