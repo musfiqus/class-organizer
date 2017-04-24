@@ -45,9 +45,9 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
             //Level spinner
             Spinner levelSpinner = (Spinner) view.findViewById(R.id.level_spinner);
             // Create an ArrayAdapter using the string array and a default spinner layout
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.level_array, R.layout.spinner_row);
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.level_array, R.layout.spinner_row_welcome);
             // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            adapter.setDropDownViewResource(R.layout.spinner_row_welcome);
             // Apply the adapter to the spinner
             levelSpinner.setAdapter(adapter);
             levelSpinner.setOnItemSelectedListener(this);
@@ -55,16 +55,18 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
             //Term spinner
             Spinner termSpinner = (Spinner) view.findViewById(R.id.term_spinner);
             // Create an ArrayAdapter using the string array and a default spinner layout
-            ArrayAdapter<CharSequence> termAdapter = ArrayAdapter.createFromResource(context, R.array.term_array, R.layout.spinner_row);
+            ArrayAdapter<CharSequence> termAdapter = ArrayAdapter.createFromResource(context, R.array.term_array, R.layout.spinner_row_welcome);
             // Specify the layout to use when the list of choices appears
-            termAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            termAdapter.setDropDownViewResource(R.layout.spinner_row_welcome);
             // Apply the adapter to the spinner
             termSpinner.setAdapter(termAdapter);
             termSpinner.setOnItemSelectedListener(this);
 
             //Section selection
             Spinner sectionText = (Spinner) view.findViewById(R.id.section_selection);
-            ArrayAdapter<CharSequence> sectionAdapter = ArrayAdapter.createFromResource(context, R.array.section_array, R.layout.spinner_row);
+            ArrayAdapter<CharSequence> sectionAdapter = ArrayAdapter.createFromResource(context, R.array.section_array, R.layout.spinner_row_welcome);
+            // Specify the layout to use when the list of choices appears
+            sectionAdapter.setDropDownViewResource(R.layout.spinner_row_welcome);
             sectionText.setAdapter(sectionAdapter);
             sectionText.setOnItemSelectedListener(this);
         }

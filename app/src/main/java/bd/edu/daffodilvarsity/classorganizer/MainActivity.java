@@ -26,7 +26,6 @@ import java.util.ArrayList;
 public class MainActivity extends ColorfulActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static MainActivity mainActivity;
     private PrefManager prefManager;
-    private DayFragmentPagerAdapter adapter;
     private ArrayList<DayData> mDayData;
     private boolean onStart = false;
     private boolean onCreate = false;
@@ -157,7 +156,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
             ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
 
             // Create an adapter that knows which fragment should be shown on each page
-            adapter = new DayFragmentPagerAdapter(this, getSupportFragmentManager(), mDayData);
+            DayFragmentPagerAdapter adapter = new DayFragmentPagerAdapter(this, getSupportFragmentManager(), mDayData);
             adapter.notifyDataSetChanged();
 
             // Set the adapter onto the view pager
@@ -182,7 +181,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         String subject = "Suggestions for DIU Class Organizer";
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:")); // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"musfiqus@gmail.com"});
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{getResources().getString(R.string.auth_email)});
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_TEXT, message);
         if (intent.resolveActivity(getPackageManager()) != null) {
@@ -190,7 +189,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         }
     }
 
-    //Method to display snackbar properly
+    /*Method to display snackbar properly*/
     public void showSnackBar(Activity activity, String message) {
         View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
         Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT).show();

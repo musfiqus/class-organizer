@@ -32,7 +32,6 @@ public class ModifyActivity extends ColorfulActivity {
     private int position = -1;
     private ArrayList<DayData> dayDatas;
     private DayData dayData = null;
-    private RoutineLoader routineLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +41,15 @@ public class ModifyActivity extends ColorfulActivity {
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_modify);
         setSupportActionBar(toolbar);
         findViewById(R.id.modify_appbar_layout).bringToFront();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        try {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
 
         prefManager = new PrefManager(this);
         Bundle extras = getIntent().getExtras();
         dayData = extras.getParcelable("DAYDATA");
-        routineLoader = new RoutineLoader(this);
         dayDatas = prefManager.getSavedDayData();
         for (int i = 0; i < dayDatas.size(); i++) {
             if (dayDatas.get(i).getCourseCode().equalsIgnoreCase(dayData.getCourseCode())) {

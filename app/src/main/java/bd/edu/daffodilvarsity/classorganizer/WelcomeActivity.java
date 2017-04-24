@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -72,8 +73,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
         btnNext = (Button) findViewById(R.id.btn_next);
 
 
-        // layouts of all welcome sliders
-        // add few more layouts if you want
+        /* layouts of all welcome sliders */
         layouts = new int[]{
                 R.layout.welcome_slide1,
                 R.layout.welcome_slide2,
@@ -82,7 +82,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
         // adding bottom dots
         addBottomDots(0);
 
-        // making notification bar transparent
+        /* making notification bar transparent*/
         changeStatusBarColor();
 
         myViewPagerAdapter = new SlidePagerAdapter(this, layouts);
@@ -106,6 +106,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 // checking for last page
                 // if last page home screen will be launched
                 int current = getItem(+1);
@@ -114,7 +115,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                     if (myViewPagerAdapter.isTempLock()) {
                         Toast.makeText(getApplicationContext(), "Section " + myViewPagerAdapter.getSection() + " currently doesn't exist on level " + (myViewPagerAdapter.getLevel() + 1) + " term " + (myViewPagerAdapter.getTerm() + 1) + ". Please select the correct level, term & section. Or contact the developer to add your section.", Toast.LENGTH_SHORT).show();
                         if (prefManager.showContact()) {
-                            Toast.makeText(getApplicationContext(), "Email: musfiqus@gmail.com", Toast.LENGTH_LONG).show();
+                            showSnackBar(myViewPagerAdapter.getSection(), Integer.toString(myViewPagerAdapter.getLevel() + 1), Integer.toString(myViewPagerAdapter.getTerm() + 1));
                         }
                         prefManager.saveShowContact(true);
                         viewPager.setCurrentItem(current - 1);
@@ -188,19 +189,6 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
         }
     }
 
-    public void composeEmail() {
-        String message = "Please attach the routine of your section to speed up the process";
-        String subject = "Add my section to DIU Class Organizer";
-        Intent intent = new Intent(Intent.ACTION_SENDTO);
-        intent.setData(Uri.parse("mailto:")); // only email apps should handle this
-        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{"musfiqus@gmail.com"});
-        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        intent.putExtra(Intent.EXTRA_TEXT, message);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        }
-    }
-
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
@@ -209,6 +197,35 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    /*Method to display snackbar properly*/
+    public void showSnackBar(final String section, final String level, final String term) {
+        String message = "Contact: musfiqus@gmail.com";
+        View rootView = findViewById(R.id.welcome_view_pager_parent);
+        Snackbar snackbar = Snackbar.make(rootView, message, Snackbar.LENGTH_LONG);
+        snackbar.setActionTextColor(getResources().getColor(R.color.bg_screen2));
+        snackbar.setAction("SEND EMAIL", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                composeEmail(section, level, term);
+            }
+        });
+        snackbar.show();
+    }
+
+    public void composeEmail(String section, String level, String term) {
+        String message = "Section: " + section + "\nLevel: " + level + "\nTerm: " + term;
+        message += "\nInsert or attach your routine for quicker response";
+        String subject = "Add section to DIU Class Organizer";
+        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{getResources().getString(R.string.auth_email)});
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_TEXT, message);
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
     }
 
 }
