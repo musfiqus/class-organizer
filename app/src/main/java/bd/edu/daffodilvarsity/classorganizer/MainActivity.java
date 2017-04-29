@@ -1,6 +1,8 @@
 package bd.edu.daffodilvarsity.classorganizer;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -14,9 +16,11 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import org.polaric.colorful.Colorful;
 import org.polaric.colorful.ColorfulActivity;
@@ -41,7 +45,13 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         setContentView(R.layout.activity_main);
         mainActivity = this;
         prefManager = new PrefManager(this);
-
+        if (prefManager.getSemester() != null && !prefManager.getSemester().equals(getResources().getString(R.string.current_semester))) {
+            Log.e("Pre-Upgrade", "Called");
+            if ((prefManager.getLevel() + prefManager.getTerm()) < 5) {
+                Log.e("Upgrade", "Called");
+                upgradeRoutine();
+            }
+        }
         if (prefManager.showSnack()) {
             showSnackBar(this, prefManager.getSnackData());
             prefManager.saveShowSnack(false);
@@ -195,6 +205,50 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT).show();
     }
 
+    private void upgradeRoutine() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Updated routine available!");
+        builder.setMessage("The routine was updated as per " + getResources().getString(R.string.current_semester) + " semester.\nDo you want to update your routine to the new one?\nNote: Your level and term will automatically get updated based on current selection. You can change it anytime from settings.");
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int currentLevel = prefManager.getLevel();
+                int currentTerm = prefManager.getTerm();
+                if (currentTerm == 2) {
+                    if (currentLevel < 3) {
+                        currentLevel++;
+                        prefManager.saveLevel(currentLevel);
+                    }
+                    currentTerm = 0;
+                    prefManager.saveTerm(currentTerm);
+                } else {
+                    currentTerm++;
+                    prefManager.saveTerm(currentTerm);
+                }
+                RoutineLoader newRoutine = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), getApplication());
+                boolean loadCheck = newRoutine.loadRoutine();
+                if (!loadCheck) {
+                    prefManager.saveShowSnack(true);
+                    prefManager.saveSnackData("Routine updated");
+                    prefManager.saveSemester(getResources().getString(R.string.current_semester));
+                    MainActivity.getInstance().finish();
+                    Intent intent = new Intent(getApplication(), MainActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Error loading routine", Toast.LENGTH_SHORT).show();
+                }
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                prefManager.saveSemester(getResources().getString(R.string.current_semester));
+                dialog.dismiss();
+            }
+        });
 
-
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 }

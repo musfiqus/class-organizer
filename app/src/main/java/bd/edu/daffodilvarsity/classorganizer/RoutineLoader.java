@@ -3,7 +3,6 @@ package bd.edu.daffodilvarsity.classorganizer;
 import android.content.Context;
 import android.util.Log;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -93,7 +92,9 @@ public class RoutineLoader {
         ArrayList<String> courseCodes = courseCodeGenerator(setSemester());
 
         ArrayList<DayData> mDayData = db.getDayData(courseCodes, section);
-        prefManager.saveDayData(mDayData);
+        if (mDayData.size() > 0) {
+            prefManager.saveDayData(mDayData);
+        }
         //returning if loading was successful or not
         return mDayData.size() <= 0;
     }

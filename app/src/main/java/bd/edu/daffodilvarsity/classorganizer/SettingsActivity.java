@@ -133,7 +133,6 @@ public class SettingsActivity extends ColorfulActivity {
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            ArrayList<DayData> previousData = prefManager.getSavedDayData();
                             int level = levelSpinner.getSelectedItemPosition();
                             int term = termSpinner.getSelectedItemPosition();
                             String section = sectionText.getSelectedItem().toString();
@@ -152,9 +151,6 @@ public class SettingsActivity extends ColorfulActivity {
                                 dialog.dismiss();
                             } else {
                                 Toast.makeText(getActivity(), "Section " + section + " currently doesn't exist on level " + (level + 1) + " term " + (term + 1) + ". Please select the correct level, term & section. Or contact the developer to add your section.", Toast.LENGTH_LONG).show();
-                                prefManager.saveDayData(previousData);
-                                onCreate(Bundle.EMPTY);
-                                dialog.dismiss();
                             }
                         }
                     });

@@ -138,6 +138,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                     // move to next screen
                     viewPager.setCurrentItem(current);
                 } else {
+                    prefManager.saveSemester(getResources().getString(R.string.current_semester));
                     launchHomeScreen();
                 }
             }

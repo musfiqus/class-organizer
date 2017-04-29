@@ -25,6 +25,7 @@ public class PrefManager {
     private static final String SAVE_SNACK_TAG = "SnackTag";
     private static final String SAVE_SNACK = "Snack";
     private static final String SAVE_CONTACT = "Contact";
+    private static final String SAVE_SEMESTER = "Semester";
 
     SharedPreferences pref;
     SharedPreferences.Editor editor;
@@ -79,6 +80,12 @@ public class PrefManager {
         editor.apply();
     }
 
+    public void saveSemester(String semester) {
+        editor.remove(SAVE_SEMESTER).apply();
+        editor.putString(SAVE_SEMESTER, semester);
+        editor.apply();
+    }
+
     public String getSection() {
         return pref.getString(SAVE_SECTION, null);
     }
@@ -129,6 +136,10 @@ public class PrefManager {
 
     public boolean showContact() {
         return pref.getBoolean(SAVE_CONTACT, false);
+    }
+
+    public String getSemester() {
+        return pref.getString(SAVE_SEMESTER, null);
     }
 }
 
