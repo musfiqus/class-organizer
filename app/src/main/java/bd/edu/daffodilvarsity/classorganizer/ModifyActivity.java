@@ -3,6 +3,7 @@ package bd.edu.daffodilvarsity.classorganizer;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -67,6 +68,10 @@ public class ModifyActivity extends ColorfulActivity {
 
         //Setting course current daydatas
         setupCurrentDay();
+        // Making navigation bar colored
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setNavigationBarColor(getResources().getColor(Colorful.getThemeDelegate().getPrimaryColor().getColorRes()));
+        }
     }
 
     private void setupCurrentDay() {

@@ -1,6 +1,7 @@
 package bd.edu.daffodilvarsity.classorganizer;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -38,6 +39,11 @@ public class AddActivity extends ColorfulActivity {
         prefManager = new PrefManager(this);
 
         setupCurrentView();
+
+        // Making navigation bar colored
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setNavigationBarColor(getResources().getColor(Colorful.getThemeDelegate().getPrimaryColor().getColorRes()));
+        }
     }
 
     private void setupCurrentView() {
