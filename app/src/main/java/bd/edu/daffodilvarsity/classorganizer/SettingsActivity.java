@@ -85,13 +85,13 @@ public class SettingsActivity extends ColorfulActivity {
                     final View dialogView = getActivity().getLayoutInflater().inflate(R.layout.spinner_layout, null);
                     builder.setTitle("Choose your current class");
 
-                    //Program selection (COMING SOON TODO)
-//                    TextView programLabel = (TextView) dialogView.findViewById(R.id.program_spinner_label);
-//                    programLabel.setTextColor(getResources().getColor(android.R.color.black));
-//
-//                    Spinner programText = (Spinner) dialogView.findViewById(R.id.program_selection);
-//                    ArrayAdapter<CharSequence> programAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.program_array, R.layout.spinner_row);
-//                    programText.setAdapter(programAdapter);
+//                    Program selection (COMING SOON TODO)
+                    TextView programLabel = (TextView) dialogView.findViewById(R.id.program_spinner_label);
+                    programLabel.setTextColor(getResources().getColor(android.R.color.black));
+
+                    Spinner programText = (Spinner) dialogView.findViewById(R.id.program_selection);
+                    ArrayAdapter<CharSequence> programAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.program_array, R.layout.spinner_row);
+                    programText.setAdapter(programAdapter);
 
                     //Level spinner
                     TextView levelLabel = (TextView) dialogView.findViewById(R.id.level_spinner_label);
