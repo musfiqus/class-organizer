@@ -82,16 +82,16 @@ public class SettingsActivity extends ColorfulActivity {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    final View dialogView = getActivity().getLayoutInflater().inflate(R.layout.spinner_layout, null);
+                    final View dialogView = getActivity().getLayoutInflater().inflate(R.layout.class_spinner_layout, null);
                     builder.setTitle("Choose your current class");
 
-//                    Program selection (COMING SOON TODO)
-                    TextView programLabel = (TextView) dialogView.findViewById(R.id.program_spinner_label);
-                    programLabel.setTextColor(getResources().getColor(android.R.color.black));
-
-                    Spinner programText = (Spinner) dialogView.findViewById(R.id.program_selection);
-                    ArrayAdapter<CharSequence> programAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.program_array, R.layout.spinner_row);
-                    programText.setAdapter(programAdapter);
+////                    Program selection (COMING SOON TODO)
+//                    TextView programLabel = (TextView) dialogView.findViewById(R.id.program_spinner_label);
+//                    programLabel.setTextColor(getResources().getColor(android.R.color.black));
+//
+//                    Spinner programText = (Spinner) dialogView.findViewById(R.id.program_selection);
+//                    ArrayAdapter<CharSequence> programAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.program_array, R.layout.spinner_row);
+//                    programText.setAdapter(programAdapter);
 
                     //Level spinner
                     TextView levelLabel = (TextView) dialogView.findViewById(R.id.level_spinner_label);
@@ -142,7 +142,7 @@ public class SettingsActivity extends ColorfulActivity {
                             int level = levelSpinner.getSelectedItemPosition();
                             int term = termSpinner.getSelectedItemPosition();
                             String section = sectionText.getSelectedItem().toString();
-                            RoutineLoader newRoutine = new RoutineLoader(level, term, section, getActivity());
+                            RoutineLoader newRoutine = new RoutineLoader(level, term, section, getActivity(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
 
                             boolean loadCheck = newRoutine.loadRoutine();
                             if (!loadCheck) {

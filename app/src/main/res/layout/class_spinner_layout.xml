@@ -8,19 +8,8 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/program_spinner_label"
-        style="@style/SpinnerTitle"
-        android:text="@string/program_title" />
-
-    <Spinner
-        android:id="@+id/program_selection"
-        style="@style/SpinnerStyle"
-        android:completionThreshold="1" />
-
-    <TextView
         android:id="@+id/section_spinner_label"
         style="@style/SpinnerTitle"
-        android:layout_marginTop="16dp"
         android:text="@string/section_title" />
 
     <Spinner

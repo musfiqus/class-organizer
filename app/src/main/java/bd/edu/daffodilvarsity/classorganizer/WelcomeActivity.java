@@ -78,7 +78,8 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
         layouts = new int[]{
                 R.layout.welcome_slide1,
                 R.layout.welcome_slide2,
-                R.layout.welcome_slide3};
+                R.layout.welcome_slide3,
+                R.layout.welcome_slide4};
 
         // adding bottom dots
         addBottomDots(0);
@@ -125,10 +126,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                     myViewPagerAdapter.loadSemester();
                     if (myViewPagerAdapter.isTempLock()) {
                         Toast.makeText(getApplicationContext(), "Section " + myViewPagerAdapter.getSection() + " currently doesn't exist on level " + (myViewPagerAdapter.getLevel() + 1) + " term " + (myViewPagerAdapter.getTerm() + 1) + ". Please select the correct level, term & section. Or contact the developer to add your section.", Toast.LENGTH_SHORT).show();
-                        if (prefManager.showContact()) {
-                            showSnackBar(myViewPagerAdapter.getSection(), Integer.toString(myViewPagerAdapter.getLevel() + 1), Integer.toString(myViewPagerAdapter.getTerm() + 1));
-                        }
-                        prefManager.saveShowContact(true);
+                        showSnackBar(myViewPagerAdapter.getSection(), Integer.toString(myViewPagerAdapter.getLevel() + 1), Integer.toString(myViewPagerAdapter.getTerm() + 1));
                         viewPager.setCurrentItem(current - 1);
                     } else {
                         viewPager.setCurrentItem(current);
@@ -139,6 +137,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                     viewPager.setCurrentItem(current);
                 } else {
                     prefManager.saveSemester(getResources().getString(R.string.current_semester));
+                    prefManager.saveDatabaseVersion(DatabaseHelper.DATABASE_VERSION);
                     launchHomeScreen();
                 }
             }

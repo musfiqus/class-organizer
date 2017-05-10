@@ -14,8 +14,11 @@ import java.util.ArrayList;
  */
 
 class DatabaseHelper extends SQLiteAssetHelper {
-    private static final int DATABASE_VERSION = 1;
-    private static final String TABLE_ROUTINE = "routine";
+    //Increment the version to erase previous db
+    public static final int DATABASE_VERSION = 3;
+
+    private String currentTable;
+
     private static final String COLUMN_COURSE_CODE = "course_code";
     private static final String COLUMN_TEACHERS_INITIAL = "teachers_initial";
     private static final String COLUMN_WEEK_DAYS = "week_days";
@@ -49,19 +52,25 @@ class DatabaseHelper extends SQLiteAssetHelper {
         }
         for (String eachCourse : courseCodes) {
             String id = eachCourse + section;
-            Cursor cursor = db.query(TABLE_ROUTINE, new String[]{COLUMN_COURSE_CODE,
+            Cursor cursor = db.query(currentTable, new String[]{COLUMN_COURSE_CODE,
                             COLUMN_TEACHERS_INITIAL, COLUMN_WEEK_DAYS, COLUMN_ROOM_NO, COLUMN_TIME}, COLUMN_COURSE_CODE + "=?",
                     new String[]{id}, null, null, null, null);
 
             if (cursor.moveToFirst()) {
                 do {
-                    DayData newDaydata = new DayData(getCourseCode(eachCourse), cursor.getString(1), cursor.getString(3), getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)));
-                    finalDayData.add(newDaydata);
+                    DayData newDayData = new DayData(getCourseCode(eachCourse), cursor.getString(1), cursor.getString(3), getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)));
+                    finalDayData.add(newDayData);
                 } while (cursor.moveToNext());
             }
             cursor.close();
         }
         return finalDayData;
+    }
+
+    public ArrayList<DayData> getDayData(ArrayList<String> courseCodes, String section, String dept, String campus, String program) {
+        //We will create table names using this format: TABLE_DEPARTMENT_CAMPUS_PROGRAM
+        this.currentTable = dept.toLowerCase() + "_" + campus.toLowerCase() + "_" + program.toLowerCase();
+        return getDayData(courseCodes, section);
     }
 
     private double getTimeWeight(String weight) {
