@@ -16,16 +16,18 @@ public class RoutineLoader {
     private int term;
     private String section;
     private Context context;
+    private String dept;
+    private String campus;
+    private String program;
 
-    public RoutineLoader(int level, int term, String section, Context context) {
+    public RoutineLoader(int level, int term, String section, Context context, String dept, String campus, String program) {
         this.level = level;
         this.term = term;
         this.section = section;
         this.context = context;
-    }
-
-    public RoutineLoader(Context context) {
-        this.context = context;
+        this.dept = dept;
+        this.campus = campus;
+        this.program = program;
     }
 
     private int setSemester() {
@@ -91,7 +93,7 @@ public class RoutineLoader {
         //Generating course codes from generated semester
         ArrayList<String> courseCodes = courseCodeGenerator(setSemester());
 
-        ArrayList<DayData> mDayData = db.getDayData(courseCodes, section);
+        ArrayList<DayData> mDayData = db.getDayData(courseCodes, section, dept, campus, program);
         if (mDayData.size() > 0) {
             prefManager.saveDayData(mDayData);
         }

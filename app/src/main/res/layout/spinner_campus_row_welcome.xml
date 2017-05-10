@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="42dp"
     android:gravity="center"
-    android:textColor="@android:color/black"
+    android:textAllCaps="true"
+    android:textColor="@color/dot_dark_screen2"
     android:fontFamily="sans-serif"
     android:textSize="18sp" />

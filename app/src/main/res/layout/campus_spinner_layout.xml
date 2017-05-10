@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/campus_spinner_label"
+        style="@style/SpinnerTitle"
+        android:text="Select your campus" />
+
+    <Spinner
+        android:id="@+id/campus_selection"
+        style="@style/SpinnerStyle" />
+
+    <TextView
+        android:id="@+id/dept_spinner_label"
+        style="@style/SpinnerTitle"
+        android:layout_marginTop="16dp"
+        android:text="Select your department" />
+
+    <Spinner
+        android:id="@+id/dept_selection"
+        style="@style/SpinnerStyle" />
+
+    <TextView
+        android:id="@+id/program_spinner_label"
+        style="@style/SpinnerTitle"
+        android:layout_marginTop="16dp"
+        android:text="@string/program_title" />
+
+    <Spinner
+        android:id="@+id/program_selection"
+        style="@style/SpinnerStyle"
+        android:layout_marginBottom="16dp" />
+
+</LinearLayout>

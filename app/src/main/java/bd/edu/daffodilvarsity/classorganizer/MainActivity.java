@@ -16,11 +16,12 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import com.google.firebase.crash.FirebaseCrash;
 
 import org.polaric.colorful.Colorful;
 import org.polaric.colorful.ColorfulActivity;
@@ -45,13 +46,27 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         setContentView(R.layout.activity_main);
         mainActivity = this;
         prefManager = new PrefManager(this);
+
+        //Maintaining compatibility with version 1.0
+        if (prefManager.getCampus() == null || prefManager.getDept() == null || prefManager.getProgram() == null) {
+            prefManager.saveCampus("main");
+            prefManager.saveDept("cse");
+            prefManager.saveProgram("day");
+        }
+
+        //If there is a new routine, update
         if (prefManager.getSemester() != null && !prefManager.getSemester().equals(getResources().getString(R.string.current_semester))) {
-            Log.e("Pre-Upgrade", "Called");
             if ((prefManager.getLevel() + prefManager.getTerm()) < 5) {
-                Log.e("Upgrade", "Called");
                 upgradeRoutine();
             }
+        } else if (DatabaseHelper.DATABASE_VERSION > prefManager.getDatabaseVersion()) {
+            boolean isNotUpdated = updateRoutine();
+            if (isNotUpdated) {
+                showSnackBar(this, "Error loading routine!");
+                FirebaseCrash.report(new Exception("Error loading updated routine. Database version: " + DatabaseHelper.DATABASE_VERSION + "Section: " + prefManager.getSection()));
+            }
         }
+
         if (prefManager.showSnack()) {
             showSnackBar(this, prefManager.getSnackData());
             prefManager.saveShowSnack(false);
@@ -61,7 +76,6 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         setSupportActionBar(toolbar);
 
         //If primary color and accent are same we are setting tab indicator to white
-
         if (Colorful.getThemeDelegate().getAccentColor() == Colorful.getThemeDelegate().getPrimaryColor()) {
             TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
             tabLayout.setSelectedTabIndicatorColor(getResources().getColor(android.R.color.white));
@@ -225,8 +239,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
                     currentTerm++;
                     prefManager.saveTerm(currentTerm);
                 }
-                RoutineLoader newRoutine = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), getApplication());
-                boolean loadCheck = newRoutine.loadRoutine();
+                boolean loadCheck = updateRoutine();
                 if (!loadCheck) {
                     prefManager.saveShowSnack(true);
                     prefManager.saveSnackData("Routine updated");
@@ -250,5 +263,11 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private boolean updateRoutine() {
+        RoutineLoader newRoutine = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), getApplication(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
+        prefManager.saveDatabaseVersion(DatabaseHelper.DATABASE_VERSION);
+        return newRoutine.loadRoutine();
     }
 }

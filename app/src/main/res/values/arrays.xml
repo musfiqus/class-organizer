@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="program_array">
-        <item>Day</item>
-    </string-array>
+
     <string-array name="weekdays">
         <item>Saturday</item>
         <item>Sunday</item>
@@ -160,5 +158,31 @@
         <item>01.00</item>
         <item>03.00</item>
         <item>05.00</item>
+    </string-array>
+
+    <!--Campuses-->
+
+    <string-array name="campuses">
+        <item>main</item>
+        <!--<item>permanent</item>-->
+    </string-array>
+
+    <!--Departments-->
+
+    <string-array name="main_departments">
+        <item>CSE</item>
+        <!--<item>TE</item>-->
+    </string-array>
+    <string-array name="permanent_departments">
+        <item>CSE</item>
+    </string-array>
+
+    <!--Programs-->
+    <string-array name="cse_main_programs">
+        <item>day</item>
+        <!--<item>evening</item>-->
+    </string-array>
+    <string-array name="cse_perm_programs">
+        <item>day</item>
     </string-array>
 </resources>
