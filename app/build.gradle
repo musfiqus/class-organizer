@@ -10,8 +10,8 @@ android {
         versionName '1.0'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionNameSuffix '-beta-build-2'
-        versionCode 2
+        versionNameSuffix '-beta-build-4'
+        versionCode 4
     }
     buildTypes {
         release {

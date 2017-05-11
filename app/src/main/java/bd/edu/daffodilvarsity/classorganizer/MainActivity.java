@@ -55,7 +55,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         }
 
         //If there is a new routine, update
-        if (prefManager.getSemester() != null && !prefManager.getSemester().equals(getResources().getString(R.string.current_semester))) {
+        if (prefManager.getSemester() != null && !prefManager.getSemester().equals(getResources().getString(R.string.current_semester)) && prefManager.getDept().equalsIgnoreCase("cse") && prefManager.getCampus().equalsIgnoreCase("main") && prefManager.getProgram().equalsIgnoreCase("day")) {
             if ((prefManager.getLevel() + prefManager.getTerm()) < 5) {
                 upgradeRoutine();
             }

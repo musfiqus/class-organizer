@@ -27,6 +27,7 @@ public class DayFragmentPagerAdapter extends FragmentPagerAdapter {
     private ArrayList<DayData> tueDayData = new ArrayList<>();
     private ArrayList<DayData> wedDayData = new ArrayList<>();
     private ArrayList<DayData> thuDayData = new ArrayList<>();
+    private ArrayList<DayData> friDayData = new ArrayList<>();
     private int pageCount = 0;
     private ArrayList<String> titles = new ArrayList<>();
     private Context context;
@@ -63,6 +64,7 @@ public class DayFragmentPagerAdapter extends FragmentPagerAdapter {
         boolean hasTueDay = false;
         boolean hasWedDay = false;
         boolean hasThuDay = false;
+        boolean hasFriDay = false;
 
         for (DayData eachDay : dayData) {
 
@@ -95,6 +97,11 @@ public class DayFragmentPagerAdapter extends FragmentPagerAdapter {
                 thuDayData.add(eachDay);
                 if (!hasThuDay) {
                     hasThuDay = true;
+                }
+            } else if (eachDay.getDay().equalsIgnoreCase("friday")) {
+                friDayData.add(eachDay);
+                if (!hasFriDay) {
+                    hasFriDay = true;
                 }
             }
         }
@@ -184,6 +191,20 @@ public class DayFragmentPagerAdapter extends FragmentPagerAdapter {
             bundle.putParcelableArrayList(BUNDLE_TAG, thuDayData);
             bundles.add(bundle);
             titles.add(context.getString(R.string.thursday));
+        }
+        if (hasFriDay) {
+            pageCount++;
+            //Sort daydata by time weight, ascending order
+            Collections.sort(friDayData, new Comparator<DayData>() {
+                @Override
+                public int compare(DayData o1, DayData o2) {
+                    return Double.valueOf(o1.getTimeWeight()).compareTo(o2.getTimeWeight());
+                }
+            });
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList(BUNDLE_TAG, friDayData);
+            bundles.add(bundle);
+            titles.add(context.getString(R.string.friday));
         }
     }
 }
