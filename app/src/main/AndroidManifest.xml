@@ -31,8 +31,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ModifyActivity"
-            android:label="@string/modify_title" />
+            android:name=".EditActivity"
+            android:label="@string/edit_title" />
         <activity
             android:name=".AddActivity"
             android:label="@string/add_title" />

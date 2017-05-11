@@ -75,7 +75,7 @@ public class DayDataAdapter extends ArrayAdapter<DayData> {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         //TODO Have to add Modify Activity and save modified data to prefmanager
-                        Intent intent = new Intent(v.getContext(), ModifyActivity.class);
+                        Intent intent = new Intent(v.getContext(), EditActivity.class);
                         intent.putExtra("DAYDATA", (Parcelable) currentClass);
                         v.getContext().startActivity(intent);
                         return true;

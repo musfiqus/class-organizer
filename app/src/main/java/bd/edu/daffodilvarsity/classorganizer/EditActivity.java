@@ -21,7 +21,7 @@ import org.polaric.colorful.ColorfulActivity;
 
 import java.util.ArrayList;
 
-public class ModifyActivity extends ColorfulActivity {
+public class EditActivity extends ColorfulActivity {
 
     private PrefManager prefManager;
     private TextView courseCodeText;
@@ -38,7 +38,7 @@ public class ModifyActivity extends ColorfulActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Colorful.applyTheme(this);
-        setContentView(R.layout.activity_modify);
+        setContentView(R.layout.activity_edit);
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_modify);
         setSupportActionBar(toolbar);
         findViewById(R.id.modify_appbar_layout).bringToFront();
@@ -122,7 +122,7 @@ public class ModifyActivity extends ColorfulActivity {
     }
 
     private String timeJoiner(String startTime, String endTime) {
-        return startTime + "-" + endTime;
+        return startTime + " - " + endTime;
     }
 
     private String[] timeSplitter(String time) {
@@ -141,26 +141,26 @@ public class ModifyActivity extends ColorfulActivity {
 
     private double timeWeight(String startTime) {
         switch (startTime) {
-            case "08.30":
+            case "08.30 AM":
                 return 1.0;
-            case "10.00":
+            case "10.00 AM":
                 return 2.0;
-            case "11.30":
+            case "11.30 AM":
                 return 3.0;
-            case "01.00":
+            case "01.00 PM":
                 return 4.0;
-            case "02.30":
+            case "02.30 PM":
                 return 5.0;
-            case "04.00":
+            case "04.00 PM":
                 return 6.0;
-            case "09.00":
+            case "09.00 AM":
                 return 1.5;
-            case "11.00":
+            case "11.00 AM":
                 return 2.5;
-            case "03.00":
+            case "03.00 PM":
                 return 4.5;
             default:
-                Log.e("ModifyActivity", "INVALID START TIME");
+                Log.e("EditActivity", "INVALID START TIME");
                 return 0;
         }
     }
