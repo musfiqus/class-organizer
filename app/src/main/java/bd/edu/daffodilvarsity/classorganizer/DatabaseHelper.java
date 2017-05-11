@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 class DatabaseHelper extends SQLiteAssetHelper {
     //Increment the version to erase previous db
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 5;
 
     private String currentTable;
 
@@ -58,7 +58,7 @@ class DatabaseHelper extends SQLiteAssetHelper {
 
             if (cursor.moveToFirst()) {
                 do {
-                    DayData newDayData = new DayData(getCourseCode(eachCourse), cursor.getString(1), cursor.getString(3), getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)));
+                    DayData newDayData = new DayData(getCourseCode(eachCourse), trimInitial(cursor.getString(1)), cursor.getString(3), getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)));
                     finalDayData.add(newDayData);
                 } while (cursor.moveToNext());
             }
@@ -116,5 +116,9 @@ class DatabaseHelper extends SQLiteAssetHelper {
                 Log.e("DATABASE ERROR", "INVALID TIME");
                 return null;
         }
+    }
+
+    private String trimInitial(String initial) {
+        return initial.replaceAll("\\s+", "");
     }
 }
