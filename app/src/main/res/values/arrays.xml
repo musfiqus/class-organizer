@@ -136,28 +136,26 @@
         <item>CSE499</item>
     </string-array>
     <string-array name="start_time">
-        <item>08.30</item>
-        <item>10.00</item>
-        <item>11.30</item>
-        <item>01.00</item>
-        <item>02.30</item>
-        <item>04.00</item>
-        <item>09.00</item>
-        <item>11.00</item>
-        <item>01.00</item>
-        <item>03.00</item>
+        <item>08.30 AM</item>
+        <item>09.00 AM</item>
+        <item>10.00 AM</item>
+        <item>11.00 AM</item>
+        <item>11.30 AM</item>
+        <item>01.00 PM</item>
+        <item>02.30 PM</item>
+        <item>03.00 PM</item>
+        <item>04.00 PM</item>
     </string-array>
     <string-array name="end_time">
-        <item>10.00</item>
-        <item>11.30</item>
-        <item>01.00</item>
-        <item>02.30</item>
-        <item>04.00</item>
-        <item>05.30</item>
-        <item>11.00</item>
-        <item>01.00</item>
-        <item>03.00</item>
-        <item>05.00</item>
+        <item>10.00 AM</item>
+        <item>11.00 AM</item>
+        <item>11.30 AM</item>
+        <item>01.00 PM</item>
+        <item>02.30 PM</item>
+        <item>03.00 PM</item>
+        <item>04.00 PM</item>
+        <item>05.00 PM</item>
+        <item>05.30 PM</item>
     </string-array>
 
     <!--Campuses-->

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
-    tools:context="bd.edu.daffodilvarsity.classorganizer.ModifyActivity">
+    tools:context="bd.edu.daffodilvarsity.classorganizer.EditActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/modify_appbar_layout"

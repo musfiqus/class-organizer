@@ -3,8 +3,8 @@ package bd.edu.daffodilvarsity.classorganizer;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 class DatabaseHelper extends SQLiteAssetHelper {
     //Increment the version to erase previous db
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 6;
 
     private String currentTable;
 
@@ -93,27 +93,27 @@ class DatabaseHelper extends SQLiteAssetHelper {
     private String getTime(String time) {
         switch (time) {
             case "1.0":
-                return "08.30-10.00";
+                return "08.30 AM - 10.00 AM";
             case "2.0":
-                return "10.00-11.30";
+                return "10.00 AM - 11.30 AM";
             case "3.0":
-                return "11.30-01.00";
+                return "11.30 AM - 01.00 PM";
             case "4.0":
-                return "01.00-02.30";
+                return "01.00 PM - 02.30 PM";
             case "5.0":
-                return "02.30-04.00";
+                return "02.30 PM - 04.00 PM";
             case "6.0":
-                return "04.00-05.30";
+                return "04.00 PM - 05.30 PM";
             case "1.5":
-                return "09.00-11.00";
+                return "09.00 AM - 11.00 AM";
             case "2.5":
-                return "11.00-01.00";
+                return "11.00 AM - 01.00 PM";
             case "3.5":
-                return "01.00-03.00";
+                return "01.00 PM - 03.00 PM";
             case "4.5":
-                return "03.00-05.00";
+                return "03.00 PM - 05.00 PM";
             default:
-                Log.e("DATABASE ERROR", "INVALID TIME");
+                FirebaseCrash.report(new Exception("DATABASE ERROR INVALID TIME"));
                 return null;
         }
     }
