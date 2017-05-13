@@ -16,6 +16,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +35,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     private ArrayList<DayData> mDayData;
     private boolean onStart = false;
     private boolean onCreate = false;
+    private RoutineLoader routineLoader;
 
     public static MainActivity getInstance() {
         return mainActivity;
@@ -46,21 +48,25 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         setContentView(R.layout.activity_main);
         mainActivity = this;
         prefManager = new PrefManager(this);
-
         //Maintaining compatibility with version 1.0
         if (prefManager.getCampus() == null || prefManager.getDept() == null || prefManager.getProgram() == null) {
             prefManager.saveCampus("main");
             prefManager.saveDept("cse");
             prefManager.saveProgram("day");
         }
+        routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), this, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
 
         //If there is a new routine, update
         if (prefManager.getSemester() != null && !prefManager.getSemester().equals(getResources().getString(R.string.current_semester)) && prefManager.getDept().equalsIgnoreCase("cse") && prefManager.getCampus().equalsIgnoreCase("main") && prefManager.getProgram().equalsIgnoreCase("day")) {
             if ((prefManager.getLevel() + prefManager.getTerm()) < 5) {
                 upgradeRoutine();
             }
-        } else if (DatabaseHelper.DATABASE_VERSION > prefManager.getDatabaseVersion()) {
+        } else if (DatabaseHelper.DATABASE_VERSION > prefManager.getDatabaseVersion() && routineLoader.isUpdated()) {
             boolean isNotUpdated = updateRoutine();
+            Log.e("HERE MOFO", "" + routineLoader.isUpdated() + " " + isModified());
+            if (isModified()) {
+                modifyRoutine();
+            }
             if (isNotUpdated) {
                 showSnackBar(this, "Error loading routine!");
                 FirebaseCrash.report(new Exception("Error loading updated routine. Database version: " + DatabaseHelper.DATABASE_VERSION + "Section: " + prefManager.getSection()));
@@ -223,7 +229,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Updated routine available!");
         builder.setMessage("The routine was updated as per " + getResources().getString(R.string.current_semester) + " semester.\nDo you want to update your routine to the new one?\nNote: Your level and term will automatically get updated based on current selection. You can change it anytime from settings.");
-        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 int currentLevel = prefManager.getLevel();
@@ -239,24 +245,22 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
                     currentTerm++;
                     prefManager.saveTerm(currentTerm);
                 }
+                //Deleting modified data before loading new semester routine
+                prefManager.saveDeletedDayData(null, true);
+                prefManager.saveEditedDayData(null, true);
                 boolean loadCheck = updateRoutine();
                 if (!loadCheck) {
                     prefManager.saveShowSnack(true);
                     prefManager.saveSnackData("Routine updated");
                     prefManager.saveSemester(getResources().getString(R.string.current_semester));
-                    MainActivity.getInstance().finish();
+                    if (MainActivity.getInstance() != null) {
+                        MainActivity.getInstance().finish();
+                    }
                     Intent intent = new Intent(getApplication(), MainActivity.class);
                     startActivity(intent);
                 } else {
                     Toast.makeText(getApplicationContext(), "Error loading routine", Toast.LENGTH_SHORT).show();
                 }
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                prefManager.saveSemester(getResources().getString(R.string.current_semester));
                 dialog.dismiss();
             }
         });
@@ -266,8 +270,47 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     }
 
     private boolean updateRoutine() {
-        RoutineLoader newRoutine = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), getApplication(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
         prefManager.saveDatabaseVersion(DatabaseHelper.DATABASE_VERSION);
-        return newRoutine.loadRoutine();
+        ArrayList<DayData> updatedRoutine = routineLoader.loadRoutine();
+        if (updatedRoutine != null) {
+            if (updatedRoutine.size() > 0) {
+                prefManager.saveDayData(updatedRoutine);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean isModified() {
+        return prefManager.getDeletedDayData() != null || prefManager.getEditedDayData() != null;
+    }
+
+    private void modifyRoutine() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Routine was updated!");
+        builder.setMessage("But looks like you have edited or deleted classes from your routine. \nDo you want to keep your modifications?");
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                routineLoader.loadPersonalDayData();
+                prefManager.saveShowSnack(true);
+                prefManager.saveSnackData("Personal routine loaded");
+                routineLoader.saveSnapShot();
+                if (MainActivity.getInstance() != null) {
+                    MainActivity.getInstance().finish();
+                }
+                Intent intent = new Intent(getApplication(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                prefManager.resetModification();
+                showSnackBar(MainActivity.this, "Personal routine discarded");
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

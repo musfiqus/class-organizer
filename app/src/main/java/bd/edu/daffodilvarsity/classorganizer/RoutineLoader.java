@@ -19,6 +19,7 @@ public class RoutineLoader {
     private String dept;
     private String campus;
     private String program;
+    PrefManager prefManager;
 
     public RoutineLoader(int level, int term, String section, Context context, String dept, String campus, String program) {
         this.level = level;
@@ -28,6 +29,7 @@ public class RoutineLoader {
         this.dept = dept;
         this.campus = campus;
         this.program = program;
+        prefManager = new PrefManager(context);
     }
 
     private int setSemester() {
@@ -44,40 +46,40 @@ public class RoutineLoader {
 
     private ArrayList<String> courseCodeGenerator(int semester) {
         if (semester == 1) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_one);
+            String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L1T1);
             return new ArrayList<>(Arrays.asList(semesterData));
         } else if (semester == 2) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_two);
+            String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L1T2);
             return new ArrayList<>(Arrays.asList(semesterData));
         } else if (semester == 3) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_three);
+            String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L1T3);
             return new ArrayList<>(Arrays.asList(semesterData));
         } else if (semester == 4) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_four);
+            String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L2T1);
             return new ArrayList<>(Arrays.asList(semesterData));
         } else if (semester == 5) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_five);
+            String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L2T2);
             return new ArrayList<>(Arrays.asList(semesterData));
         } else if (semester == 6) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_six);
+            String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L2T3);
             return new ArrayList<>(Arrays.asList(semesterData));
         } else if (semester == 7) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_seven);
+            String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L3T1);
             return new ArrayList<>(Arrays.asList(semesterData));
         } else if (semester == 8) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_eight);
+            String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L3T2);
             return new ArrayList<>(Arrays.asList(semesterData));
         } else if (semester == 9) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_nine);
+            String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L3T3);
             return new ArrayList<>(Arrays.asList(semesterData));
         } else if (semester == 10) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_ten);
+            String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L4T1);
             return new ArrayList<>(Arrays.asList(semesterData));
         } else if (semester == 11) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_eleven);
+            String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L4T2);
             return new ArrayList<>(Arrays.asList(semesterData));
         } else if (semester == 12) {
-            String[] semesterData = context.getResources().getStringArray(R.array.semester_twelve);
+            String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L4T3);
             return new ArrayList<>(Arrays.asList(semesterData));
         } else {
             Log.e("RoutineLoader", "Error in courseCodeGenerator");
@@ -85,19 +87,95 @@ public class RoutineLoader {
         }
     }
 
-    public boolean loadRoutine() {
+    public ArrayList<DayData> loadRoutine() {
         //Initializing DB Helper
         DatabaseHelper db = DatabaseHelper.getInstance(context);
-        PrefManager prefManager = new PrefManager(context);
-
         //Generating course codes from generated semester
         ArrayList<String> courseCodes = courseCodeGenerator(setSemester());
+        return db.getDayData(courseCodes, section, dept, campus, program);
+    }
 
-        ArrayList<DayData> mDayData = db.getDayData(courseCodes, section, dept, campus, program);
-        if (mDayData.size() > 0) {
-            prefManager.saveDayData(mDayData);
+    public void saveSnapShot() {
+        prefManager.saveSnapshotDayData(loadRoutine());
+    }
+
+    public void loadPersonalDayData() {
+        ArrayList<DayData> loadedDayData = prefManager.getSavedDayData();
+        if (loadedDayData.size() > 0) {
+            //Checking for modified daydata
+            if (prefManager.getEditedDayData() != null) {
+                ArrayList<DayData> editedDayData = prefManager.getEditedDayData();
+                for (DayData eachEditedDayData : editedDayData) {
+                    loadedDayData.add(eachEditedDayData);
+                }
+            }
+            //Checking for deleted classes
+            if (prefManager.getDeletedDayData() != null) {
+                ArrayList<DayData> deletedDayData = prefManager.getDeletedDayData();
+                for (DayData eachDeletedDayData : deletedDayData) {
+                    for (DayData eachLoadedDayData : loadedDayData) {
+                        int dataMatchCount = 0;
+                        if (eachDeletedDayData.getCourseCode().equalsIgnoreCase(eachLoadedDayData.getCourseCode())) {
+                            dataMatchCount++;
+                        }
+                        if (eachDeletedDayData.getTimeWeight() == eachLoadedDayData.getTimeWeight()) {
+                            dataMatchCount++;
+                        }
+                        if (eachDeletedDayData.getRoomNo().equalsIgnoreCase(eachLoadedDayData.getRoomNo())) {
+                            dataMatchCount++;
+                        }
+                        if (eachDeletedDayData.getDay().equalsIgnoreCase(eachLoadedDayData.getDay())) {
+                            dataMatchCount++;
+                        }
+                        if (eachDeletedDayData.getTeachersInitial().equalsIgnoreCase(eachLoadedDayData.getTeachersInitial())) {
+                            dataMatchCount++;
+                        }
+                        if (dataMatchCount == 5) {
+                            loadedDayData.remove(eachLoadedDayData);
+                            break;
+                        }
+                    }
+                }
+            }
         }
-        //returning if loading was successful or not
-        return mDayData.size() <= 0;
+        prefManager.saveDayData(loadedDayData);
+    }
+
+    public boolean isUpdated() {
+        ArrayList<DayData> snapShot = prefManager.getSnapshotDayData();
+        if (snapShot != null) {
+            ArrayList<DayData> currentDayData = loadRoutine();
+            if (snapShot.size() == currentDayData.size()) {
+                int matchedElement = 0;
+                for (DayData eachSnapShot : snapShot) {
+                    for (DayData eachCurrentData : currentDayData) {
+                        int dataMatchCount = 0;
+                        if (eachCurrentData.getCourseCode().equalsIgnoreCase(eachSnapShot.getCourseCode())) {
+                            dataMatchCount++;
+                        }
+                        if (eachCurrentData.getTimeWeight() == eachSnapShot.getTimeWeight()) {
+                            dataMatchCount++;
+                        }
+                        if (eachCurrentData.getRoomNo().equalsIgnoreCase(eachSnapShot.getRoomNo())) {
+                            dataMatchCount++;
+                        }
+                        if (eachCurrentData.getDay().equalsIgnoreCase(eachSnapShot.getDay())) {
+                            dataMatchCount++;
+                        }
+                        if (eachCurrentData.getTeachersInitial().equalsIgnoreCase(eachSnapShot.getTeachersInitial())) {
+                            dataMatchCount++;
+                        }
+                        if (dataMatchCount == 5) {
+                            matchedElement++;
+                            break;
+                        }
+                    }
+                    if (matchedElement == currentDayData.size()) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
 }

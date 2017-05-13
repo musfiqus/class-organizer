@@ -47,16 +47,19 @@
         <item>X</item>
         <item>Y</item>
         <item>Z</item>
+        <item>R1</item>
+        <item>R2</item>
+        <item>R3</item>
     </string-array>
 
     <!--Start of semester courses-->
-    <string-array name="semester_one">
+    <string-array name="CSE_DAY_MAIN_L1T1">
         <item>CSE112</item>
         <item>MAT111</item>
         <item>ENG113</item>
         <item>PHY113</item>
     </string-array>
-    <string-array name="semester_two">
+    <string-array name="CSE_DAY_MAIN_L1T2">
         <item>MAT121</item>
         <item>CSE122</item>
         <item>CSE123</item>
@@ -64,7 +67,7 @@
         <item>PHY124</item>
         <item>ENG123</item>
     </string-array>
-    <string-array name="semester_three">
+    <string-array name="CSE_DAY_MAIN_L1T3">
         <item>CSE131</item>
         <item>CSE132</item>
         <item>CSE133</item>
@@ -72,7 +75,7 @@
         <item>CSE135</item>
         <item>MAT131</item>
     </string-array>
-    <string-array name="semester_four">
+    <string-array name="CSE_DAY_MAIN_L2T1">
         <item>MAT211</item>
         <item>CSE212</item>
         <item>CSE213</item>
@@ -80,42 +83,42 @@
         <item>CSE215</item>
         <item>GED201</item>
     </string-array>
-    <string-array name="semester_five">
+    <string-array name="CSE_DAY_MAIN_L2T2">
         <item>CSE221</item>
         <item>CSE222</item>
         <item>STA133</item>
         <item>CSE224</item>
         <item>CSE225</item>
     </string-array>
-    <string-array name="semester_six">
+    <string-array name="CSE_DAY_MAIN_L2T3">
         <item>CSE231</item>
         <item>CSE232</item>
         <item>CSE233</item>
         <item>CSE234</item>
         <item>CSE235</item>
     </string-array>
-    <string-array name="semester_seven">
+    <string-array name="CSE_DAY_MAIN_L3T1">
         <item>CSE311</item>
         <item>CSE312</item>
         <item>CSE313</item>
         <item>CSE314</item>
-        <item>ECO314</item>
+        <item>GED321</item>
     </string-array>
-    <string-array name="semester_eight">
+    <string-array name="CSE_DAY_MAIN_L3T2">
         <item>CSE321</item>
         <item>CSE322</item>
         <item>CSE323</item>
         <item>CSE324</item>
-        <item>GED321</item>
+        <item>ECO314</item>
     </string-array>
-    <string-array name="semester_nine">
+    <string-array name="CSE_DAY_MAIN_L3T3">
         <item>CSE331</item>
         <item>CSE332</item>
         <item>CSE333</item>
         <item>CSE334</item>
         <item>ACT301</item>
     </string-array>
-    <string-array name="semester_ten">
+    <string-array name="CSE_DAY_MAIN_L4T1">
         <item>CSE412</item>
         <item>CSE413</item>
         <item>CSE414</item>
@@ -123,14 +126,14 @@
         <item>CSE417</item>
         <item>CSE418</item>
     </string-array>
-    <string-array name="semester_eleven">
+    <string-array name="CSE_DAY_MAIN_L4T2">
         <item>CSE421</item>
         <item>CSE422</item>
         <item>CSE423</item>
         <item>CSEXXX</item>
         <item>CSE499</item>
     </string-array>
-    <string-array name="semester_twelve">
+    <string-array name="CSE_DAY_MAIN_L4T3">
         <item>CSE498</item>
         <item>CSEXXX</item>
         <item>CSE499</item>

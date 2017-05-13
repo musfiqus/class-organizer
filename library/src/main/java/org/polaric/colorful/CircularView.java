@@ -8,7 +8,7 @@ import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
 
-class CircularView extends View {
+public class CircularView extends View {
 
     Paint paint = new Paint();
 

@@ -9,6 +9,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import java.util.ArrayList;
+
 /**
  * Created by musfiqus on 3/26/2017.
  */
@@ -210,7 +212,15 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
     //loading semester on button press
     public void loadSemester() {
         RoutineLoader routineLoader = new RoutineLoader(level, term, section, context, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
-        this.tempLock = routineLoader.loadRoutine();
+        ArrayList<DayData> loadedRoutine = routineLoader.loadRoutine();
+        if (loadedRoutine != null) {
+            if (loadedRoutine.size() > 0) {
+                prefManager.saveDayData(loadedRoutine);
+                this.tempLock = false;
+            } else {
+                this.tempLock = true;
+            }
+        }
     }
 
     public boolean isTempLock() {
