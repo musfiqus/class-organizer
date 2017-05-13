@@ -16,6 +16,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import org.polaric.colorful.Colorful;
 import org.polaric.colorful.ColorfulActivity;
 
@@ -45,12 +47,14 @@ public class EditActivity extends ColorfulActivity {
         try {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         } catch (NullPointerException e) {
-            e.printStackTrace();
+            FirebaseCrash.report(e);
         }
 
         prefManager = new PrefManager(this);
         Bundle extras = getIntent().getExtras();
-        dayData = extras.getParcelable("DAYDATA");
+        if (extras != null) {
+            dayData = extras.getParcelable("DAYDATA");
+        }
         dayDatas = prefManager.getSavedDayData();
         for (int i = 0; i < dayDatas.size(); i++) {
             if (dayDatas.get(i).getCourseCode().equalsIgnoreCase(dayData.getCourseCode())) {
@@ -98,8 +102,9 @@ public class EditActivity extends ColorfulActivity {
 
         String[] startEndTime = timeSplitter(dayData.getTime());
         String startTime = startEndTime[0];
+        startTime = startTime.substring(0, startTime.length() - 2) + startTime.substring(startTime.length() - 2, startTime.length() - 1);
         String endTime = startEndTime[1];
-
+        endTime = endTime.substring(1, endTime.length());
         //Start time spinner
         startTimeSpinner = (Spinner) findViewById(R.id.modify_time_start);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -184,8 +189,11 @@ public class EditActivity extends ColorfulActivity {
             //Saving the changed data
             DayData editedDay = getEditedDay();
             if (position > -1) {
+                prefManager.saveEditedDayData(editedDay, false);
                 dayDatas.set(position, editedDay);
             }
+            RoutineLoader routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), EditActivity.this, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
+            routineLoader.saveSnapShot();
             prefManager.saveDayData(dayDatas);
             prefManager.saveReCreate(true);
             showSnackBar(this, "Saved");
@@ -201,11 +209,16 @@ public class EditActivity extends ColorfulActivity {
 
                 public void onClick(DialogInterface dialog, int which) {
                     if (position > -1) {
+                        prefManager.saveDeletedDayData(dayDatas.get(position), false);
                         dayDatas.remove(position);
                     }
                     prefManager.saveDayData(dayDatas);
+                    RoutineLoader routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), EditActivity.this, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
+                    routineLoader.saveSnapShot();
                     //Refreshing data on screen by restarting activity, because nothing else seems to work for now
-                    MainActivity.getInstance().finish();
+                    if (MainActivity.getInstance() != null) {
+                        MainActivity.getInstance().finish();
+                    }
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
                     prefManager.saveSnackData("Deleted");
@@ -236,10 +249,11 @@ public class EditActivity extends ColorfulActivity {
     protected void onPause() {
         super.onPause();
         if (prefManager.getReCreate()) {
-            Log.e("Pause", "Called");
             prefManager.saveReCreate(false);
             //Refreshing data on screen by restarting activity, because nothing else seems to work for now
-            MainActivity.getInstance().finish();
+            if (MainActivity.getInstance() != null) {
+                MainActivity.getInstance().finish();
+            }
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.putExtra("SNACKBAR", "Saved");
             startActivity(intent);

@@ -145,6 +145,9 @@ public class AddActivity extends ColorfulActivity {
                 prefManager.saveReCreate(true);
                 prefManager.saveSnackData("Added");
                 prefManager.saveShowSnack(true);
+                prefManager.saveEditedDayData(newDay, false);
+                RoutineLoader routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), AddActivity.this, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
+                routineLoader.saveSnapShot();
                 reCreate();
             }
         } else if (item.getItemId() == android.R.id.home) {
@@ -163,7 +166,9 @@ public class AddActivity extends ColorfulActivity {
         if (prefManager.getReCreate()) {
             prefManager.saveReCreate(false);
             //Refreshing data on screen by restarting activity, because nothing else seems to work for now
-            MainActivity.getInstance().finish();
+            if (MainActivity.getInstance() != null) {
+                MainActivity.getInstance().finish();
+            }
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();

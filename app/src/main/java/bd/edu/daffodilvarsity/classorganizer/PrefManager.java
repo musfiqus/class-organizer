@@ -29,6 +29,9 @@ public class PrefManager {
     private static final String SAVE_CAMPUS = "campus";
     private static final String SAVE_DEPT = "department";
     private static final String SAVE_PROGRAM = "program";
+    private static final String PREF_DELETED_DAYDATA = "deleted_daydata";
+    private static final String PREF_EDITED_DAYDATA = "edited_daydata";
+    private static final String PREF_SNAPSHOT_DAYDATA = "snapshot_daydata";
 
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
@@ -125,6 +128,93 @@ public class PrefManager {
         editor.remove(SAVE_PROGRAM).apply();
         editor.putString(SAVE_PROGRAM, program);
         editor.apply();
+    }
+
+    public void saveDeletedDayData(DayData dayData, boolean reset) {
+        ArrayList<DayData> deletedArray;
+        editor.remove(PREF_DELETED_DAYDATA).apply();
+        Gson gson = new Gson();
+        if (!reset) {
+            if (getDeletedDayData() != null) {
+                deletedArray = getDeletedDayData();
+            } else {
+                deletedArray = new ArrayList<>();
+            }
+            deletedArray.add(dayData);
+            String json = gson.toJson(deletedArray);
+            editor.putString(PREF_DELETED_DAYDATA, json);
+            editor.apply();
+        } else {
+            editor.putString(PREF_DELETED_DAYDATA, null);
+            editor.apply();
+        }
+    }
+
+    public void resetModification() {
+        saveEditedDayData(null, true);
+        saveDeletedDayData(null, true);
+        saveSnapshotDayData(null);
+    }
+
+    public void saveEditedDayData(DayData dayData, boolean reset) {
+        ArrayList<DayData> editedArray;
+        editor.remove(PREF_EDITED_DAYDATA).apply();
+        Gson gson = new Gson();
+        if (!reset) {
+            if (getEditedDayData() != null) {
+                editedArray = getEditedDayData();
+            } else {
+                editedArray = new ArrayList<>();
+            }
+            editedArray.add(dayData);
+            String json = gson.toJson(editedArray);
+            editor.putString(PREF_EDITED_DAYDATA, json);
+            editor.apply();
+        } else {
+            editor.putString(PREF_EDITED_DAYDATA, null);
+            editor.apply();
+        }
+    }
+
+    public void saveSnapshotDayData(ArrayList<DayData> snapshot) {
+        editor.remove(PREF_SNAPSHOT_DAYDATA).apply();
+        Gson gson = new Gson();
+        String json = gson.toJson(snapshot);
+        editor.putString(PREF_SNAPSHOT_DAYDATA, json);
+        editor.apply();
+    }
+
+    public ArrayList<DayData> getSnapshotDayData() {
+        Gson gson = new Gson();
+        String json = pref.getString(PREF_SNAPSHOT_DAYDATA, null);
+        if (json != null) {
+            Type type = new TypeToken<ArrayList<DayData>>() {
+            }.getType();
+            return gson.fromJson(json, type);
+        }
+        return null;
+    }
+
+    public ArrayList<DayData> getEditedDayData() {
+        Gson gson = new Gson();
+        String json = pref.getString(PREF_EDITED_DAYDATA, null);
+        if (json != null) {
+            Type type = new TypeToken<ArrayList<DayData>>() {
+            }.getType();
+            return gson.fromJson(json, type);
+        }
+        return null;
+    }
+
+    public ArrayList<DayData> getDeletedDayData() {
+        Gson gson = new Gson();
+        String json = pref.getString(PREF_DELETED_DAYDATA, null);
+        if (json != null) {
+            Type type = new TypeToken<ArrayList<DayData>>() {
+            }.getType();
+            return gson.fromJson(json, type);
+        }
+        return null;
     }
 
     public boolean isFirstTimeLaunch() {

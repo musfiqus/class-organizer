@@ -55,7 +55,9 @@ public class SettingsActivity extends ColorfulActivity {
         PrefManager prefManager = new PrefManager(getApplication());
         //  Refreshing data on screen by restarting activity, because nothing else seems to work for now
         if (prefManager.getReCreate()) {
-            MainActivity.getInstance().finish();
+            if (MainActivity.getInstance() != null) {
+                MainActivity.getInstance().finish();
+            }
             Intent intent = new Intent(getApplication(), MainActivity.class);
             Log.e("ONPAUSE", "CALLED");
             startActivity(intent);
@@ -80,7 +82,7 @@ public class SettingsActivity extends ColorfulActivity {
             routinePreference.setSummary("Current Section " + sectionRoot + ", Level " + (levelRoot + 1) + ", Term " + (termRoot + 1));
             routinePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
-                public boolean onPreferenceClick(Preference preference) {
+                public boolean onPreferenceClick(final Preference preference) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     final View dialogView = getActivity().getLayoutInflater().inflate(R.layout.class_spinner_layout, null);
                     builder.setTitle("Choose your current class");
@@ -143,8 +145,17 @@ public class SettingsActivity extends ColorfulActivity {
                             int term = termSpinner.getSelectedItemPosition();
                             String section = sectionText.getSelectedItem().toString();
                             RoutineLoader newRoutine = new RoutineLoader(level, term, section, getActivity(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
+                            boolean loadCheck = true;
+                            ArrayList<DayData> loadedRoutine = newRoutine.loadRoutine();
+                            if (loadedRoutine != null) {
+                                if (loadedRoutine.size() > 0) {
+                                    prefManager.saveDayData(loadedRoutine);
+                                    loadCheck = false;
+                                } else {
+                                    loadCheck = true;
+                                }
+                            }
 
-                            boolean loadCheck = newRoutine.loadRoutine();
                             if (!loadCheck) {
                                 prefManager.saveLevel(level);
                                 prefManager.saveTerm(term);
@@ -154,6 +165,7 @@ public class SettingsActivity extends ColorfulActivity {
                                 onCreate(Bundle.EMPTY);
                                 //SHOWING SNACKBAR
                                 showSnackBar(getActivity(), "Saved");
+                                prefManager.resetModification();
                                 dialog.dismiss();
                             } else {
                                 Toast.makeText(getActivity(), "Section " + section + " currently doesn't exist on level " + (level + 1) + " term " + (term + 1) + ". Please select the correct level, term & section. Or contact the developer to add your section.", Toast.LENGTH_LONG).show();
@@ -168,17 +180,12 @@ public class SettingsActivity extends ColorfulActivity {
                             dialog.dismiss();
                         }
                     });
-
                     builder.setView(dialogView);
-
                     AlertDialog dialog = builder.create();
                     dialog.show();
-
-
                     return true;
                 }
             });
-
 
             //  Changing preview of primary color chooser
             ColorPickerPreference primaryColorPref = (ColorPickerPreference) findPreference("primary");
