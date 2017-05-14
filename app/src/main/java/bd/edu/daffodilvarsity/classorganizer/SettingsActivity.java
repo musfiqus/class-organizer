@@ -44,7 +44,8 @@ public class SettingsActivity extends ColorfulActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home: onBackPressed();
+            case android.R.id.home:
+                onBackPressed();
         }
         return true;
     }
@@ -182,27 +183,76 @@ public class SettingsActivity extends ColorfulActivity {
             Preference resetPreference = findPreference("reset_preference");
             resetPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle("Are you sure?");
-                    builder.setMessage("Your added, edited, saved classes will be removed. Do you want to continue?");
-                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                public boolean onPreferenceClick(final Preference preference) {
+                    AlertDialog.Builder multiChoiceBuilder = new AlertDialog.Builder(getActivity());
+                    multiChoiceBuilder.setTitle("Select Classes To Reset");
+                    final CharSequence[] items = {"Deleted", "Edited", "Added", "Saved"};
+                    final ArrayList<Integer> selectedItems = new ArrayList<>();
+                    multiChoiceBuilder.setMultiChoiceItems(items, null, new DialogInterface.OnMultiChoiceClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                            if (isChecked) {
+                                selectedItems.add(which);
+                            } else if (selectedItems.contains(which)) {
+                                selectedItems.remove(Integer.valueOf(which));
+                            }
+                        }
+                    });
+                    multiChoiceBuilder.setPositiveButton("RESET", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            prefManager.resetModification();
-                            prefManager.saveReCreate(true);
-                            onCreate(Bundle.EMPTY);
-                            showSnackBar(getActivity(), "Reset successful");
+                            if (!(selectedItems.contains(0) || selectedItems.contains(1) || selectedItems.contains(2) || selectedItems.contains(3))) {
+                                showSnackBar(getActivity(), "No items were selected");
+                            } else {
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                                builder.setTitle("Are you sure?");
+                                builder.setMessage("Your modified classes will be removed. Do you want to continue?");
+                                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        boolean delete = false;
+                                        boolean edit = false;
+                                        boolean add = false;
+                                        boolean save = false;
+                                        if (selectedItems.contains(0)) {
+                                            delete = true;
+                                        }
+                                        if (selectedItems.contains(1)) {
+                                            edit = true;
+                                        }
+                                        if (selectedItems.contains(2)) {
+                                            add = true;
+                                        }
+                                        if (selectedItems.contains(3)) {
+                                            save = true;
+                                        }
+                                        prefManager.resetModification(add, edit, save, delete);
+                                        prefManager.saveReCreate(true);
+                                        onCreate(Bundle.EMPTY);
+                                        showSnackBar(getActivity(), "Routine was reset!");
+                                        dialog.dismiss();
+                                    }
+                                });
+
+                                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                AlertDialog alertDialog = builder.create();
+                                alertDialog.show();
+                            }
                             dialog.dismiss();
                         }
                     });
-                    builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    multiChoiceBuilder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
                     });
-                    AlertDialog alertDialog = builder.create();
+                    AlertDialog alertDialog = multiChoiceBuilder.create();
                     alertDialog.show();
                     return true;
                 }

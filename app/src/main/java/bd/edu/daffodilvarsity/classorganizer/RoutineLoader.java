@@ -103,34 +103,37 @@ public class RoutineLoader {
     public ArrayList<DayData> loadPersonalDayData(ArrayList<DayData> loadedDayData) {
         if (loadedDayData.size() > 0) {
             //Checking for modified daydata
-            if (prefManager.getEditedDayData() != null) {
-                ArrayList<DayData> editedDayData = prefManager.getEditedDayData();
-                for (DayData eachEditedDayData : editedDayData) {
-                    loadedDayData.add(eachEditedDayData);
+            ArrayList<DayData> addDayData = prefManager.getModifiedData("add");
+            ArrayList<DayData> editDayData = prefManager.getModifiedData("edit");
+            ArrayList<DayData> saveDayData = prefManager.getModifiedData("save");
+            if (addDayData != null) {
+                for (DayData eachEditedDayData : addDayData) {
+                    if (!(prefManager.isDuplicate(loadedDayData, eachEditedDayData))) {
+                        loadedDayData.add(eachEditedDayData);
+                    }
                 }
             }
+            if (editDayData != null) {
+                for (DayData eachEditedDayData : editDayData) {
+                    if (!(prefManager.isDuplicate(loadedDayData, eachEditedDayData))) {
+                        loadedDayData.add(eachEditedDayData);
+                    }
+                }
+            }
+            if (saveDayData != null) {
+                for (DayData eachEditedDayData : saveDayData) {
+                    if (!(prefManager.isDuplicate(loadedDayData, eachEditedDayData))) {
+                        loadedDayData.add(eachEditedDayData);
+                    }
+                }
+            }
+
             //Checking for deleted classes
-            if (prefManager.getDeletedDayData() != null) {
-                ArrayList<DayData> deletedDayData = prefManager.getDeletedDayData();
-                for (DayData eachDeletedDayData : deletedDayData) {
+            ArrayList<DayData> deleteDayData = prefManager.getModifiedData("delete");
+            if (deleteDayData != null) {
+                for (DayData eachDeletedDayData : deleteDayData) {
                     for (DayData eachLoadedDayData : loadedDayData) {
-                        int dataMatchCount = 0;
-                        if (eachDeletedDayData.getCourseCode().equalsIgnoreCase(eachLoadedDayData.getCourseCode())) {
-                            dataMatchCount++;
-                        }
-                        if (eachDeletedDayData.getTimeWeight() == eachLoadedDayData.getTimeWeight()) {
-                            dataMatchCount++;
-                        }
-                        if (eachDeletedDayData.getRoomNo().equalsIgnoreCase(eachLoadedDayData.getRoomNo())) {
-                            dataMatchCount++;
-                        }
-                        if (eachDeletedDayData.getDay().equalsIgnoreCase(eachLoadedDayData.getDay())) {
-                            dataMatchCount++;
-                        }
-                        if (eachDeletedDayData.getTeachersInitial().equalsIgnoreCase(eachLoadedDayData.getTeachersInitial())) {
-                            dataMatchCount++;
-                        }
-                        if (dataMatchCount == 5) {
+                        if (eachDeletedDayData.equals(eachLoadedDayData)) {
                             loadedDayData.remove(eachLoadedDayData);
                             break;
                         }
@@ -140,5 +143,4 @@ public class RoutineLoader {
         }
         return loadedDayData;
     }
-
 }

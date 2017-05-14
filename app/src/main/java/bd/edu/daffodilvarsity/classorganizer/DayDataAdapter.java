@@ -81,7 +81,7 @@ public class DayDataAdapter extends ArrayAdapter<DayData> {
                             v.getContext().startActivity(intent);
                         } else if (item.getItemId() == R.id.save_class) {
                             PrefManager prefManager = new PrefManager(getContext());
-                            prefManager.saveEditedDayData(currentClass, false);
+                            prefManager.saveModifiedData(currentClass,"save", false);
                             Snackbar.make(parent, currentClass.getCourseCode() + " saved!", Snackbar.LENGTH_SHORT).show();
                         }
                         return true;

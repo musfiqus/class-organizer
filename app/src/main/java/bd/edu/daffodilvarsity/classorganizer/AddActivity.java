@@ -145,7 +145,7 @@ public class AddActivity extends ColorfulActivity {
                 prefManager.saveReCreate(true);
                 prefManager.saveSnackData("Added");
                 prefManager.saveShowSnack(true);
-                prefManager.saveEditedDayData(newDay, false);
+                prefManager.saveModifiedData(newDay, "add" , false);
                 reCreate();
             }
         } else if (item.getItemId() == android.R.id.home) {

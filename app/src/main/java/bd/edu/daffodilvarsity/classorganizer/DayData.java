@@ -71,6 +71,33 @@ public class DayData implements Serializable, Parcelable {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof DayData)) {
+            return false;
+        }
+        final DayData otherData = (DayData) obj;
+        if (!(otherData.getCourseCode().equals(this.courseCode))) {
+            return false;
+        }
+        if (!(otherData.getTeachersInitial().equals(this.teachersInitial))) {
+            return false;
+        }
+        if (!(otherData.getDay().equals(this.day))) {
+            return false;
+        }
+        if (!(otherData.getRoomNo().equals(this.roomNo))) {
+            return false;
+        }
+        if (!(otherData.getTime().equals(this.time))) {
+            return false;
+        }
+        if (otherData.getTimeWeight() != this.timeWeight) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
