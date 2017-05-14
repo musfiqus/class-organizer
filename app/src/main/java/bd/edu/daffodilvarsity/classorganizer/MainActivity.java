@@ -252,7 +252,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
                     prefManager.saveTerm(currentTerm);
                 }
                 //Deleting modified data before loading new semester routine
-                prefManager.resetModification();
+                prefManager.resetModification(true, true, true, true);
                 boolean loadCheck = updateRoutine(false);
                 if (!loadCheck) {
                     prefManager.saveShowSnack(true);

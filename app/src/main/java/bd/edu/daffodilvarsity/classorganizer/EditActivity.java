@@ -189,7 +189,7 @@ public class EditActivity extends ColorfulActivity {
             //Saving the changed data
             DayData editedDay = getEditedDay();
             if (position > -1) {
-                prefManager.saveEditedDayData(editedDay, false);
+                prefManager.saveModifiedData(editedDay,"edit", false);
                 dayDatas.set(position, editedDay);
             }
             prefManager.saveDayData(dayDatas);
@@ -207,7 +207,7 @@ public class EditActivity extends ColorfulActivity {
 
                 public void onClick(DialogInterface dialog, int which) {
                     if (position > -1) {
-                        prefManager.saveDeletedDayData(dayDatas.get(position), false);
+                        prefManager.saveModifiedData(dayDatas.get(position), "delete" , false);
                         dayDatas.remove(position);
                     }
                     prefManager.saveDayData(dayDatas);
