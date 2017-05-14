@@ -87,20 +87,20 @@ public class RoutineLoader {
         }
     }
 
-    public ArrayList<DayData> loadRoutine() {
+    public ArrayList<DayData> loadRoutine(boolean loadPersonal) {
         //Initializing DB Helper
         DatabaseHelper db = DatabaseHelper.getInstance(context);
         //Generating course codes from generated semester
         ArrayList<String> courseCodes = courseCodeGenerator(setSemester());
-        return db.getDayData(courseCodes, section, dept, campus, program);
+        ArrayList<DayData> vanillaRoutine = db.getDayData(courseCodes, section, dept, campus, program);
+        if (!loadPersonal) {
+            return vanillaRoutine;
+        } else {
+            return loadPersonalDayData(vanillaRoutine);
+        }
     }
 
-    public void saveSnapShot() {
-        prefManager.saveSnapshotDayData(loadRoutine());
-    }
-
-    public void loadPersonalDayData() {
-        ArrayList<DayData> loadedDayData = prefManager.getSavedDayData();
+    public ArrayList<DayData> loadPersonalDayData(ArrayList<DayData> loadedDayData) {
         if (loadedDayData.size() > 0) {
             //Checking for modified daydata
             if (prefManager.getEditedDayData() != null) {
@@ -138,44 +138,7 @@ public class RoutineLoader {
                 }
             }
         }
-        prefManager.saveDayData(loadedDayData);
+        return loadedDayData;
     }
 
-    public boolean isUpdated() {
-        ArrayList<DayData> snapShot = prefManager.getSnapshotDayData();
-        if (snapShot != null) {
-            ArrayList<DayData> currentDayData = loadRoutine();
-            if (snapShot.size() == currentDayData.size()) {
-                int matchedElement = 0;
-                for (DayData eachSnapShot : snapShot) {
-                    for (DayData eachCurrentData : currentDayData) {
-                        int dataMatchCount = 0;
-                        if (eachCurrentData.getCourseCode().equalsIgnoreCase(eachSnapShot.getCourseCode())) {
-                            dataMatchCount++;
-                        }
-                        if (eachCurrentData.getTimeWeight() == eachSnapShot.getTimeWeight()) {
-                            dataMatchCount++;
-                        }
-                        if (eachCurrentData.getRoomNo().equalsIgnoreCase(eachSnapShot.getRoomNo())) {
-                            dataMatchCount++;
-                        }
-                        if (eachCurrentData.getDay().equalsIgnoreCase(eachSnapShot.getDay())) {
-                            dataMatchCount++;
-                        }
-                        if (eachCurrentData.getTeachersInitial().equalsIgnoreCase(eachSnapShot.getTeachersInitial())) {
-                            dataMatchCount++;
-                        }
-                        if (dataMatchCount == 5) {
-                            matchedElement++;
-                            break;
-                        }
-                    }
-                    if (matchedElement == currentDayData.size()) {
-                        return false;
-                    }
-                }
-            }
-        }
-        return true;
-    }
 }

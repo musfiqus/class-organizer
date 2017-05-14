@@ -212,7 +212,7 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
     //loading semester on button press
     public void loadSemester() {
         RoutineLoader routineLoader = new RoutineLoader(level, term, section, context, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
-        ArrayList<DayData> loadedRoutine = routineLoader.loadRoutine();
+        ArrayList<DayData> loadedRoutine = routineLoader.loadRoutine(false);
         if (loadedRoutine != null) {
             if (loadedRoutine.size() > 0) {
                 prefManager.saveDayData(loadedRoutine);

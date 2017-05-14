@@ -87,14 +87,6 @@ public class SettingsActivity extends ColorfulActivity {
                     final View dialogView = getActivity().getLayoutInflater().inflate(R.layout.class_spinner_layout, null);
                     builder.setTitle("Choose your current class");
 
-////                    Program selection (COMING SOON TODO)
-//                    TextView programLabel = (TextView) dialogView.findViewById(R.id.program_spinner_label);
-//                    programLabel.setTextColor(getResources().getColor(android.R.color.black));
-//
-//                    Spinner programText = (Spinner) dialogView.findViewById(R.id.program_selection);
-//                    ArrayAdapter<CharSequence> programAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.program_array, R.layout.spinner_row);
-//                    programText.setAdapter(programAdapter);
-
                     //Level spinner
                     TextView levelLabel = (TextView) dialogView.findViewById(R.id.level_spinner_label);
                     levelLabel.setTextColor(getResources().getColor(android.R.color.black));
@@ -146,7 +138,7 @@ public class SettingsActivity extends ColorfulActivity {
                             String section = sectionText.getSelectedItem().toString();
                             RoutineLoader newRoutine = new RoutineLoader(level, term, section, getActivity(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
                             boolean loadCheck = true;
-                            ArrayList<DayData> loadedRoutine = newRoutine.loadRoutine();
+                            ArrayList<DayData> loadedRoutine = newRoutine.loadRoutine(true);
                             if (loadedRoutine != null) {
                                 if (loadedRoutine.size() > 0) {
                                     prefManager.saveDayData(loadedRoutine);
@@ -165,7 +157,6 @@ public class SettingsActivity extends ColorfulActivity {
                                 onCreate(Bundle.EMPTY);
                                 //SHOWING SNACKBAR
                                 showSnackBar(getActivity(), "Saved");
-                                prefManager.resetModification();
                                 dialog.dismiss();
                             } else {
                                 Toast.makeText(getActivity(), "Section " + section + " currently doesn't exist on level " + (level + 1) + " term " + (term + 1) + ". Please select the correct level, term & section. Or contact the developer to add your section.", Toast.LENGTH_LONG).show();
@@ -183,6 +174,36 @@ public class SettingsActivity extends ColorfulActivity {
                     builder.setView(dialogView);
                     AlertDialog dialog = builder.create();
                     dialog.show();
+                    return true;
+                }
+            });
+
+            //Reset preference
+            Preference resetPreference = findPreference("reset_preference");
+            resetPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Are you sure?");
+                    builder.setMessage("Your added, edited, saved classes will be removed. Do you want to continue?");
+                    builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            prefManager.resetModification();
+                            prefManager.saveReCreate(true);
+                            onCreate(Bundle.EMPTY);
+                            showSnackBar(getActivity(), "Reset successful");
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
                     return true;
                 }
             });
