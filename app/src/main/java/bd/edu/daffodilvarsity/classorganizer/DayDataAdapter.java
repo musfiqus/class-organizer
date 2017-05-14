@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -74,10 +75,15 @@ public class DayDataAdapter extends ArrayAdapter<DayData> {
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        //TODO Have to add Modify Activity and save modified data to prefmanager
-                        Intent intent = new Intent(v.getContext(), EditActivity.class);
-                        intent.putExtra("DAYDATA", (Parcelable) currentClass);
-                        v.getContext().startActivity(intent);
+                        if (item.getItemId() == R.id.edit_class) {
+                            Intent intent = new Intent(v.getContext(), EditActivity.class);
+                            intent.putExtra("DAYDATA", (Parcelable) currentClass);
+                            v.getContext().startActivity(intent);
+                        } else if (item.getItemId() == R.id.save_class) {
+                            PrefManager prefManager = new PrefManager(getContext());
+                            prefManager.saveEditedDayData(currentClass, false);
+                            Snackbar.make(parent, currentClass.getCourseCode() + " saved!", Snackbar.LENGTH_SHORT).show();
+                        }
                         return true;
                     }
                 });

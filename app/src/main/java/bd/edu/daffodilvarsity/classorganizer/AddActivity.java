@@ -146,8 +146,6 @@ public class AddActivity extends ColorfulActivity {
                 prefManager.saveSnackData("Added");
                 prefManager.saveShowSnack(true);
                 prefManager.saveEditedDayData(newDay, false);
-                RoutineLoader routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), AddActivity.this, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
-                routineLoader.saveSnapShot();
                 reCreate();
             }
         } else if (item.getItemId() == android.R.id.home) {

@@ -192,8 +192,6 @@ public class EditActivity extends ColorfulActivity {
                 prefManager.saveEditedDayData(editedDay, false);
                 dayDatas.set(position, editedDay);
             }
-            RoutineLoader routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), EditActivity.this, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
-            routineLoader.saveSnapShot();
             prefManager.saveDayData(dayDatas);
             prefManager.saveReCreate(true);
             showSnackBar(this, "Saved");
@@ -213,8 +211,6 @@ public class EditActivity extends ColorfulActivity {
                         dayDatas.remove(position);
                     }
                     prefManager.saveDayData(dayDatas);
-                    RoutineLoader routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), EditActivity.this, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
-                    routineLoader.saveSnapShot();
                     //Refreshing data on screen by restarting activity, because nothing else seems to work for now
                     if (MainActivity.getInstance() != null) {
                         MainActivity.getInstance().finish();

@@ -7,6 +7,10 @@ xmlns:colorpicker="http://schemas.android.com/apk/res-auto">
             android:key="routine_preference"
             android:summary="Place holder summary"
             android:title="Choose Your Routine" />
+        <Preference
+            android:key="reset_preference"
+            android:summary="Clears saved, added, edited, deleted classes"
+            android:title="Reset Your Routine" />
     </android.support.v7.preference.PreferenceCategory>
     <android.support.v7.preference.PreferenceCategory
         android:title="Appearance">
