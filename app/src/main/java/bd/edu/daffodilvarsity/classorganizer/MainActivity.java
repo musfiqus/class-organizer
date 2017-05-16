@@ -16,6 +16,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,6 +36,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     private boolean onStart = false;
     private boolean onCreate = false;
     private RoutineLoader routineLoader;
+    private boolean isActivityRunning = false;
 
     public static MainActivity getInstance() {
         return mainActivity;
@@ -59,9 +61,9 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         //If there is a new routine, update
         if (prefManager.getSemester() != null
                 && !prefManager.getSemester().equals(getResources().getString(R.string.current_semester))
-                && prefManager.getDept().equalsIgnoreCase("cse")
+                && ((prefManager.getDept().equalsIgnoreCase("cse")
                 && prefManager.getCampus().equalsIgnoreCase("main")
-                && prefManager.getProgram().equalsIgnoreCase("day")) {
+                && prefManager.getProgram().equalsIgnoreCase("day")))) {
             if ((prefManager.getLevel() + prefManager.getTerm()) < 5) {
                 upgradeRoutine();
             }
@@ -112,9 +114,11 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        if (isActivityRunning) {
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            if (drawer.isDrawerOpen(GravityCompat.START)) {
+                drawer.closeDrawer(GravityCompat.START);
+            }
         } else {
             super.onBackPressed();
         }
@@ -173,10 +177,16 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         if (!onStart) {
             loadData();
         }
+        isActivityRunning = true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isActivityRunning = false;
     }
 
     public void loadData() {
-
         //Load Data
         if (mDayData != null) {
             mDayData.clear();
@@ -188,18 +198,14 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
 
             // Find the view pager that will allow the user to swipe between fragments
             ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-
             // Create an adapter that knows which fragment should be shown on each page
             DayFragmentPagerAdapter adapter = new DayFragmentPagerAdapter(this, getSupportFragmentManager(), mDayData);
             adapter.notifyDataSetChanged();
-
             // Set the adapter onto the view pager
             viewPager.setAdapter(adapter);
             viewPager.getAdapter().notifyDataSetChanged();
-
             // Find the tab layout that shows the tabs
             TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-
             // Connect the tab layout with the view pager. This will
             //   1. Update the tab layout when the view pager is swiped
             //   2. Update the view pager when a tab is selected
@@ -207,7 +213,6 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
             //      by calling onPageTitle()
             tabLayout.setupWithViewPager(viewPager);
         }
-
     }
 
     public void composeEmail() {
@@ -276,9 +281,11 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
 
     private boolean updateRoutine(boolean personalRoutine) {
         prefManager.saveDatabaseVersion(DatabaseHelper.DATABASE_VERSION);
+        routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), this, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
         ArrayList<DayData> updatedRoutine = routineLoader.loadRoutine(personalRoutine);
         if (updatedRoutine != null) {
             if (updatedRoutine.size() > 0) {
+                Log.e("I'm alive", "UPDATE");
                 prefManager.saveDayData(updatedRoutine);
                 return false;
             }

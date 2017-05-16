@@ -32,7 +32,7 @@ public class DayFragment extends Fragment {
         assert courseData != null;
         adapter = new DayDataAdapter(getActivity(), courseData);
         ListView listView = (ListView) rootView.findViewById(R.id.class_list);
-
+        adapter.notifyDataSetChanged();
         listView.setAdapter(adapter);
 
         return rootView;
