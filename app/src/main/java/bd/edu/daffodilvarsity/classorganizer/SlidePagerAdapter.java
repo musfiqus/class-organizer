@@ -31,13 +31,14 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
     private Spinner deptSpinner;
     private ArrayAdapter<CharSequence> deptAdapter;
     private Spinner programSpinner;
+
     private ArrayAdapter<CharSequence> programAdapter;
-    Spinner levelSpinner;
-    ArrayAdapter<CharSequence> levelAdapter;
-    Spinner termSpinner;
-    ArrayAdapter<CharSequence> termAdapter;
-    Spinner sectionSpinner;
-    ArrayAdapter<CharSequence> sectionAdapter;
+    private Spinner levelSpinner;
+    private ArrayAdapter<CharSequence> levelAdapter;
+    private Spinner termSpinner;
+    private ArrayAdapter<CharSequence> termAdapter;
+    private Spinner sectionSpinner;
+    private ArrayAdapter<CharSequence> sectionAdapter;
 
     public SlidePagerAdapter(Context context, int[] layouts) {
         this.context = context;
@@ -131,7 +132,7 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
     private void setClassAdapter() {
         if (campusSpinner.getSelectedItem().toString().equalsIgnoreCase("main") && deptSpinner.getSelectedItem().toString().equalsIgnoreCase("cse") && programSpinner.getSelectedItem().toString().equalsIgnoreCase("day")) {
             // Create an ArrayAdapter using the string array and a default spinner layout
-            levelAdapter = ArrayAdapter.createFromResource(context, R.array.level_array, R.layout.spinner_class_row_welcome);
+            levelAdapter = ArrayAdapter.createFromResource(context, R.array.cse_main_day_level_array, R.layout.spinner_class_row_welcome);
             // Specify the layout to use when the list of choices appears
             levelAdapter.setDropDownViewResource(R.layout.spinner_class_row_welcome);
             levelAdapter.notifyDataSetChanged();
@@ -139,13 +140,13 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
             levelSpinner.setAdapter(levelAdapter);
             levelSpinner.setOnItemSelectedListener(this);
 
-            termAdapter = ArrayAdapter.createFromResource(context, R.array.term_array, R.layout.spinner_class_row_welcome);
+            termAdapter = ArrayAdapter.createFromResource(context, R.array.cse_main_day_term_array, R.layout.spinner_class_row_welcome);
             termAdapter.setDropDownViewResource(R.layout.spinner_class_row_welcome);
             termAdapter.notifyDataSetChanged();
             termSpinner.setAdapter(termAdapter);
             termSpinner.setOnItemSelectedListener(this);
 
-            sectionAdapter = ArrayAdapter.createFromResource(context, R.array.section_array, R.layout.spinner_class_row_welcome);
+            sectionAdapter = ArrayAdapter.createFromResource(context, R.array.cse_main_day_section_array, R.layout.spinner_class_row_welcome);
             sectionAdapter.setDropDownViewResource(R.layout.spinner_class_row_welcome);
             sectionAdapter.notifyDataSetChanged();
             sectionSpinner.setAdapter(sectionAdapter);

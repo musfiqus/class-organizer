@@ -7,17 +7,23 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
+import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.polaric.colorful.ColorPickerPreference;
 import org.polaric.colorful.Colorful;
@@ -66,71 +72,118 @@ public class SettingsActivity extends ColorfulActivity {
         }
     }
 
-    public static class SettingsFragment extends PreferenceFragmentCompat {
+    public static class SettingsFragment extends PreferenceFragmentCompat implements AdapterView.OnItemSelectedListener {
+        private Spinner campusSpinner;
+        private Spinner deptSpinner;
+        private Spinner programSpinner;
+        private Spinner levelSpinner;
+        private Spinner termSpinner;
+        private Spinner sectionText;
+        //Getting prefmanager to get existing data
+        PrefManager prefManager;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.main_settings);
-
-            //Getting prefmanager to get existing data
-            final PrefManager prefManager = new PrefManager(getActivity());
+            prefManager = new PrefManager(getActivity());
+            if (prefManager.hasCampusSettingsChanged()) {
+                Log.e("Campus", "Changed");
+                resetLevelTermSection();
+                prefManager.setHasCampusSettingsChanged(false);
+            }
+            //Setting department preference
+            final Preference deptPreference = findPreference("dept_preference");
+            final String dept = prefManager.getDept();
+            final String program = prefManager.getProgram();
+            final String campus = prefManager.getCampus();
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                deptPreference.setSummary(Html.fromHtml("Current Department: <b>" + dept.toUpperCase() + "</b>, Program: <b>" + program.substring(0, 1).toUpperCase() + program.substring(1, program.length()).toLowerCase() + "</b>, Campus: <b>" + campus.substring(0, 1).toUpperCase() + campus.substring(1, campus.length()).toLowerCase() + "</b>", Html.FROM_HTML_MODE_LEGACY));
+            } else {
+                deptPreference.setSummary(Html.fromHtml("Current Department: <b>" + dept.toUpperCase() + "</b>, Program: <b>" + program.substring(0, 1).toUpperCase() + program.substring(1, program.length()).toLowerCase() + "</b>, Campus: <b>" + campus.substring(0, 1).toUpperCase() + campus.substring(1, campus.length()).toLowerCase() + "</b>"));
+            }
+            deptPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+                    builder.title("Choose Your Department");
+                    final View dialogView = getActivity().getLayoutInflater().inflate(R.layout.campus_spinner_layout, getListView(), false);
+                    //Designing the spinners
+                    TextView campusLabel = (TextView) dialogView.findViewById(R.id.campus_spinner_label);
+                    TextView deptLabel = (TextView) dialogView.findViewById(R.id.dept_spinner_label);
+                    TextView programLabel = (TextView) dialogView.findViewById(R.id.program_spinner_label);
+                    campusLabel.setTextColor(getResources().getColor(android.R.color.black));
+                    deptLabel.setTextColor(getResources().getColor(android.R.color.black));
+                    programLabel.setTextColor(getResources().getColor(android.R.color.black));
+                    //Spinners
+                    campusSpinner = (Spinner) dialogView.findViewById(R.id.campus_selection);
+                    deptSpinner = (Spinner) dialogView.findViewById(R.id.dept_selection);
+                    programSpinner = (Spinner) dialogView.findViewById(R.id.program_selection);
+                    ArrayAdapter<CharSequence> campusAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.campuses, R.layout.spinner_row);
+                    campusAdapter.setDropDownViewResource(R.layout.spinner_row);
+                    String[] campusListString = getResources().getStringArray(R.array.campuses);
+                    ArrayList<String> campusList = new ArrayList<>(Arrays.asList(campusListString));
+                    int campusPosition = -1;
+                    for (int i = 0; i < campusList.size(); i++) {
+                        if (campusList.get(i).equalsIgnoreCase(campus)) {
+                            campusPosition = i;
+                        }
+                    }
+                    campusSpinner.setAdapter(campusAdapter);
+                    campusSpinner.setSelection(campusPosition);
+                    setupDeptSpinner();
+                    setupProgramSpinner();
+                    final String oldDept = prefManager.getDept();
+                    final String oldCampus = prefManager.getCampus();
+                    final String oldProgram = prefManager.getProgram();
+                    builder.positiveText("OK");
+                    builder.onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
+                            String campus = campusSpinner.getSelectedItem().toString();
+                            String department = deptSpinner.getSelectedItem().toString();
+                            String program = programSpinner.getSelectedItem().toString();
+                            if (campus.equalsIgnoreCase("main")
+                                    && (department.equalsIgnoreCase("cse"))
+                                    && (program.equalsIgnoreCase("day") || program.equalsIgnoreCase("evening"))
+                                    ) {
+                                prefManager.saveCampus(campus.toLowerCase().substring(0, 4));
+                                prefManager.saveDept(department.toLowerCase());
+                                prefManager.saveProgram(program.toLowerCase().substring(0, 3));
+                            }
+                            if (!oldDept.equalsIgnoreCase(prefManager.getDept()) || !oldCampus.equalsIgnoreCase(prefManager.getCampus()) || !oldProgram.equalsIgnoreCase(prefManager.getProgram())) {
+                                prefManager.setHasCampusSettingsChanged(true);
+                                prefManager.saveReCreate(true);
+                                onCreate(Bundle.EMPTY);
+                                showSnackBar(getActivity(), "DEPARTMENT SETTINGS CHANGED");
+                            } else {
+                                showSnackBar(getActivity(), "NO CHANGES MADE");
+                            }
+                        }
+                    });
+                    builder.negativeText("Cancel");
+                    builder.customView(dialogView, true);
+                    MaterialDialog dialog = builder.build();
+                    dialog.show();
+                    return true;
+                }
+            });
 
             //Designing routine preference
             final Preference routinePreference = findPreference("routine_preference");
             final String sectionRoot = prefManager.getSection();
             final int levelRoot = prefManager.getLevel();
             final int termRoot = prefManager.getTerm();
-            routinePreference.setSummary("Current Section " + sectionRoot + ", Level " + (levelRoot + 1) + ", Term " + (termRoot + 1));
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                routinePreference.setSummary(Html.fromHtml("Current Section: <b>" + sectionRoot + "</b>, Level: <b>" + (levelRoot + 1) + "</b>, Term: <b>" + (termRoot + 1) + "</b>", Html.FROM_HTML_MODE_LEGACY));
+            } else {
+                routinePreference.setSummary(Html.fromHtml("Current Section: <b>" + sectionRoot + "</b>, Level: <b>" + (levelRoot + 1) + "</b>, Term: <b>" + (termRoot + 1) + "</b>"));
+            }
             routinePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(final Preference preference) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    final View dialogView = getActivity().getLayoutInflater().inflate(R.layout.class_spinner_layout, null);
                     builder.setTitle("Choose your current class");
-
-                    //Level spinner
-                    TextView levelLabel = (TextView) dialogView.findViewById(R.id.level_spinner_label);
-                    levelLabel.setTextColor(getResources().getColor(android.R.color.black));
-
-                    final Spinner levelSpinner = (Spinner) dialogView.findViewById(R.id.level_spinner);
-                    // Create an ArrayAdapter using the string array and a default spinner layout
-                    ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.level_array, R.layout.spinner_row);
-                    // Specify the layout to use when the list of choices appears
-                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    // Apply the adapter to the spinner
-                    levelSpinner.setAdapter(adapter);
-                    levelSpinner.setSelection(levelRoot);
-
-                    //Term spinner
-                    TextView termLabel = (TextView) dialogView.findViewById(R.id.term_spinner_label);
-                    termLabel.setTextColor(getResources().getColor(android.R.color.black));
-
-                    final Spinner termSpinner = (Spinner) dialogView.findViewById(R.id.term_spinner);
-                    // Create an ArrayAdapter using the string array and a default spinner layout
-                    ArrayAdapter<CharSequence> termAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.term_array, R.layout.spinner_row);
-                    // Specify the layout to use when the list of choices appears
-                    termAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    // Apply the adapter to the spinner
-                    termSpinner.setAdapter(termAdapter);
-                    termSpinner.setSelection(termRoot);
-
-                    //Section selection
-                    TextView sectionLabel = (TextView) dialogView.findViewById(R.id.section_spinner_label);
-                    sectionLabel.setTextColor(getResources().getColor(android.R.color.black));
-
-                    final Spinner sectionText = (Spinner) dialogView.findViewById(R.id.section_selection);
-                    ArrayAdapter<CharSequence> sectionAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.section_array, R.layout.spinner_row);
-                    sectionText.setAdapter(sectionAdapter);
-                    String[] sectionListString = getResources().getStringArray(R.array.section_array);
-                    ArrayList<String> sectionList = new ArrayList<>(Arrays.asList(sectionListString));
-                    int sectionPosition = -1;
-                    for (int i = 0; i < sectionList.size(); i++) {
-                        if (sectionList.get(i).equalsIgnoreCase(sectionRoot)) {
-                            sectionPosition = i;
-                        }
-                    }
-                    sectionText.setSelection(sectionPosition);
-
+                    View dialogView = setupClassSpinners(levelRoot, termRoot, sectionRoot);
                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -156,8 +209,7 @@ public class SettingsActivity extends ColorfulActivity {
                                 routinePreference.setSummary("Current Section " + section + ", Level " + (level + 1) + ", Term " + (term + 1));
                                 prefManager.saveReCreate(true);
                                 onCreate(Bundle.EMPTY);
-                                //SHOWING SNACKBAR
-                                showSnackBar(getActivity(), "Saved");
+                                showSnackBar(getActivity(), "SAVED");
                                 dialog.dismiss();
                             } else {
                                 Toast.makeText(getActivity(), "Section " + section + " currently doesn't exist on level " + (level + 1) + " term " + (term + 1) + ". Please select the correct level, term & section. Or contact the developer to add your section.", Toast.LENGTH_LONG).show();
@@ -202,7 +254,7 @@ public class SettingsActivity extends ColorfulActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (!(selectedItems.contains(0) || selectedItems.contains(1) || selectedItems.contains(2) || selectedItems.contains(3))) {
-                                showSnackBar(getActivity(), "No items were selected");
+                                showSnackBar(getActivity(), "NO ITEMS WERE SELECTED");
                             } else {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                                 builder.setTitle("Are you sure?");
@@ -229,7 +281,7 @@ public class SettingsActivity extends ColorfulActivity {
                                         prefManager.resetModification(add, edit, save, delete);
                                         prefManager.saveReCreate(true);
                                         onCreate(Bundle.EMPTY);
-                                        showSnackBar(getActivity(), "Routine was reset!");
+                                        showSnackBar(getActivity(), "ROUTINE WAS RESET");
                                         dialog.dismiss();
                                     }
                                 });
@@ -290,6 +342,83 @@ public class SettingsActivity extends ColorfulActivity {
             if (packageInfo != null) {
                 versionPreference.setSummary(packageInfo.versionName);
             }
+
+        }
+
+        private void setupDeptSpinner() {
+            if (campusSpinner.getSelectedItem().toString().equalsIgnoreCase("main")) {
+                ArrayAdapter<CharSequence> deptAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.main_departments, R.layout.spinner_row);
+                deptAdapter.setDropDownViewResource(R.layout.spinner_row);
+                deptAdapter.notifyDataSetChanged();
+                deptSpinner.setAdapter(deptAdapter);
+            }
+        }
+
+        private void setupProgramSpinner() {
+            if (deptSpinner.getSelectedItem().toString().equalsIgnoreCase("cse") && campusSpinner.getSelectedItem().toString().equalsIgnoreCase("main")) {
+                ArrayAdapter<CharSequence> programAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.cse_main_programs, R.layout.spinner_row);
+                programAdapter.setDropDownViewResource(R.layout.spinner_row);
+                programAdapter.notifyDataSetChanged();
+                programSpinner.setAdapter(programAdapter);
+            }
+        }
+
+        private View setupClassSpinners(int levelRoot, int termRoot, String sectionRoot) {
+            View dialogView = getActivity().getLayoutInflater().inflate(R.layout.class_spinner_layout, null);
+            TextView levelLabel = (TextView) dialogView.findViewById(R.id.level_spinner_label);
+            levelLabel.setTextColor(getResources().getColor(android.R.color.black));
+            TextView termLabel = (TextView) dialogView.findViewById(R.id.term_spinner_label);
+            termLabel.setTextColor(getResources().getColor(android.R.color.black));
+            TextView sectionLabel = (TextView) dialogView.findViewById(R.id.section_spinner_label);
+            sectionLabel.setTextColor(getResources().getColor(android.R.color.black));
+            levelSpinner = (Spinner) dialogView.findViewById(R.id.level_spinner);
+            termSpinner = (Spinner) dialogView.findViewById(R.id.term_spinner);
+            sectionText = (Spinner) dialogView.findViewById(R.id.section_selection);
+            if (prefManager.getCampus().equalsIgnoreCase("main") && prefManager.getDept().equalsIgnoreCase("cse") && prefManager.getProgram().equalsIgnoreCase("day")) {
+                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.cse_main_day_level_array, R.layout.spinner_row);
+                adapter.setDropDownViewResource(R.layout.spinner_row);
+                levelSpinner.setAdapter(adapter);
+                levelSpinner.setSelection(levelRoot);
+                ArrayAdapter<CharSequence> termAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.cse_main_day_term_array, R.layout.spinner_row);
+                termAdapter.setDropDownViewResource(R.layout.spinner_row);
+                termSpinner.setAdapter(termAdapter);
+                termSpinner.setSelection(termRoot);
+                ArrayAdapter<CharSequence> sectionAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.cse_main_day_section_array, R.layout.spinner_row);
+                sectionText.setAdapter(sectionAdapter);
+                String[] sectionListString = getResources().getStringArray(R.array.cse_main_day_section_array);
+                ArrayList<String> sectionList = new ArrayList<>(Arrays.asList(sectionListString));
+                int sectionPosition = -1;
+                for (int i = 0; i < sectionList.size(); i++) {
+                    if (sectionList.get(i).equalsIgnoreCase(sectionRoot)) {
+                        sectionPosition = i;
+                    }
+                }
+                sectionText.setSelection(sectionPosition);
+            }
+            return dialogView;
+        }
+
+        public void resetLevelTermSection() {
+            if (prefManager.getDept().equalsIgnoreCase("cse") && prefManager.getCampus().equalsIgnoreCase("main") && prefManager.getProgram().equalsIgnoreCase("day")) {
+                String[] sections = getResources().getStringArray(R.array.cse_main_day_section_array);
+                prefManager.saveLevel(0);
+                prefManager.saveTerm(0);
+                prefManager.saveSection(sections[0]);
+            }
+        }
+
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            if (parent.getSelectedItemId() == R.id.campus_selection) {
+                setupDeptSpinner();
+                setupProgramSpinner();
+            } else if (parent.getSelectedItemId() == R.id.dept_selection) {
+                setupProgramSpinner();
+            }
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
 
         }
     }

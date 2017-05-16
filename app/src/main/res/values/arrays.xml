@@ -9,18 +9,18 @@
         <item>Wednesday</item>
         <item>Thursday</item>
     </string-array>
-    <string-array name="level_array">
+    <string-array name="cse_main_day_level_array">
         <item>Level 1</item>
         <item>Level 2</item>
         <item>Level 3</item>
         <item>Level 4</item>
     </string-array>
-    <string-array name="term_array">
+    <string-array name="cse_main_day_term_array">
         <item>Term 1</item>
         <item>Term 2</item>
         <item>Term 3</item>
     </string-array>
-    <string-array name="section_array">
+    <string-array name="cse_main_day_section_array">
         <item>A</item>
         <item>B</item>
         <item>C</item>
@@ -138,6 +138,71 @@
         <item>CSEXXX</item>
         <item>CSE499</item>
     </string-array>
+    <string-array name="CSE_EVE_MAIN_L1T1">
+        <item>MAT 121</item>
+        <item>CSE 131</item>
+        <item>ENG 113</item>
+        <item>PHY 123</item>
+        <item>PHY 123L</item>
+    </string-array>
+    <string-array name="CSE_EVE_MAIN_L1T2">
+        <item>CSE 213</item>
+        <item>CSE 213L</item>
+        <item>ACC 214</item>
+        <item>ECO 314</item>
+        <item>MAT 134</item>
+    </string-array>
+    <string-array name="CSE_EVE_MAIN_L1T3">
+        <item>CSE 221</item>
+        <item>CSE 222</item>
+        <item>CSE 222L</item>
+        <item>MAT 211</item>
+        <item>STA 223</item>
+    </string-array>
+    <string-array name="CSE_EVE_MAIN_L2T1">
+        <item>CSE 231</item>
+        <item>CSE 231L</item>
+        <item>CSE 224</item>
+        <item>CSE 224L</item>
+        <item>CSE 232</item>
+        <item>CSE 233</item>
+    </string-array>
+    <string-array name="CSE_EVE_MAIN_L2T2">
+        <item>CSE 322</item>
+        <item>CSE 313</item>
+        <item>CSE 313L</item>
+        <item>CSE 311</item>
+        <item>CSE 311L</item>
+        <item>CSE 312</item>
+    </string-array>
+    <string-array name="CSE_EVE_MAIN_L2T3">
+        <item>CSE 331</item>
+        <item>CSE 331L</item>
+        <item>CSE 413</item>
+        <item>CSE 413L</item>
+        <item>CSE 323</item>
+        <item>CSE 323L</item>
+    </string-array>
+    <string-array name="CSE_EVE_MAIN_L3T1">
+        <item>CSE 321</item>
+        <item>CSE 321L</item>
+        <item>CSE 421</item>
+        <item>CSE 421L</item>
+        <item>CSE 431</item>
+        <item>MGT 414</item>
+    </string-array>
+    <string-array name="CSE_EVE_MAIN_L3T2">
+        <item>CSE 412</item>
+        <item>CSE 412L</item>
+        <item>CSE 411</item>
+        <item>CSE 332</item>
+        <item>CSE 499</item>
+    </string-array>
+    <string-array name="CSE_EVE_MAIN_L3T3">
+        <item>CSE 333</item>
+        <item>CSE 432</item>
+        <item>CSE 499</item>
+    </string-array>
     <string-array name="start_time">
         <item>08.30 AM</item>
         <item>09.00 AM</item>
@@ -164,15 +229,13 @@
     <!--Campuses-->
 
     <string-array name="campuses">
-        <item>main</item>
-        <!--<item>permanent</item>-->
+        <item>Main</item>
     </string-array>
 
     <!--Departments-->
 
     <string-array name="main_departments">
         <item>CSE</item>
-        <!--<item>TE</item>-->
     </string-array>
     <string-array name="permanent_departments">
         <item>CSE</item>
@@ -180,8 +243,7 @@
 
     <!--Programs-->
     <string-array name="cse_main_programs">
-        <item>day</item>
-        <!--<item>evening</item>-->
+        <item>Day</item>
     </string-array>
     <string-array name="cse_perm_programs">
         <item>day</item>

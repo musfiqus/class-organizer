@@ -57,16 +57,8 @@ public class EditActivity extends ColorfulActivity {
         }
         dayDatas = prefManager.getSavedDayData();
         for (int i = 0; i < dayDatas.size(); i++) {
-            if (dayDatas.get(i).getCourseCode().equalsIgnoreCase(dayData.getCourseCode())) {
-                if (dayDatas.get(i).getTeachersInitial().equalsIgnoreCase(dayData.getTeachersInitial())) {
-                    if (dayDatas.get(i).getDay().equalsIgnoreCase(dayData.getDay())) {
-                        if (dayDatas.get(i).getRoomNo().equalsIgnoreCase(dayData.getRoomNo())) {
-                            if (dayDatas.get(i).getDay().equalsIgnoreCase(dayData.getDay())) {
-                                position = i;
-                            }
-                        }
-                    }
-                }
+            if (dayData.equals(dayDatas.get(i))) {
+                position = i;
             }
         }
 
@@ -141,7 +133,7 @@ public class EditActivity extends ColorfulActivity {
         String time = timeJoiner(startTimeSpinner.getSelectedItem().toString(), endTimeSpinner.getSelectedItem().toString());
         String day = weekDaySpinner.getSelectedItem().toString();
         double timeWeight = timeWeight(startTimeSpinner.getSelectedItem().toString());
-        return new DayData(courseCode, initial, room, time, day, timeWeight);
+        return new DayData(courseCode, initial, prefManager.getSection(), room, time, day, timeWeight);
     }
 
     private double timeWeight(String startTime) {

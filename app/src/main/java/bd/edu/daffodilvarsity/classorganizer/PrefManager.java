@@ -34,6 +34,7 @@ class PrefManager {
     private static final String PREF_DELETED_DAYDATA = "deleted_daydata";
     private static final String PREF_EDITED_DAYDATA = "edited_daydata";
     private static final String PREF_SNAPSHOT_DAYDATA = "snapshot_daydata";
+    private static final String HAS_CAMPUS_SETTINGS_CHANGED = "HasCampusChanged";
 
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
@@ -115,18 +116,21 @@ class PrefManager {
     }
 
     void saveCampus(String campus) {
+        campus = campus.toLowerCase();
         editor.remove(SAVE_CAMPUS).apply();
         editor.putString(SAVE_CAMPUS, campus);
         editor.apply();
     }
 
     void saveDept(String dept) {
+        dept = dept.toLowerCase();
         editor.remove(SAVE_DEPT).apply();
         editor.putString(SAVE_DEPT, dept);
         editor.apply();
     }
 
     void saveProgram(String program) {
+        program = program.toLowerCase();
         editor.remove(SAVE_PROGRAM).apply();
         editor.putString(SAVE_PROGRAM, program);
         editor.apply();
@@ -212,6 +216,16 @@ class PrefManager {
                 editor.apply();
             }
         }
+    }
+
+    void setHasCampusSettingsChanged(boolean value) {
+        editor.remove(HAS_CAMPUS_SETTINGS_CHANGED).apply();
+        editor.putBoolean(HAS_CAMPUS_SETTINGS_CHANGED, value);
+        editor.apply();
+    }
+
+    boolean hasCampusSettingsChanged() {
+        return pref.getBoolean(HAS_CAMPUS_SETTINGS_CHANGED, false);
     }
 
     ArrayList<DayData> getModifiedData(String which) {
