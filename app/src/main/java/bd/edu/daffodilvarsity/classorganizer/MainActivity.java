@@ -27,7 +27,11 @@ import com.google.firebase.crash.FirebaseCrash;
 import org.polaric.colorful.Colorful;
 import org.polaric.colorful.ColorfulActivity;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends ColorfulActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static MainActivity mainActivity;
@@ -203,7 +207,15 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
             adapter.notifyDataSetChanged();
             // Set the adapter onto the view pager
             viewPager.setAdapter(adapter);
-            viewPager.getAdapter().notifyDataSetChanged();
+            //Setting current date and tab
+            Calendar calendar = Calendar.getInstance();
+            Date date = calendar.getTime();
+            String currentDay = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(date.getTime());
+            for (int i = 0; i < adapter.getCount(); i++) {
+                if (adapter.getPageTitle(i).toString().equalsIgnoreCase(currentDay)) {
+                    viewPager.setCurrentItem(i);
+                }
+            }
             // Find the tab layout that shows the tabs
             TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
             // Connect the tab layout with the view pager. This will
