@@ -133,7 +133,7 @@ public class EditActivity extends ColorfulActivity {
         String time = timeJoiner(startTimeSpinner.getSelectedItem().toString(), endTimeSpinner.getSelectedItem().toString());
         String day = weekDaySpinner.getSelectedItem().toString();
         double timeWeight = timeWeight(startTimeSpinner.getSelectedItem().toString());
-        return new DayData(courseCode, initial, prefManager.getSection(), prefManager.getLevel(), prefManager.getTerm(), room, time, day, timeWeight);
+        return new DayData(courseCode, initial, prefManager.getSection(), prefManager.getLevel(), prefManager.getTerm(), room, time, day, timeWeight, null);
     }
 
     private double timeWeight(String startTime) {
