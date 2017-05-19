@@ -16,7 +16,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,24 +52,16 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         setContentView(R.layout.activity_main);
         mainActivity = this;
         prefManager = new PrefManager(this);
-        //Maintaining compatibility with version 1.0
-        if (prefManager.getCampus() == null || prefManager.getDept() == null || prefManager.getProgram() == null) {
-            prefManager.saveCampus("main");
-            prefManager.saveDept("cse");
-            prefManager.saveProgram("day");
-            prefManager.deleteSnapshotDayData();
-        }
+        //Maintaining compatibility with previous versions
+        prefManager.setCompat2point2();
+        prefManager.deleteSnapshotDayData();
+
         routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), this, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
 
         //If there is a new routine, update
-        if (prefManager.getSemester() != null
-                && !prefManager.getSemester().equals(getResources().getString(R.string.current_semester))
-                && ((prefManager.getDept().equalsIgnoreCase("cse")
-                && prefManager.getCampus().equalsIgnoreCase("main")
-                && prefManager.getProgram().equalsIgnoreCase("day")))) {
-            if ((prefManager.getLevel() + prefManager.getTerm()) < 5) {
-                upgradeRoutine();
-            }
+        if (prefManager.getSemester() != null && !prefManager.getSemester().equals(getResources().getString(R.string.current_semester))) {
+            //We will add department checks later if there is a specific update
+            upgradeRoutine();
         } else if (DatabaseHelper.DATABASE_VERSION > prefManager.getDatabaseVersion()) {
             boolean isNotUpdated = updateRoutine(true);
             if (isNotUpdated) {
@@ -297,7 +288,6 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         ArrayList<DayData> updatedRoutine = routineLoader.loadRoutine(personalRoutine);
         if (updatedRoutine != null) {
             if (updatedRoutine.size() > 0) {
-                Log.e("I'm alive", "UPDATE");
                 prefManager.saveDayData(updatedRoutine);
                 return false;
             }

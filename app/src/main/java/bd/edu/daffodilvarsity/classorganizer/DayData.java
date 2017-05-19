@@ -13,15 +13,19 @@ public class DayData implements Serializable, Parcelable {
     private String courseCode;
     private String teachersInitial;
     private String section;
+    private int level;
+    private int term;
     private String roomNo;
     private String time;
     private String day;
     private double timeWeight;
 
-    public DayData(String courseCode, String teachersInitial, String section, String roomNo, String time, String day, double timeWeight) {
+    public DayData(String courseCode, String teachersInitial, String section, int level, int term, String roomNo, String time, String day, double timeWeight) {
         this.courseCode = courseCode;
         this.teachersInitial = teachersInitial;
         this.section = section;
+        this.level = level;
+        this.term = term;
         this.roomNo = roomNo;
         this.time = time;
         this.day = day;
@@ -38,6 +42,14 @@ public class DayData implements Serializable, Parcelable {
 
     public String getSection() {
         return section;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public int getTerm() {
+        return term;
     }
 
     public String getRoomNo() {
@@ -71,6 +83,12 @@ public class DayData implements Serializable, Parcelable {
         if (!(otherData.getSection().equals(this.section))) {
             return false;
         }
+        if (otherData.getLevel() != this.level) {
+            return false;
+        }
+        if (otherData.getTerm() != this.term) {
+            return false;
+        }
         if (!(otherData.getDay().equals(this.day))) {
             return false;
         }
@@ -93,6 +111,8 @@ public class DayData implements Serializable, Parcelable {
         dest.writeString(this.courseCode);
         dest.writeString(this.teachersInitial);
         dest.writeString(this.section);
+        dest.writeInt(this.level);
+        dest.writeInt(this.term);
         dest.writeString(this.roomNo);
         dest.writeString(this.time);
         dest.writeString(this.day);
@@ -103,6 +123,8 @@ public class DayData implements Serializable, Parcelable {
         this.courseCode = in.readString();
         this.teachersInitial = in.readString();
         this.section = in.readString();
+        this.level = in.readInt();
+        this.term = in.readInt();
         this.roomNo = in.readString();
         this.time = in.readString();
         this.day = in.readString();

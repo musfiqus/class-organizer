@@ -15,6 +15,11 @@ xmlns:colorpicker="http://schemas.android.com/apk/res-auto">
             android:key="reset_preference"
             android:summary="Clears saved, added, edited, deleted classes"
             android:title="Reset Your Routine" />
+        <SwitchPreferenceCompat
+            android:key="limit_preference"
+            android:summary="Place holder"
+            android:title="Limit Modified Classes"
+            android:defaultValue="true" />
     </android.support.v7.preference.PreferenceCategory>
     <android.support.v7.preference.PreferenceCategory
         android:title="Appearance">
@@ -36,11 +41,16 @@ xmlns:colorpicker="http://schemas.android.com/apk/res-auto">
             android:title="Current Version" />
         <Preference
             android:key="developer_preference"
-            android:summary="Mushfiqus Salehin"
-            android:title="Developed by" />
+            android:title="Developed by"
+            android:summary="Mushfiqus Salehin">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="http://mushfiqussalehin.me" />
+        </Preference>
         <Preference
             android:key="icon_preference"
             android:summary="Raisul Haque Rajon"
             android:title="Icon Design by" />
+
     </android.support.v7.preference.PreferenceCategory>
 </android.support.v7.preference.PreferenceScreen>

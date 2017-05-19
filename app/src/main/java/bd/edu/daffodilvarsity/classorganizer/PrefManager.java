@@ -35,6 +35,11 @@ class PrefManager {
     private static final String PREF_EDITED_DAYDATA = "edited_daydata";
     private static final String PREF_SNAPSHOT_DAYDATA = "snapshot_daydata";
     private static final String HAS_CAMPUS_SETTINGS_CHANGED = "HasCampusChanged";
+    private static final String IS_CAMPUS_CHANGE_ALERT_DISABLED = "IsCampusChangeAlertDisabled";
+    public static final String SAVE_DATA_TAG = "save";
+    public static final String ADD_DATA_TAG = "add";
+    public static final String EDIT_DATA_TAG = "edit";
+    public static final String DELETE_DATA_TAG = "delete";
 
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
@@ -140,7 +145,7 @@ class PrefManager {
         if (!reset) {
             Gson gson = new Gson();
             ArrayList<DayData> previousData = getModifiedData(which);
-            if (which.equalsIgnoreCase("add") && previousData != null) {
+            if (which.equalsIgnoreCase(ADD_DATA_TAG) && previousData != null) {
                 editor.remove(PREF_ADDED_DAYDATA).apply();
                 if (!isDuplicate(previousData, dayData)) {
                     previousData.add(dayData);
@@ -148,14 +153,14 @@ class PrefManager {
                 String json = gson.toJson(previousData);
                 editor.putString(PREF_ADDED_DAYDATA, json);
                 editor.apply();
-            } else if (which.equalsIgnoreCase("add") && previousData == null){
+            } else if (which.equalsIgnoreCase(ADD_DATA_TAG) && previousData == null) {
                 editor.remove(PREF_ADDED_DAYDATA).apply();
                 ArrayList<DayData> newArray = new ArrayList<>();
                 newArray.add(dayData);
                 String json = gson.toJson(newArray);
                 editor.putString(PREF_ADDED_DAYDATA, json);
                 editor.apply();
-            } else if (which.equalsIgnoreCase("save") && previousData != null) {
+            } else if (which.equalsIgnoreCase(SAVE_DATA_TAG) && previousData != null) {
                 editor.remove(PREF_SAVED_DAYDATA).apply();
                 if (!isDuplicate(previousData, dayData)) {
                     previousData.add(dayData);
@@ -163,14 +168,14 @@ class PrefManager {
                 String json = gson.toJson(previousData);
                 editor.putString(PREF_SAVED_DAYDATA, json);
                 editor.apply();
-            } else if (which.equalsIgnoreCase("save") && previousData == null) {
+            } else if (which.equalsIgnoreCase(SAVE_DATA_TAG) && previousData == null) {
                 editor.remove(PREF_SAVED_DAYDATA).apply();
                 ArrayList<DayData> newArray = new ArrayList<>();
                 newArray.add(dayData);
                 String json = gson.toJson(newArray);
                 editor.putString(PREF_SAVED_DAYDATA, json);
                 editor.apply();
-            } else if (which.equalsIgnoreCase("edit") && previousData != null) {
+            } else if (which.equalsIgnoreCase(EDIT_DATA_TAG) && previousData != null) {
                 editor.remove(PREF_EDITED_DAYDATA).apply();
                 if (!isDuplicate(previousData, dayData)) {
                     previousData.add(dayData);
@@ -178,14 +183,14 @@ class PrefManager {
                 String json = gson.toJson(previousData);
                 editor.putString(PREF_EDITED_DAYDATA, json);
                 editor.apply();
-            } else if (which.equalsIgnoreCase("edit") && previousData == null) {
+            } else if (which.equalsIgnoreCase(EDIT_DATA_TAG) && previousData == null) {
                 editor.remove(PREF_EDITED_DAYDATA).apply();
                 ArrayList<DayData> newArray = new ArrayList<>();
                 newArray.add(dayData);
                 String json = gson.toJson(newArray);
                 editor.putString(PREF_EDITED_DAYDATA, json);
                 editor.apply();
-            } else if (which.equalsIgnoreCase("delete") && previousData != null) {
+            } else if (which.equalsIgnoreCase(DELETE_DATA_TAG) && previousData != null) {
                 editor.remove(PREF_DELETED_DAYDATA).apply();
                 if (!isDuplicate(previousData, dayData)) {
                     previousData.add(dayData);
@@ -193,7 +198,7 @@ class PrefManager {
                 String json = gson.toJson(previousData);
                 editor.putString(PREF_DELETED_DAYDATA, json);
                 editor.apply();
-            } else if (which.equalsIgnoreCase("delete") && previousData == null) {
+            } else if (which.equalsIgnoreCase(DELETE_DATA_TAG) && previousData == null) {
                 editor.remove(PREF_DELETED_DAYDATA).apply();
                 ArrayList<DayData> newArray = new ArrayList<>();
                 newArray.add(dayData);
@@ -202,18 +207,14 @@ class PrefManager {
                 editor.apply();
             }
         } else {
-            if (which.equalsIgnoreCase("add")) {
-                editor.putString(PREF_ADDED_DAYDATA, null);
-                editor.apply();
-            } else if (which.equalsIgnoreCase("edit")) {
-                editor.putString(PREF_EDITED_DAYDATA, null);
-                editor.apply();
-            } else if (which.equalsIgnoreCase("save")) {
-                editor.putString(PREF_SAVED_DAYDATA, null);
-                editor.apply();
-            } else if (which.equalsIgnoreCase("delete")) {
-                editor.putString(PREF_DELETED_DAYDATA, null);
-                editor.apply();
+            if (which.equalsIgnoreCase(ADD_DATA_TAG)) {
+                editor.remove(PREF_ADDED_DAYDATA).apply();
+            } else if (which.equalsIgnoreCase(EDIT_DATA_TAG)) {
+                editor.remove(PREF_EDITED_DAYDATA).apply();
+            } else if (which.equalsIgnoreCase(SAVE_DATA_TAG)) {
+                editor.remove(PREF_SAVED_DAYDATA).apply();
+            } else if (which.equalsIgnoreCase(DELETE_DATA_TAG)) {
+                editor.remove(PREF_DELETED_DAYDATA).apply();
             }
         }
     }
@@ -224,13 +225,23 @@ class PrefManager {
         editor.apply();
     }
 
+    void setIsCampusChangeAlertDisabled(boolean value) {
+        editor.remove(IS_CAMPUS_CHANGE_ALERT_DISABLED).apply();
+        editor.putBoolean(IS_CAMPUS_CHANGE_ALERT_DISABLED, value);
+        editor.apply();
+    }
+
+    boolean isCampusChangeAlertDisabled() {
+        return pref.getBoolean(IS_CAMPUS_CHANGE_ALERT_DISABLED, false);
+    }
+
     boolean hasCampusSettingsChanged() {
         return pref.getBoolean(HAS_CAMPUS_SETTINGS_CHANGED, false);
     }
 
     ArrayList<DayData> getModifiedData(String which) {
         Gson gson = new Gson();
-        if (which.equalsIgnoreCase("add")) {
+        if (which.equalsIgnoreCase(ADD_DATA_TAG)) {
             String json = pref.getString(PREF_ADDED_DAYDATA, null);
             if (json != null) {
                 Type type = new TypeToken<ArrayList<DayData>>() {
@@ -238,7 +249,7 @@ class PrefManager {
                 return gson.fromJson(json, type);
             }
             return null;
-        } else if (which.equalsIgnoreCase("save")) {
+        } else if (which.equalsIgnoreCase(SAVE_DATA_TAG)) {
             String json = pref.getString(PREF_SAVED_DAYDATA, null);
             if (json != null) {
                 Type type = new TypeToken<ArrayList<DayData>>() {
@@ -246,7 +257,7 @@ class PrefManager {
                 return gson.fromJson(json, type);
             }
             return null;
-        } else if (which.equalsIgnoreCase("edit")) {
+        } else if (which.equalsIgnoreCase(EDIT_DATA_TAG)) {
             String json = pref.getString(PREF_EDITED_DAYDATA, null);
             if (json != null) {
                 Type type = new TypeToken<ArrayList<DayData>>() {
@@ -254,7 +265,7 @@ class PrefManager {
                 return gson.fromJson(json, type);
             }
             return null;
-        } else if (which.equalsIgnoreCase("delete")) {
+        } else if (which.equalsIgnoreCase(DELETE_DATA_TAG)) {
             String json = pref.getString(PREF_DELETED_DAYDATA, null);
             if (json != null) {
                 Type type = new TypeToken<ArrayList<DayData>>() {
@@ -268,16 +279,16 @@ class PrefManager {
 
     void resetModification(boolean add, boolean edit, boolean save, boolean delete) {
         if (add) {
-            saveModifiedData(null, "add", true);
+            saveModifiedData(null, ADD_DATA_TAG, true);
         }
         if (edit) {
-            saveModifiedData(null, "edit", true);
+            saveModifiedData(null, EDIT_DATA_TAG, true);
         }
         if (save) {
-            saveModifiedData(null, "save", true);
+            saveModifiedData(null, SAVE_DATA_TAG, true);
         }
         if (delete) {
-            saveModifiedData(null, "delete", true);
+            saveModifiedData(null, DELETE_DATA_TAG, true);
         }
         RoutineLoader routineLoader = new RoutineLoader(getLevel(), getTerm(), getSection(), _context, getDept(), getCampus(), getProgram());
         ArrayList<DayData> loadedData = routineLoader.loadRoutine(true);
@@ -287,18 +298,6 @@ class PrefManager {
     //This will be removed in future
     void deleteSnapshotDayData() {
         editor.remove(PREF_SNAPSHOT_DAYDATA).apply();
-    }
-
-
-    ArrayList<DayData> getEditedDayData() {
-        Gson gson = new Gson();
-        String json = pref.getString(PREF_EDITED_DAYDATA, null);
-        if (json != null) {
-            Type type = new TypeToken<ArrayList<DayData>>() {
-            }.getType();
-            return gson.fromJson(json, type);
-        }
-        return null;
     }
 
     boolean isDuplicate(ArrayList<DayData> list, DayData object) {
@@ -357,6 +356,14 @@ class PrefManager {
 
     String getProgram() {
         return pref.getString(SAVE_PROGRAM, null);
+    }
+
+    void setCompat2point2() {
+        if (getDatabaseVersion() < 39) {
+            saveModifiedData(null, EDIT_DATA_TAG, true);
+            saveModifiedData(null, DELETE_DATA_TAG, true);
+            saveModifiedData(null, SAVE_DATA_TAG, true);
+        }
     }
 }
 

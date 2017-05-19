@@ -133,7 +133,7 @@ public class EditActivity extends ColorfulActivity {
         String time = timeJoiner(startTimeSpinner.getSelectedItem().toString(), endTimeSpinner.getSelectedItem().toString());
         String day = weekDaySpinner.getSelectedItem().toString();
         double timeWeight = timeWeight(startTimeSpinner.getSelectedItem().toString());
-        return new DayData(courseCode, initial, prefManager.getSection(), room, time, day, timeWeight);
+        return new DayData(courseCode, initial, prefManager.getSection(), prefManager.getLevel(), prefManager.getTerm(), room, time, day, timeWeight);
     }
 
     private double timeWeight(String startTime) {
@@ -150,6 +150,10 @@ public class EditActivity extends ColorfulActivity {
                 return 5.0;
             case "04.00 PM":
                 return 6.0;
+            case "06.00 PM":
+                return 7.0;
+            case "07.30 PM":
+                return 8.0;
             case "09.00 AM":
                 return 1.5;
             case "11.00 AM":
@@ -181,7 +185,7 @@ public class EditActivity extends ColorfulActivity {
             //Saving the changed data
             DayData editedDay = getEditedDay();
             if (position > -1) {
-                prefManager.saveModifiedData(editedDay,"edit", false);
+                prefManager.saveModifiedData(editedDay, PrefManager.EDIT_DATA_TAG, false);
                 dayDatas.set(position, editedDay);
             }
             prefManager.saveDayData(dayDatas);
@@ -199,7 +203,7 @@ public class EditActivity extends ColorfulActivity {
 
                 public void onClick(DialogInterface dialog, int which) {
                     if (position > -1) {
-                        prefManager.saveModifiedData(dayDatas.get(position), "delete" , false);
+                        prefManager.saveModifiedData(dayDatas.get(position), PrefManager.DELETE_DATA_TAG, false);
                         dayDatas.remove(position);
                     }
                     prefManager.saveDayData(dayDatas);
