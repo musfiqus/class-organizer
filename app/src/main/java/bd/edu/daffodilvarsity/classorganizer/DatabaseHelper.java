@@ -54,7 +54,7 @@ class DatabaseHelper extends SQLiteAssetHelper {
                     new String[]{id}, null, null, null, null);
             if (cursor.moveToFirst()) {
                 do {
-                    DayData newDayData = new DayData(getCourseCode(eachCourse), trimInitial(cursor.getString(1)), section, level, term, cursor.getString(3), getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)));
+                    DayData newDayData = new DayData(getCourseCode(eachCourse), trimInitial(cursor.getString(1)), section, level, term, cursor.getString(3), getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), null);
                     finalDayData.add(newDayData);
                 } while (cursor.moveToNext());
             }

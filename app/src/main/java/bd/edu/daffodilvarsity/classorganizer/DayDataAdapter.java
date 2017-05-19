@@ -132,7 +132,7 @@ public class DayDataAdapter extends ArrayAdapter<DayData> {
                             builder.onPositive(new MaterialDialog.SingleButtonCallback() {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
-                                    DayData toSave = new DayData(currentClass.getCourseCode(), currentClass.getTeachersInitial(), sectionSpinner.getSelectedItem().toString(), levelSpinner.getSelectedItemPosition(), termSpinner.getSelectedItemPosition(), currentClass.getRoomNo(), currentClass.getTime(), currentClass.getDay(), currentClass.getTimeWeight());
+                                    DayData toSave = new DayData(currentClass.getCourseCode(), currentClass.getTeachersInitial(), sectionSpinner.getSelectedItem().toString(), levelSpinner.getSelectedItemPosition(), termSpinner.getSelectedItemPosition(), currentClass.getRoomNo(), currentClass.getTime(), currentClass.getDay(), currentClass.getTimeWeight(), null);
                                     prefManager.saveModifiedData(toSave, PrefManager.SAVE_DATA_TAG, false);
                                     Snackbar.make(parent, toSave.getCourseCode() + " saved!", Snackbar.LENGTH_SHORT).show();
                                 }

@@ -19,8 +19,9 @@ public class DayData implements Serializable, Parcelable {
     private String time;
     private String day;
     private double timeWeight;
+    private String courseTitle;
 
-    public DayData(String courseCode, String teachersInitial, String section, int level, int term, String roomNo, String time, String day, double timeWeight) {
+    public DayData(String courseCode, String teachersInitial, String section, int level, int term, String roomNo, String time, String day, double timeWeight, String courseTitle) {
         this.courseCode = courseCode;
         this.teachersInitial = teachersInitial;
         this.section = section;
@@ -30,6 +31,7 @@ public class DayData implements Serializable, Parcelable {
         this.time = time;
         this.day = day;
         this.timeWeight = timeWeight;
+        this.courseTitle = courseTitle;
     }
 
     public String getCourseCode() {
@@ -66,6 +68,10 @@ public class DayData implements Serializable, Parcelable {
 
     public double getTimeWeight() {
         return timeWeight;
+    }
+
+    public String getCourseTitle() {
+        return courseTitle;
     }
 
     @Override
@@ -117,6 +123,7 @@ public class DayData implements Serializable, Parcelable {
         dest.writeString(this.time);
         dest.writeString(this.day);
         dest.writeDouble(this.timeWeight);
+        dest.writeString(this.courseTitle);
     }
 
     protected DayData(Parcel in) {
@@ -129,6 +136,7 @@ public class DayData implements Serializable, Parcelable {
         this.time = in.readString();
         this.day = in.readString();
         this.timeWeight = in.readDouble();
+        this.courseTitle = in.readString();
     }
 
     public static final Parcelable.Creator<DayData> CREATOR = new Parcelable.Creator<DayData>() {
