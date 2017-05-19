@@ -15,10 +15,7 @@ import java.util.ArrayList;
 
 class DatabaseHelper extends SQLiteAssetHelper {
     //Increment the version to erase previous db
-    public static final int DATABASE_VERSION = 34;
-
-    private String currentTable;
-
+    public static final int DATABASE_VERSION = 38;
     private static final String COLUMN_COURSE_CODE = "course_code";
     private static final String COLUMN_TEACHERS_INITIAL = "teachers_initial";
     private static final String COLUMN_WEEK_DAYS = "week_days";
@@ -45,20 +42,19 @@ class DatabaseHelper extends SQLiteAssetHelper {
         return mInstance;
     }
 
-    public ArrayList<DayData> getDayData(ArrayList<String> courseCodes, String section) {
+    public ArrayList<DayData> getDayData(ArrayList<String> courseCodes, String section, int level, int term, final String currentTable) {
         SQLiteDatabase db = this.getReadableDatabase();
         if (finalDayData != null) {
             finalDayData.clear();
         }
         for (String eachCourse : courseCodes) {
-            String id = eachCourse + section;
+            String id = removeSpaces(eachCourse) + section;
             Cursor cursor = db.query(currentTable, new String[]{COLUMN_COURSE_CODE,
                             COLUMN_TEACHERS_INITIAL, COLUMN_WEEK_DAYS, COLUMN_ROOM_NO, COLUMN_TIME}, COLUMN_COURSE_CODE + "=?",
                     new String[]{id}, null, null, null, null);
-
             if (cursor.moveToFirst()) {
                 do {
-                    DayData newDayData = new DayData(getCourseCode(eachCourse), trimInitial(cursor.getString(1)), section, cursor.getString(3), getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)));
+                    DayData newDayData = new DayData(getCourseCode(eachCourse), trimInitial(cursor.getString(1)), section, level, term, cursor.getString(3), getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)));
                     finalDayData.add(newDayData);
                 } while (cursor.moveToNext());
             }
@@ -67,10 +63,10 @@ class DatabaseHelper extends SQLiteAssetHelper {
         return finalDayData;
     }
 
-    public ArrayList<DayData> getDayData(ArrayList<String> courseCodes, String section, String dept, String campus, String program) {
+    public ArrayList<DayData> getDayData(ArrayList<String> courseCodes, String section, int level, int term, String dept, String campus, String program) {
         //We will create table names using this format: TABLE_DEPARTMENT_CAMPUS_PROGRAM
-        this.currentTable = dept.toLowerCase() + "_" + campus.toLowerCase() + "_" + program.toLowerCase();
-        return getDayData(courseCodes, section);
+        final String currentTable = dept.toLowerCase() + "_" + campus.toLowerCase() + "_" + program.toLowerCase();
+        return getDayData(courseCodes, section, level, term, currentTable);
     }
 
     private double getTimeWeight(String weight) {
@@ -104,6 +100,10 @@ class DatabaseHelper extends SQLiteAssetHelper {
                 return "02.30 PM - 04.00 PM";
             case "6.0":
                 return "04.00 PM - 05.30 PM";
+            case "7.0":
+                return "06.00 PM - 07.30 PM";
+            case "8.0":
+                return "07.30 PM - 09.00 PM";
             case "1.5":
                 return "09.00 AM - 11.00 AM";
             case "2.5":
@@ -112,10 +112,18 @@ class DatabaseHelper extends SQLiteAssetHelper {
                 return "01.00 PM - 03.00 PM";
             case "4.5":
                 return "03.00 PM - 05.00 PM";
+            case "4.6":
+                return "03.00 PM - 06.00 PM";
+            case "7.5":
+                return "06.00 PM - 09.00 PM";
             default:
                 FirebaseCrash.report(new Exception("DATABASE ERROR INVALID TIME"));
                 return null;
         }
+    }
+
+    private String removeSpaces(String strings) {
+        return strings.replaceAll("\\s+", "");
     }
 
     private String trimInitial(String initial) {

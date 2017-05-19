@@ -15,10 +15,15 @@
         <item>Level 3</item>
         <item>Level 4</item>
     </string-array>
-    <string-array name="cse_main_day_term_array">
+    <string-array name="term_array">
         <item>Term 1</item>
         <item>Term 2</item>
         <item>Term 3</item>
+    </string-array>
+    <string-array name="cse_main_eve_level_array">
+        <item>Level 1</item>
+        <item>Level 2</item>
+        <item>Level 3</item>
     </string-array>
     <string-array name="cse_main_day_section_array">
         <item>A</item>
@@ -213,6 +218,8 @@
         <item>02.30 PM</item>
         <item>03.00 PM</item>
         <item>04.00 PM</item>
+        <item>06.00 PM</item>
+        <item>07.30 PM</item>
     </string-array>
     <string-array name="end_time">
         <item>10.00 AM</item>
@@ -224,6 +231,9 @@
         <item>04.00 PM</item>
         <item>05.00 PM</item>
         <item>05.30 PM</item>
+        <item>06.00 PM</item>
+        <item>07.30 PM</item>
+        <item>09.00 PM</item>
     </string-array>
 
     <!--Campuses-->
@@ -244,6 +254,7 @@
     <!--Programs-->
     <string-array name="cse_main_programs">
         <item>Day</item>
+        <item>Evening</item>
     </string-array>
     <string-array name="cse_perm_programs">
         <item>day</item>

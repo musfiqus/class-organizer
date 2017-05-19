@@ -89,7 +89,7 @@ public class AddActivity extends ColorfulActivity {
             Toast.makeText(this, "Fields can't be empty", Toast.LENGTH_SHORT).show();
             return null;
         } else {
-            return new DayData(courseCode.getText().toString(), addInitial.getText().toString(), prefManager.getSection(), addRoom.getText().toString(), timeJoiner(startTimeSpinner.getSelectedItem().toString(), endTimeSpinner.getSelectedItem().toString()), weekDaySpinner.getSelectedItem().toString(), timeWeight(startTimeSpinner.getSelectedItem().toString()));
+            return new DayData(courseCode.getText().toString(), addInitial.getText().toString(), prefManager.getSection(), prefManager.getLevel(), prefManager.getTerm(), addRoom.getText().toString(), timeJoiner(startTimeSpinner.getSelectedItem().toString(), endTimeSpinner.getSelectedItem().toString()), weekDaySpinner.getSelectedItem().toString(), timeWeight(startTimeSpinner.getSelectedItem().toString()));
         }
 
     }
@@ -108,6 +108,10 @@ public class AddActivity extends ColorfulActivity {
                 return 5.0;
             case "04.00 PM":
                 return 6.0;
+            case "06.00 PM":
+                return 7.0;
+            case "07.30 PM":
+                return 8.0;
             case "09.00 AM":
                 return 1.5;
             case "11.00 AM":
@@ -145,7 +149,7 @@ public class AddActivity extends ColorfulActivity {
                 prefManager.saveReCreate(true);
                 prefManager.saveSnackData("Added");
                 prefManager.saveShowSnack(true);
-                prefManager.saveModifiedData(newDay, "add" , false);
+                prefManager.saveModifiedData(newDay, PrefManager.ADD_DATA_TAG, false);
                 reCreate();
             }
         } else if (item.getItemId() == android.R.id.home) {
