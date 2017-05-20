@@ -85,24 +85,41 @@ public class DayDataHolder extends RecyclerView.ViewHolder {
                             termAdapter.setDropDownViewResource(R.layout.spinner_row);
                             termSpinner.setAdapter(termAdapter);
                             termSpinner.setSelection(prefManager.getTerm());
-                            ArrayAdapter<CharSequence> sectionAdapter = ArrayAdapter.createFromResource(context, R.array.cse_main_day_section_array, R.layout.spinner_row);
-                            sectionSpinner.setAdapter(sectionAdapter);
-                            String[] sectionListString = dialogView.getResources().getStringArray(R.array.cse_main_day_section_array);
-                            ArrayList<String> sectionList = new ArrayList<>(Arrays.asList(sectionListString));
+
                             ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(context, 0);
                             int sectionPosition = -1;
-                            for (int i = 0; i < sectionList.size(); i++) {
-                                if (sectionList.get(i).equalsIgnoreCase(prefManager.getSection())) {
-                                    sectionPosition = i;
-                                }
-                            }
-                            sectionSpinner.setSelection(sectionPosition);
+
                             if (prefManager.getCampus().equalsIgnoreCase("main")) {
                                 if (prefManager.getDept().equalsIgnoreCase("cse")) {
                                     if (prefManager.getProgram().equalsIgnoreCase("day")) {
                                         adapter = ArrayAdapter.createFromResource(context, R.array.cse_main_day_level_array, R.layout.spinner_row);
                                     } else if (prefManager.getProgram().equalsIgnoreCase("eve")) {
                                         adapter = ArrayAdapter.createFromResource(context, R.array.cse_main_day_level_array, R.layout.spinner_row);
+                                    }
+                                    ArrayAdapter<CharSequence> sectionAdapter = ArrayAdapter.createFromResource(context, R.array.cse_main_day_section_array, R.layout.spinner_row);
+                                    sectionSpinner.setAdapter(sectionAdapter);
+                                    String[] sectionListString = dialogView.getResources().getStringArray(R.array.cse_main_day_section_array);
+                                    ArrayList<String> sectionList = new ArrayList<>(Arrays.asList(sectionListString));
+                                    for (int i = 0; i < sectionList.size(); i++) {
+                                        if (sectionList.get(i).equalsIgnoreCase(prefManager.getSection())) {
+                                            sectionPosition = i;
+                                        }
+                                    }
+                                    sectionSpinner.setSelection(sectionPosition);
+                                }
+                            } else if (prefManager.getCampus().equalsIgnoreCase("perm")) {
+                                if (prefManager.getDept().equalsIgnoreCase("cse")) {
+                                    if (prefManager.getProgram().equalsIgnoreCase("eve")) {
+                                        ArrayAdapter<CharSequence> sectionAdapter = ArrayAdapter.createFromResource(context, R.array.cse_perm_section_array, R.layout.spinner_row);
+                                        sectionSpinner.setAdapter(sectionAdapter);
+                                        String[] sectionListString = dialogView.getResources().getStringArray(R.array.cse_perm_section_array);
+                                        ArrayList<String> sectionList = new ArrayList<>(Arrays.asList(sectionListString));
+                                        for (int i = 0; i < sectionList.size(); i++) {
+                                            if (sectionList.get(i).equalsIgnoreCase(prefManager.getSection())) {
+                                                sectionPosition = i;
+                                            }
+                                        }
+                                        sectionSpinner.setSelection(sectionPosition);
                                     }
                                 }
                             }

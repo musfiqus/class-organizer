@@ -56,6 +56,23 @@
         <item>R2</item>
         <item>R3</item>
     </string-array>
+    <string-array name="cse_perm_section_array">
+        <item>PC-A</item>
+        <item>PC-B</item>
+        <item>PC-C</item>
+        <item>PC-D</item>
+        <item>PC-E</item>
+        <item>PC-F</item>
+        <item>PC-G</item>
+        <item>PC-H</item>
+        <item>PC-I</item>
+        <item>PC-J</item>
+        <item>PC-K</item>
+        <item>PC-L</item>
+        <item>PC-M</item>
+        <item>PC-N</item>
+        <item>PC-O</item>
+    </string-array>
 
     <!--Start of semester courses-->
     <string-array name="CSE_DAY_MAIN_L1T1">
@@ -242,6 +259,7 @@
 
     <string-array name="campuses">
         <item>Main</item>
+        <item>Permanent</item>
     </string-array>
 
     <!--Departments-->
@@ -259,6 +277,6 @@
         <item>Evening</item>
     </string-array>
     <string-array name="cse_perm_programs">
-        <item>day</item>
+        <item>Day</item>
     </string-array>
 </resources>
