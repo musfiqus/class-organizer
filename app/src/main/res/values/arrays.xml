@@ -220,6 +220,7 @@
         <item>04.00 PM</item>
         <item>06.00 PM</item>
         <item>07.30 PM</item>
+        <item>09.00 PM</item>
     </string-array>
     <string-array name="end_time">
         <item>10.00 AM</item>
@@ -234,6 +235,7 @@
         <item>06.00 PM</item>
         <item>07.30 PM</item>
         <item>09.00 PM</item>
+        <item>12.00 AM</item>
     </string-array>
 
     <!--Campuses-->
