@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +16,7 @@ import static bd.edu.daffodilvarsity.classorganizer.R.string.saturday;
  * Created by musfiqus on 3/21/2017.
  */
 
-public class DayFragmentPagerAdapter extends FragmentPagerAdapter {
+public class DayFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     private static String BUNDLE_TAG = "anyDay";
     private ArrayList<DayData> dayData = new ArrayList<>();
@@ -55,6 +55,11 @@ public class DayFragmentPagerAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         return titles.get(position);
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
     }
 
     private void weekDayGenerator() {

@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/library/Colorful.iml" filepath="$PROJECT_DIR$/library/Colorful.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/diu-class-organizer.iml" filepath="$PROJECT_DIR$/diu-class-organizer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/diu-class-organizer-dev.iml" filepath="$PROJECT_DIR$/diu-class-organizer-dev.iml" />
     </modules>
   </component>
 </project>

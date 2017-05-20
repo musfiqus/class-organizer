@@ -3,10 +3,11 @@ package bd.edu.daffodilvarsity.classorganizer;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 
@@ -14,6 +15,7 @@ import java.util.ArrayList;
  * A simple {@link Fragment} subclass.
  */
 public class DayFragment extends Fragment {
+    PrefManager prefManager;
     private DayDataAdapter adapter;
 
     public DayFragment() {
@@ -24,23 +26,22 @@ public class DayFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.class_list, container, false);
-
+        prefManager = new PrefManager(getContext());
         //Getting data from bundle
         Bundle bundle = getArguments();
         ArrayList<DayData> courseData = bundle.getParcelableArrayList("anyDay");
-
+        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.class_list);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
         assert courseData != null;
-        adapter = new DayDataAdapter(getActivity(), courseData);
-        ListView listView = (ListView) rootView.findViewById(R.id.class_list);
-        adapter.notifyDataSetChanged();
-        listView.setAdapter(adapter);
-
+        adapter = new DayDataAdapter(courseData, getContext(), R.layout.list_item);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setAdapter(adapter);
         return rootView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        adapter.notifyDataSetChanged();
     }
 }
