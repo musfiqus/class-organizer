@@ -2,7 +2,6 @@ package bd.edu.daffodilvarsity.classorganizer;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -15,7 +14,6 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.SwitchPreferenceCompat;
 import android.text.Html;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -36,6 +34,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class SettingsActivity extends ColorfulActivity {
+
+    //Method to display snackbar properly
+    public static void showSnackBar(Activity activity, String message) {
+        View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+        Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT).show();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,28 +66,17 @@ public class SettingsActivity extends ColorfulActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        PrefManager prefManager = new PrefManager(getApplication());
-        //  Refreshing data on screen by restarting activity, because nothing else seems to work for now
-        if (prefManager.getReCreate()) {
-            if (MainActivity.getInstance() != null) {
-                MainActivity.getInstance().finish();
-            }
-            Intent intent = new Intent(getApplication(), MainActivity.class);
-            Log.e("ONPAUSE", "CALLED");
-            startActivity(intent);
-            prefManager.saveReCreate(false);
-        }
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat implements AdapterView.OnItemSelectedListener {
+        //Getting prefmanager to get existing data
+        PrefManager prefManager;
         private Spinner campusSpinner;
         private Spinner deptSpinner;
         private Spinner programSpinner;
         private Spinner levelSpinner;
         private Spinner termSpinner;
         private Spinner sectionText;
-        //Getting prefmanager to get existing data
-        PrefManager prefManager;
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -296,6 +289,9 @@ public class SettingsActivity extends ColorfulActivity {
                     } else {
                         switchPreferenceCompat.setSummary("Currently you're modification will show up in all sections");
                     }
+                    RoutineLoader routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), getContext(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
+                    ArrayList<DayData> newDayData = routineLoader.loadRoutine(true);
+                    prefManager.saveDayData(newDayData);
                     prefManager.saveReCreate(true);
                     return true;
                 }
@@ -489,11 +485,5 @@ public class SettingsActivity extends ColorfulActivity {
             MaterialDialog dialog = builder.build();
             dialog.show();
         }
-    }
-
-    //Method to display snackbar properly
-    public static void showSnackBar(Activity activity, String message) {
-        View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
-        Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT).show();
     }
 }
