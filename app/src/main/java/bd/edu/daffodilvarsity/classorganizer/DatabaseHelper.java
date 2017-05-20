@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 class DatabaseHelper extends SQLiteAssetHelper {
     //Increment the version to erase previous db
-    public static final int DATABASE_VERSION = 38;
+    public static final int DATABASE_VERSION = 39;
     private static final String COLUMN_COURSE_CODE = "course_code";
     private static final String COLUMN_TEACHERS_INITIAL = "teachers_initial";
     private static final String COLUMN_WEEK_DAYS = "week_days";
@@ -104,6 +104,8 @@ class DatabaseHelper extends SQLiteAssetHelper {
                 return "06.00 PM - 07.30 PM";
             case "8.0":
                 return "07.30 PM - 09.00 PM";
+            case "9.0":
+                return "09.00 PM - 12.00 AM";
             case "1.5":
                 return "09.00 AM - 11.00 AM";
             case "2.5":
