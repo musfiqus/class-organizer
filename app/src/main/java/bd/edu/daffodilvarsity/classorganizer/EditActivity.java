@@ -154,6 +154,8 @@ public class EditActivity extends ColorfulActivity {
                 return 7.0;
             case "07.30 PM":
                 return 8.0;
+            case "09.00 PM":
+                return 9.0;
             case "09.00 AM":
                 return 1.5;
             case "11.00 AM":

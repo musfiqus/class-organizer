@@ -20,7 +20,7 @@ android {
         versionName '2.2'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 14
+        versionCode 17
     }
     signingConfigs {
         release {
