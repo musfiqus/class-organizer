@@ -1,6 +1,5 @@
 package bd.edu.daffodilvarsity.classorganizer;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -152,7 +151,7 @@ public class AddActivity extends ColorfulActivity {
                 prefManager.saveSnackData("Added");
                 prefManager.saveShowSnack(true);
                 prefManager.saveModifiedData(newDay, PrefManager.ADD_DATA_TAG, false);
-                reCreate();
+                finish();
             }
         } else if (item.getItemId() == android.R.id.home) {
             onBackPressed();
@@ -163,20 +162,7 @@ public class AddActivity extends ColorfulActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        reCreate();
-    }
-
-    public void reCreate() {
-        if (prefManager.getReCreate()) {
-            prefManager.saveReCreate(false);
-            //Refreshing data on screen by restarting activity, because nothing else seems to work for now
-            if (MainActivity.getInstance() != null) {
-                MainActivity.getInstance().finish();
-            }
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
+//        reCreate();
     }
 
 }

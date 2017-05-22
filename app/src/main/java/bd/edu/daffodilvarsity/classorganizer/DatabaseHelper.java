@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 class DatabaseHelper extends SQLiteAssetHelper {
     //Increment the version to erase previous db
-    public static final int DATABASE_VERSION = 39;
+    public static final int DATABASE_VERSION = 41;
     private static final String COLUMN_COURSE_CODE = "course_code";
     private static final String COLUMN_TEACHERS_INITIAL = "teachers_initial";
     private static final String COLUMN_WEEK_DAYS = "week_days";
@@ -47,18 +47,20 @@ class DatabaseHelper extends SQLiteAssetHelper {
         if (finalDayData != null) {
             finalDayData.clear();
         }
-        for (String eachCourse : courseCodes) {
-            String id = removeSpaces(eachCourse) + section;
-            Cursor cursor = db.query(currentTable, new String[]{COLUMN_COURSE_CODE,
-                            COLUMN_TEACHERS_INITIAL, COLUMN_WEEK_DAYS, COLUMN_ROOM_NO, COLUMN_TIME}, COLUMN_COURSE_CODE + "=?",
-                    new String[]{id}, null, null, null, null);
-            if (cursor.moveToFirst()) {
-                do {
-                    DayData newDayData = new DayData(getCourseCode(eachCourse), trimInitial(cursor.getString(1)), section, level, term, cursor.getString(3), getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), null);
-                    finalDayData.add(newDayData);
-                } while (cursor.moveToNext());
+        if (courseCodes != null) {
+            for (String eachCourse : courseCodes) {
+                String id = removeSpaces(eachCourse) + strippedStringMinimal(section);
+                Cursor cursor = db.query(currentTable, new String[]{COLUMN_COURSE_CODE,
+                                COLUMN_TEACHERS_INITIAL, COLUMN_WEEK_DAYS, COLUMN_ROOM_NO, COLUMN_TIME}, COLUMN_COURSE_CODE + "=?",
+                        new String[]{id}, null, null, null, null);
+                if (cursor.moveToFirst()) {
+                    do {
+                        DayData newDayData = new DayData(getCourseCode(eachCourse), trimInitial(cursor.getString(1)), section, level, term, cursor.getString(3), getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), null);
+                        finalDayData.add(newDayData);
+                    } while (cursor.moveToNext());
+                }
+                cursor.close();
             }
-            cursor.close();
         }
         return finalDayData;
     }
@@ -122,6 +124,14 @@ class DatabaseHelper extends SQLiteAssetHelper {
                 FirebaseCrash.report(new Exception("DATABASE ERROR INVALID TIME"));
                 return null;
         }
+    }
+
+    private String strippedStringMinimal(String string) {
+        if (string != null) {
+            string = string.replaceAll("\\s+", "");
+            string = string.replaceAll("\\p{P}", "");
+        }
+        return string;
     }
 
     private String removeSpaces(String strings) {

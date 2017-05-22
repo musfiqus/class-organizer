@@ -2,6 +2,7 @@ package bd.edu.daffodilvarsity.classorganizer;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -122,11 +123,7 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
 
         //Section selection
         sectionSpinner = (Spinner) view.findViewById(R.id.section_selection);
-        sectionAdapter = ArrayAdapter.createFromResource(context, R.array.cse_main_day_section_array, R.layout.spinner_class_row_welcome);
-        sectionAdapter.setDropDownViewResource(R.layout.spinner_class_row_welcome);
-        sectionAdapter.notifyDataSetChanged();
-        sectionSpinner.setAdapter(sectionAdapter);
-        sectionSpinner.setOnItemSelectedListener(this);
+
         termAdapter = ArrayAdapter.createFromResource(context, R.array.term_array, R.layout.spinner_class_row_welcome);
         termAdapter.setDropDownViewResource(R.layout.spinner_class_row_welcome);
         termAdapter.notifyDataSetChanged();
@@ -141,9 +138,9 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
 
     private void setClassAdapter() {
         if (campusSpinner != null || deptSpinner != null || programSpinner != null) {
-            String campus = campusSpinner.getSelectedItem().toString();
+            String campus = campusSpinner.getSelectedItem().toString().substring(0, 4);
             String department = deptSpinner.getSelectedItem().toString();
-            String program = programSpinner.getSelectedItem().toString();
+            String program = programSpinner.getSelectedItem().toString().substring(0, 3);
             if (campus.equalsIgnoreCase("main")) {
                 if (department.equalsIgnoreCase("cse")) {
                     if (program.equalsIgnoreCase("day")) {
@@ -155,15 +152,36 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
                         // Apply the levelAdapter to the spinner
                         levelSpinner.setAdapter(levelAdapter);
                         levelSpinner.setOnItemSelectedListener(this);
-                    } else if (program.equalsIgnoreCase("evening")) {
+                    } else if (program.equalsIgnoreCase("eve")) {
                         levelAdapter = ArrayAdapter.createFromResource(context, R.array.cse_main_eve_level_array, R.layout.spinner_class_row_welcome);
                         levelAdapter.setDropDownViewResource(R.layout.spinner_class_row_welcome);
                         levelAdapter.notifyDataSetChanged();
                         levelSpinner.setAdapter(levelAdapter);
                         levelSpinner.setOnItemSelectedListener(this);
                     }
+                    sectionAdapter = ArrayAdapter.createFromResource(context, R.array.cse_main_day_section_array, R.layout.spinner_class_row_welcome);
+                }
+            } else if (campus.equalsIgnoreCase("perm")) {
+                if (department.equalsIgnoreCase("cse")) {
+                    if (program.equalsIgnoreCase("day")) {
+                        Log.e("Okay", "lol");
+                        // Create an ArrayAdapter using the string array and a default spinner layout
+                        levelAdapter = ArrayAdapter.createFromResource(context, R.array.cse_main_day_level_array, R.layout.spinner_class_row_welcome);
+                        // Specify the layout to use when the list of choices appears
+                        levelAdapter.setDropDownViewResource(R.layout.spinner_class_row_welcome);
+                        levelAdapter.notifyDataSetChanged();
+                        // Apply the levelAdapter to the spinner
+                        levelSpinner.setAdapter(levelAdapter);
+                        levelSpinner.setOnItemSelectedListener(this);
+                        sectionAdapter = ArrayAdapter.createFromResource(context, R.array.cse_perm_section_array, R.layout.spinner_class_row_welcome);
+                    }
                 }
             }
+            sectionAdapter.setDropDownViewResource(R.layout.spinner_class_row_welcome);
+            sectionAdapter.notifyDataSetChanged();
+            sectionSpinner.setAdapter(sectionAdapter);
+            sectionSpinner.setOnItemSelectedListener(this);
+            Log.e("What section", sectionSpinner.getSelectedItem().toString());
         }
     }
 
@@ -214,6 +232,9 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
         }
         //Saving selections
         prefManager.saveSection(section);
+        if (prefManager.getSection() != null) {
+        }
+
         prefManager.saveTerm(term);
         prefManager.saveLevel(level);
     }
