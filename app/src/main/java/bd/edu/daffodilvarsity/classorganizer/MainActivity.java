@@ -33,7 +33,6 @@ import java.util.Date;
 import java.util.Locale;
 
 public class MainActivity extends ColorfulActivity implements NavigationView.OnNavigationItemSelectedListener {
-    private static MainActivity mainActivity;
     private PrefManager prefManager;
     private ArrayList<DayData> mDayData;
     private boolean onStart = false;
@@ -41,16 +40,11 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     private RoutineLoader routineLoader;
     private boolean isActivityRunning = false;
 
-    public static MainActivity getInstance() {
-        return mainActivity;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Colorful.applyTheme(this);
         setContentView(R.layout.activity_main);
-        mainActivity = this;
         prefManager = new PrefManager(this);
         //Maintaining compatibility with previous versions
         prefManager.setCompat2point2();
@@ -174,6 +168,10 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         if (!onStart) {
             loadData();
         }
+        if (prefManager.getReCreate()) {
+            loadData();
+            prefManager.saveReCreate(false);
+        }
         isActivityRunning = true;
     }
 
@@ -197,7 +195,6 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
             ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
             // Create an adapter that knows which fragment should be shown on each page
             DayFragmentPagerAdapter adapter = new DayFragmentPagerAdapter(this, getSupportFragmentManager(), mDayData);
-            adapter.notifyDataSetChanged();
             // Set the adapter onto the view pager
             viewPager.setAdapter(adapter);
             //Setting current date and tab
@@ -217,6 +214,10 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
             //   3. Set the tab layout's tab names with the view pager's adapter's titles
             //      by calling onPageTitle()
             tabLayout.setupWithViewPager(viewPager);
+            if (prefManager.showSnack()) {
+                showSnackBar(this, prefManager.getSnackData());
+                prefManager.saveShowSnack(false);
+            }
         }
     }
 
@@ -268,11 +269,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
                     prefManager.saveShowSnack(true);
                     prefManager.saveSnackData("Routine updated");
                     prefManager.saveSemester(getResources().getString(R.string.current_semester));
-                    if (MainActivity.getInstance() != null) {
-                        MainActivity.getInstance().finish();
-                    }
-                    Intent intent = new Intent(getApplication(), MainActivity.class);
-                    startActivity(intent);
+                    loadData();
                 } else {
                     Toast.makeText(getApplicationContext(), "Error loading routine", Toast.LENGTH_SHORT).show();
                 }

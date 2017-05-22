@@ -17,10 +17,10 @@ android {
         applicationId "bd.edu.daffodilvarsity.classorganizer"
         minSdkVersion 16
         targetSdkVersion 25
-        versionName '2.2'
+        versionName '2.3'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 17
+        versionCode 18
     }
     signingConfigs {
         release {
@@ -63,6 +63,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.google.firebase:firebase-crash:10.2.1'
     compile 'com.afollestad.material-dialogs:core:0.9.4.4'
+    compile 'com.android.support:recyclerview-v7:25.3.1'
 }
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.firebase-crash'

@@ -2,7 +2,6 @@ package bd.edu.daffodilvarsity.classorganizer;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -209,14 +208,9 @@ public class EditActivity extends ColorfulActivity {
                         dayDatas.remove(position);
                     }
                     prefManager.saveDayData(dayDatas);
-                    //Refreshing data on screen by restarting activity, because nothing else seems to work for now
-                    if (MainActivity.getInstance() != null) {
-                        MainActivity.getInstance().finish();
-                    }
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
                     prefManager.saveSnackData("Deleted");
                     prefManager.saveShowSnack(true);
+                    prefManager.saveReCreate(true);
                     finish();
                     dialog.dismiss();
                 }
@@ -242,17 +236,6 @@ public class EditActivity extends ColorfulActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (prefManager.getReCreate()) {
-            prefManager.saveReCreate(false);
-            //Refreshing data on screen by restarting activity, because nothing else seems to work for now
-            if (MainActivity.getInstance() != null) {
-                MainActivity.getInstance().finish();
-            }
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.putExtra("SNACKBAR", "Saved");
-            startActivity(intent);
-            finish();
-        }
     }
 
     //Method to display snackbar properly
