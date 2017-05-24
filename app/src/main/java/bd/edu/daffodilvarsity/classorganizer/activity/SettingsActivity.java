@@ -1,4 +1,4 @@
-package bd.edu.daffodilvarsity.classorganizer;
+package bd.edu.daffodilvarsity.classorganizer.activity;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -33,6 +33,11 @@ import org.polaric.colorful.ColorfulActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.R;
+import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
+import bd.edu.daffodilvarsity.classorganizer.utils.RoutineLoader;
 
 public class SettingsActivity extends ColorfulActivity {
 

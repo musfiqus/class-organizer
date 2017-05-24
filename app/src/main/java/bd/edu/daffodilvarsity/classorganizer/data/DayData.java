@@ -1,4 +1,4 @@
-package bd.edu.daffodilvarsity.classorganizer;
+package bd.edu.daffodilvarsity.classorganizer.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;

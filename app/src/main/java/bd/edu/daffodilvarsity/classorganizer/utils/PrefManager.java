@@ -1,4 +1,4 @@
-package bd.edu.daffodilvarsity.classorganizer;
+package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,11 +9,13 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+
 /**
  * Created by musfiqus on 3/25/2017.
  */
 
-class PrefManager {
+public class PrefManager {
     // Shared preferences file name
     private static final String PREF_NAME = "diu-class-organizer";
     private static final String IS_FIRST_TIME_LAUNCH = "IsFirstTimeLaunch";
@@ -45,18 +47,18 @@ class PrefManager {
     private SharedPreferences.Editor editor;
     private Context _context;
 
-    PrefManager(Context context) {
+    public PrefManager(Context context) {
         this._context = context;
         pref = _context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = pref.edit();
     }
 
-    void setFirstTimeLaunch(boolean isFirstTime) {
+    public void setFirstTimeLaunch(boolean isFirstTime) {
         editor.putBoolean(IS_FIRST_TIME_LAUNCH, isFirstTime);
         editor.apply();
     }
 
-    void saveDayData(ArrayList<DayData> daydata) {
+    public void saveDayData(ArrayList<DayData> daydata) {
         editor.remove(PREF_DAYDATA).apply();
         Gson gson = new Gson();
         String json = gson.toJson(daydata);
@@ -64,7 +66,7 @@ class PrefManager {
         editor.apply();
     }
 
-    ArrayList<DayData> getSavedDayData() {
+    public ArrayList<DayData> getSavedDayData() {
         Gson gson = new Gson();
         String json = pref.getString(PREF_DAYDATA, null);
         Type type = new TypeToken<ArrayList<DayData>>() {
@@ -72,76 +74,76 @@ class PrefManager {
         return gson.fromJson(json, type);
     }
 
-    void saveSection(String section) {
+    public void saveSection(String section) {
         editor.remove(SAVE_SECTION).apply();
         editor.putString(SAVE_SECTION, section);
         editor.apply();
     }
 
-    void saveTerm(int term) {
+    public void saveTerm(int term) {
         editor.remove(SAVE_TERM).apply();
         editor.putInt(SAVE_TERM, term);
         editor.apply();
     }
 
-    void saveLevel(int level) {
+    public void saveLevel(int level) {
         editor.remove(PREF_LEVEL).apply();
         editor.putInt(PREF_LEVEL, level);
         editor.apply();
     }
 
-    void saveSemester(String semester) {
+    public void saveSemester(String semester) {
         editor.remove(SAVE_SEMESTER).apply();
         editor.putString(SAVE_SEMESTER, semester);
         editor.apply();
     }
 
-    void saveShowSnack(boolean snack) {
+    public void saveShowSnack(boolean snack) {
         editor.remove(SAVE_SNACK).apply();
         editor.putBoolean(SAVE_SNACK, snack);
         editor.apply();
     }
 
-    void saveReCreate(boolean value) {
+    public void saveReCreate(boolean value) {
         editor.remove(SAVE_RECREATE).apply();
         editor.putBoolean(SAVE_RECREATE, value);
         editor.apply();
     }
 
-    void saveSnackData(String snack) {
+    public void saveSnackData(String snack) {
         editor.remove(SAVE_SNACK_TAG).apply();
         editor.putString(SAVE_SNACK_TAG, snack);
         editor.apply();
     }
 
-    void saveDatabaseVersion(int version) {
+    public void saveDatabaseVersion(int version) {
         editor.remove(SAVE_DATABASE_VERSION).apply();
         editor.putInt(SAVE_DATABASE_VERSION, version);
         editor.apply();
     }
 
-    void saveCampus(String campus) {
+    public void saveCampus(String campus) {
         campus = campus.toLowerCase();
         editor.remove(SAVE_CAMPUS).apply();
         editor.putString(SAVE_CAMPUS, campus);
         editor.apply();
     }
 
-    void saveDept(String dept) {
+    public void saveDept(String dept) {
         dept = dept.toLowerCase();
         editor.remove(SAVE_DEPT).apply();
         editor.putString(SAVE_DEPT, dept);
         editor.apply();
     }
 
-    void saveProgram(String program) {
+    public void saveProgram(String program) {
         program = program.toLowerCase();
         editor.remove(SAVE_PROGRAM).apply();
         editor.putString(SAVE_PROGRAM, program);
         editor.apply();
     }
 
-    void saveModifiedData(DayData dayData, String which, boolean reset) {
+    public void saveModifiedData(DayData dayData, String which, boolean reset) {
         if (!reset) {
             Gson gson = new Gson();
             ArrayList<DayData> previousData = getModifiedData(which);
@@ -219,27 +221,27 @@ class PrefManager {
         }
     }
 
-    void setHasCampusSettingsChanged(boolean value) {
+    public void setHasCampusSettingsChanged(boolean value) {
         editor.remove(HAS_CAMPUS_SETTINGS_CHANGED).apply();
         editor.putBoolean(HAS_CAMPUS_SETTINGS_CHANGED, value);
         editor.apply();
     }
 
-    void setIsCampusChangeAlertDisabled(boolean value) {
+    public void setIsCampusChangeAlertDisabled(boolean value) {
         editor.remove(IS_CAMPUS_CHANGE_ALERT_DISABLED).apply();
         editor.putBoolean(IS_CAMPUS_CHANGE_ALERT_DISABLED, value);
         editor.apply();
     }
 
-    boolean isCampusChangeAlertDisabled() {
+    public boolean isCampusChangeAlertDisabled() {
         return pref.getBoolean(IS_CAMPUS_CHANGE_ALERT_DISABLED, false);
     }
 
-    boolean hasCampusSettingsChanged() {
+    public boolean hasCampusSettingsChanged() {
         return pref.getBoolean(HAS_CAMPUS_SETTINGS_CHANGED, false);
     }
 
-    ArrayList<DayData> getModifiedData(String which) {
+    public ArrayList<DayData> getModifiedData(String which) {
         Gson gson = new Gson();
         if (which.equalsIgnoreCase(ADD_DATA_TAG)) {
             String json = pref.getString(PREF_ADDED_DAYDATA, null);
@@ -277,7 +279,7 @@ class PrefManager {
         return null;
     }
 
-    void resetModification(boolean add, boolean edit, boolean save, boolean delete) {
+    public void resetModification(boolean add, boolean edit, boolean save, boolean delete) {
         if (add) {
             saveModifiedData(null, ADD_DATA_TAG, true);
         }
@@ -296,11 +298,11 @@ class PrefManager {
     }
 
     //This will be removed in future
-    void deleteSnapshotDayData() {
+    public void deleteSnapshotDayData() {
         editor.remove(PREF_SNAPSHOT_DAYDATA).apply();
     }
 
-    boolean isDuplicate(ArrayList<DayData> list, DayData object) {
+    public boolean isDuplicate(ArrayList<DayData> list, DayData object) {
         for (DayData dayData :
                 list) {
             if (dayData.equals(object)) {
@@ -310,55 +312,55 @@ class PrefManager {
         return false;
     }
 
-    boolean isFirstTimeLaunch() {
+    public boolean isFirstTimeLaunch() {
         return pref.getBoolean(IS_FIRST_TIME_LAUNCH, true);
     }
 
-    String getSection() {
+    public String getSection() {
         return pref.getString(SAVE_SECTION, null);
     }
 
-    int getTerm() {
+    public int getTerm() {
         return pref.getInt(SAVE_TERM, -1);
     }
 
-    int getLevel() {
+    public int getLevel() {
         return pref.getInt(PREF_LEVEL, -1);
     }
 
-    boolean getReCreate() {
+    public boolean getReCreate() {
         return pref.getBoolean(SAVE_RECREATE, false);
     }
 
-    String getSnackData() {
+    public String getSnackData() {
         return pref.getString(SAVE_SNACK_TAG, "done");
     }
 
-    boolean showSnack() {
+    public boolean showSnack() {
         return pref.getBoolean(SAVE_SNACK, false);
     }
 
-    String getSemester() {
+    public String getSemester() {
         return pref.getString(SAVE_SEMESTER, null);
     }
 
-    int getDatabaseVersion() {
+    public int getDatabaseVersion() {
         return pref.getInt(SAVE_DATABASE_VERSION, 0);
     }
 
-    String getCampus() {
+    public String getCampus() {
         return pref.getString(SAVE_CAMPUS, null);
     }
 
-    String getDept() {
+    public String getDept() {
         return pref.getString(SAVE_DEPT, null);
     }
 
-    String getProgram() {
+    public String getProgram() {
         return pref.getString(SAVE_PROGRAM, null);
     }
 
-    void setCompat2point2() {
+    public void setCompat2point2() {
         if (getDatabaseVersion() < 39) {
             saveModifiedData(null, EDIT_DATA_TAG, true);
             saveModifiedData(null, DELETE_DATA_TAG, true);

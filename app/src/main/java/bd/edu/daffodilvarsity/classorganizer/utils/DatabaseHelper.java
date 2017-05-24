@@ -1,4 +1,4 @@
-package bd.edu.daffodilvarsity.classorganizer;
+package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -9,11 +9,13 @@ import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.util.ArrayList;
 
+import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+
 /**
  * Created by musfiqus on 3/25/2017.
  */
 
-class DatabaseHelper extends SQLiteAssetHelper {
+public class DatabaseHelper extends SQLiteAssetHelper {
     //Increment the version to erase previous db
     public static final int DATABASE_VERSION = 41;
     private static final String COLUMN_COURSE_CODE = "course_code";

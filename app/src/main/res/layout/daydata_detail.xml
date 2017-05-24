@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:id="@+id/details_root"
-    tools:context="bd.edu.daffodilvarsity.classorganizer.EditActivity">
+    tools:context="bd.edu.daffodilvarsity.classorganizer.activity.EditActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
