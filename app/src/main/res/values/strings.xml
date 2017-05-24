@@ -60,5 +60,7 @@
     <string name="drawer_title_report">Report a problem</string>
     <string name="edit_popup">Edit</string>
     <string name="save_popup_title">Save</string>
+    <string name="title_daydata_list">DayDetails</string>
+    <string name="title_daydata_detail">DayData Detail</string>
 
 </resources>

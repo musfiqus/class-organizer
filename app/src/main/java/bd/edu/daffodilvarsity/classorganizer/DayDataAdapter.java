@@ -1,6 +1,8 @@
 package bd.edu.daffodilvarsity.classorganizer;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,9 +33,18 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataHolder> {
     }
 
     @Override
-    public void onBindViewHolder(DayDataHolder holder, int position) {
-        DayData dayData = dayDataArrayList.get(position);
+    public void onBindViewHolder(final DayDataHolder holder, int position) {
+        final DayData dayData = dayDataArrayList.get(position);
         holder.bindDayData(dayData);
+        holder.getmView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = v.getContext();
+                Intent intent = new Intent(context, DayDataDetailActivity.class);
+                intent.putExtra("DayDataDetails", (Parcelable) dayData);
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override

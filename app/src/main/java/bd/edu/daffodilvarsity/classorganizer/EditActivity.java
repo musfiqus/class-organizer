@@ -192,41 +192,6 @@ public class EditActivity extends ColorfulActivity {
             prefManager.saveDayData(dayDatas);
             prefManager.saveReCreate(true);
             showSnackBar(this, "Saved");
-
-        } else if (item.getItemId() == R.id.delete_button) {
-            //Show confirmation
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-            builder.setTitle("Confirm deletion");
-            builder.setMessage("Are you sure?");
-
-            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-
-                public void onClick(DialogInterface dialog, int which) {
-                    if (position > -1) {
-                        prefManager.saveModifiedData(dayDatas.get(position), PrefManager.DELETE_DATA_TAG, false);
-                        dayDatas.remove(position);
-                    }
-                    prefManager.saveDayData(dayDatas);
-                    prefManager.saveSnackData("Deleted");
-                    prefManager.saveShowSnack(true);
-                    prefManager.saveReCreate(true);
-                    finish();
-                    dialog.dismiss();
-                }
-            });
-
-            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                    // Do nothing
-                    dialog.dismiss();
-                }
-            });
-            AlertDialog alert = builder.create();
-            alert.show();
         } else if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }
