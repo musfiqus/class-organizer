@@ -18,7 +18,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+                <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             </intent-filter>
         </activity>
         <activity
@@ -40,6 +40,15 @@
             android:name=".SettingsActivity"
             android:label="@string/settings_title"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".DayDataDetailActivity"
+            android:label="@string/title_daydata_detail"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="bd.edu.daffodilvarsity.classorganizer.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

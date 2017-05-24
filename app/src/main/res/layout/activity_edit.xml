@@ -35,7 +35,8 @@
             android:paddingLeft="36dp"
             android:paddingStart="36dp"
             android:paddingRight="16dp"
-            android:paddingEnd="16dp">
+            android:paddingEnd="16dp"
+            android:paddingBottom="8dp">
 
             <TextView
                 android:id="@+id/course_code_title"

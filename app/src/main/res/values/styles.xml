@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionBarStyle">@style/RoutineAppBarStyle</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
-
+        <!-- specify enter and exit transitions -->
     </style>
 
     <style name="AppTheme.NoActionBar">
