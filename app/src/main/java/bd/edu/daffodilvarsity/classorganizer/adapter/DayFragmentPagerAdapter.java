@@ -1,4 +1,4 @@
-package bd.edu.daffodilvarsity.classorganizer;
+package bd.edu.daffodilvarsity.classorganizer.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,6 +9,10 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.fragment.DayFragment;
+import bd.edu.daffodilvarsity.classorganizer.R;
 
 import static bd.edu.daffodilvarsity.classorganizer.R.string.saturday;
 

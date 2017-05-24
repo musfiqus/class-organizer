@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context="bd.edu.daffodilvarsity.classorganizer.SettingsActivity">
+    tools:context="bd.edu.daffodilvarsity.classorganizer.activity.SettingsActivity">
     <android.support.design.widget.AppBarLayout
         android:id="@+id/settings_appbar_layout"
         android:layout_width="match_parent"
@@ -27,7 +27,7 @@
         android:layout_height="match_parent">
         <fragment
             android:id="@+id/fragment_settings"
-            android:name="bd.edu.daffodilvarsity.classorganizer.SettingsActivity$SettingsFragment"
+            android:name="bd.edu.daffodilvarsity.classorganizer.activity.SettingsActivity$SettingsFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </FrameLayout>
