@@ -127,10 +127,8 @@ public class RoutineLoader {
                 }
             }
         } else if (campus.equalsIgnoreCase("perm")) {
-            Log.e("Dammit", "fix1");
             if (dept.equalsIgnoreCase("cse")) {
                 if (program.equalsIgnoreCase("day")) {
-                    Log.e("WUT", "WUT PLOX");
                     if (semester == 1) {
                         String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L1T1);
                         return new ArrayList<>(Arrays.asList(semesterData));

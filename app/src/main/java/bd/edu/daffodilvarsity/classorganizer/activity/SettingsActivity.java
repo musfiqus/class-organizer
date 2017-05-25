@@ -281,6 +281,7 @@ public class SettingsActivity extends ColorfulActivity {
             //Limit Modification
             final SwitchPreferenceCompat switchPreferenceCompat = (SwitchPreferenceCompat) findPreference("limit_preference");
             PreferenceManager preferenceManager = getPreferenceManager();
+            switchPreferenceCompat.setChecked(preferenceManager.getSharedPreferences().getBoolean("limit_preference", true));
             if (preferenceManager.getSharedPreferences().getBoolean("limit_preference", true)) {
                 switchPreferenceCompat.setSummary("Currently you're modification will show up in only on your modified section");
             } else {

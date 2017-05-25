@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:fitsSystemWindows="true"
     android:id="@+id/details_root"
     tools:context="bd.edu.daffodilvarsity.classorganizer.activity.EditActivity">
-
     <LinearLayout
+        android:id="@+id/main_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -16,7 +17,7 @@
         <LinearLayout
             android:id="@+id/dark_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="?attr/colorPrimary"
             android:orientation="vertical"
             android:paddingEnd="16dp"
@@ -28,6 +29,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="4dp"
+                android:text="Course title"
+                android:textColor="@color/md_white_1000"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/course_title_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingTop="6dp"
+                android:text="ABC COURSE"
+                android:textColor="@android:color/white"
+                android:textSize="24sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
                 android:text="Teacher's initial"
                 android:textColor="@color/md_white_1000"
                 android:textSize="14sp" />
@@ -43,7 +62,9 @@
                 android:textSize="24sp" />
         </LinearLayout>
 
+
         <LinearLayout
+            android:id="@+id/light_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -104,15 +125,10 @@
                 android:textSize="18sp" />
         </LinearLayout>
     </LinearLayout>
-
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="28dp"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
-        android:paddingTop="28dp"
         app:layout_anchor="@id/dark_view"
         app:layout_anchorGravity="bottom|right|end">
 
@@ -120,7 +136,7 @@
             android:id="@+id/fab_speed_dial"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
+            android:layout_gravity="top|end"
             app:fabGravity="top_end"
             app:fabMenu="@menu/popup_menu"
             app:miniFabBackgroundTint="@android:color/white"

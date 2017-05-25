@@ -45,6 +45,24 @@
                 tools:text="CSE XXX"
                 android:textColor="@android:color/white"
                 android:textSize="32sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="3dp"
+                android:paddingStart="3dp"
+                android:paddingTop="16dp"
+                android:text="Edit Course Title"
+                android:textColor="#E0E0E0"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/edit_course_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Course Title"
+                android:textColor="@android:color/white"
+                android:theme="@style/Theme.edit.darkback" />
 
             <TextView
                 android:layout_width="wrap_content"
