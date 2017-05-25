@@ -17,7 +17,7 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 public class DatabaseHelper extends SQLiteAssetHelper {
     //Increment the version to erase previous db
-    public static final int DATABASE_VERSION = 41;
+    public static final int DATABASE_VERSION = 43;
     private static final String COLUMN_COURSE_CODE = "course_code";
     private static final String COLUMN_TEACHERS_INITIAL = "teachers_initial";
     private static final String COLUMN_WEEK_DAYS = "week_days";
@@ -26,10 +26,12 @@ public class DatabaseHelper extends SQLiteAssetHelper {
     private static final String DATABASE_NAME = "routinedb.db";
     private static DatabaseHelper mInstance = null;
     private ArrayList<DayData> finalDayData = new ArrayList<>();
+    private Context mContext;
 
     private DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         setForcedUpgrade();
+        mContext = context.getApplicationContext();
     }
 
     //Instantiation method to prevent data leak
@@ -44,11 +46,13 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         return mInstance;
     }
 
-    public ArrayList<DayData> getDayData(ArrayList<String> courseCodes, String section, int level, int term, final String currentTable) {
+    public ArrayList<DayData> getDayData(ArrayList<String> courseCodes, String section, int level, int term, String dept, String campus, String program) {
         SQLiteDatabase db = this.getReadableDatabase();
+        final String currentTable = dept.toLowerCase() + "_" + campus.toLowerCase() + "_" + program.toLowerCase();
         if (finalDayData != null) {
             finalDayData.clear();
         }
+        CourseUtils.CourseTitleGenerator courseTitleGenerator = CourseUtils.CourseTitleGenerator.getInstance(mContext);
         if (courseCodes != null) {
             for (String eachCourse : courseCodes) {
                 String id = removeSpaces(eachCourse) + strippedStringMinimal(section);
@@ -57,7 +61,7 @@ public class DatabaseHelper extends SQLiteAssetHelper {
                         new String[]{id}, null, null, null, null);
                 if (cursor.moveToFirst()) {
                     do {
-                        DayData newDayData = new DayData(getCourseCode(eachCourse), trimInitial(cursor.getString(1)), section, level, term, cursor.getString(3), getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), null);
+                        DayData newDayData = new DayData(getCourseCode(eachCourse), trimInitial(cursor.getString(1)), section, level, term, cursor.getString(3), getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseTitleGenerator.getCourseTitle(eachCourse, dept, program));
                         finalDayData.add(newDayData);
                     } while (cursor.moveToNext());
                 }
@@ -65,12 +69,6 @@ public class DatabaseHelper extends SQLiteAssetHelper {
             }
         }
         return finalDayData;
-    }
-
-    public ArrayList<DayData> getDayData(ArrayList<String> courseCodes, String section, int level, int term, String dept, String campus, String program) {
-        //We will create table names using this format: TABLE_DEPARTMENT_CAMPUS_PROGRAM
-        final String currentTable = dept.toLowerCase() + "_" + campus.toLowerCase() + "_" + program.toLowerCase();
-        return getDayData(courseCodes, section, level, term, currentTable);
     }
 
     private double getTimeWeight(String weight) {

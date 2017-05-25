@@ -7,15 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.activity.DayDataDetailActivity;
-import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
+import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 /**
  * Created by musfiqus on 5/20/2017.
@@ -69,8 +67,6 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
         private TextView teachersInitialTextView;
         private TextView roomNoTextView;
         private TextView timeTextView;
-        private ImageButton popupButton;
-        private PrefManager prefManager;
         private ViewGroup parent;
         private DayData dayData;
         private final View mView;
@@ -82,7 +78,6 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
             this.teachersInitialTextView = (TextView) itemView.findViewById(R.id.teachers_initial);
             this.roomNoTextView = (TextView) itemView.findViewById(R.id.room_no);
             this.timeTextView = (TextView) itemView.findViewById(R.id.schedule);
-            this.prefManager = new PrefManager(context);
             this.parent = parent;
             this.mView = itemView;
         }

@@ -196,7 +196,12 @@ public class DayDataDetailFragment extends Fragment {
                     return false;
                 }
             });
-
+            String courseTitle = mItem.getCourseTitle();
+            if (courseTitle == null) {
+                ((TextView) rootView.findViewById(R.id.course_title_tv)).setText("N/A");
+            } else {
+                ((TextView) rootView.findViewById(R.id.course_title_tv)).setText(courseTitle);
+            }
             ((TextView) rootView.findViewById(R.id.teachers_initial_tv)).setText(mItem.getTeachersInitial());
             ((TextView) rootView.findViewById(R.id.weekday_tv)).setText(mItem.getDay());
             ((TextView) rootView.findViewById(R.id.room_no_tv)).setText(mItem.getRoomNo());

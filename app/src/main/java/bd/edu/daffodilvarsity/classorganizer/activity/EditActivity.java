@@ -28,6 +28,7 @@ public class EditActivity extends ColorfulActivity {
 
     private PrefManager prefManager;
     private TextView courseCodeText;
+    private EditText courseTitle;
     private EditText editInitial;
     private EditText editRoom;
     private Spinner weekDaySpinner;
@@ -74,6 +75,9 @@ public class EditActivity extends ColorfulActivity {
     private void setupCurrentDay() {
         courseCodeText = (TextView) findViewById(R.id.course_code_title);
         courseCodeText.setText(dayData.getCourseCode());
+
+        courseTitle = (EditText) findViewById(R.id.edit_course_title);
+        courseTitle.setText(dayData.getCourseTitle());
 
         editInitial = (EditText) findViewById(R.id.edit_initial);
         editInitial.setText(dayData.getTeachersInitial());
@@ -128,13 +132,14 @@ public class EditActivity extends ColorfulActivity {
     }
 
     private DayData getEditedDay() {
+        String newCourseTitle = courseTitle.getText().toString();
         String courseCode = courseCodeText.getText().toString();
         String initial = editInitial.getText().toString();
         String room = editRoom.getText().toString();
         String time = timeJoiner(startTimeSpinner.getSelectedItem().toString(), endTimeSpinner.getSelectedItem().toString());
         String day = weekDaySpinner.getSelectedItem().toString();
         double timeWeight = timeWeight(startTimeSpinner.getSelectedItem().toString());
-        return new DayData(courseCode, initial, prefManager.getSection(), prefManager.getLevel(), prefManager.getTerm(), room, time, day, timeWeight, null);
+        return new DayData(courseCode, initial, prefManager.getSection(), prefManager.getLevel(), prefManager.getTerm(), room, time, day, timeWeight, newCourseTitle);
     }
 
     private double timeWeight(String startTime) {
