@@ -133,6 +133,9 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         if (item.getItemId() == R.id.add_button) {
             Intent intent = new Intent(this, AddActivity.class);
             startActivity(intent);
+        } else if (item.getItemId() == R.id.search_button_main) {
+            Intent intent = new Intent(this, SearchActivity.class);
+            startActivity(intent);
         }
         return true;
     }

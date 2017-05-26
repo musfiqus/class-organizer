@@ -62,5 +62,6 @@
     <string name="save_popup_title">Save</string>
     <string name="title_daydata_list">DayDetails</string>
     <string name="title_daydata_detail">DayData Detail</string>
+    <string name="title_activity_search">SearchActivity</string>
 
 </resources>

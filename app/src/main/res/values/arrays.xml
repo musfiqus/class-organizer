@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <string-array name="searchByParams">
+        <item>Search by Course Code</item>
+        <item>Search by Course Title</item>
+        <item>Search by Teacher</item>
+        <item>Search by Room</item>
+    </string-array>
     <string-array name="weekdays">
         <item>Saturday</item>
         <item>Sunday</item>
