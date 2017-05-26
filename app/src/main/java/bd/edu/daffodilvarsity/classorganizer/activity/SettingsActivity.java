@@ -418,6 +418,7 @@ public class SettingsActivity extends ColorfulActivity {
                     for (int i = 0; i < sectionList.size(); i++) {
                         if (sectionList.get(i).equalsIgnoreCase(sectionRoot)) {
                             sectionPosition = i;
+                            break;
                         }
                     }
                     sectionText.setSelection(sectionPosition);
@@ -437,6 +438,7 @@ public class SettingsActivity extends ColorfulActivity {
                         for (int i = 0; i < sectionList.size(); i++) {
                             if (sectionList.get(i).equalsIgnoreCase(sectionRoot)) {
                                 sectionPosition = i;
+                                break;
                             }
                         }
                         sectionText.setSelection(sectionPosition);

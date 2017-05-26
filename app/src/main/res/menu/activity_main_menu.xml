@@ -1,8 +1,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/search_button_main"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:title="Search"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/add_button"
         android:icon="@drawable/ic_calendar_plus_white_24dp"
         android:title="Add"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 </menu>

@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="bd.edu.daffodilvarsity.classorganizer">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".ClassOrganizer"
         android:allowBackup="true"
@@ -49,10 +51,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="bd.edu.daffodilvarsity.classorganizer.activity.MainActivity" />
         </activity>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="97134746f7e815b6aad25190b01c4712d2c523ec" />
+
+        <activity android:name=".activity.SearchActivity"></activity>
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>

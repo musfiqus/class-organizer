@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,14 +22,18 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataHolder> {
 
-    private final ArrayList<DayData> dayDataArrayList;
+    private ArrayList<DayData> dayDataArrayList;
+    private final ArrayList<DayData> copyOfDayDataList;
     private Context context;
     private int itemResource;
 
     public DayDataAdapter(ArrayList<DayData> dayDataArrayList, Context context, int itemResource) {
+        Log.e("WELP", "NOT GOOD");
         this.dayDataArrayList = dayDataArrayList;
         this.context = context;
         this.itemResource = itemResource;
+        this.copyOfDayDataList = new ArrayList<>();
+        this.copyOfDayDataList.addAll(dayDataArrayList);
     }
 
     @Override
@@ -55,6 +60,56 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
     @Override
     public int getItemCount() {
         return dayDataArrayList.size();
+    }
+
+    public void filter(String query, boolean courseCode, boolean courseTitle, boolean teacher, boolean room) {
+        dayDataArrayList.clear();
+        if (query.isEmpty()) {
+            dayDataArrayList.clear();
+//            dayDataArrayList.addAll(copyOfDayDataList);
+        } else {
+            query = query.toLowerCase();
+            for (DayData eachDay : copyOfDayDataList) {
+                if (courseCode) {
+                    if (eachDay.getCourseCode().toLowerCase().contains(query)) {
+                        dayDataArrayList.add(eachDay);
+                    }
+                }
+                if (courseTitle) {
+                    if (!dayDataArrayList.contains(eachDay)) {
+                        if (eachDay.getCourseTitle().toLowerCase().contains(query)) {
+                            dayDataArrayList.add(eachDay);
+                        }
+                    }
+                }
+                if (teacher) {
+                    if (!dayDataArrayList.contains(eachDay)) {
+                        if (eachDay.getTeachersInitial().toLowerCase().contains(query)) {
+                            dayDataArrayList.add(eachDay);
+                        }
+                    }
+                }
+                if (room) {
+                    if (!dayDataArrayList.contains(eachDay)) {
+                        if (eachDay.getRoomNo().toLowerCase().contains(query)) {
+                            dayDataArrayList.add(eachDay);
+                        }
+                    }
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+    public void clearDayData() {
+        dayDataArrayList.clear();
+        notifyDataSetChanged();
+    }
+
+    public int dayDataSize() {
+        if (dayDataArrayList != null) {
+            return dayDataArrayList.size();
+        }
+        return 0;
     }
 
     /**
