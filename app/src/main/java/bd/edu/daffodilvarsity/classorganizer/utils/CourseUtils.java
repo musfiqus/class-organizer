@@ -6,8 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
-import bd.edu.daffodilvarsity.classorganizer.data.DayData;
-
 /**
  * Created by musfiqus on 5/25/2017.
  */
