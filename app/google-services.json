@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "912616585704-ur2o7q6imkjiueialrv1l1r5igek236b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bd.edu.daffodilvarsity.classorganizer",
+            "certificate_hash": "46a70a4053f7edf6b585cc66af172abc7de0dc18"
+          }
+        },
+        {
           "client_id": "912616585704-bk1trgoabkpav88t1l9kd95k5lpi2ojl.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

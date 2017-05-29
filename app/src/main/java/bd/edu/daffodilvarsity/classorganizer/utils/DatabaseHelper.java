@@ -17,36 +17,32 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 public class DatabaseHelper extends SQLiteAssetHelper {
     //Increment the version to erase previous db
-    public static final int DATABASE_VERSION = 44;
-    private static final String COLUMN_COURSE_CODE = "course_code";
-    private static final String COLUMN_TEACHERS_INITIAL = "teachers_initial";
-    private static final String COLUMN_WEEK_DAYS = "week_days";
-    private static final String COLUMN_ROOM_NO = "room_no";
-    private static final String COLUMN_TIME = "time_data";
+    public static final int OFFLINE_DATABASE_VERSION = 45;
+    static final String COLUMN_COURSE_CODE = "course_code";
+    static final String COLUMN_TEACHERS_INITIAL = "teachers_initial";
+    static final String COLUMN_WEEK_DAYS = "week_days";
+    static final String COLUMN_ROOM_NO = "room_no";
+    static final String COLUMN_TIME = "time_data";
     private static final String DATABASE_NAME = "routinedb.db";
     private static DatabaseHelper mInstance = null;
     private ArrayList<DayData> finalDayData = new ArrayList<>();
     private Context mContext;
 
     private DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, DATABASE_NAME, null, OFFLINE_DATABASE_VERSION);
         setForcedUpgrade();
         mContext = context.getApplicationContext();
     }
 
     //Instantiation method to prevent data leak
     public static DatabaseHelper getInstance(Context context) {
-
-        // Use the application context, which will ensure that you
-        // don't accidentally leak an Activity's context.
-        // See this article for more information: http://bit.ly/6LRzfx
         if (mInstance == null) {
             mInstance = new DatabaseHelper(context.getApplicationContext());
         }
         return mInstance;
     }
 
-    public ArrayList<DayData> getDayData(ArrayList<String> courseCodes, String section, int level, int term, String dept, String campus, String program) {
+    ArrayList<DayData> getDayData(ArrayList<String> courseCodes, String section, int level, int term, String dept, String campus, String program) {
         SQLiteDatabase db = this.getReadableDatabase();
         final String currentTable = dept.toLowerCase() + "_" + campus.toLowerCase() + "_" + program.toLowerCase();
         if (finalDayData != null) {
@@ -71,8 +67,8 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         return finalDayData;
     }
 
-    private double getTimeWeight(String weight) {
-        weight = weight.replace("\\s+","");
+    static double getTimeWeight(String weight) {
+        weight = weight.replace("\\s+", "");
         double timeWeight = 0;
         try {
             timeWeight = Double.parseDouble(weight);
@@ -82,13 +78,13 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         return timeWeight;
     }
 
-    private String getCourseCode(String courseCode) {
+    static String getCourseCode(String courseCode) {
         String[] split = {courseCode.substring(0, 3), courseCode.substring(3)};
         courseCode = split[0] + " " + split[1];
         return courseCode;
     }
 
-    private String getTime(String time) {
+    static String getTime(String time) {
         switch (time) {
             case "1.0":
                 return "08.30 AM - 10.00 AM";
@@ -126,7 +122,7 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         }
     }
 
-    private String strippedStringMinimal(String string) {
+    static String strippedStringMinimal(String string) {
         if (string != null) {
             string = string.replaceAll("\\s+", "");
             string = string.replaceAll("\\p{P}", "");
@@ -134,11 +130,13 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         return string;
     }
 
-    private String removeSpaces(String strings) {
+    static String removeSpaces(String strings) {
         return strings.replaceAll("\\s+", "");
     }
 
-    private String trimInitial(String initial) {
+    static String trimInitial(String initial) {
         return initial.replaceAll("\\s+", "");
     }
+
+
 }

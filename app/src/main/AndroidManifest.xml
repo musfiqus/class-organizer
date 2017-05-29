@@ -57,6 +57,10 @@
             android:value="97134746f7e815b6aad25190b01c4712d2c523ec" />
 
         <activity android:name=".activity.SearchActivity"></activity>
+        <service
+            android:name="bd.edu.daffodilvarsity.classorganizer.service.DatabaseUpdateIntentService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>

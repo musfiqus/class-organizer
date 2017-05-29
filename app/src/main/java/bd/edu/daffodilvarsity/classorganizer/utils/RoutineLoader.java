@@ -17,7 +17,7 @@ import bd.edu.daffodilvarsity.classorganizer.R;
 
 public class RoutineLoader {
 
-    PrefManager prefManager;
+    private PrefManager prefManager;
     private int level;
     private int term;
     private String section;
@@ -175,11 +175,18 @@ public class RoutineLoader {
     }
 
     public ArrayList<DayData> loadRoutine(boolean loadPersonal) {
-        //Initializing DB Helper
-        DatabaseHelper db = DatabaseHelper.getInstance(context);
         //Generating course codes from generated semester
         ArrayList<String> courseCodes = courseCodeGenerator(setSemester());
-        ArrayList<DayData> vanillaRoutine = db.getDayData(courseCodes, section, level, term, dept, campus, program);
+        ArrayList<DayData> vanillaRoutine;
+        //Initializing DB Helper
+        UpdatedDatabaseHelper updatedDatabaseHelper = UpdatedDatabaseHelper.getInstance(context, prefManager.getDatabaseVersion());
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(context);
+        if (prefManager.isUpdatedOnline()) {
+            Log.e("PREF DB", ""+prefManager.getDatabaseVersion());
+            vanillaRoutine = updatedDatabaseHelper.getDayData(courseCodes, section, level, term, dept, campus, program);
+        } else {
+            vanillaRoutine = databaseHelper.getDayData(courseCodes, section, level, term, dept, campus, program);
+        }
         if (!loadPersonal) {
             return vanillaRoutine;
         } else {
@@ -249,5 +256,16 @@ public class RoutineLoader {
             }
         }
         return loadedDayData;
+    }
+
+    public boolean verifyUpdatedDb(int dbVersion) {
+        UpdatedDatabaseHelper databaseHelper = UpdatedDatabaseHelper.getInstance(context, dbVersion);
+        Log.e("Verify db ", ""+dbVersion);
+        ArrayList<String> courseCodes = courseCodeGenerator(setSemester());
+        ArrayList<DayData> vanillaRoutine = databaseHelper.getDayData(courseCodes, section, level, term, dept, campus, program);
+        if (vanillaRoutine == null) {
+            return false;
+        }
+        return vanillaRoutine.size() > 0;
     }
 }

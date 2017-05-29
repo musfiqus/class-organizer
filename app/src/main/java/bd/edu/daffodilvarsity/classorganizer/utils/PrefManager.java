@@ -36,8 +36,10 @@ public class PrefManager {
     private static final String PREF_DELETED_DAYDATA = "deleted_daydata";
     private static final String PREF_EDITED_DAYDATA = "edited_daydata";
     private static final String PREF_SNAPSHOT_DAYDATA = "snapshot_daydata";
+    private static final String PREF_SUPPRESSED_UPDATE_DB_VERSION = "SuppressedUpdateDbVersion";
     private static final String HAS_CAMPUS_SETTINGS_CHANGED = "HasCampusChanged";
     private static final String IS_CAMPUS_CHANGE_ALERT_DISABLED = "IsCampusChangeAlertDisabled";
+    private static final String IS_ROUTINE_UPDATED_ONLINE = "IsRoutineUpdatedOnline";
     public static final String SAVE_DATA_TAG = "save";
     public static final String ADD_DATA_TAG = "add";
     public static final String EDIT_DATA_TAG = "edit";
@@ -54,16 +56,14 @@ public class PrefManager {
     }
 
     public void setFirstTimeLaunch(boolean isFirstTime) {
-        editor.putBoolean(IS_FIRST_TIME_LAUNCH, isFirstTime);
-        editor.apply();
+        editor.putBoolean(IS_FIRST_TIME_LAUNCH, isFirstTime).apply();
     }
 
     public void saveDayData(ArrayList<DayData> daydata) {
         editor.remove(PREF_DAYDATA).apply();
         Gson gson = new Gson();
         String json = gson.toJson(daydata);
-        editor.putString(PREF_DAYDATA, json);
-        editor.apply();
+        editor.putString(PREF_DAYDATA, json).apply();
     }
 
     public ArrayList<DayData> getSavedDayData() {
@@ -76,71 +76,60 @@ public class PrefManager {
 
     public void saveSection(String section) {
         editor.remove(SAVE_SECTION).apply();
-        editor.putString(SAVE_SECTION, section);
-        editor.apply();
+        editor.putString(SAVE_SECTION, section).apply();
     }
 
     public void saveTerm(int term) {
         editor.remove(SAVE_TERM).apply();
-        editor.putInt(SAVE_TERM, term);
-        editor.apply();
+        editor.putInt(SAVE_TERM, term).apply();
     }
 
     public void saveLevel(int level) {
         editor.remove(PREF_LEVEL).apply();
-        editor.putInt(PREF_LEVEL, level);
-        editor.apply();
+        editor.putInt(PREF_LEVEL, level).apply();
     }
 
     public void saveSemester(String semester) {
         editor.remove(SAVE_SEMESTER).apply();
-        editor.putString(SAVE_SEMESTER, semester);
-        editor.apply();
+        editor.putString(SAVE_SEMESTER, semester).apply();
     }
 
     public void saveShowSnack(boolean snack) {
         editor.remove(SAVE_SNACK).apply();
-        editor.putBoolean(SAVE_SNACK, snack);
-        editor.apply();
+        editor.putBoolean(SAVE_SNACK, snack).apply();
     }
 
     public void saveReCreate(boolean value) {
         editor.remove(SAVE_RECREATE).apply();
-        editor.putBoolean(SAVE_RECREATE, value);
-        editor.apply();
+        editor.putBoolean(SAVE_RECREATE, value).apply();
     }
 
     public void saveSnackData(String snack) {
         editor.remove(SAVE_SNACK_TAG).apply();
-        editor.putString(SAVE_SNACK_TAG, snack);
-        editor.apply();
+        editor.putString(SAVE_SNACK_TAG, snack).apply();
     }
 
     public void saveDatabaseVersion(int version) {
         editor.remove(SAVE_DATABASE_VERSION).apply();
-        editor.putInt(SAVE_DATABASE_VERSION, version);
-        editor.apply();
+        editor.putInt(SAVE_DATABASE_VERSION, version).apply();
     }
 
     public void saveCampus(String campus) {
         campus = campus.toLowerCase();
         editor.remove(SAVE_CAMPUS).apply();
-        editor.putString(SAVE_CAMPUS, campus);
-        editor.apply();
+        editor.putString(SAVE_CAMPUS, campus).apply();
     }
 
     public void saveDept(String dept) {
         dept = dept.toLowerCase();
         editor.remove(SAVE_DEPT).apply();
-        editor.putString(SAVE_DEPT, dept);
-        editor.apply();
+        editor.putString(SAVE_DEPT, dept).apply();
     }
 
     public void saveProgram(String program) {
         program = program.toLowerCase();
         editor.remove(SAVE_PROGRAM).apply();
-        editor.putString(SAVE_PROGRAM, program);
-        editor.apply();
+        editor.putString(SAVE_PROGRAM, program).apply();
     }
 
     public void saveModifiedData(DayData dayData, String which, boolean reset) {
@@ -223,14 +212,12 @@ public class PrefManager {
 
     public void setHasCampusSettingsChanged(boolean value) {
         editor.remove(HAS_CAMPUS_SETTINGS_CHANGED).apply();
-        editor.putBoolean(HAS_CAMPUS_SETTINGS_CHANGED, value);
-        editor.apply();
+        editor.putBoolean(HAS_CAMPUS_SETTINGS_CHANGED, value).apply();
     }
 
     public void setIsCampusChangeAlertDisabled(boolean value) {
         editor.remove(IS_CAMPUS_CHANGE_ALERT_DISABLED).apply();
-        editor.putBoolean(IS_CAMPUS_CHANGE_ALERT_DISABLED, value);
-        editor.apply();
+        editor.putBoolean(IS_CAMPUS_CHANGE_ALERT_DISABLED, value).apply();
     }
 
     public boolean isCampusChangeAlertDisabled() {
@@ -310,6 +297,24 @@ public class PrefManager {
             }
         }
         return false;
+    }
+
+    public void setUpdatedOnline(boolean value) {
+        editor.remove(IS_ROUTINE_UPDATED_ONLINE).apply();
+        editor.putBoolean(IS_ROUTINE_UPDATED_ONLINE, value).apply();
+    }
+
+    public void setSuppressedUpdateDbVersion(int dbVersion) {
+        editor.remove(PREF_SUPPRESSED_UPDATE_DB_VERSION).apply();
+        editor.putInt(PREF_SUPPRESSED_UPDATE_DB_VERSION, dbVersion).apply();
+    }
+
+    public int getSuppressedUpdateDbVersion() {
+        return pref.getInt(PREF_SUPPRESSED_UPDATE_DB_VERSION, 0);
+    }
+
+    public boolean isUpdatedOnline() {
+        return pref.getBoolean(IS_ROUTINE_UPDATED_ONLINE, false);
     }
 
     public boolean isFirstTimeLaunch() {

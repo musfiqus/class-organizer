@@ -142,7 +142,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                     viewPager.setCurrentItem(current);
                 } else {
                     prefManager.saveSemester(getResources().getString(R.string.current_semester));
-                    prefManager.saveDatabaseVersion(DatabaseHelper.DATABASE_VERSION);
+                    prefManager.saveDatabaseVersion(DatabaseHelper.OFFLINE_DATABASE_VERSION);
                     launchHomeScreen();
                 }
             }

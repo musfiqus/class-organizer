@@ -2,11 +2,14 @@ package bd.edu.daffodilvarsity.classorganizer.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -19,9 +22,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.firebase.crash.FirebaseCrash;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.polaric.colorful.Colorful;
 import org.polaric.colorful.ColorfulActivity;
@@ -32,11 +43,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import bd.edu.daffodilvarsity.classorganizer.utils.DatabaseHelper;
-import bd.edu.daffodilvarsity.classorganizer.data.DayData;
-import bd.edu.daffodilvarsity.classorganizer.adapter.DayFragmentPagerAdapter;
-import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.R;
+import bd.edu.daffodilvarsity.classorganizer.adapter.DayFragmentPagerAdapter;
+import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.service.DatabaseUpdateIntentService;
+import bd.edu.daffodilvarsity.classorganizer.utils.DatabaseHelper;
+import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.RoutineLoader;
 
 public class MainActivity extends ColorfulActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -46,6 +58,8 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     private boolean onCreate = false;
     private RoutineLoader routineLoader;
     private boolean isActivityRunning = false;
+    private boolean updateDialogueBlocked = false;
+    private static String DATABASE_VERSION_TAG = "DataBaseVersion";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,18 +71,21 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         prefManager.setCompat2point2();
         prefManager.deleteSnapshotDayData();
 
+
         routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), this, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
 
         //If there is a new routine, update
         if (prefManager.getSemester() != null && !prefManager.getSemester().equals(getResources().getString(R.string.current_semester))) {
             //We will add department checks later if there is a specific update
+            prefManager.setUpdatedOnline(false);
             upgradeRoutine();
-        } else if (DatabaseHelper.DATABASE_VERSION > prefManager.getDatabaseVersion()) {
+        } else if (DatabaseHelper.OFFLINE_DATABASE_VERSION > prefManager.getDatabaseVersion()) {
             boolean isNotUpdated = updateRoutine(true);
+            prefManager.setUpdatedOnline(false);
             if (isNotUpdated) {
                 showSnackBar(this, "Error loading updated routine!");
                 FirebaseCrash.report(new Exception("Error loading updated routine. Database version: "
-                        + DatabaseHelper.DATABASE_VERSION
+                        + DatabaseHelper.OFFLINE_DATABASE_VERSION
                         + "Section: " + prefManager.getSection()
                         + " Term: " + prefManager.getTerm()
                         + " Level: " + prefManager.getLevel()));
@@ -103,6 +120,9 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //Aaannnd just before loading data we'll check for an online update
+        checkForUpdate();
 
         loadData();
         onCreate = true;
@@ -183,6 +203,10 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
             prefManager.saveReCreate(false);
         }
         isActivityRunning = true;
+        if (updateDialogueBlocked) {
+            checkForUpdate();
+            updateDialogueBlocked = false;
+        }
     }
 
     @Override
@@ -292,7 +316,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     }
 
     private boolean updateRoutine(boolean personalRoutine) {
-        prefManager.saveDatabaseVersion(DatabaseHelper.DATABASE_VERSION);
+        prefManager.saveDatabaseVersion(DatabaseHelper.OFFLINE_DATABASE_VERSION);
         routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), this, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
         ArrayList<DayData> updatedRoutine = routineLoader.loadRoutine(personalRoutine);
         if (updatedRoutine != null) {
@@ -303,4 +327,108 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         }
         return true;
     }
+
+    private void checkForUpdate() {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference databaseReference = firebaseDatabase.getReference(DATABASE_VERSION_TAG);
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final int newDBVersion = dataSnapshot.getValue(Integer.class);
+                if (newDBVersion > prefManager.getDatabaseVersion() && newDBVersion != prefManager.getSuppressedUpdateDbVersion()) {
+                    if (isActivityRunning) {
+                        MaterialDialog.Builder builder = new MaterialDialog.Builder(MainActivity.this)
+                                .title("Update Available!")
+                                .content("A new routine update is available. Do you want to download it now?")
+                                .positiveText("YES")
+                                .negativeText("NO")
+                                .checkBoxPrompt("Don't remind again me for this update", false, new CompoundButton.OnCheckedChangeListener() {
+                                    @Override
+                                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                        if (isChecked) {
+                                            prefManager.setSuppressedUpdateDbVersion(newDBVersion);
+                                        } else {
+                                            prefManager.setSuppressedUpdateDbVersion(0);
+                                        }
+                                    }
+                                })
+                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
+                                        startOnlineUpdate(newDBVersion);
+                                    }
+                                });
+                        MaterialDialog dialog = builder.build();
+                        dialog.show();
+                    } else {
+                        updateDialogueBlocked = true;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void startOnlineUpdate(int newDbVersion) {
+        showSnackBar(MainActivity.this, "Updating routine");
+        DatabaseUpdateResultReceiver resultReceiver = new DatabaseUpdateResultReceiver(this, new Handler());
+        Intent updateIntent = new Intent(MainActivity.this, DatabaseUpdateIntentService.class);
+        updateIntent.putExtra("db_version", newDbVersion);
+        updateIntent.putExtra("receiver", resultReceiver);
+        startService(updateIntent);
+    }
+    public class DatabaseUpdateResultReceiver extends ResultReceiver {
+        private Context context;
+
+        /**
+         * Create a new ResultReceive to receive results.  Your
+         * {@link #onReceiveResult} method will be called from the thread running
+         * <var>handler</var> if given, or from an arbitrary thread if null.
+         *
+         * @param handler
+         */
+        public DatabaseUpdateResultReceiver(Context context, Handler handler) {
+            super(handler);
+            this.context = context;
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+            switch (resultCode) {
+                case DatabaseUpdateIntentService.DOWNLOAD_ERROR:
+                    //Do nothing for now
+                    if (isActivityRunning) {
+                        showSnackBar(MainActivity.this, "Error downloading update");
+                    }
+                    break;
+                case DatabaseUpdateIntentService.DOWNLOAD_SUCCESS:
+                    int dbVersion = resultData.getInt("db_version");
+                    boolean isVerified = routineLoader.verifyUpdatedDb(dbVersion);
+                    if (isVerified) {
+                        routineLoader = null;
+                        prefManager.setUpdatedOnline(true);
+                        prefManager.saveDatabaseVersion(dbVersion);
+                        routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), getApplicationContext(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
+                        ArrayList<DayData> newRoutine = routineLoader.loadRoutine(true);
+                        prefManager.saveDayData(newRoutine);
+                        loadData();
+                        if (isActivityRunning) {
+                            showSnackBar(MainActivity.this, "Routine Updated");
+                        }
+                    } else {
+                        if (isActivityRunning) {
+                            showSnackBar(MainActivity.this, "Update corrupted");
+                        }
+                        FirebaseCrash.report(new Exception("Downloaded update corrupted. DB version: "+dbVersion));
+                    }
+
+            }
+            super.onReceiveResult(resultCode, resultData);
+        }
+    }
+
 }
