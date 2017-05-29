@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.google.firebase.crash.FirebaseCrash;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.util.ArrayList;
@@ -117,7 +116,6 @@ public class DatabaseHelper extends SQLiteAssetHelper {
             case "7.5":
                 return "06.00 PM - 09.00 PM";
             default:
-                FirebaseCrash.report(new Exception("DATABASE ERROR INVALID TIME"));
                 return null;
         }
     }

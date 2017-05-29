@@ -20,6 +20,11 @@ xmlns:colorpicker="http://schemas.android.com/apk/res-auto">
             android:summary="Place holder"
             android:title="Limit Modified Classes"
             android:defaultValue="true" />
+        <SwitchPreferenceCompat
+            android:key="ramadan_preference"
+            android:summary="Place holder"
+            android:title="Display Ramadan Timetable"
+            android:defaultValue="false" />
     </android.support.v7.preference.PreferenceCategory>
     <android.support.v7.preference.PreferenceCategory
         android:title="Appearance">

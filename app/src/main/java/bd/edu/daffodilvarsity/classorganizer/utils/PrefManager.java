@@ -40,6 +40,7 @@ public class PrefManager {
     private static final String HAS_CAMPUS_SETTINGS_CHANGED = "HasCampusChanged";
     private static final String IS_CAMPUS_CHANGE_ALERT_DISABLED = "IsCampusChangeAlertDisabled";
     private static final String IS_ROUTINE_UPDATED_ONLINE = "IsRoutineUpdatedOnline";
+    private static final String IS_RAMADAN_GREETINGS_ENABLED = "IsRamadanGreetingsEnabled";
     public static final String SAVE_DATA_TAG = "save";
     public static final String ADD_DATA_TAG = "add";
     public static final String EDIT_DATA_TAG = "edit";
@@ -307,6 +308,15 @@ public class PrefManager {
     public void setSuppressedUpdateDbVersion(int dbVersion) {
         editor.remove(PREF_SUPPRESSED_UPDATE_DB_VERSION).apply();
         editor.putInt(PREF_SUPPRESSED_UPDATE_DB_VERSION, dbVersion).apply();
+    }
+
+    public void showRamadanGreetings(boolean value) {
+        editor.remove(IS_RAMADAN_GREETINGS_ENABLED).apply();
+        editor.putBoolean(IS_RAMADAN_GREETINGS_ENABLED, value).apply();
+    }
+
+    public boolean isRamadanGreetingsEnabled() {
+        return pref.getBoolean(IS_RAMADAN_GREETINGS_ENABLED, true);
     }
 
     public int getSuppressedUpdateDbVersion() {

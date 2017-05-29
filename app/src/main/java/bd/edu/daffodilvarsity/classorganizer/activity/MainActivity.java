@@ -27,7 +27,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -84,11 +83,6 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
             prefManager.setUpdatedOnline(false);
             if (isNotUpdated) {
                 showSnackBar(this, "Error loading updated routine!");
-                FirebaseCrash.report(new Exception("Error loading updated routine. Database version: "
-                        + DatabaseHelper.OFFLINE_DATABASE_VERSION
-                        + "Section: " + prefManager.getSection()
-                        + " Term: " + prefManager.getTerm()
-                        + " Level: " + prefManager.getLevel()));
             }
         }
 
@@ -126,6 +120,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
 
         loadData();
         onCreate = true;
+        showRamadanGreetings();
     }
 
     @Override
@@ -359,7 +354,9 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
                                     }
                                 });
                         MaterialDialog dialog = builder.build();
-                        dialog.show();
+                        if (!dialog.isShowing()) {
+                            dialog.show();
+                        }
                     } else {
                         updateDialogueBlocked = true;
                     }
@@ -381,8 +378,29 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         updateIntent.putExtra("receiver", resultReceiver);
         startService(updateIntent);
     }
+
+    private void showRamadanGreetings() {
+        if (prefManager.isRamadanGreetingsEnabled()) {
+            MaterialDialog dialog = new MaterialDialog.Builder(this)
+                    .title("Ramadan Kareem!")
+                    .positiveText("OPEN SETTINGS")
+                    .content("You can now enable Ramadan timetable from the Settings menu." +
+                            "\nPlease note your modified classes won't be affected after you enable this option." +
+                            "\nWishing everyone a happy Ramadan!")
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
+                            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                            startActivity(intent);
+                        }
+                    })
+                    .build();
+            dialog.show();
+            prefManager.showRamadanGreetings(false);
+        }
+    }
+
     public class DatabaseUpdateResultReceiver extends ResultReceiver {
-        private Context context;
 
         /**
          * Create a new ResultReceive to receive results.  Your
@@ -393,7 +411,6 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
          */
         public DatabaseUpdateResultReceiver(Context context, Handler handler) {
             super(handler);
-            this.context = context;
         }
 
         @Override
@@ -423,7 +440,6 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
                         if (isActivityRunning) {
                             showSnackBar(MainActivity.this, "Update corrupted");
                         }
-                        FirebaseCrash.report(new Exception("Downloaded update corrupted. DB version: "+dbVersion));
                     }
 
             }

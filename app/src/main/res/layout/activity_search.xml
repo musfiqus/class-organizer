@@ -20,6 +20,7 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" >
             <android.support.v7.widget.SearchView
                 android:id="@+id/searchView"
+                app:queryHint="Search classes"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent" />
         </android.support.v7.widget.Toolbar>
