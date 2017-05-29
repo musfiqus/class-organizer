@@ -505,7 +505,6 @@ public class SettingsActivity extends ColorfulActivity {
                 @Override
                 public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
                     String campus = campusSpinner.getSelectedItem().toString();
-                    Log.e("Wut campus", "campus");
                     String department = deptSpinner.getSelectedItem().toString();
                     String program = programSpinner.getSelectedItem().toString();
                     if (campus.equalsIgnoreCase("main")
