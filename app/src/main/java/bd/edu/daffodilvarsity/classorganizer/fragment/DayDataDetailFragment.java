@@ -3,6 +3,7 @@ package bd.edu.daffodilvarsity.classorganizer.fragment;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
@@ -10,6 +11,7 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +26,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import bd.edu.daffodilvarsity.classorganizer.adapter.DayDataAdapter;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.activity.EditActivity;
@@ -205,7 +208,13 @@ public class DayDataDetailFragment extends Fragment {
             ((TextView) rootView.findViewById(R.id.teachers_initial_tv)).setText(mItem.getTeachersInitial());
             ((TextView) rootView.findViewById(R.id.weekday_tv)).setText(mItem.getDay());
             ((TextView) rootView.findViewById(R.id.room_no_tv)).setText(mItem.getRoomNo());
-            ((TextView) rootView.findViewById(R.id.time_tv)).setText(mItem.getTime());
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(rootView.getContext());
+            boolean isRamadan = preferences.getBoolean("ramadan_preference", false);
+            if (isRamadan) {
+                ((TextView) rootView.findViewById(R.id.time_tv)).setText(DayDataAdapter.DayDataHolder.convertToRamadanTime(mItem.getTime(), mItem.getTimeWeight()));
+            } else {
+                ((TextView) rootView.findViewById(R.id.time_tv)).setText(mItem.getTime());
+            }
         }
         return rootView;
     }

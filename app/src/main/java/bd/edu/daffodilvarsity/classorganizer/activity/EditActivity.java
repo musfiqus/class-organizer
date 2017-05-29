@@ -13,8 +13,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.firebase.crash.FirebaseCrash;
-
 import org.polaric.colorful.Colorful;
 import org.polaric.colorful.ColorfulActivity;
 
@@ -49,7 +47,7 @@ public class EditActivity extends ColorfulActivity {
         try {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         } catch (NullPointerException e) {
-            FirebaseCrash.report(e);
+            e.printStackTrace();
         }
 
         prefManager = new PrefManager(this);

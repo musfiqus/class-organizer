@@ -50,7 +50,6 @@ public class RoutineLoader {
     }
 
     private ArrayList<String> courseCodeGenerator(int semester) {
-        Log.e("Dammit", "fix");
         if (campus.equalsIgnoreCase("main")) {
             if (dept.equalsIgnoreCase("cse")) {
                 if (program.equalsIgnoreCase("day")) {
@@ -182,7 +181,6 @@ public class RoutineLoader {
         UpdatedDatabaseHelper updatedDatabaseHelper = UpdatedDatabaseHelper.getInstance(context, prefManager.getDatabaseVersion());
         DatabaseHelper databaseHelper = DatabaseHelper.getInstance(context);
         if (prefManager.isUpdatedOnline()) {
-            Log.e("PREF DB", ""+prefManager.getDatabaseVersion());
             vanillaRoutine = updatedDatabaseHelper.getDayData(courseCodes, section, level, term, dept, campus, program);
         } else {
             vanillaRoutine = databaseHelper.getDayData(courseCodes, section, level, term, dept, campus, program);
@@ -260,7 +258,6 @@ public class RoutineLoader {
 
     public boolean verifyUpdatedDb(int dbVersion) {
         UpdatedDatabaseHelper databaseHelper = UpdatedDatabaseHelper.getInstance(context, dbVersion);
-        Log.e("Verify db ", ""+dbVersion);
         ArrayList<String> courseCodes = courseCodeGenerator(setSemester());
         ArrayList<DayData> vanillaRoutine = databaseHelper.getDayData(courseCodes, section, level, term, dept, campus, program);
         if (vanillaRoutine == null) {
