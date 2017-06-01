@@ -2,6 +2,7 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -10,6 +11,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.data.RecoverDayData;
 
 /**
  * Created by musfiqus on 3/25/2017.
@@ -35,12 +37,12 @@ public class PrefManager {
     private static final String PREF_SAVED_DAYDATA = "saved_daydata";
     private static final String PREF_DELETED_DAYDATA = "deleted_daydata";
     private static final String PREF_EDITED_DAYDATA = "edited_daydata";
-    private static final String PREF_SNAPSHOT_DAYDATA = "snapshot_daydata";
     private static final String PREF_SUPPRESSED_UPDATE_DB_VERSION = "SuppressedUpdateDbVersion";
     private static final String HAS_CAMPUS_SETTINGS_CHANGED = "HasCampusChanged";
     private static final String IS_CAMPUS_CHANGE_ALERT_DISABLED = "IsCampusChangeAlertDisabled";
     private static final String IS_ROUTINE_UPDATED_ONLINE = "IsRoutineUpdatedOnline";
     private static final String IS_RAMADAN_GREETINGS_ENABLED = "IsRamadanGreetingsEnabled";
+    private static final String IS_RECOVERY_FINISHED = "IsRecoveryFinished";
     public static final String SAVE_DATA_TAG = "save";
     public static final String ADD_DATA_TAG = "add";
     public static final String EDIT_DATA_TAG = "edit";
@@ -285,14 +287,14 @@ public class PrefManager {
         saveDayData(loadedData);
     }
 
-    //This will be removed in future
-    public void deleteSnapshotDayData() {
-        editor.remove(PREF_SNAPSHOT_DAYDATA).apply();
-    }
-
     public boolean isDuplicate(ArrayList<DayData> list, DayData object) {
-        for (DayData dayData :
-                list) {
+        if (list == null) {
+            return false;
+        }
+        if (list.size() == 0) {
+            return false;
+        }
+        for (DayData dayData : list) {
             if (dayData.equals(object)) {
                 return true;
             }
@@ -360,7 +362,7 @@ public class PrefManager {
     }
 
     public int getDatabaseVersion() {
-        return pref.getInt(SAVE_DATABASE_VERSION, 0);
+        return pref.getInt(SAVE_DATABASE_VERSION, 1);
     }
 
     public String getCampus() {
@@ -375,11 +377,58 @@ public class PrefManager {
         return pref.getString(SAVE_PROGRAM, null);
     }
 
-    public void setCompat2point2() {
-        if (getDatabaseVersion() < 39) {
-            saveModifiedData(null, EDIT_DATA_TAG, true);
-            saveModifiedData(null, DELETE_DATA_TAG, true);
-            saveModifiedData(null, SAVE_DATA_TAG, true);
+    private void setRecoveryFinished(boolean value) {
+        editor.remove(IS_RECOVERY_FINISHED).apply();
+        editor.putBoolean(IS_RECOVERY_FINISHED, value).apply();
+    }
+
+    private boolean isRecoveryFinished() {
+        return pref.getBoolean(IS_RECOVERY_FINISHED, false);
+    }
+
+    public void recoverSavedData() {
+        if (!isRecoveryFinished()) {
+            Log.e("Okay", "I'm working");
+            String edit = pref.getString(PREF_EDITED_DAYDATA, null);
+            String delete = pref.getString(PREF_DELETED_DAYDATA, null);
+            String add = pref.getString(PREF_ADDED_DAYDATA, null);
+            String save = pref.getString(PREF_SAVED_DAYDATA, null);
+            boolean rEdit = checkValidRecoveryObject(edit);
+            boolean rDelete = checkValidRecoveryObject(delete);
+            boolean rAdd = checkValidRecoveryObject(add);
+            boolean rSave = checkValidRecoveryObject(save);
+            resetModification(rAdd, rEdit, rSave, rDelete);
+            recoverData(edit, EDIT_DATA_TAG);
+            recoverData(delete, DELETE_DATA_TAG);
+            recoverData(add, ADD_DATA_TAG);
+            recoverData(save, SAVE_DATA_TAG);
+            setRecoveryFinished(true);
+        }
+    }
+
+    private boolean checkValidRecoveryObject(String json) {
+        if (json != null) {
+            if (json.substring(0, 6).equalsIgnoreCase("[{\"a\":")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void recoverData(String json, final String DATA_TAG) {
+        if (json != null) {
+            if (json.substring(0, 6).equalsIgnoreCase("[{\"a\":")) {
+                Gson gson = new Gson();
+                Type type = new TypeToken<ArrayList<RecoverDayData>>() {
+                }.getType();
+                ArrayList<RecoverDayData> recoverDayData = gson.fromJson(json, type);
+                CourseUtils.CourseTitleGenerator titleGenerator = CourseUtils.CourseTitleGenerator.getInstance(_context);
+                for (RecoverDayData eachData : recoverDayData) {
+                    String title = titleGenerator.getCourseTitle(eachData.getA(), getDept(), getProgram());
+                    DayData dayData = new DayData(eachData.getA(), eachData.getB(), eachData.getC(), eachData.getD(), eachData.getE(), eachData.getF(), eachData.getG(), eachData.getH(), eachData.getI(), title);
+                    saveModifiedData(dayData, DATA_TAG, false);
+                }
+            }
         }
     }
 }

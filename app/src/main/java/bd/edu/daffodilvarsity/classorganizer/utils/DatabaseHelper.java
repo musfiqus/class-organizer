@@ -16,7 +16,7 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 public class DatabaseHelper extends SQLiteAssetHelper {
     //Increment the version to erase previous db
-    public static final int OFFLINE_DATABASE_VERSION = 45;
+    public static final int OFFLINE_DATABASE_VERSION = 51;
     static final String COLUMN_COURSE_CODE = "course_code";
     static final String COLUMN_TEACHERS_INITIAL = "teachers_initial";
     static final String COLUMN_WEEK_DAYS = "week_days";

@@ -1,26 +1,45 @@
 package bd.edu.daffodilvarsity.classorganizer.data;
 
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * Created by musfiqus on 3/24/2017.
  */
 
 public class DayData implements Serializable, Parcelable {
+    @SerializedName("courseCode")
     private String courseCode;
+
+    @SerializedName("teachersInitial")
     private String teachersInitial;
+
+    @SerializedName("section")
     private String section;
+
+    @SerializedName("level")
     private int level;
+
+    @SerializedName("term")
     private int term;
+
+    @SerializedName("roomNo")
     private String roomNo;
+
+    @SerializedName("time")
     private String time;
+
+    @SerializedName("day")
     private String day;
+
+    @SerializedName("timeWeight")
     private double timeWeight;
+
+    @SerializedName("courseTitle")
     private String courseTitle;
 
     public DayData(String courseCode, String teachersInitial, String section, int level, int term, String roomNo, String time, String day, double timeWeight, String courseTitle) {
@@ -107,27 +126,6 @@ public class DayData implements Serializable, Parcelable {
             return false;
         }
         return otherData.getTimeWeight() == this.timeWeight;
-    }
-
-    @Override
-    public int hashCode() {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            return Objects.hash(courseCode, teachersInitial, section, level, term, roomNo, time, day, timeWeight, courseTitle);
-        } else {
-            int result = 17;
-            result = 31 * result + courseCode.hashCode();
-            result = 31 * result + teachersInitial.hashCode();
-            result = 31 * result + section.hashCode();
-            result = 31 * result + level;
-            result = 31 * result + term;
-            result = 31 * result + roomNo.hashCode();
-            result = 31 * result + time.hashCode();
-            result = 31 * result + day.hashCode();
-            result = 31 * result + Double.valueOf(timeWeight).hashCode();
-            result = 31 * result + courseTitle.hashCode();
-            return result;
-        }
     }
 
     @Override

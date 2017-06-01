@@ -66,10 +66,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         Colorful.applyTheme(this);
         setContentView(R.layout.activity_main);
         prefManager = new PrefManager(this);
-        //Maintaining compatibility with previous versions
-        prefManager.setCompat2point2();
-        prefManager.deleteSnapshotDayData();
-
+        prefManager.recoverSavedData();
 
         routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), this, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
 
@@ -190,6 +187,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     @Override
     protected void onResume() {
         super.onResume();
+        isActivityRunning = true;
         if (!onStart) {
             loadData();
         }
@@ -197,10 +195,13 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
             loadData();
             prefManager.saveReCreate(false);
         }
-        isActivityRunning = true;
         if (updateDialogueBlocked) {
             checkForUpdate();
             updateDialogueBlocked = false;
+        }
+        if (prefManager.showSnack()) {
+            showSnackBar(this, prefManager.getSnackData());
+            prefManager.saveShowSnack(false);
         }
     }
 
@@ -371,7 +372,9 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     }
 
     private void startOnlineUpdate(int newDbVersion) {
-        showSnackBar(MainActivity.this, "Updating routine");
+        if (isActivityRunning) {
+            showSnackBar(MainActivity.this, "Updating routine");
+        }
         DatabaseUpdateResultReceiver resultReceiver = new DatabaseUpdateResultReceiver(this, new Handler());
         Intent updateIntent = new Intent(MainActivity.this, DatabaseUpdateIntentService.class);
         updateIntent.putExtra("db_version", newDbVersion);
@@ -381,23 +384,48 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
 
     private void showRamadanGreetings() {
         if (prefManager.isRamadanGreetingsEnabled()) {
-            MaterialDialog dialog = new MaterialDialog.Builder(this)
-                    .title("Ramadan Kareem!")
-                    .positiveText("OPEN SETTINGS")
-                    .content("You can now enable Ramadan timetable from the Settings menu." +
-                            "\nPlease note your modified classes won't be affected after you enable this option." +
-                            "\nWishing everyone a happy Ramadan!")
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
-                            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-                            startActivity(intent);
-                        }
-                    })
-                    .build();
-            dialog.show();
-            prefManager.showRamadanGreetings(false);
+            dialogThread();
         }
+    }
+
+    private void dialogThread() {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                    MainActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (isActivityRunning) {
+                                MaterialDialog dialog = new MaterialDialog.Builder(MainActivity.this)
+                                        .title("Ramadan Kareem!")
+                                        .positiveText("OPEN SETTINGS")
+                                        .content("You can now enable Ramadan timetable from the Settings menu." +
+                                                "\nPlease note there was no official announcement regarding the timetable for Lab classes." +
+                                                "\nSo the times of the lab classes are unofficial and are subjects to change according to your lab teacher." +
+                                                "\nWishing everyone a happy Ramadan!")
+                                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                            @Override
+                                            public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
+                                                prefManager.showRamadanGreetings(false);
+                                                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                                                startActivity(intent);
+                                            }
+                                        })
+                                        .build();
+                                dialog.show();
+
+                            }
+                        }
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                super.run();
+            }
+        };
+        thread.start();
     }
 
     public class DatabaseUpdateResultReceiver extends ResultReceiver {
@@ -432,9 +460,13 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
                         routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), getApplicationContext(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
                         ArrayList<DayData> newRoutine = routineLoader.loadRoutine(true);
                         prefManager.saveDayData(newRoutine);
-                        loadData();
                         if (isActivityRunning) {
+                            loadData();
                             showSnackBar(MainActivity.this, "Routine Updated");
+                        } else {
+                            prefManager.saveReCreate(true);
+                            prefManager.saveShowSnack(true);
+                            prefManager.saveSnackData("Routine Updated");
                         }
                     } else {
                         if (isActivityRunning) {

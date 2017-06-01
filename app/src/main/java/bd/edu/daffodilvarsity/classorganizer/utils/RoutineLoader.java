@@ -3,13 +3,12 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.R;
+import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 /**
  * Created by musfiqus on 4/1/2017.
@@ -178,11 +177,12 @@ public class RoutineLoader {
         ArrayList<String> courseCodes = courseCodeGenerator(setSemester());
         ArrayList<DayData> vanillaRoutine;
         //Initializing DB Helper
-        UpdatedDatabaseHelper updatedDatabaseHelper = UpdatedDatabaseHelper.getInstance(context, prefManager.getDatabaseVersion());
-        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(context);
+
         if (prefManager.isUpdatedOnline()) {
+            UpdatedDatabaseHelper updatedDatabaseHelper = UpdatedDatabaseHelper.getInstance(context, prefManager.getDatabaseVersion());
             vanillaRoutine = updatedDatabaseHelper.getDayData(courseCodes, section, level, term, dept, campus, program);
         } else {
+            DatabaseHelper databaseHelper = DatabaseHelper.getInstance(context);
             vanillaRoutine = databaseHelper.getDayData(courseCodes, section, level, term, dept, campus, program);
         }
         if (!loadPersonal) {
@@ -202,39 +202,45 @@ public class RoutineLoader {
             boolean isLimited = preferences.getBoolean("limit_preference", true);
             if (addDayData != null) {
                 for (DayData eachEditedDayData : addDayData) {
-                    if (!(prefManager.isDuplicate(loadedDayData, eachEditedDayData))) {
-                        if (isLimited) {
-                            if (this.section.equalsIgnoreCase(eachEditedDayData.getSection()) && this.term == eachEditedDayData.getTerm() && this.level == eachEditedDayData.getLevel()) {
+                    if (eachEditedDayData != null) {
+                        if (!(prefManager.isDuplicate(loadedDayData, eachEditedDayData))) {
+                            if (isLimited) {
+                                if (this.section.equalsIgnoreCase(eachEditedDayData.getSection()) && this.term == eachEditedDayData.getTerm() && this.level == eachEditedDayData.getLevel()) {
+                                    loadedDayData.add(eachEditedDayData);
+                                }
+                            } else {
                                 loadedDayData.add(eachEditedDayData);
                             }
-                        } else {
-                            loadedDayData.add(eachEditedDayData);
                         }
                     }
                 }
             }
             if (editDayData != null) {
                 for (DayData eachEditedDayData : editDayData) {
-                    if (!(prefManager.isDuplicate(loadedDayData, eachEditedDayData))) {
-                        if (isLimited) {
-                            if (this.section.equalsIgnoreCase(eachEditedDayData.getSection()) && this.term == eachEditedDayData.getTerm() && this.level == eachEditedDayData.getLevel()) {
+                    if (eachEditedDayData != null) {
+                        if (!(prefManager.isDuplicate(loadedDayData, eachEditedDayData))) {
+                            if (isLimited) {
+                                if (this.section.equalsIgnoreCase(eachEditedDayData.getSection()) && this.term == eachEditedDayData.getTerm() && this.level == eachEditedDayData.getLevel()) {
+                                    loadedDayData.add(eachEditedDayData);
+                                }
+                            } else {
                                 loadedDayData.add(eachEditedDayData);
                             }
-                        } else {
-                            loadedDayData.add(eachEditedDayData);
                         }
                     }
                 }
             }
             if (saveDayData != null) {
                 for (DayData eachEditedDayData : saveDayData) {
-                    if (!(prefManager.isDuplicate(loadedDayData, eachEditedDayData))) {
-                        if (isLimited) {
-                            if (this.section.equalsIgnoreCase(eachEditedDayData.getSection()) && this.term == eachEditedDayData.getTerm() && this.level == eachEditedDayData.getLevel()) {
+                    if (eachEditedDayData != null) {
+                        if (!(prefManager.isDuplicate(loadedDayData, eachEditedDayData))) {
+                            if (isLimited) {
+                                if (this.section.equalsIgnoreCase(eachEditedDayData.getSection()) && this.term == eachEditedDayData.getTerm() && this.level == eachEditedDayData.getLevel()) {
+                                    loadedDayData.add(eachEditedDayData);
+                                }
+                            } else {
                                 loadedDayData.add(eachEditedDayData);
                             }
-                        } else {
-                            loadedDayData.add(eachEditedDayData);
                         }
                     }
                 }
