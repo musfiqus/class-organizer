@@ -170,7 +170,11 @@ public class AddActivity extends ColorfulActivity {
     @Override
     protected void onPause() {
         super.onPause();
-//        reCreate();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

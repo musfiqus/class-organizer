@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
     tools:context="bd.edu.daffodilvarsity.classorganizer.activity.EditActivity">
 
@@ -11,9 +11,9 @@
         android:id="@+id/modify_appbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="0dp"
         android:background="?attr/colorPrimary"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:elevation="0dp">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_modify"
@@ -23,93 +23,94 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
-        android:layout_below="@id/modify_appbar_layout"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_below="@id/modify_appbar_layout"
+        >
 
         <LinearLayout
-            android:paddingTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:orientation="vertical"
-            android:paddingLeft="36dp"
-            android:paddingStart="36dp"
-            android:paddingRight="16dp"
-            android:paddingEnd="16dp"
-            android:paddingBottom="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="3dp"
-                android:paddingStart="3dp"
-                android:paddingTop="16dp"
-                android:text="Enter Course Code"
-                android:textColor="#E0E0E0"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/add_course_code"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="Course Code"
-                android:textColor="@android:color/white"
-                android:theme="@style/Theme.edit.darkback" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="3dp"
-                android:paddingStart="3dp"
-                android:paddingTop="16dp"
-                android:text="Enter Course Title"
-                android:textColor="#E0E0E0"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/add_course_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/teacher_initial_hint"
-                android:textColor="@android:color/white"
-                android:theme="@style/Theme.edit.darkback" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="3dp"
-                android:paddingStart="3dp"
-                android:paddingTop="16dp"
-                android:text="Enter Initial"
-                android:textColor="#E0E0E0"
-                android:textSize="14sp" />
-
-            <EditText
-                android:id="@+id/add_initial"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/teacher_initial_hint"
-                android:textColor="@android:color/white"
-                android:theme="@style/Theme.edit.darkback" />
-        </LinearLayout>
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="36dp"
-                android:layout_marginStart="36dp"
-                android:layout_marginRight="16dp"
+                android:background="?attr/colorPrimary"
+                android:orientation="vertical"
+                android:paddingBottom="8dp"
+                android:paddingEnd="16dp"
+                android:paddingLeft="36dp"
+                android:paddingRight="16dp"
+                android:paddingStart="36dp"
+                android:paddingTop="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="3dp"
+                    android:paddingStart="3dp"
+                    android:paddingTop="16dp"
+                    android:text="@string/enter_course_code"
+                    android:textColor="#E0E0E0"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/add_course_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/course_code"
+                    android:textColor="@android:color/white"
+                    android:theme="@style/Theme.edit.darkback" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="3dp"
+                    android:paddingStart="3dp"
+                    android:paddingTop="16dp"
+                    android:text="@string/enter_course_title"
+                    android:textColor="#E0E0E0"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/add_course_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/course_title_hint"
+                    android:textColor="@android:color/white"
+                    android:theme="@style/Theme.edit.darkback" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="3dp"
+                    android:paddingStart="3dp"
+                    android:paddingTop="16dp"
+                    android:text="@string/enter_initial"
+                    android:textColor="#E0E0E0"
+                    android:textSize="14sp" />
+
+                <EditText
+                    android:id="@+id/add_initial"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:hint="@string/teacher_initial_hint"
+                    android:textColor="@android:color/white"
+                    android:theme="@style/Theme.edit.darkback" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
+                android:layout_marginLeft="36dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginStart="36dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -127,17 +128,17 @@
                     android:layout_height="32dp"
                     android:layout_marginBottom="8dp"
                     android:gravity="start"
+                    android:paddingEnd="0dp"
                     android:paddingLeft="3dp"
-                    android:paddingStart="3dp"
                     android:paddingRight="0dp"
-                    android:paddingEnd="0dp" />
+                    android:paddingStart="3dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="3dp"
                     android:paddingTop="16dp"
-                    android:text="Enter Room No"
+                    android:text="@string/enter_room_no"
                     android:textColor="#9E9E9E"
                     android:textSize="14sp" />
 
@@ -148,7 +149,6 @@
                     android:ems="10"
                     android:hint="@string/room_no_hint" />
 
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -156,8 +156,8 @@
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_weight="0.5"
                         android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
                         android:orientation="vertical">
 
                         <TextView
@@ -165,7 +165,7 @@
                             android:layout_height="wrap_content"
                             android:paddingLeft="3dp"
                             android:paddingTop="16dp"
-                            android:text="Starting Time"
+                            android:text="@string/starting_time"
                             android:textColor="#9E9E9E"
                             android:textSize="14sp" />
 
@@ -180,8 +180,8 @@
 
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_weight="0.5"
                         android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
                         android:orientation="vertical">
 
                         <TextView
@@ -189,7 +189,7 @@
                             android:layout_height="wrap_content"
                             android:paddingLeft="3dp"
                             android:paddingTop="16dp"
-                            android:text="Ending Time"
+                            android:text="@string/ending_time"
                             android:textColor="#9E9E9E"
                             android:textSize="14sp" />
 
@@ -203,6 +203,6 @@
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

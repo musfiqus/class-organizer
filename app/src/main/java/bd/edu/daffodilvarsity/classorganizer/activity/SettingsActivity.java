@@ -561,4 +561,10 @@ public class SettingsActivity extends ColorfulActivity {
             dialog.show();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

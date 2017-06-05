@@ -128,9 +128,11 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
                 drawer.closeDrawer(GravityCompat.START);
             } else {
                 super.onBackPressed();
+                finishAffinity();
             }
         } else {
             super.onBackPressed();
+            finishAffinity();
         }
     }
 

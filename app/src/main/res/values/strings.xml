@@ -63,5 +63,14 @@
     <string name="title_daydata_list">DayDetails</string>
     <string name="title_daydata_detail">DayData Detail</string>
     <string name="title_activity_search">SearchActivity</string>
+    <string name="course_title_hint">Course Title</string>
+    <string name="enter_course_title">Enter Course Title</string>
+    <string name="course_code">Course Code</string>
+    <string name="enter_course_code">Enter Course Code</string>
+    <string name="enter_initial">Enter Initial</string>
+    <string name="enter_room_no">Enter Room No</string>
+    <string name="starting_time">Starting Time</string>
+    <string name="ending_time">Ending Time</string>
+    <string name="edit_course_title">Edit Course Title</string>
 
 </resources>
