@@ -2,6 +2,7 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -42,7 +43,9 @@ public class PrefManager {
     private static final String IS_CAMPUS_CHANGE_ALERT_DISABLED = "IsCampusChangeAlertDisabled";
     private static final String IS_ROUTINE_UPDATED_ONLINE = "IsRoutineUpdatedOnline";
     private static final String IS_RAMADAN_GREETINGS_ENABLED = "IsRamadanGreetingsEnabled";
+    private static final String IS_REMINDER_GREETINGS_ENABLED = "IsReminderGreetingsEnabled";
     private static final String IS_RECOVERY_FINISHED = "IsRecoveryFinished";
+    private static final String PREF_REMINDER_TIME_DELAY = "ReminderTimeDelayInMinutes";
     public static final String SAVE_DATA_TAG = "save";
     public static final String ADD_DATA_TAG = "add";
     public static final String EDIT_DATA_TAG = "edit";
@@ -63,10 +66,22 @@ public class PrefManager {
     }
 
     public void saveDayData(ArrayList<DayData> daydata) {
+        //Restarting alarms every time the data is changed
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(_context);
+        boolean hasNotification = preferences.getBoolean("notification_preference", false);
+        AlarmHelper alarmHelper = new AlarmHelper(_context);
+        if (hasNotification) {
+            alarmHelper.cancelAll();
+        }
+
         editor.remove(PREF_DAYDATA).apply();
         Gson gson = new Gson();
         String json = gson.toJson(daydata);
         editor.putString(PREF_DAYDATA, json).apply();
+
+        if (hasNotification) {
+            alarmHelper.startAll();
+        }
     }
 
     public ArrayList<DayData> getSavedDayData() {
@@ -133,6 +148,11 @@ public class PrefManager {
         program = program.toLowerCase();
         editor.remove(SAVE_PROGRAM).apply();
         editor.putString(SAVE_PROGRAM, program).apply();
+    }
+
+    public void saveReminderDelay(int minutes) {
+        editor.remove(PREF_REMINDER_TIME_DELAY).apply();
+        editor.putInt(PREF_REMINDER_TIME_DELAY, minutes).apply();
     }
 
     public void saveModifiedData(DayData dayData, String which, boolean reset) {
@@ -314,11 +334,12 @@ public class PrefManager {
 
     public void showRamadanGreetings(boolean value) {
         editor.remove(IS_RAMADAN_GREETINGS_ENABLED).apply();
-        editor.putBoolean(IS_RAMADAN_GREETINGS_ENABLED, value).apply();
+        editor.remove(IS_REMINDER_GREETINGS_ENABLED).apply();
+        editor.putBoolean(IS_REMINDER_GREETINGS_ENABLED, value).apply();
     }
 
     public boolean isRamadanGreetingsEnabled() {
-        return pref.getBoolean(IS_RAMADAN_GREETINGS_ENABLED, true);
+        return pref.getBoolean(IS_REMINDER_GREETINGS_ENABLED, true);
     }
 
     public int getSuppressedUpdateDbVersion() {
@@ -361,6 +382,10 @@ public class PrefManager {
         return pref.getString(SAVE_SEMESTER, null);
     }
 
+    public int getReminderDelay() {
+        return pref.getInt(PREF_REMINDER_TIME_DELAY, 15);
+    }
+
     public int getDatabaseVersion() {
         return pref.getInt(SAVE_DATABASE_VERSION, 1);
     }
@@ -388,7 +413,6 @@ public class PrefManager {
 
     public void recoverSavedData() {
         if (!isRecoveryFinished()) {
-            Log.e("Okay", "I'm working");
             String edit = pref.getString(PREF_EDITED_DAYDATA, null);
             String delete = pref.getString(PREF_DELETED_DAYDATA, null);
             String add = pref.getString(PREF_ADDED_DAYDATA, null);

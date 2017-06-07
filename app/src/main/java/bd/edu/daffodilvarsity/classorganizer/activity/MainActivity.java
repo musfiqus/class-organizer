@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,10 +15,12 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,6 +49,7 @@ import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.adapter.DayFragmentPagerAdapter;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.service.DatabaseUpdateIntentService;
+import bd.edu.daffodilvarsity.classorganizer.utils.AlarmHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.DatabaseHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.RoutineLoader;
@@ -94,12 +98,12 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         //If primary color and accent are same we are setting tab indicator to white
         if (Colorful.getThemeDelegate().getAccentColor() == Colorful.getThemeDelegate().getPrimaryColor()) {
             TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-            tabLayout.setSelectedTabIndicatorColor(getResources().getColor(android.R.color.white));
+            tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(this, android.R.color.white));
         }
 
         // Making navigation bar colored
         if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setNavigationBarColor(getResources().getColor(Colorful.getThemeDelegate().getPrimaryColor().getColorRes()));
+            getWindow().setNavigationBarColor(ContextCompat.getColor(this, Colorful.getThemeDelegate().getPrimaryColor().getColorRes()));
         }
 
         //Setting drawer up
@@ -117,7 +121,14 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
 
         loadData();
         onCreate = true;
-        showRamadanGreetings();
+        showAnnouncements();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean hasNotification = preferences.getBoolean("notification_preference", false);
+        if (hasNotification) {
+            AlarmHelper alarmHelper = new AlarmHelper(this);
+            alarmHelper.cancelAll();
+            alarmHelper.startAll();
+        }
     }
 
     @Override
@@ -384,7 +395,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         startService(updateIntent);
     }
 
-    private void showRamadanGreetings() {
+    private void showAnnouncements() {
         if (prefManager.isRamadanGreetingsEnabled()) {
             dialogThread();
         }
@@ -401,12 +412,12 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
                         public void run() {
                             if (isActivityRunning) {
                                 MaterialDialog dialog = new MaterialDialog.Builder(MainActivity.this)
-                                        .title("Ramadan Kareem!")
+                                        .title("Did You Remember?")
                                         .positiveText("OPEN SETTINGS")
-                                        .content("You can now enable Ramadan timetable from the Settings menu." +
-                                                "\nPlease note there was no official announcement regarding the timetable for Lab classes." +
-                                                "\nSo the times of the lab classes are unofficial and are subjects to change according to your lab teacher." +
-                                                "\nWishing everyone a happy Ramadan!")
+                                        .content("One of the most requested feature, notification reminder is now available!" +
+                                                "\nYou can enable it right now from the settings menu." +
+                                                "\nYou can also customize when you would like to receive reminders." +
+                                                "\nThank you for helping me to make Class Organizer awesome!")
                                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                                             @Override
                                             public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
@@ -432,13 +443,6 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
 
     public class DatabaseUpdateResultReceiver extends ResultReceiver {
 
-        /**
-         * Create a new ResultReceive to receive results.  Your
-         * {@link #onReceiveResult} method will be called from the thread running
-         * <var>handler</var> if given, or from an arbitrary thread if null.
-         *
-         * @param handler
-         */
         public DatabaseUpdateResultReceiver(Context context, Handler handler) {
             super(handler);
         }

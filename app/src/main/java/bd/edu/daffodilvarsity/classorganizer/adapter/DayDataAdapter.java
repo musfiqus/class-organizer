@@ -30,7 +30,6 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
     private int itemResource;
 
     public DayDataAdapter(ArrayList<DayData> dayDataArrayList, Context context, int itemResource) {
-        Log.e("WELP", "NOT GOOD");
         this.dayDataArrayList = dayDataArrayList;
         this.context = context;
         this.itemResource = itemResource;
@@ -216,7 +215,6 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
             } else if (endTime.equalsIgnoreCase("09.00 PM")) {
                 endTime = "05.30 PM";
             }
-
             return startTime + " - " +endTime;
         }
     }

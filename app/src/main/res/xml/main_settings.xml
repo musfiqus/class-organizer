@@ -27,6 +27,19 @@ xmlns:colorpicker="http://schemas.android.com/apk/res-auto">
             android:defaultValue="false" />
     </android.support.v7.preference.PreferenceCategory>
     <android.support.v7.preference.PreferenceCategory
+        android:title="Notifications">
+        <SwitchPreferenceCompat
+            android:key="notification_preference"
+            android:summary="Place holder"
+            android:title="Enable Class Notifications"
+            android:defaultValue="false"/>
+        <Preference
+            android:key="notification_delay_preference"
+            android:summary="Place holder"
+            android:enabled="false"
+            android:title="Choose Time for Notifications" />
+    </android.support.v7.preference.PreferenceCategory>
+    <android.support.v7.preference.PreferenceCategory
         android:title="Appearance">
         <org.polaric.colorful.ColorPickerPreference
             android:title="Choose Primary Color"

@@ -4,12 +4,18 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
 import org.polaric.colorful.Colorful;
 import org.polaric.colorful.ColorfulActivity;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.fragment.DayDataDetailFragment;
@@ -24,6 +30,7 @@ import bd.edu.daffodilvarsity.classorganizer.R;
 public class DayDataDetailActivity extends ColorfulActivity {
     private DayData dayData;
     private Bundle bundle;
+    private boolean fromNotification = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,13 +66,22 @@ public class DayDataDetailActivity extends ColorfulActivity {
         }
         // Making navigation bar colored
         if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setNavigationBarColor(getResources().getColor(Colorful.getThemeDelegate().getPrimaryColor().getColorRes()));
+            getWindow().setNavigationBarColor(ContextCompat.getColor(this, Colorful.getThemeDelegate().getPrimaryColor().getColorRes()));
         }
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = getIntent().getExtras();
             dayData = arguments.getParcelable("DayDataDetails");
+            Bundle bundle = arguments.getBundle("bundled_data");
+            if (bundle != null) {
+                byte[] byteDayData = bundle.getByteArray("NotificationData");
+                if (byteDayData != null) {
+                    dayData = convertToDayData(byteDayData);
+                    fromNotification = true;
+                }
+            }
+
             Bundle newArgs = new Bundle();
             newArgs.putParcelable("DayDataDetails", dayData);
             DayDataDetailFragment fragment = new DayDataDetailFragment();
@@ -88,6 +104,27 @@ public class DayDataDetailActivity extends ColorfulActivity {
 
     }
 
+    private DayData convertToDayData(byte[] dayByte) {
+        ByteArrayInputStream bis = new ByteArrayInputStream(dayByte);
+        ObjectInput in = null;
+        DayData dayData = null;
+        try {
+            in = new ObjectInputStream(bis);
+            dayData = (DayData)in.readObject();
+        } catch (ClassNotFoundException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return dayData;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -98,15 +135,15 @@ public class DayDataDetailActivity extends ColorfulActivity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            navigateUpTo(new Intent(this, MainActivity.class));
+            if (fromNotification) {
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
+            } else {
+                navigateUpTo(new Intent(this, MainActivity.class));
+                finish();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
     }
 }

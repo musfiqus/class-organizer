@@ -8,12 +8,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.SwitchPreferenceCompat;
 import android.text.Html;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,8 +35,9 @@ import org.polaric.colorful.ColorfulActivity;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.R;
+import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.utils.AlarmHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.RoutineLoader;
 
@@ -52,10 +55,14 @@ public class SettingsActivity extends ColorfulActivity {
         setContentView(R.layout.activity_settings);
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_settings);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        try {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
         // Making navigation bar colored
         if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setNavigationBarColor(getResources().getColor(Colorful.getThemeDelegate().getPrimaryColor().getColorRes()));
+            getWindow().setNavigationBarColor(ContextCompat.getColor(this, Colorful.getThemeDelegate().getPrimaryColor().getColorRes()));
         }
     }
 
@@ -101,9 +108,9 @@ public class SettingsActivity extends ColorfulActivity {
             final String program = prefManager.getProgram();
             final String campus = prefManager.getCampus();
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                deptPreference.setSummary(Html.fromHtml("Current Department: <b>" + dept.toUpperCase() + "</b>, Program: <b>" + program.substring(0, 1).toUpperCase() + program.substring(1, program.length()).toLowerCase() + "</b>, Campus: <b>" + campus.substring(0, 1).toUpperCase() + campus.substring(1, campus.length()).toLowerCase() + "</b>", Html.FROM_HTML_MODE_LEGACY));
+                deptPreference.setSummary(Html.fromHtml(getString(R.string.department_preference_summary, dept.toUpperCase(),  program.substring(0, 1).toUpperCase() + program.substring(1, program.length()).toLowerCase(), campus.substring(0, 1).toUpperCase() + campus.substring(1, campus.length()).toLowerCase()), Html.FROM_HTML_MODE_LEGACY));
             } else {
-                deptPreference.setSummary(Html.fromHtml("Current Department: <b>" + dept.toUpperCase() + "</b>, Program: <b>" + program.substring(0, 1).toUpperCase() + program.substring(1, program.length()).toLowerCase() + "</b>, Campus: <b>" + campus.substring(0, 1).toUpperCase() + campus.substring(1, campus.length()).toLowerCase() + "</b>"));
+                deptPreference.setSummary(Html.fromHtml(getString(R.string.department_preference_summary, dept.toUpperCase(),  program.substring(0, 1).toUpperCase() + program.substring(1, program.length()).toLowerCase(), campus.substring(0, 1).toUpperCase() + campus.substring(1, campus.length()).toLowerCase())));
             }
             deptPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
@@ -113,7 +120,7 @@ public class SettingsActivity extends ColorfulActivity {
                         alertBuilder.title("Warning!");
                         alertBuilder.content("Your saved routine and preferences will be reset upon changing this settings. Do you want to proceed?");
                         alertBuilder.positiveText("PROCEED");
-                        alertBuilder.negativeText("CANCEL");
+                        alertBuilder.negativeText(getString(android.R.string.cancel));
                         alertBuilder.checkBoxPrompt("Don't show this again", false, new CompoundButton.OnCheckedChangeListener() {
                             @Override
                             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -141,9 +148,9 @@ public class SettingsActivity extends ColorfulActivity {
             final int levelRoot = prefManager.getLevel();
             final int termRoot = prefManager.getTerm();
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                routinePreference.setSummary(Html.fromHtml("Current Section: <b>" + sectionRoot + "</b>, Level: <b>" + (levelRoot + 1) + "</b>, Term: <b>" + (termRoot + 1) + "</b>", Html.FROM_HTML_MODE_LEGACY));
+                routinePreference.setSummary(Html.fromHtml(getString(R.string.routine_preference_summary, sectionRoot, (levelRoot + 1), (termRoot + 1)), Html.FROM_HTML_MODE_LEGACY));
             } else {
-                routinePreference.setSummary(Html.fromHtml("Current Section: <b>" + sectionRoot + "</b>, Level: <b>" + (levelRoot + 1) + "</b>, Term: <b>" + (termRoot + 1) + "</b>"));
+                routinePreference.setSummary(Html.fromHtml(getString(R.string.routine_preference_summary, sectionRoot, (levelRoot + 1), (termRoot + 1))));
             }
             routinePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
@@ -151,7 +158,7 @@ public class SettingsActivity extends ColorfulActivity {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle("Choose your current class");
                     View dialogView = setupClassSpinners(levelRoot, termRoot, sectionRoot);
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    builder.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             int level = levelSpinner.getSelectedItemPosition();
@@ -173,7 +180,6 @@ public class SettingsActivity extends ColorfulActivity {
                                 prefManager.saveLevel(level);
                                 prefManager.saveTerm(term);
                                 prefManager.saveSection(section);
-                                routinePreference.setSummary("Current Section " + section + ", Level " + (level + 1) + ", Term " + (term + 1));
                                 prefManager.saveReCreate(true);
                                 onCreate(Bundle.EMPTY);
                                 showSnackBar(getActivity(), "Saved!");
@@ -184,7 +190,7 @@ public class SettingsActivity extends ColorfulActivity {
                         }
                     });
 
-                    builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    builder.setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             //Do nothing
@@ -226,7 +232,7 @@ public class SettingsActivity extends ColorfulActivity {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                                 builder.setTitle("Are you sure?");
                                 builder.setMessage("Your modified classes will be removed. Do you want to continue?");
-                                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                                builder.setPositiveButton(getString(android.R.string.yes), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         boolean delete = false;
@@ -253,7 +259,7 @@ public class SettingsActivity extends ColorfulActivity {
                                     }
                                 });
 
-                                builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                                builder.setNegativeButton(getString(android.R.string.no), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
@@ -265,7 +271,7 @@ public class SettingsActivity extends ColorfulActivity {
                             dialog.dismiss();
                         }
                     });
-                    multiChoiceBuilder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    multiChoiceBuilder.setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -279,12 +285,12 @@ public class SettingsActivity extends ColorfulActivity {
 
             //Limit Modification
             final SwitchPreferenceCompat limitPreference = (SwitchPreferenceCompat) findPreference("limit_preference");
-            PreferenceManager preferenceManager = getPreferenceManager();
+            final PreferenceManager preferenceManager = getPreferenceManager();
             limitPreference.setChecked(preferenceManager.getSharedPreferences().getBoolean("limit_preference", true));
             if (preferenceManager.getSharedPreferences().getBoolean("limit_preference", true)) {
-                limitPreference.setSummary("Currently you're modification will show up in only on your modified section");
+                limitPreference.setSummary(getString(R.string.limit_preference_enabled_summary));
             } else {
-                limitPreference.setSummary("Currently you're modification will show up in all sections");
+                limitPreference.setSummary(getString(R.string.limit_preference_disabled_summary));
             }
             limitPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
@@ -294,9 +300,9 @@ public class SettingsActivity extends ColorfulActivity {
                     ArrayList<DayData> newDayData = routineLoader.loadRoutine(true);
                     prefManager.saveDayData(newDayData);
                     if (isLimited) {
-                        limitPreference.setSummary("Currently you're modification will show up in only on your modified section");
+                        limitPreference.setSummary(getString(R.string.limit_preference_enabled_summary));
                     } else {
-                        limitPreference.setSummary("Currently you're modification will show up in all sections");
+                        limitPreference.setSummary(getString(R.string.limit_preference_disabled_summary));
                     }
                     prefManager.saveReCreate(true);
                     return true;
@@ -308,23 +314,92 @@ public class SettingsActivity extends ColorfulActivity {
             boolean isRamadanTime = preferenceManager.getSharedPreferences().getBoolean("ramadan_preference", false);
             ramadanPreference.setChecked(isRamadanTime);
             if (isRamadanTime) {
-                ramadanPreference.setSummary("Ramadan timetable is enabled");
+                ramadanPreference.setSummary(getString(R.string.ramadan_enabled_summary));
             } else {
-                ramadanPreference.setSummary("Ramadan timetable is disabled");
+                ramadanPreference.setSummary(getString(R.string.ramadan_disabled_summary));
             }
             ramadanPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     boolean hasRamadanTime = (boolean) newValue;
                     if (hasRamadanTime) {
-                        ramadanPreference.setSummary("Ramadan timetable is enabled");
+                        ramadanPreference.setSummary(getString(R.string.ramadan_enabled_summary));
                     } else {
-                        ramadanPreference.setSummary("Ramadan timetable is disabled");
+                        ramadanPreference.setSummary(getString(R.string.ramadan_disabled_summary));
+                    }
+                    boolean isNotificationEnabled = preferenceManager.getSharedPreferences().getBoolean("notification_preference", false);
+                    if (isNotificationEnabled) {
+                        AlarmHelper alarmHelper = new AlarmHelper(getContext());
+                        alarmHelper.forceRestart(hasRamadanTime);
                     }
                     prefManager.saveReCreate(true);
                     return true;
                 }
             });
+
+            //Notifications
+            final AlarmHelper alarmHelper = new AlarmHelper(getContext());
+            final SwitchPreferenceCompat notification = (SwitchPreferenceCompat) findPreference("notification_preference");
+            boolean isNotificationEnabled = preferenceManager.getSharedPreferences().getBoolean("notification_preference", false);
+            notification.setChecked(isNotificationEnabled);
+            if (isNotificationEnabled) {
+                notification.setSummary(getString(R.string.notification_enabled_summary));
+            } else {
+                notification.setSummary(R.string.notification_disabled_summary);
+            }
+
+            final Preference timeDelay = findPreference("notification_delay_preference");
+            timeDelay.setEnabled(isNotificationEnabled);
+            timeDelay.setSummary(getString(R.string.time_delay_summary, prefManager.getReminderDelay()));
+            timeDelay.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(final Preference preference) {
+                    new MaterialDialog.Builder(getActivity())
+                            .title("Send Notification Before")
+                            .items(R.array.time_delay)
+                            .alwaysCallSingleChoiceCallback()
+                            .itemsCallbackSingleChoice(delayIndex(), new MaterialDialog.ListCallbackSingleChoice() {
+                                @Override
+                                public boolean onSelection(MaterialDialog materialDialog, View view, int i, CharSequence charSequence) {
+                                    if (i == 0) {
+                                        prefManager.saveReminderDelay(15);
+                                    } else if (i == 1) {
+                                        prefManager.saveReminderDelay(30);
+                                    } else if (i == 2) {
+                                        prefManager.saveReminderDelay(45);
+                                    } else {
+                                        prefManager.saveReminderDelay(60);
+                                    }
+                                    timeDelay.setSummary(getString(R.string.time_delay_summary, prefManager.getReminderDelay()));
+                                    alarmHelper.cancelAll();
+                                    alarmHelper.startAll();
+                                    return true;
+                                }
+                            })
+                            .negativeText(getString(android.R.string.cancel))
+                            .build()
+                            .show();
+                    return true;
+                }
+            });
+
+            notification.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    boolean isEnabled = (boolean) newValue;
+                    if (isEnabled) {
+                        alarmHelper.cancelAll();
+                        alarmHelper.startAll();
+                        notification.setSummary(getString(R.string.notification_enabled_summary));
+                    } else {
+                        alarmHelper.cancelAll();
+                        notification.setSummary(R.string.notification_disabled_summary);
+                    }
+                    timeDelay.setEnabled(isEnabled);
+                    return true;
+                }
+            });
+
 
             //  Changing preview of primary color chooser
             ColorPickerPreference primaryColorPref = (ColorPickerPreference) findPreference("primary");
@@ -383,7 +458,7 @@ public class SettingsActivity extends ColorfulActivity {
         private void setupProgramSpinner() {
             String department = deptSpinner.getSelectedItem().toString();
             String campus = campusSpinner.getSelectedItem().toString().substring(0, 4);
-            if (department != null && campus != null) {
+            if (department != null) {
                 if (department.equalsIgnoreCase("cse") && campus.equalsIgnoreCase("main")) {
                     ArrayAdapter<CharSequence> programAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.cse_main_programs, R.layout.spinner_row);
                     programAdapter.setDropDownViewResource(R.layout.spinner_row);
@@ -403,11 +478,11 @@ public class SettingsActivity extends ColorfulActivity {
         private View setupClassSpinners(int levelRoot, int termRoot, String sectionRoot) {
             View dialogView = getActivity().getLayoutInflater().inflate(R.layout.class_spinner_layout, null);
             TextView levelLabel = (TextView) dialogView.findViewById(R.id.level_spinner_label);
-            levelLabel.setTextColor(getResources().getColor(android.R.color.black));
+            levelLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
             TextView termLabel = (TextView) dialogView.findViewById(R.id.term_spinner_label);
-            termLabel.setTextColor(getResources().getColor(android.R.color.black));
+            termLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
             TextView sectionLabel = (TextView) dialogView.findViewById(R.id.section_spinner_label);
-            sectionLabel.setTextColor(getResources().getColor(android.R.color.black));
+            sectionLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
             levelSpinner = (Spinner) dialogView.findViewById(R.id.level_spinner);
             termSpinner = (Spinner) dialogView.findViewById(R.id.term_spinner);
             sectionText = (Spinner) dialogView.findViewById(R.id.section_selection);
@@ -506,9 +581,9 @@ public class SettingsActivity extends ColorfulActivity {
             TextView campusLabel = (TextView) dialogView.findViewById(R.id.campus_spinner_label);
             TextView deptLabel = (TextView) dialogView.findViewById(R.id.dept_spinner_label);
             TextView programLabel = (TextView) dialogView.findViewById(R.id.program_spinner_label);
-            campusLabel.setTextColor(getResources().getColor(android.R.color.black));
-            deptLabel.setTextColor(getResources().getColor(android.R.color.black));
-            programLabel.setTextColor(getResources().getColor(android.R.color.black));
+            campusLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
+            deptLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
+            programLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
             //Spinners
             campusSpinner = (Spinner) dialogView.findViewById(R.id.campus_selection);
             deptSpinner = (Spinner) dialogView.findViewById(R.id.dept_selection);
@@ -559,6 +634,19 @@ public class SettingsActivity extends ColorfulActivity {
             builder.customView(dialogView, true);
             MaterialDialog dialog = builder.build();
             dialog.show();
+        }
+
+        private int delayIndex() {
+            int delay = prefManager.getReminderDelay();
+            if (delay == 15) {
+                return 0;
+            } else if (delay == 30) {
+                return 1;
+            } else if (delay == 45) {
+                return 2;
+            } else {
+                return 3;
+            }
         }
     }
 

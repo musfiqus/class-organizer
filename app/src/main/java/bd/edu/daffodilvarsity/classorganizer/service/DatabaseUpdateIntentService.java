@@ -25,13 +25,8 @@ public class DatabaseUpdateIntentService extends IntentService {
     public static final int DOWNLOAD_SUCCESS = 11;
     private static final String DATABASE_URL = "https://mushfiqussalehin.me/routinedb/updated.db";
 
-    /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
-     * @paramUsed to name the worker thread, important only for debugging.
-     */
     public DatabaseUpdateIntentService() {
-        super(DatabaseUpdateIntentService.class.getName());
+        super("DatabaseUpdateIntentService");
     }
 
     @Override
