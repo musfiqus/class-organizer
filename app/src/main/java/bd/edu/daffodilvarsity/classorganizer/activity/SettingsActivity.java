@@ -1,4 +1,4 @@
-package bd.edu.daffodilvarsity.classorganizer;
+package bd.edu.daffodilvarsity.classorganizer.activity;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -14,7 +14,6 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.SwitchPreferenceCompat;
 import android.text.Html;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,6 +32,11 @@ import org.polaric.colorful.ColorfulActivity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.R;
+import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
+import bd.edu.daffodilvarsity.classorganizer.utils.RoutineLoader;
 
 public class SettingsActivity extends ColorfulActivity {
 
@@ -274,14 +278,15 @@ public class SettingsActivity extends ColorfulActivity {
             });
 
             //Limit Modification
-            final SwitchPreferenceCompat switchPreferenceCompat = (SwitchPreferenceCompat) findPreference("limit_preference");
+            final SwitchPreferenceCompat limitPreference = (SwitchPreferenceCompat) findPreference("limit_preference");
             PreferenceManager preferenceManager = getPreferenceManager();
+            limitPreference.setChecked(preferenceManager.getSharedPreferences().getBoolean("limit_preference", true));
             if (preferenceManager.getSharedPreferences().getBoolean("limit_preference", true)) {
-                switchPreferenceCompat.setSummary("Currently you're modification will show up in only on your modified section");
+                limitPreference.setSummary("Currently you're modification will show up in only on your modified section");
             } else {
-                switchPreferenceCompat.setSummary("Currently you're modification will show up in all sections");
+                limitPreference.setSummary("Currently you're modification will show up in all sections");
             }
-            switchPreferenceCompat.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            limitPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
                 @Override
                 public boolean onPreferenceChange(Preference preference, Object newValue) {
                     boolean isLimited = (boolean) newValue;
@@ -289,9 +294,32 @@ public class SettingsActivity extends ColorfulActivity {
                     ArrayList<DayData> newDayData = routineLoader.loadRoutine(true);
                     prefManager.saveDayData(newDayData);
                     if (isLimited) {
-                        switchPreferenceCompat.setSummary("Currently you're modification will show up in only on your modified section");
+                        limitPreference.setSummary("Currently you're modification will show up in only on your modified section");
                     } else {
-                        switchPreferenceCompat.setSummary("Currently you're modification will show up in all sections");
+                        limitPreference.setSummary("Currently you're modification will show up in all sections");
+                    }
+                    prefManager.saveReCreate(true);
+                    return true;
+                }
+            });
+
+            //Display ramadan time
+            final SwitchPreferenceCompat ramadanPreference = (SwitchPreferenceCompat) findPreference("ramadan_preference");
+            boolean isRamadanTime = preferenceManager.getSharedPreferences().getBoolean("ramadan_preference", false);
+            ramadanPreference.setChecked(isRamadanTime);
+            if (isRamadanTime) {
+                ramadanPreference.setSummary("Ramadan timetable is enabled");
+            } else {
+                ramadanPreference.setSummary("Ramadan timetable is disabled");
+            }
+            ramadanPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    boolean hasRamadanTime = (boolean) newValue;
+                    if (hasRamadanTime) {
+                        ramadanPreference.setSummary("Ramadan timetable is enabled");
+                    } else {
+                        ramadanPreference.setSummary("Ramadan timetable is disabled");
                     }
                     prefManager.saveReCreate(true);
                     return true;
@@ -412,6 +440,7 @@ public class SettingsActivity extends ColorfulActivity {
                     for (int i = 0; i < sectionList.size(); i++) {
                         if (sectionList.get(i).equalsIgnoreCase(sectionRoot)) {
                             sectionPosition = i;
+                            break;
                         }
                     }
                     sectionText.setSelection(sectionPosition);
@@ -431,6 +460,7 @@ public class SettingsActivity extends ColorfulActivity {
                         for (int i = 0; i < sectionList.size(); i++) {
                             if (sectionList.get(i).equalsIgnoreCase(sectionRoot)) {
                                 sectionPosition = i;
+                                break;
                             }
                         }
                         sectionText.setSelection(sectionPosition);
@@ -497,7 +527,6 @@ public class SettingsActivity extends ColorfulActivity {
                 @Override
                 public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
                     String campus = campusSpinner.getSelectedItem().toString();
-                    Log.e("Wut campus", "campus");
                     String department = deptSpinner.getSelectedItem().toString();
                     String program = programSpinner.getSelectedItem().toString();
                     if (campus.equalsIgnoreCase("main")

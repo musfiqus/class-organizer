@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
-    tools:context="bd.edu.daffodilvarsity.classorganizer.EditActivity">
+    tools:context="bd.edu.daffodilvarsity.classorganizer.activity.EditActivity">
     <android.support.design.widget.AppBarLayout
         android:id="@+id/modify_appbar_layout"
         android:layout_width="match_parent"
@@ -35,7 +35,8 @@
             android:paddingLeft="36dp"
             android:paddingStart="36dp"
             android:paddingRight="16dp"
-            android:paddingEnd="16dp">
+            android:paddingEnd="16dp"
+            android:paddingBottom="8dp">
 
             <TextView
                 android:id="@+id/course_code_title"
@@ -44,6 +45,24 @@
                 tools:text="CSE XXX"
                 android:textColor="@android:color/white"
                 android:textSize="32sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="3dp"
+                android:paddingStart="3dp"
+                android:paddingTop="16dp"
+                android:text="Edit Course Title"
+                android:textColor="#E0E0E0"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/edit_course_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Course Title"
+                android:textColor="@android:color/white"
+                android:theme="@style/Theme.edit.darkback" />
 
             <TextView
                 android:layout_width="wrap_content"

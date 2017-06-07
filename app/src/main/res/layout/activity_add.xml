@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true"
-    tools:context="bd.edu.daffodilvarsity.classorganizer.EditActivity">
+    tools:context="bd.edu.daffodilvarsity.classorganizer.activity.EditActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/modify_appbar_layout"
@@ -47,7 +47,7 @@
                 android:paddingLeft="3dp"
                 android:paddingStart="3dp"
                 android:paddingTop="16dp"
-                android:text="Enter course code"
+                android:text="Enter Course Code"
                 android:textColor="#E0E0E0"
                 android:textSize="14sp" />
 
@@ -56,7 +56,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="Course code"
+                android:hint="Course Code"
                 android:textColor="@android:color/white"
                 android:theme="@style/Theme.edit.darkback" />
 
@@ -66,7 +66,26 @@
                 android:paddingLeft="3dp"
                 android:paddingStart="3dp"
                 android:paddingTop="16dp"
-                android:text="Enter initial"
+                android:text="Enter Course Title"
+                android:textColor="#E0E0E0"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/add_course_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/teacher_initial_hint"
+                android:textColor="@android:color/white"
+                android:theme="@style/Theme.edit.darkback" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="3dp"
+                android:paddingStart="3dp"
+                android:paddingTop="16dp"
+                android:text="Enter Initial"
                 android:textColor="#E0E0E0"
                 android:textSize="14sp" />
 
@@ -118,7 +137,7 @@
                     android:layout_height="wrap_content"
                     android:paddingLeft="3dp"
                     android:paddingTop="16dp"
-                    android:text="Enter room no"
+                    android:text="Enter Room No"
                     android:textColor="#9E9E9E"
                     android:textSize="14sp" />
 
@@ -146,7 +165,7 @@
                             android:layout_height="wrap_content"
                             android:paddingLeft="3dp"
                             android:paddingTop="16dp"
-                            android:text="Starting time"
+                            android:text="Starting Time"
                             android:textColor="#9E9E9E"
                             android:textSize="14sp" />
 
@@ -170,7 +189,7 @@
                             android:layout_height="wrap_content"
                             android:paddingLeft="3dp"
                             android:paddingTop="16dp"
-                            android:text="Ending time"
+                            android:text="Ending Time"
                             android:textColor="#9E9E9E"
                             android:textSize="14sp" />
 

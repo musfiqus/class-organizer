@@ -1,4 +1,4 @@
-package bd.edu.daffodilvarsity.classorganizer;
+package bd.edu.daffodilvarsity.classorganizer.ui;
 
 import android.content.Context;
 import android.support.design.widget.CoordinatorLayout;

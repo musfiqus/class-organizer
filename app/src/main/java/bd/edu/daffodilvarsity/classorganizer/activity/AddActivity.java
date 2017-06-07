@@ -1,4 +1,4 @@
-package bd.edu.daffodilvarsity.classorganizer;
+package bd.edu.daffodilvarsity.classorganizer.activity;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -15,10 +15,15 @@ import org.polaric.colorful.ColorfulActivity;
 
 import java.util.ArrayList;
 
+import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
+import bd.edu.daffodilvarsity.classorganizer.R;
+
 public class AddActivity extends ColorfulActivity {
 
     private PrefManager prefManager;
     private EditText courseCode;
+    private EditText courseTitle;
     private EditText addInitial;
     private EditText addRoom;
     private Spinner weekDaySpinner;
@@ -47,6 +52,7 @@ public class AddActivity extends ColorfulActivity {
 
     private void setupCurrentView() {
         courseCode = (EditText) findViewById(R.id.add_course_code);
+        courseTitle = (EditText) findViewById(R.id.add_course_title);
         addInitial = (EditText) findViewById(R.id.add_initial);
         addRoom = (EditText) findViewById(R.id.add_room);
         //Weekday
@@ -84,11 +90,13 @@ public class AddActivity extends ColorfulActivity {
                 addInitial.getText().toString().equalsIgnoreCase("") ||
                 addInitial.getText().toString().equalsIgnoreCase(" ") ||
                 addRoom.getText().toString().equalsIgnoreCase("") ||
-                addRoom.getText().toString().equalsIgnoreCase(" ")) {
+                addRoom.getText().toString().equalsIgnoreCase(" ")||
+                courseTitle.getText().toString().equalsIgnoreCase("") ||
+                courseTitle.getText().toString().equalsIgnoreCase(" ")) {
             Toast.makeText(this, "Fields can't be empty", Toast.LENGTH_SHORT).show();
             return null;
         } else {
-            return new DayData(courseCode.getText().toString(), addInitial.getText().toString(), prefManager.getSection(), prefManager.getLevel(), prefManager.getTerm(), addRoom.getText().toString(), timeJoiner(startTimeSpinner.getSelectedItem().toString(), endTimeSpinner.getSelectedItem().toString()), weekDaySpinner.getSelectedItem().toString(), timeWeight(startTimeSpinner.getSelectedItem().toString()), null);
+            return new DayData(courseCode.getText().toString(), addInitial.getText().toString(), prefManager.getSection(), prefManager.getLevel(), prefManager.getTerm(), addRoom.getText().toString(), timeJoiner(startTimeSpinner.getSelectedItem().toString(), endTimeSpinner.getSelectedItem().toString()), weekDaySpinner.getSelectedItem().toString(), timeWeight(startTimeSpinner.getSelectedItem().toString()), courseTitle.getText().toString());
         }
 
     }

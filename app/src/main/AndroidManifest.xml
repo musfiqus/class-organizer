@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="bd.edu.daffodilvarsity.classorganizer">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".ClassOrganizer"
         android:allowBackup="true"
@@ -11,18 +13,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:hardwareAccelerated="true"
             android:label="@string/main_title"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+                <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             </intent-filter>
         </activity>
         <activity
-            android:name=".WelcomeActivity"
+            android:name=".activity.WelcomeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,15 +33,34 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".EditActivity"
+            android:name=".activity.EditActivity"
             android:label="@string/edit_title" />
         <activity
-            android:name=".AddActivity"
+            android:name=".activity.AddActivity"
             android:label="@string/add_title" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".activity.SettingsActivity"
             android:label="@string/settings_title"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".activity.DayDataDetailActivity"
+            android:label="@string/title_daydata_detail"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="bd.edu.daffodilvarsity.classorganizer.activity.MainActivity" />
+        </activity>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="97134746f7e815b6aad25190b01c4712d2c523ec" />
+
+        <activity android:name=".activity.SearchActivity"></activity>
+        <service
+            android:name="bd.edu.daffodilvarsity.classorganizer.service.DatabaseUpdateIntentService"
+            android:exported="false" >
+        </service>
     </application>
 
 </manifest>

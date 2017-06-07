@@ -1,14 +1,19 @@
-package bd.edu.daffodilvarsity.classorganizer;
+package bd.edu.daffodilvarsity.classorganizer.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.fragment.DayFragment;
+import bd.edu.daffodilvarsity.classorganizer.R;
 
 import static bd.edu.daffodilvarsity.classorganizer.R.string.saturday;
 
@@ -72,41 +77,43 @@ public class DayFragmentPagerAdapter extends FragmentStatePagerAdapter {
         boolean hasFriDay = false;
 
         for (DayData eachDay : dayData) {
-
-            if (eachDay.getDay().equalsIgnoreCase("saturday")) {
-                satDayData.add(eachDay);
-                if (!hasSatDay) {
-                    hasSatDay = true;
-                }
-            } else if (eachDay.getDay().equalsIgnoreCase("sunday")) {
-                sunDayData.add(eachDay);
-                if (!hasSunDay) {
-                    hasSunDay = true;
-                }
-            } else if (eachDay.getDay().equalsIgnoreCase("monday")) {
-                monDayData.add(eachDay);
-                if (!hasMonDay) {
-                    hasMonDay = true;
-                }
-            } else if (eachDay.getDay().equalsIgnoreCase("tuesday")) {
-                tueDayData.add(eachDay);
-                if (!hasTueDay) {
-                    hasTueDay = true;
-                }
-            } else if (eachDay.getDay().equalsIgnoreCase("wednesday")) {
-                wedDayData.add(eachDay);
-                if (!hasWedDay) {
-                    hasWedDay = true;
-                }
-            } else if (eachDay.getDay().equalsIgnoreCase("thursday")) {
-                thuDayData.add(eachDay);
-                if (!hasThuDay) {
-                    hasThuDay = true;
-                }
-            } else if (eachDay.getDay().equalsIgnoreCase("friday")) {
-                friDayData.add(eachDay);
-                if (!hasFriDay) {
-                    hasFriDay = true;
+            if (eachDay != null) {
+                Log.e("DayFragmentAdapter", ""+eachDay.getCourseCode());
+                if (eachDay.getDay().equalsIgnoreCase("saturday")) {
+                    satDayData.add(eachDay);
+                    if (!hasSatDay) {
+                        hasSatDay = true;
+                    }
+                } else if (eachDay.getDay().equalsIgnoreCase("sunday")) {
+                    sunDayData.add(eachDay);
+                    if (!hasSunDay) {
+                        hasSunDay = true;
+                    }
+                } else if (eachDay.getDay().equalsIgnoreCase("monday")) {
+                    monDayData.add(eachDay);
+                    if (!hasMonDay) {
+                        hasMonDay = true;
+                    }
+                } else if (eachDay.getDay().equalsIgnoreCase("tuesday")) {
+                    tueDayData.add(eachDay);
+                    if (!hasTueDay) {
+                        hasTueDay = true;
+                    }
+                } else if (eachDay.getDay().equalsIgnoreCase("wednesday")) {
+                    wedDayData.add(eachDay);
+                    if (!hasWedDay) {
+                        hasWedDay = true;
+                    }
+                } else if (eachDay.getDay().equalsIgnoreCase("thursday")) {
+                    thuDayData.add(eachDay);
+                    if (!hasThuDay) {
+                        hasThuDay = true;
+                    }
+                } else if (eachDay.getDay().equalsIgnoreCase("friday")) {
+                    friDayData.add(eachDay);
+                    if (!hasFriDay) {
+                        hasFriDay = true;
+                    }
                 }
             }
         }

@@ -1,11 +1,9 @@
-package bd.edu.daffodilvarsity.classorganizer;
+package bd.edu.daffodilvarsity.classorganizer.activity;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,17 +13,20 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.google.firebase.crash.FirebaseCrash;
-
 import org.polaric.colorful.Colorful;
 import org.polaric.colorful.ColorfulActivity;
 
 import java.util.ArrayList;
 
+import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
+import bd.edu.daffodilvarsity.classorganizer.R;
+
 public class EditActivity extends ColorfulActivity {
 
     private PrefManager prefManager;
     private TextView courseCodeText;
+    private EditText courseTitle;
     private EditText editInitial;
     private EditText editRoom;
     private Spinner weekDaySpinner;
@@ -46,7 +47,7 @@ public class EditActivity extends ColorfulActivity {
         try {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         } catch (NullPointerException e) {
-            FirebaseCrash.report(e);
+            e.printStackTrace();
         }
 
         prefManager = new PrefManager(this);
@@ -72,6 +73,9 @@ public class EditActivity extends ColorfulActivity {
     private void setupCurrentDay() {
         courseCodeText = (TextView) findViewById(R.id.course_code_title);
         courseCodeText.setText(dayData.getCourseCode());
+
+        courseTitle = (EditText) findViewById(R.id.edit_course_title);
+        courseTitle.setText(dayData.getCourseTitle());
 
         editInitial = (EditText) findViewById(R.id.edit_initial);
         editInitial.setText(dayData.getTeachersInitial());
@@ -126,13 +130,14 @@ public class EditActivity extends ColorfulActivity {
     }
 
     private DayData getEditedDay() {
+        String newCourseTitle = courseTitle.getText().toString();
         String courseCode = courseCodeText.getText().toString();
         String initial = editInitial.getText().toString();
         String room = editRoom.getText().toString();
         String time = timeJoiner(startTimeSpinner.getSelectedItem().toString(), endTimeSpinner.getSelectedItem().toString());
         String day = weekDaySpinner.getSelectedItem().toString();
         double timeWeight = timeWeight(startTimeSpinner.getSelectedItem().toString());
-        return new DayData(courseCode, initial, prefManager.getSection(), prefManager.getLevel(), prefManager.getTerm(), room, time, day, timeWeight, null);
+        return new DayData(courseCode, initial, prefManager.getSection(), prefManager.getLevel(), prefManager.getTerm(), room, time, day, timeWeight, newCourseTitle);
     }
 
     private double timeWeight(String startTime) {
@@ -192,41 +197,6 @@ public class EditActivity extends ColorfulActivity {
             prefManager.saveDayData(dayDatas);
             prefManager.saveReCreate(true);
             showSnackBar(this, "Saved");
-
-        } else if (item.getItemId() == R.id.delete_button) {
-            //Show confirmation
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-            builder.setTitle("Confirm deletion");
-            builder.setMessage("Are you sure?");
-
-            builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-
-                public void onClick(DialogInterface dialog, int which) {
-                    if (position > -1) {
-                        prefManager.saveModifiedData(dayDatas.get(position), PrefManager.DELETE_DATA_TAG, false);
-                        dayDatas.remove(position);
-                    }
-                    prefManager.saveDayData(dayDatas);
-                    prefManager.saveSnackData("Deleted");
-                    prefManager.saveShowSnack(true);
-                    prefManager.saveReCreate(true);
-                    finish();
-                    dialog.dismiss();
-                }
-            });
-
-            builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                    // Do nothing
-                    dialog.dismiss();
-                }
-            });
-            AlertDialog alert = builder.create();
-            alert.show();
         } else if (item.getItemId() == android.R.id.home) {
             onBackPressed();
         }

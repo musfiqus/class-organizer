@@ -1,4 +1,4 @@
-package bd.edu.daffodilvarsity.classorganizer;
+package bd.edu.daffodilvarsity.classorganizer.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,6 +18,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import bd.edu.daffodilvarsity.classorganizer.utils.DatabaseHelper;
+import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
+import bd.edu.daffodilvarsity.classorganizer.R;
+import bd.edu.daffodilvarsity.classorganizer.adapter.SlidePagerAdapter;
 
 public class WelcomeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -137,7 +142,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                     viewPager.setCurrentItem(current);
                 } else {
                     prefManager.saveSemester(getResources().getString(R.string.current_semester));
-                    prefManager.saveDatabaseVersion(DatabaseHelper.DATABASE_VERSION);
+                    prefManager.saveDatabaseVersion(DatabaseHelper.OFFLINE_DATABASE_VERSION);
                     launchHomeScreen();
                 }
             }

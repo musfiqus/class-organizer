@@ -1,4 +1,18 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.+'
+    }
+}
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
 
 // Create a variable called keystorePropertiesFile, and initialize it to your
 // keystore.properties file, in the rootProject folder.
@@ -17,10 +31,10 @@ android {
         applicationId "bd.edu.daffodilvarsity.classorganizer"
         minSdkVersion 16
         targetSdkVersion 25
-        versionName '2.3'
+        versionName '3.2'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 18
+        versionCode 24
     }
     signingConfigs {
         release {
@@ -49,6 +63,10 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile project(':Colorful')
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+        transitive = true;
+    }
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
@@ -59,11 +77,10 @@ dependencies {
     compile 'com.android.support:support-vector-drawable:25.3.1'
     compile 'com.android.support:preference-v7:25.3.1'
     compile 'com.android.support:preference-v14:25.3.1'
-    compile project(':Colorful')
-    testCompile 'junit:junit:4.12'
-    compile 'com.google.firebase:firebase-crash:10.2.1'
     compile 'com.afollestad.material-dialogs:core:0.9.4.4'
     compile 'com.android.support:recyclerview-v7:25.3.1'
+    compile 'io.github.yavski:fab-speed-dial:1.0.6'
+    compile 'com.google.firebase:firebase-database:10.2.1'
+    testCompile 'junit:junit:4.12'
 }
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.google.firebase.firebase-crash'

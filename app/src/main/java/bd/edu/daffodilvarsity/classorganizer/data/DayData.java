@@ -1,7 +1,9 @@
-package bd.edu.daffodilvarsity.classorganizer;
+package bd.edu.daffodilvarsity.classorganizer.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
@@ -10,15 +12,34 @@ import java.io.Serializable;
  */
 
 public class DayData implements Serializable, Parcelable {
+    @SerializedName("courseCode")
     private String courseCode;
+
+    @SerializedName("teachersInitial")
     private String teachersInitial;
+
+    @SerializedName("section")
     private String section;
+
+    @SerializedName("level")
     private int level;
+
+    @SerializedName("term")
     private int term;
+
+    @SerializedName("roomNo")
     private String roomNo;
+
+    @SerializedName("time")
     private String time;
+
+    @SerializedName("day")
     private String day;
+
+    @SerializedName("timeWeight")
     private double timeWeight;
+
+    @SerializedName("courseTitle")
     private String courseTitle;
 
     public DayData(String courseCode, String teachersInitial, String section, int level, int term, String roomNo, String time, String day, double timeWeight, String courseTitle) {

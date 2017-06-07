@@ -1,12 +1,14 @@
-package bd.edu.daffodilvarsity.classorganizer;
+package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import bd.edu.daffodilvarsity.classorganizer.R;
+import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 /**
  * Created by musfiqus on 4/1/2017.
@@ -14,7 +16,7 @@ import java.util.Arrays;
 
 public class RoutineLoader {
 
-    PrefManager prefManager;
+    private PrefManager prefManager;
     private int level;
     private int term;
     private String section;
@@ -47,7 +49,6 @@ public class RoutineLoader {
     }
 
     private ArrayList<String> courseCodeGenerator(int semester) {
-        Log.e("Dammit", "fix");
         if (campus.equalsIgnoreCase("main")) {
             if (dept.equalsIgnoreCase("cse")) {
                 if (program.equalsIgnoreCase("day")) {
@@ -124,10 +125,8 @@ public class RoutineLoader {
                 }
             }
         } else if (campus.equalsIgnoreCase("perm")) {
-            Log.e("Dammit", "fix1");
             if (dept.equalsIgnoreCase("cse")) {
                 if (program.equalsIgnoreCase("day")) {
-                    Log.e("WUT", "WUT PLOX");
                     if (semester == 1) {
                         String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L1T1);
                         return new ArrayList<>(Arrays.asList(semesterData));
@@ -174,11 +173,18 @@ public class RoutineLoader {
     }
 
     public ArrayList<DayData> loadRoutine(boolean loadPersonal) {
-        //Initializing DB Helper
-        DatabaseHelper db = DatabaseHelper.getInstance(context);
         //Generating course codes from generated semester
         ArrayList<String> courseCodes = courseCodeGenerator(setSemester());
-        ArrayList<DayData> vanillaRoutine = db.getDayData(courseCodes, section, level, term, dept, campus, program);
+        ArrayList<DayData> vanillaRoutine;
+        //Initializing DB Helper
+
+        if (prefManager.isUpdatedOnline()) {
+            UpdatedDatabaseHelper updatedDatabaseHelper = UpdatedDatabaseHelper.getInstance(context, prefManager.getDatabaseVersion());
+            vanillaRoutine = updatedDatabaseHelper.getDayData(courseCodes, section, level, term, dept, campus, program);
+        } else {
+            DatabaseHelper databaseHelper = DatabaseHelper.getInstance(context);
+            vanillaRoutine = databaseHelper.getDayData(courseCodes, section, level, term, dept, campus, program);
+        }
         if (!loadPersonal) {
             return vanillaRoutine;
         } else {
@@ -196,39 +202,45 @@ public class RoutineLoader {
             boolean isLimited = preferences.getBoolean("limit_preference", true);
             if (addDayData != null) {
                 for (DayData eachEditedDayData : addDayData) {
-                    if (!(prefManager.isDuplicate(loadedDayData, eachEditedDayData))) {
-                        if (isLimited) {
-                            if (this.section.equalsIgnoreCase(eachEditedDayData.getSection()) && this.term == eachEditedDayData.getTerm() && this.level == eachEditedDayData.getLevel()) {
+                    if (eachEditedDayData != null) {
+                        if (!(prefManager.isDuplicate(loadedDayData, eachEditedDayData))) {
+                            if (isLimited) {
+                                if (this.section.equalsIgnoreCase(eachEditedDayData.getSection()) && this.term == eachEditedDayData.getTerm() && this.level == eachEditedDayData.getLevel()) {
+                                    loadedDayData.add(eachEditedDayData);
+                                }
+                            } else {
                                 loadedDayData.add(eachEditedDayData);
                             }
-                        } else {
-                            loadedDayData.add(eachEditedDayData);
                         }
                     }
                 }
             }
             if (editDayData != null) {
                 for (DayData eachEditedDayData : editDayData) {
-                    if (!(prefManager.isDuplicate(loadedDayData, eachEditedDayData))) {
-                        if (isLimited) {
-                            if (this.section.equalsIgnoreCase(eachEditedDayData.getSection()) && this.term == eachEditedDayData.getTerm() && this.level == eachEditedDayData.getLevel()) {
+                    if (eachEditedDayData != null) {
+                        if (!(prefManager.isDuplicate(loadedDayData, eachEditedDayData))) {
+                            if (isLimited) {
+                                if (this.section.equalsIgnoreCase(eachEditedDayData.getSection()) && this.term == eachEditedDayData.getTerm() && this.level == eachEditedDayData.getLevel()) {
+                                    loadedDayData.add(eachEditedDayData);
+                                }
+                            } else {
                                 loadedDayData.add(eachEditedDayData);
                             }
-                        } else {
-                            loadedDayData.add(eachEditedDayData);
                         }
                     }
                 }
             }
             if (saveDayData != null) {
                 for (DayData eachEditedDayData : saveDayData) {
-                    if (!(prefManager.isDuplicate(loadedDayData, eachEditedDayData))) {
-                        if (isLimited) {
-                            if (this.section.equalsIgnoreCase(eachEditedDayData.getSection()) && this.term == eachEditedDayData.getTerm() && this.level == eachEditedDayData.getLevel()) {
+                    if (eachEditedDayData != null) {
+                        if (!(prefManager.isDuplicate(loadedDayData, eachEditedDayData))) {
+                            if (isLimited) {
+                                if (this.section.equalsIgnoreCase(eachEditedDayData.getSection()) && this.term == eachEditedDayData.getTerm() && this.level == eachEditedDayData.getLevel()) {
+                                    loadedDayData.add(eachEditedDayData);
+                                }
+                            } else {
                                 loadedDayData.add(eachEditedDayData);
                             }
-                        } else {
-                            loadedDayData.add(eachEditedDayData);
                         }
                     }
                 }
@@ -248,5 +260,15 @@ public class RoutineLoader {
             }
         }
         return loadedDayData;
+    }
+
+    public boolean verifyUpdatedDb(int dbVersion) {
+        UpdatedDatabaseHelper databaseHelper = UpdatedDatabaseHelper.getInstance(context, dbVersion);
+        ArrayList<String> courseCodes = courseCodeGenerator(setSemester());
+        ArrayList<DayData> vanillaRoutine = databaseHelper.getDayData(courseCodes, section, level, term, dept, campus, program);
+        if (vanillaRoutine == null) {
+            return false;
+        }
+        return vanillaRoutine.size() > 0;
     }
 }

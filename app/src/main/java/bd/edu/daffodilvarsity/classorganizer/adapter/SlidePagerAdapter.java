@@ -1,4 +1,4 @@
-package bd.edu.daffodilvarsity.classorganizer;
+package bd.edu.daffodilvarsity.classorganizer.adapter;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
@@ -11,6 +11,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import java.util.ArrayList;
+
+import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.R;
+import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
+import bd.edu.daffodilvarsity.classorganizer.utils.RoutineLoader;
 
 /**
  * Created by musfiqus on 3/26/2017.
