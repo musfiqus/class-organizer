@@ -50,7 +50,7 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         CourseUtils.CourseTitleGenerator courseTitleGenerator = CourseUtils.CourseTitleGenerator.getInstance(mContext);
         if (courseCodes != null) {
             for (String eachCourse : courseCodes) {
-                String id = removeSpaces(eachCourse) + strippedStringMinimal(section);
+                String id = removeSpaces(eachCourse).toUpperCase() + strippedStringMinimal(section).toUpperCase();
                 Cursor cursor = db.query(currentTable, new String[]{COLUMN_COURSE_CODE,
                                 COLUMN_TEACHERS_INITIAL, COLUMN_WEEK_DAYS, COLUMN_ROOM_NO, COLUMN_TIME}, COLUMN_COURSE_CODE + "=?",
                         new String[]{id}, null, null, null, null);

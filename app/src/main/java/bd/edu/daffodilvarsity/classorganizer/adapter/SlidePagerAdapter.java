@@ -14,6 +14,7 @@ import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.R;
+import bd.edu.daffodilvarsity.classorganizer.utils.DataChecker;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.RoutineLoader;
 
@@ -31,6 +32,8 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
     private View view;
     private boolean tempLock = true;
     private PrefManager prefManager;
+    private int classDataCode;
+    private int campusDataCode;
 
     private Spinner campusSpinner;
     private ArrayAdapter<CharSequence> campusAdapter;
@@ -210,9 +213,12 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         //Saving selections on first launch
-        prefManager.saveCampus(campusSpinner.getSelectedItem().toString().substring(0, 4).toLowerCase());
-        prefManager.saveDept(deptSpinner.getSelectedItem().toString().toLowerCase());
-        prefManager.saveProgram(programSpinner.getSelectedItem().toString().substring(0, 3).toLowerCase());
+        String campus = campusSpinner.getSelectedItem().toString().substring(0, 4).toLowerCase();
+        String dept = deptSpinner.getSelectedItem().toString().toLowerCase();
+        String program = programSpinner.getSelectedItem().toString().substring(0, 3).toLowerCase();
+        prefManager.saveCampus(campus);
+        prefManager.saveDept(dept);
+        prefManager.saveProgram(program);
         if (parent.getId() == R.id.level_spinner) {
             level = parent.getSelectedItemPosition();
         } else if (parent.getId() == R.id.term_spinner) {
@@ -235,6 +241,12 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
                 setClassAdapter();
             }
         }
+
+        classDataCode = new DataChecker(context, level, term, section).dataChecker();
+        campusDataCode = new DataChecker(context, dept, campus, program).dataChecker();
+
+        Log.e("SliderPagerAdapter", "Class: "+classDataCode+" Campus"+campusDataCode);
+
         //Saving selections
         prefManager.saveSection(section);
         if (prefManager.getSection() != null) {

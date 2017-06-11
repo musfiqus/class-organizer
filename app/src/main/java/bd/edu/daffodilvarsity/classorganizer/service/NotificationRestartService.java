@@ -3,14 +3,12 @@ package bd.edu.daffodilvarsity.classorganizer.service;
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.annotation.Nullable;
-import android.util.Log;
-import android.widget.Toast;
 
-import bd.edu.daffodilvarsity.classorganizer.activity.MainActivity;
 import bd.edu.daffodilvarsity.classorganizer.utils.AlarmHelper;
 
 /**
- * Created by musfiqus on 6/5/2017.
+ * Created by Mushfiqus Salehin on 6/5/2017.
+ * musfiqus@gmail.com
  */
 
 public class NotificationRestartService extends IntentService {

@@ -327,7 +327,7 @@ public class SettingsActivity extends ColorfulActivity {
                     } else {
                         ramadanPreference.setSummary(getString(R.string.ramadan_disabled_summary));
                     }
-                    boolean isNotificationEnabled = preferenceManager.getSharedPreferences().getBoolean("notification_preference", false);
+                    boolean isNotificationEnabled = preferenceManager.getSharedPreferences().getBoolean("notification_preference", true);
                     if (isNotificationEnabled) {
                         AlarmHelper alarmHelper = new AlarmHelper(getContext());
                         alarmHelper.forceRestart(hasRamadanTime);
@@ -340,7 +340,7 @@ public class SettingsActivity extends ColorfulActivity {
             //Notifications
             final AlarmHelper alarmHelper = new AlarmHelper(getContext());
             final SwitchPreferenceCompat notification = (SwitchPreferenceCompat) findPreference("notification_preference");
-            boolean isNotificationEnabled = preferenceManager.getSharedPreferences().getBoolean("notification_preference", false);
+            boolean isNotificationEnabled = preferenceManager.getSharedPreferences().getBoolean("notification_preference", true);
             notification.setChecked(isNotificationEnabled);
             if (isNotificationEnabled) {
                 notification.setSummary(getString(R.string.notification_enabled_summary));
@@ -477,6 +477,11 @@ public class SettingsActivity extends ColorfulActivity {
 
         private View setupClassSpinners(int levelRoot, int termRoot, String sectionRoot) {
             View dialogView = getActivity().getLayoutInflater().inflate(R.layout.class_spinner_layout, null);
+            if (dialogView.getId() == R.id.class_spinner_layout_id) {
+                Log.e("SettingsActivity", "Matched");
+            } else {
+                Log.e("SettingsActivity", "Didn't match");
+            }
             TextView levelLabel = (TextView) dialogView.findViewById(R.id.level_spinner_label);
             levelLabel.setTextColor(ContextCompat.getColor(getContext(), android.R.color.black));
             TextView termLabel = (TextView) dialogView.findViewById(R.id.term_spinner_label);

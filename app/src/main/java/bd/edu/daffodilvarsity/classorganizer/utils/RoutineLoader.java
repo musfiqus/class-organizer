@@ -11,7 +11,8 @@ import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 /**
- * Created by musfiqus on 4/1/2017.
+ * Created by Mushfiqus Salehin on 4/1/2017.
+ * musfiqus@gmail.com
  */
 
 public class RoutineLoader {
@@ -36,145 +37,102 @@ public class RoutineLoader {
         prefManager = new PrefManager(context);
     }
 
-    private int setSemester() {
-        if (this.level == 0) {
-            return 1 + this.term;
-        } else if (this.level == 1) {
-            return 4 + this.term;
-        } else if (this.level == 2) {
-            return 7 + this.term;
+    private int getSemester() {
+        return getSemester(this.level, this.term);
+    }
+
+    public static int getSemester(int level, int term) {
+        if (level == 0) {
+            return 1 + term;
+        } else if (level == 1) {
+            return 4 + term;
+        } else if (level == 2) {
+            return 7 + term;
         } else {
-            return 10 + this.term;
+            return 10 + term;
         }
     }
 
-    private ArrayList<String> courseCodeGenerator(int semester) {
+    public static ArrayList<String> courseCodeGenerator(Context context, int semester, String campus, String dept, String program) {
         if (campus.equalsIgnoreCase("main")) {
             if (dept.equalsIgnoreCase("cse")) {
                 if (program.equalsIgnoreCase("day")) {
-                    if (semester == 1) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L1T1);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 2) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L1T2);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 3) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L1T3);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 4) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L2T1);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 5) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L2T2);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 6) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L2T3);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 7) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L3T1);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 8) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L3T2);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 9) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L3T3);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 10) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L4T1);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 11) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L4T2);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 12) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L4T3);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else {
-                        return null;
-                    }
+                    return cseDayCourses(semester, context);
                 } else if (program.equalsIgnoreCase("eve")) {
-                    if (semester == 1) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L1T1);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 2) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L1T2);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 3) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L1T3);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 4) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L2T1);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 5) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L2T2);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 6) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L2T3);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 7) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L3T1);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 8) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L3T2);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 9) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L3T3);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else {
-                        return null;
-                    }
+                    return cseEveCourse(semester, context);
                 }
             }
         } else if (campus.equalsIgnoreCase("perm")) {
             if (dept.equalsIgnoreCase("cse")) {
                 if (program.equalsIgnoreCase("day")) {
-                    if (semester == 1) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L1T1);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 2) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L1T2);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 3) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L1T3);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 4) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L2T1);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 5) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L2T2);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 6) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L2T3);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 7) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L3T1);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 8) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L3T2);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 9) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L3T3);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 10) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L4T1);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 11) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L4T2);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else if (semester == 12) {
-                        String[] semesterData = context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L4T3);
-                        return new ArrayList<>(Arrays.asList(semesterData));
-                    } else {
-                        return null;
-                    }
+                    return cseDayCourses(semester, context);
                 }
             }
         }
         return null;
     }
 
+    private static ArrayList<String> cseDayCourses(int semester, Context context) {
+        if (semester == 1) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L1T1)));
+        } else if (semester == 2) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L1T2)));
+        } else if (semester == 3) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L1T3)));
+        } else if (semester == 4) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L2T1)));
+        } else if (semester == 5) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L2T2)));
+        } else if (semester == 6) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L2T3)));
+        } else if (semester == 7) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L3T1)));
+        } else if (semester == 8) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L3T2)));
+        } else if (semester == 9) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L3T3)));
+        } else if (semester == 10) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L4T1)));
+        } else if (semester == 11) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L4T2)));
+        } else if (semester == 12) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L4T3)));
+        } else {
+            return null;
+        }
+    }
+
+    private static ArrayList<String> cseEveCourse(int semester, Context context) {
+        if (semester == 1) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L1T1)));
+        } else if (semester == 2) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L1T2)));
+        } else if (semester == 3) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L1T3)));
+        } else if (semester == 4) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L2T1)));
+        } else if (semester == 5) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L2T2)));
+        } else if (semester == 6) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L2T3)));
+        } else if (semester == 7) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L3T1)));
+        } else if (semester == 8) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L3T2)));
+        } else if (semester == 9) {
+            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L3T3)));
+        } else {
+            return null;
+        }
+    }
+
+    private ArrayList<String> courseCodeGenerator(int semester) {
+        return courseCodeGenerator(context, semester, campus, dept, program);
+    }
+
     public ArrayList<DayData> loadRoutine(boolean loadPersonal) {
         //Generating course codes from generated semester
-        ArrayList<String> courseCodes = courseCodeGenerator(setSemester());
+        ArrayList<String> courseCodes = courseCodeGenerator(getSemester());
         ArrayList<DayData> vanillaRoutine;
         //Initializing DB Helper
 
@@ -264,7 +222,7 @@ public class RoutineLoader {
 
     public boolean verifyUpdatedDb(int dbVersion) {
         UpdatedDatabaseHelper databaseHelper = UpdatedDatabaseHelper.getInstance(context, dbVersion);
-        ArrayList<String> courseCodes = courseCodeGenerator(setSemester());
+        ArrayList<String> courseCodes = courseCodeGenerator(getSemester());
         ArrayList<DayData> vanillaRoutine = databaseHelper.getDayData(courseCodes, section, level, term, dept, campus, program);
         if (vanillaRoutine == null) {
             return false;

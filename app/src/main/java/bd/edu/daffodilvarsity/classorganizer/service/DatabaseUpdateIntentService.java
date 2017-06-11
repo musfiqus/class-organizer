@@ -4,8 +4,6 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.ResultReceiver;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,11 +11,11 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import bd.edu.daffodilvarsity.classorganizer.utils.DatabaseHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.UpdatedDatabaseHelper;
 
 /**
- * Created by musfiqus on 5/28/2017.
+ * Created by Mushfiqus Salehin on 5/28/2017.
+ * musfiqus@gmail.com
  */
 
 public class DatabaseUpdateIntentService extends IntentService {

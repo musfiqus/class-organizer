@@ -78,7 +78,6 @@ public class DayFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
         for (DayData eachDay : dayData) {
             if (eachDay != null) {
-                Log.e("DayFragmentAdapter", ""+eachDay.getCourseCode());
                 if (eachDay.getDay().equalsIgnoreCase("saturday")) {
                     satDayData.add(eachDay);
                     if (!hasSatDay) {

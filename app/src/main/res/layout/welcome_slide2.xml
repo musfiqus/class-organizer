@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/welcome_choice_layout"
+    android:id="@+id/welcome_choice_layout_2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_screen2">
 
     <include
+        android:id="@+id/campus_layout_include_id"
         layout="@layout/campus_spinner_layout"
-        android:id="@+id/spinner_layout_rel" />
+         />
 </RelativeLayout>

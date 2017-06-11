@@ -64,16 +64,22 @@ public class NotificationPublisher extends BroadcastReceiver {
         }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                .setContentTitle("You have "+article+" "+dayData.getCourseCode()+" class at "
-                        + (isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(dayData.getTime(), dayData.getTimeWeight()).substring(0, 8) : dayData.getTime()).substring(0,8))
-                .setContentText("Today's class is in room "+dayData.getRoomNo())
+                .setContentTitle("You have " + article + " " + dayData.getCourseCode() + " class soon")
+                .setContentText("Today's class is at "
+                        + (isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(dayData.getTime(), dayData.getTimeWeight()).substring(0, 8) : dayData.getTime()).substring(0, 8)
+                        + " in room " + dayData.getRoomNo())
                 .setTicker("You have a class soon!")
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND)
                 .setSmallIcon(getNotificationIcon())
                 .setContentIntent(pendingIntent);
-        Notification notification = builder.build();
+        Notification notification = new NotificationCompat.InboxStyle(builder)
+                .addLine("Time: " + (isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(dayData.getTime(), dayData.getTimeWeight()).substring(0, 8) : dayData.getTime()).substring(0, 8))
+                .addLine("Room: " + dayData.getRoomNo())
+                .setSummaryText(dayData.getCourseTitle())
+                .setBigContentTitle("Details of Today's Class")
+                .build();
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(index, notification);
     }

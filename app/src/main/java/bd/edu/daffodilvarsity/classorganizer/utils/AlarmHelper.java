@@ -31,6 +31,7 @@ public class AlarmHelper {
     }
 
     public void startAll() {
+        Log.e("AlarmHelper", "StartAll");
         ArrayList<DayData> data = prefManager.getSavedDayData();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean isRamadanTime = preferences.getBoolean("ramadan_preference", false);
@@ -46,6 +47,7 @@ public class AlarmHelper {
     }
 
     public void cancelAll() {
+        Log.e("AlarmHelper", "CancelAll");
         ArrayList<DayData> data = prefManager.getSavedDayData();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean isRamadanTime = preferences.getBoolean("ramadan_preference", false);
@@ -68,12 +70,6 @@ public class AlarmHelper {
                 int time[] = calculateTime(isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(data.get(i).getTime(), data.get(i).getTimeWeight()): data.get(i).getTime());
                 if (dayOfWeek != -1) {
                     cancelAlarm(dayOfWeek, i, time[0], time[1], data.get(i));
-                }
-            }
-            for (int i = 0; i < data.size(); i++) {
-                int dayOfWeek = calculateDay(data.get(i).getDay());
-                int time[] = calculateTime(isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(data.get(i).getTime(), data.get(i).getTimeWeight()): data.get(i).getTime());
-                if (dayOfWeek != -1) {
                     scheduleAlarm(dayOfWeek, i, time[0], time[1], data.get(i));
                 }
             }

@@ -22,6 +22,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,6 +60,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     private ArrayList<DayData> mDayData;
     private boolean onStart = false;
     private boolean onCreate = false;
+    private boolean alarmRecreated = false;
     private RoutineLoader routineLoader;
     private boolean isActivityRunning = false;
     private boolean updateDialogueBlocked = false;
@@ -123,11 +125,14 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         onCreate = true;
         showAnnouncements();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean hasNotification = preferences.getBoolean("notification_preference", false);
+        boolean hasNotification = preferences.getBoolean("notification_preference", true);
         if (hasNotification) {
-            AlarmHelper alarmHelper = new AlarmHelper(this);
-            alarmHelper.cancelAll();
-            alarmHelper.startAll();
+            if (!alarmRecreated) {
+                AlarmHelper alarmHelper = new AlarmHelper(this);
+                alarmHelper.cancelAll();
+                alarmHelper.startAll();
+                alarmRecreated = true;
+            }
         }
     }
 
@@ -412,12 +417,12 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
                         public void run() {
                             if (isActivityRunning) {
                                 MaterialDialog dialog = new MaterialDialog.Builder(MainActivity.this)
-                                        .title("Did You Remember?")
+                                        .title("Reminder is Here!")
                                         .positiveText("OPEN SETTINGS")
-                                        .content("One of the most requested feature, notification reminder is now available!" +
-                                                "\nYou can enable it right now from the settings menu." +
+                                        .content(Html.fromHtml("One of the most requested features, <b>Notification Reminder</b> is now available!" +
+                                                "\n<b>You can enable/disable it from the settings menu.</b>" +
                                                 "\nYou can also customize when you would like to receive reminders." +
-                                                "\nThank you for helping me to make Class Organizer awesome!")
+                                                "\nThank you everyone for your suggestions, you make Class Organizer AWESOME!"))
                                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                                             @Override
                                             public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {

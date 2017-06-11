@@ -7,7 +7,8 @@ import io.fabric.sdk.android.Fabric;
 import org.polaric.colorful.Colorful;
 
 /**
- * Created by musfiqus on 4/2/2017.
+ * Created by Mushfiqus Salehin on 4/2/2017.
+ * musfiqus@gmail.com
  */
 
 public class ClassOrganizer extends Application {

@@ -68,7 +68,7 @@ public class PrefManager {
     public void saveDayData(ArrayList<DayData> daydata) {
         //Restarting alarms every time the data is changed
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(_context);
-        boolean hasNotification = preferences.getBoolean("notification_preference", false);
+        boolean hasNotification = preferences.getBoolean("notification_preference", true);
         AlarmHelper alarmHelper = new AlarmHelper(_context);
         if (hasNotification) {
             alarmHelper.cancelAll();
