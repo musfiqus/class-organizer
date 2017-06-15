@@ -50,6 +50,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="3dp"
+                    android:paddingRight="3dp"
                     android:paddingStart="3dp"
                     android:paddingTop="16dp"
                     android:text="@string/enter_course_code"
@@ -69,6 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="3dp"
+                    android:paddingRight="3dp"
                     android:paddingStart="3dp"
                     android:paddingTop="16dp"
                     android:text="@string/enter_course_title"
@@ -88,6 +90,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="3dp"
+                    android:paddingRight="3dp"
                     android:paddingStart="3dp"
                     android:paddingTop="16dp"
                     android:text="@string/enter_initial"
@@ -117,6 +120,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="3dp"
+                    android:paddingRight="3dp"
                     android:paddingTop="16dp"
                     android:text="@string/choose_weekday_label"
                     android:textColor="#9E9E9E"
@@ -137,6 +141,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="3dp"
+                    android:paddingRight="3dp"
                     android:paddingTop="16dp"
                     android:text="@string/enter_room_no"
                     android:textColor="#9E9E9E"
@@ -164,6 +169,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingLeft="3dp"
+                            android:paddingRight="3dp"
                             android:paddingTop="16dp"
                             android:text="@string/starting_time"
                             android:textColor="#9E9E9E"
@@ -174,8 +180,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="32dp"
                             android:layout_marginBottom="8dp"
-                            android:gravity="left"
-                            android:paddingLeft="3dp" />
+                            android:gravity="start"
+                            android:paddingLeft="3dp"
+                            android:paddingRight="3dp"
+                            android:paddingStart="3dp"/>
                     </LinearLayout>
 
                     <LinearLayout
@@ -188,6 +196,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:paddingLeft="3dp"
+                            android:paddingRight="3dp"
                             android:paddingTop="16dp"
                             android:text="@string/ending_time"
                             android:textColor="#9E9E9E"
@@ -198,8 +207,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="32dp"
                             android:layout_marginBottom="8dp"
-                            android:gravity="left"
-                            android:paddingLeft="3dp" />
+                            android:gravity="start"
+                            android:paddingLeft="3dp"
+                            android:paddingRight="3dp"/>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>

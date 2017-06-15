@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.preference.PreferenceManager;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,14 +22,14 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.utils.AlarmHelper;
 
 /**
- * Created by musfiqus on 6/5/2017.
+ * Created by Mushfiqus Salehin on 6/5/2017.
+ * musfiqus@gmail.com
  */
 
 public class NotificationPublisher extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getBundleExtra("bundled_data");
-        Log.e(NotificationPublisher.class.getName(), "Received");
         if (bundle != null) {
             DayData dayData = bundle.getParcelable("DayData_Object");
             int index = bundle.getInt("index");

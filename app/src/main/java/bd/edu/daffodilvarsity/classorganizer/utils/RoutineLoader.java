@@ -54,17 +54,17 @@ public class RoutineLoader {
     }
 
     public static ArrayList<String> courseCodeGenerator(Context context, int semester, String campus, String dept, String program) {
-        if (campus.equalsIgnoreCase("main")) {
-            if (dept.equalsIgnoreCase("cse")) {
-                if (program.equalsIgnoreCase("day")) {
+        if (DataChecker.isMain(campus)) {
+            if (DataChecker.isCSE(dept)) {
+                if (DataChecker.isDay(program)) {
                     return cseDayCourses(semester, context);
-                } else if (program.equalsIgnoreCase("eve")) {
+                } else {
                     return cseEveCourse(semester, context);
                 }
             }
-        } else if (campus.equalsIgnoreCase("perm")) {
-            if (dept.equalsIgnoreCase("cse")) {
-                if (program.equalsIgnoreCase("day")) {
+        } else {
+            if (DataChecker.isCSE(dept)) {
+                if (DataChecker.isDay(program)) {
                     return cseDayCourses(semester, context);
                 }
             }

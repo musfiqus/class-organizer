@@ -16,21 +16,20 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-import bd.edu.daffodilvarsity.classorganizer.adapter.DayDataAdapter;
-import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.activity.EditActivity;
+import bd.edu.daffodilvarsity.classorganizer.adapter.DayDataAdapter;
+import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.utils.DataChecker;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
+import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelper;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
@@ -77,74 +76,30 @@ public class DayDataDetailFragment extends Fragment {
                     if (menuItem.getItemId() == R.id.edit_class) {
                         Intent intent = new Intent(rootView.getContext(), EditActivity.class);
                         intent.putExtra("DAYDATA", (Parcelable) mItem);
+                        intent.putExtra("DAYDETAIL", true);
                         rootView.getContext().startActivity(intent);
+                        getActivity().finish();
                         return true;
                     } else if (menuItem.getItemId() == R.id.save_class) {
 
                         MaterialDialog.Builder builder = new MaterialDialog.Builder(rootView.getContext());
                         builder.title("Save to");
                         View dialogView = LayoutInflater.from(rootView.getContext()).inflate(R.layout.class_spinner_layout, null);
-                        TextView levelLabel = (TextView) dialogView.findViewById(R.id.level_spinner_label);
-                        levelLabel.setTextColor(dialogView.getResources().getColor(android.R.color.black));
-                        TextView termLabel = (TextView) dialogView.findViewById(R.id.term_spinner_label);
-                        termLabel.setTextColor(dialogView.getResources().getColor(android.R.color.black));
-                        TextView sectionLabel = (TextView) dialogView.findViewById(R.id.section_spinner_label);
-                        sectionLabel.setTextColor(dialogView.getResources().getColor(android.R.color.black));
-                        final Spinner sectionSpinner = (Spinner) dialogView.findViewById(R.id.section_selection);
-                        final Spinner levelSpinner = (Spinner) dialogView.findViewById(R.id.level_spinner);
-                        final Spinner termSpinner = (Spinner) dialogView.findViewById(R.id.term_spinner);
-                        ArrayAdapter<CharSequence> termAdapter = ArrayAdapter.createFromResource(rootView.getContext(), R.array.term_array, R.layout.spinner_row);
-                        termAdapter.setDropDownViewResource(R.layout.spinner_row);
-                        termSpinner.setAdapter(termAdapter);
-                        termSpinner.setSelection(prefManager.getTerm());
-
-                        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(rootView.getContext(), 0);
-                        int sectionPosition = -1;
-
-                        if (prefManager.getCampus().equalsIgnoreCase("main")) {
-                            if (prefManager.getDept().equalsIgnoreCase("cse")) {
-                                if (prefManager.getProgram().equalsIgnoreCase("day")) {
-                                    adapter = ArrayAdapter.createFromResource(rootView.getContext(), R.array.cse_main_day_level_array, R.layout.spinner_row);
-                                } else if (prefManager.getProgram().equalsIgnoreCase("eve")) {
-                                    adapter = ArrayAdapter.createFromResource(rootView.getContext(), R.array.cse_main_day_level_array, R.layout.spinner_row);
-                                }
-                                ArrayAdapter<CharSequence> sectionAdapter = ArrayAdapter.createFromResource(rootView.getContext(), R.array.cse_main_day_section_array, R.layout.spinner_row);
-                                sectionSpinner.setAdapter(sectionAdapter);
-                                String[] sectionListString = dialogView.getResources().getStringArray(R.array.cse_main_day_section_array);
-                                ArrayList<String> sectionList = new ArrayList<>(Arrays.asList(sectionListString));
-                                for (int i = 0; i < sectionList.size(); i++) {
-                                    if (sectionList.get(i).equalsIgnoreCase(prefManager.getSection())) {
-                                        sectionPosition = i;
-                                    }
-                                }
-                                sectionSpinner.setSelection(sectionPosition);
-                            }
-                        } else if (prefManager.getCampus().equalsIgnoreCase("perm")) {
-                            if (prefManager.getDept().equalsIgnoreCase("cse")) {
-                                if (prefManager.getProgram().equalsIgnoreCase("eve")) {
-                                    ArrayAdapter<CharSequence> sectionAdapter = ArrayAdapter.createFromResource(rootView.getContext(), R.array.cse_perm_section_array, R.layout.spinner_row);
-                                    sectionSpinner.setAdapter(sectionAdapter);
-                                    String[] sectionListString = dialogView.getResources().getStringArray(R.array.cse_perm_section_array);
-                                    ArrayList<String> sectionList = new ArrayList<>(Arrays.asList(sectionListString));
-                                    for (int i = 0; i < sectionList.size(); i++) {
-                                        if (sectionList.get(i).equalsIgnoreCase(prefManager.getSection())) {
-                                            sectionPosition = i;
-                                        }
-                                    }
-                                    sectionSpinner.setSelection(sectionPosition);
-                                }
-                            }
+                        final SpinnerHelper classHelper = new SpinnerHelper(getContext(), dialogView, R.layout.spinner_row);
+                        classHelper.setupClassLabelBlack();
+                        classHelper.setupClass(prefManager.getCampus());
+                        if (DataChecker.isMain(prefManager.getCampus())) {
+                            classHelper.setClassSpinnerPositions(prefManager.getLevel(), prefManager.getTerm(), classHelper.spinnerPositionGenerator(R.array.cse_main_day_section_array, prefManager.getSection()));
+                        } else {
+                            classHelper.setClassSpinnerPositions(prefManager.getLevel(), prefManager.getTerm(), classHelper.spinnerPositionGenerator(R.array.cse_perm_section_array, prefManager.getSection()));
                         }
-                        adapter.setDropDownViewResource(R.layout.spinner_row);
-                        levelSpinner.setAdapter(adapter);
-                        levelSpinner.setSelection(prefManager.getLevel());
                         builder.customView(dialogView, true);
                         builder.positiveText("SAVE");
-                        builder.negativeText("CANCEL");
+                        builder.negativeText(android.R.string.cancel);
                         builder.onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
-                                DayData toSave = new DayData(mItem.getCourseCode(), mItem.getTeachersInitial(), sectionSpinner.getSelectedItem().toString(), levelSpinner.getSelectedItemPosition(), termSpinner.getSelectedItemPosition(), mItem.getRoomNo(), mItem.getTime(), mItem.getDay(), mItem.getTimeWeight(), null);
+                                DayData toSave = new DayData(mItem.getCourseCode(), mItem.getTeachersInitial(), classHelper.getSection(), classHelper.getLevel(), classHelper.getTerm(), mItem.getRoomNo(), mItem.getTime(), mItem.getDay(), mItem.getTimeWeight(), mItem.getCourseTitle());
                                 prefManager.saveModifiedData(toSave, PrefManager.SAVE_DATA_TAG, false);
                                 Snackbar.make(container, toSave.getCourseCode() + " saved!", Snackbar.LENGTH_SHORT).show();
                             }
@@ -166,7 +121,7 @@ public class DayDataDetailFragment extends Fragment {
                             }
                         }
                         final int finalPosition = position;
-                        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int which) {
 
@@ -183,8 +138,7 @@ public class DayDataDetailFragment extends Fragment {
                             }
                         });
 
-                        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-
+                        builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 

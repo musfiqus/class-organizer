@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,7 +17,8 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.receiver.NotificationPublisher;
 
 /**
- * Created by musfiqus on 6/6/2017.
+ * Created by Mushfiqus Salehin on 6/6/2017.
+ * musfiqus@gmail.com
  */
 
 public class AlarmHelper {
@@ -31,7 +31,6 @@ public class AlarmHelper {
     }
 
     public void startAll() {
-        Log.e("AlarmHelper", "StartAll");
         ArrayList<DayData> data = prefManager.getSavedDayData();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean isRamadanTime = preferences.getBoolean("ramadan_preference", false);
@@ -47,7 +46,6 @@ public class AlarmHelper {
     }
 
     public void cancelAll() {
-        Log.e("AlarmHelper", "CancelAll");
         ArrayList<DayData> data = prefManager.getSavedDayData();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean isRamadanTime = preferences.getBoolean("ramadan_preference", false);

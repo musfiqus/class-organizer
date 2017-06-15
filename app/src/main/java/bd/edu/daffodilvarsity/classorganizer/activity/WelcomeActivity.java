@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
@@ -17,12 +18,12 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import bd.edu.daffodilvarsity.classorganizer.utils.DatabaseHelper;
-import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.adapter.SlidePagerAdapter;
+import bd.edu.daffodilvarsity.classorganizer.utils.DataChecker;
+import bd.edu.daffodilvarsity.classorganizer.utils.DatabaseHelper;
+import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 
 public class WelcomeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -106,8 +107,6 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
             }
         });
 
-
-
         btnPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,7 +115,6 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                 if ((current - 1) == 0) {
                     onPageSelectedCustom(0);
                 }
-
             }
         });
 
@@ -128,21 +126,28 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                 // if last page home screen will be launched
                 int current = getItem(+1);
                 if (current == layouts.length - 1) {
-                    myViewPagerAdapter.loadSemester();
-                    if (myViewPagerAdapter.isTempLock()) {
-                        Toast.makeText(getApplicationContext(), "Section " + myViewPagerAdapter.getSection() + " currently doesn't exist on level " + (myViewPagerAdapter.getLevel() + 1) + " term " + (myViewPagerAdapter.getTerm() + 1) + ". Please select the correct level, term & section. Or contact the developer to add your section.", Toast.LENGTH_SHORT).show();
-                        showSnackBar(myViewPagerAdapter.getSection(), Integer.toString(myViewPagerAdapter.getLevel() + 1), Integer.toString(myViewPagerAdapter.getTerm() + 1));
+                    if (myViewPagerAdapter.getClassDataCode() > 0) {
+                        DataChecker.errorMessage(getApplicationContext(), myViewPagerAdapter.getClassDataCode(), null);
+                        showSnackBar(myViewPagerAdapter.getCampus(), myViewPagerAdapter.getDept(), myViewPagerAdapter.getProgram(), myViewPagerAdapter.getSection(), Integer.toString(myViewPagerAdapter.getLevel() + 1), Integer.toString(myViewPagerAdapter.getTerm() + 1));
                         viewPager.setCurrentItem(current - 1);
                     } else {
                         viewPager.setCurrentItem(current);
                     }
-
+                } else if (current == layouts.length - 2) {
+                    if (myViewPagerAdapter.getCampusDataCode() > 0) {
+                        DataChecker.errorMessage(getApplicationContext(), myViewPagerAdapter.getCampusDataCode(), null);
+                        showSnackBar(myViewPagerAdapter.getCampus(), myViewPagerAdapter.getDept(), myViewPagerAdapter.getProgram(), myViewPagerAdapter.getSection(), Integer.toString(myViewPagerAdapter.getLevel() + 1), Integer.toString(myViewPagerAdapter.getTerm() + 1));
+                        viewPager.setCurrentItem(current -1);
+                    } else {
+                        viewPager.setCurrentItem(current);
+                    }
                 } else if (current < layouts.length) {
                     // move to next screen
                     viewPager.setCurrentItem(current);
                 } else {
                     prefManager.saveSemester(getResources().getString(R.string.current_semester));
                     prefManager.saveDatabaseVersion(DatabaseHelper.OFFLINE_DATABASE_VERSION);
+                    myViewPagerAdapter.loadSemester();
                     launchHomeScreen();
                 }
             }
@@ -184,7 +189,6 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
             // last page. make button text to GOT IT
             btnNext.setPadding(0, 0, 32, 0);
             btnNext.setText(getString(R.string.start));
-
         } else if (position == 0) {
             btnPrevious.setVisibility(View.GONE);
         } else {
@@ -216,24 +220,25 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
     }
 
     /*Method to display snackbar properly*/
-    public void showSnackBar(final String section, final String level, final String term) {
-        String message = "Contact: musfiqus@gmail.com";
+    public void showSnackBar(final String campus, final String dept, final String program, final String section, final String level, final String term) {
+        String message = getString(R.string.contact_mailll);
         View rootView = findViewById(R.id.welcome_view_pager_parent);
         Snackbar snackbar = Snackbar.make(rootView, message, Snackbar.LENGTH_LONG);
-        snackbar.setActionTextColor(getResources().getColor(R.color.bg_screen2));
-        snackbar.setAction("SEND EMAIL", new View.OnClickListener() {
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.bg_screen2));
+        snackbar.setAction(R.string.send_mail, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                composeEmail(section, level, term);
+                composeEmail(campus, dept, program, section, level, term);
             }
         });
         snackbar.show();
     }
 
-    public void composeEmail(String section, String level, String term) {
-        String message = "Section: " + section + "\nLevel: " + level + "\nTerm: " + term;
-        message += "\nInsert or attach your routine for quicker response";
-        String subject = "Add section to DIU Class Organizer";
+    public void composeEmail(String campus, String department, String program, String section, String level, String term) {
+        String message = "Campus: "+campus+" Department: "+department+" Program: "+program;
+        message += "\nSection: " + section + "Level: " + level + "Term: " + term;
+        message += "\nPlease insert or attach your routine for quicker response";
+        String subject = getString(R.string.suggestion_email_subject);
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:")); // only email apps should handle this
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{getResources().getString(R.string.auth_email)});

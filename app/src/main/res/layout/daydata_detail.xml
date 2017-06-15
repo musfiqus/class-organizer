@@ -29,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="4dp"
-                android:text="Course title"
+                android:text="@string/course_title"
                 android:textColor="@color/md_white_1000"
                 android:textSize="14sp" />
 
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="8dp"
                 android:paddingTop="6dp"
-                android:text="ABC COURSE"
+                android:text="@string/abc_course"
                 android:textColor="@android:color/white"
                 android:textSize="24sp" />
 
@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="8dp"
-                android:text="Teacher's initial"
+                android:text="@string/teacher_s_initial"
                 android:textColor="@color/md_white_1000"
                 android:textSize="14sp" />
 
@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="8dp"
                 android:paddingTop="6dp"
-                android:text="TM"
+                android:text="@string/tm"
                 android:textColor="@android:color/white"
                 android:textSize="24sp" />
         </LinearLayout>
@@ -77,7 +77,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="8dp"
-                android:text="Weekday"
+                android:text="@string/weekday"
                 android:textColor="#9E9E9E"
                 android:textSize="14sp" />
 
@@ -86,7 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="8dp"
-                android:text="Zenday"
+                android:text="@string/zenday"
                 android:textSize="18sp" />
 
 
@@ -94,7 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="16dp"
-                android:text="Room No"
+                android:text="@string/room_no"
                 android:textColor="#9E9E9E"
                 android:textSize="14sp" />
 
@@ -103,7 +103,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="8dp"
-                android:text="101 DT5"
+                android:text="@string/_101_dt5"
                 android:textAllCaps="true"
                 android:textSize="18sp" />
 
@@ -111,7 +111,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="16dp"
-                android:text="Time"
+                android:text="@string/time"
                 android:textColor="#9E9E9E"
                 android:textSize="14sp" />
 
@@ -120,7 +120,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="8dp"
-                android:text="10.00 AM - 11.30 AM"
+                android:text="@string/_10_00_am_11_30_am"
                 android:textAllCaps="true"
                 android:textSize="18sp" />
         </LinearLayout>

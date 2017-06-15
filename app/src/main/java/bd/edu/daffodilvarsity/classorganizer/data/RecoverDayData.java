@@ -3,7 +3,8 @@ package bd.edu.daffodilvarsity.classorganizer.data;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Created by musfiqus on 5/30/2017.
+ * Created by Mushfiqus Salehin on 5/30/2017.
+ * musfiqus@gmail.com
  */
 
 public class RecoverDayData {

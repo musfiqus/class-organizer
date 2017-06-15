@@ -1,6 +1,7 @@
 package bd.edu.daffodilvarsity.classorganizer.activity;
 
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -35,8 +36,11 @@ public class SearchActivity extends ColorfulActivity {
         setContentView(R.layout.activity_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_search);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        // Show the Up button in the action bar.
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
         searchEmpty = (TextView) findViewById(R.id.search_result_empty);
         searchView = (SearchView) findViewById(R.id.searchView);
         searchView.setIconified(false);
@@ -49,7 +53,7 @@ public class SearchActivity extends ColorfulActivity {
                     searchEmpty.setVisibility(View.INVISIBLE);
                 } else {
                     searchEmpty.setVisibility(View.VISIBLE);
-                    searchEmpty.setText("You can search by course code or course name or teacher's initial or room no");
+                    searchEmpty.setText(R.string.empty_search_hint);
                 }
                 return true;
             }
@@ -61,7 +65,7 @@ public class SearchActivity extends ColorfulActivity {
                     searchEmpty.setVisibility(View.INVISIBLE);
                 } else {
                     searchEmpty.setVisibility(View.VISIBLE);
-                    searchEmpty.setText("No classes found");
+                    searchEmpty.setText(R.string.not_found_search_hint);
                 }
                 return true;
             }

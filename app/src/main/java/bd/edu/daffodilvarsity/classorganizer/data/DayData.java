@@ -10,7 +10,8 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Created by musfiqus on 3/24/2017.
+ * Created by Mushfiqus Salehin on 3/24/2017.
+ * musfiqus@gmail.com
  */
 
 public class DayData implements Serializable, Parcelable {

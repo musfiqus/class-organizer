@@ -41,7 +41,7 @@
     <string name="term_title">and current term</string>
     <string name="section_title">Select your section</string>
     <string name="program_title">Select your program</string>
-    <string name="drawer_app_title">DIU Class Organizer</string>
+    <string name="drawer_app_title">Class Organizer</string>
     <string name="drawer_dev_email">musfiqus@gmail.com</string>
     <string name="title_activity_settings">Settings</string>
     <string name="edit_initial_label">Edit Initial</string>
@@ -75,7 +75,7 @@
 
     <!--Preference -->
 
-    <string name="time_delay_summary">"Current notification time is %1$d minutes before the class"</string>
+    <string name="time_delay_summary">"Currently you're receiving reminders %1$s before the class"</string>
     <string name="notification_enabled_summary">Class notification are currently enabled</string>
     <string name="notification_disabled_summary">Class notification are currently disabled</string>
     <string name="ramadan_enabled_summary">Ramadan timetable is enabled</string>
@@ -84,4 +84,45 @@
     <string name="routine_preference_summary">"Current Section: &lt;b>%1$s&lt;/b>, Level: &lt;b>%2$d&lt;/b>, Term: &lt;b>%3$d&lt;/b></string>
     <string name="limit_preference_enabled_summary">Currently you\'re modification will show up in only on your modified section</string>
     <string name="limit_preference_disabled_summary">Currently you\'re modification will show up in all sections</string>
+    <string name="empty_search_hint">You can search by course code or course name or teacher\'s initial or room no</string>
+    <string name="not_found_search_hint">No classes found</string>
+    <string name="select_your_campus">Select your campus</string>
+    <string name="select_your_department">Select your department</string>
+    <string name="course_title">Course title</string>
+    <string name="abc_course">ABC COURSE</string>
+    <string name="teacher_s_initial">Teacher\'s initial</string>
+    <string name="tm">TM</string>
+    <string name="weekday">Weekday</string>
+    <string name="zenday">Zenday</string>
+    <string name="room_no">Room No</string>
+    <string name="_101_dt5">101 DT5</string>
+    <string name="time">Time</string>
+    <string name="_10_00_am_11_30_am">10.00 AM - 11.30 AM</string>
+    <string name="room">ROOM</string>
+    <string name="communicate">Communicate</string>
+    <string name="search">Search</string>
+    <string name="add">Add</string>
+    <string name="search_by_code">Search by Code</string>
+    <string name="search_by_title">Search by Title</string>
+    <string name="search_by_teacher">Search by Teacher</string>
+    <string name="search_by_room">Search by Room</string>
+    <string name="delete">Delete</string>
+    <string name="suggestion_email_subject">Add section to Class Organizer</string>
+    <string name="contact_mailll">Contact: musfiqus@gmail.com</string>
+    <string name="send_mail">SEND EMAIL</string>
+    <string name="dept_settings_changed">Department settings changed</string>
+    <string name="dept_popup_title">Choose Your Department</string>
+    <string name="no_changes">No changes were made</string>
+    <string name="warning">Warning!</string>
+    <string name="warning_msg">Your saved routine and preferences will be reset upon changing this settings. Do you want to proceed?</string>
+    <string name="proceed">PROCEED</string>
+    <string name="dont_show_this_again">Don\'t show this again</string>
+    <string name="saved">Saved!</string>
+    <string name="reset_title">Select Classes To Reset</string>
+    <string name="deleted">Deleted</string>
+    <string name="edited">Edited</string>
+    <string name="added">Added</string>
+    <string name="saved_nonexc">Saved</string>
+    <string name="reset">RESET</string>
+    <string name="one_hour">1 hour</string>
 </resources>

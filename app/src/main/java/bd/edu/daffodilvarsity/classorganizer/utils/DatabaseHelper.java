@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 /**
- * Created by musfiqus on 3/25/2017.
+ * Created by Mushfiqus Salehin on 3/25/2017.
+ * musfiqus@gmail.com
  */
 
 public class DatabaseHelper extends SQLiteAssetHelper {

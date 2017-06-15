@@ -7,7 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 /**
- * Created by musfiqus on 5/25/2017.
+ * Created by Mushfiqus Salehin on 5/25/2017.
+ * musfiqus@gmail.com
  */
 
 public class CourseUtils {

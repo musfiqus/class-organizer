@@ -11,7 +11,8 @@ import java.util.ArrayList;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 /**
- * Created by musfiqus on 5/29/2017.
+ * Created by Mushfiqus Salehin on 5/29/2017.
+ * musfiqus@gmail.com
  */
 
 public class UpdatedDatabaseHelper extends SQLiteAssetHelper {
@@ -36,7 +37,6 @@ public class UpdatedDatabaseHelper extends SQLiteAssetHelper {
     }
 
     public ArrayList<DayData> getDayData(ArrayList<String> courseCodes, String section, int level, int term, String dept, String campus, String program) {
-        ;
         SQLiteDatabase db = this.getWritableDatabase();
         final String currentTable = dept.toLowerCase() + "_" + campus.toLowerCase() + "_" + program.toLowerCase();
         if (finalDayData != null) {

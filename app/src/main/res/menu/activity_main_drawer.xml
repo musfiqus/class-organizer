@@ -8,7 +8,7 @@
             android:title="@string/drawer_title_settings" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="@string/communicate">
         <menu>
             <item
                 android:id="@+id/nav_share"

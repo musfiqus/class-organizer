@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/campus_spinner_layout_id"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_centerInParent="true"
@@ -10,7 +11,7 @@
     <TextView
         android:id="@+id/campus_spinner_label"
         style="@style/SpinnerTitle"
-        android:text="Select your campus" />
+        android:text="@string/select_your_campus" />
 
     <Spinner
         android:id="@+id/campus_selection"
@@ -20,7 +21,7 @@
         android:id="@+id/dept_spinner_label"
         style="@style/SpinnerTitle"
         android:layout_marginTop="16dp"
-        android:text="Select your department" />
+        android:text="@string/select_your_department" />
 
     <Spinner
         android:id="@+id/dept_selection"

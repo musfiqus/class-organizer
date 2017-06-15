@@ -61,7 +61,7 @@
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:paddingTop="16dp"
-                android:text="ROOM"
+                android:text="@string/room"
                 android:textSize="12sp" />
 
             <TextView
@@ -86,7 +86,7 @@
                 android:layout_alignStart="@+id/schedule"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
-                android:text="TIME"
+                android:text="@string/time"
                 android:textSize="12sp" />
 
             <TextView

@@ -1,10 +1,12 @@
 package bd.edu.daffodilvarsity.classorganizer.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
-import android.util.Log;
+import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,10 +46,10 @@ public class EditActivity extends ColorfulActivity {
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_modify);
         setSupportActionBar(toolbar);
         findViewById(R.id.modify_appbar_layout).bringToFront();
-        try {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
+        // Show the Up button in the action bar.
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
         prefManager = new PrefManager(this);
@@ -167,7 +169,6 @@ public class EditActivity extends ColorfulActivity {
             case "03.00 PM":
                 return 4.5;
             default:
-                Log.e("EditActivity", "INVALID START TIME");
                 return 0;
         }
     }
@@ -187,9 +188,9 @@ public class EditActivity extends ColorfulActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        DayData editedDay = getEditedDay();
         if (item.getItemId() == R.id.done_button) {
             //Saving the changed data
-            DayData editedDay = getEditedDay();
             if (position > -1) {
                 prefManager.saveModifiedData(editedDay, PrefManager.EDIT_DATA_TAG, false);
                 dayDatas.set(position, editedDay);
@@ -198,7 +199,10 @@ public class EditActivity extends ColorfulActivity {
             prefManager.saveReCreate(true);
             showSnackBar(this, "Saved");
         } else if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
+            Intent intent = new Intent(this, DayDataDetailActivity.class);
+            intent.putExtra("DayDataDetails", (Parcelable) editedDay);
+            startActivity(intent);
+            finish();
         }
         return true;
     }
@@ -214,9 +218,4 @@ public class EditActivity extends ColorfulActivity {
         Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-    }
 }

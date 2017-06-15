@@ -2,7 +2,7 @@ package bd.edu.daffodilvarsity.classorganizer.activity;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -15,9 +15,9 @@ import org.polaric.colorful.ColorfulActivity;
 
 import java.util.ArrayList;
 
+import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
-import bd.edu.daffodilvarsity.classorganizer.R;
 
 public class AddActivity extends ColorfulActivity {
 
@@ -38,7 +38,11 @@ public class AddActivity extends ColorfulActivity {
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar_modify);
         setSupportActionBar(toolbar);
         findViewById(R.id.modify_appbar_layout).bringToFront();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         prefManager = new PrefManager(this);
 
@@ -128,7 +132,6 @@ public class AddActivity extends ColorfulActivity {
             case "03.00 PM":
                 return 4.5;
             default:
-                Log.e("EditActivity", "INVALID START TIME");
                 return 0;
         }
     }

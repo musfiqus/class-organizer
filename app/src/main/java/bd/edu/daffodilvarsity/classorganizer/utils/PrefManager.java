@@ -15,7 +15,8 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.data.RecoverDayData;
 
 /**
- * Created by musfiqus on 3/25/2017.
+ * Created by Mushfiqus Salehin on 3/25/2017.
+ * musfiqus@gmail.com
  */
 
 public class PrefManager {
@@ -66,6 +67,7 @@ public class PrefManager {
     }
 
     public void saveDayData(ArrayList<DayData> daydata) {
+        Log.e("PrefManager", "Save Called");
         //Restarting alarms every time the data is changed
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(_context);
         boolean hasNotification = preferences.getBoolean("notification_preference", true);

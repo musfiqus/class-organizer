@@ -260,8 +260,22 @@
         <item>12.00 AM</item>
     </string-array>
 
-    <!--Campuses-->
+    <string-array name="time_delay">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>45 minutes</item>
+        <item>1 hour</item>
+    </string-array>
 
+    <!-- Universal -->
+
+    <string-array name="programs">
+        <item>Day</item>
+        <item>Evening</item>
+    </string-array>
+    <string-array name="departments">
+        <item>CSE</item>
+    </string-array>
     <string-array name="campuses">
         <item>Main</item>
         <item>Permanent</item>
@@ -278,17 +292,13 @@
 
     <!--Programs-->
     <string-array name="cse_main_programs">
-        <item>Day</item>
-        <item>Evening</item>
+        <item>day</item>
+        <item>eve</item>
     </string-array>
     <string-array name="cse_perm_programs">
-        <item>Day</item>
+        <item>day</item>
     </string-array>
 
-    <string-array name="time_delay">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>45 minutes</item>
-        <item>1 hour</item>
-    </string-array>
+
+
 </resources>

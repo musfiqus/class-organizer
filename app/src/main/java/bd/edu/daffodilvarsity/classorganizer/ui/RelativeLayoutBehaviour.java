@@ -8,7 +8,8 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 /**
- * Created by musfiqus on 4/24/2017.
+ * Created by Mushfiqus Salehin on 4/24/2017.
+ * musfiqus@gmail.com
  */
 
 public class RelativeLayoutBehaviour extends CoordinatorLayout.Behavior<RelativeLayout> {

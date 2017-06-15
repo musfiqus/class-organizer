@@ -14,7 +14,7 @@ xmlns:colorpicker="http://schemas.android.com/apk/res-auto">
         <Preference
             android:key="reset_preference"
             android:summary="Clears saved, added, edited, deleted classes"
-            android:title="Reset Your Routine" />
+            android:title="Reset Your Modifications" />
         <SwitchPreferenceCompat
             android:key="limit_preference"
             android:summary="Place holder"
