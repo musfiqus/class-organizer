@@ -23,6 +23,8 @@ public class NotificationRestartService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        new AlarmHelper(getApplicationContext()).startAll();
+        AlarmHelper alarmHelper = new AlarmHelper(getApplicationContext());
+        alarmHelper.cancelAll();
+        alarmHelper.startAll();
     }
 }

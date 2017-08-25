@@ -80,7 +80,9 @@ public class NotificationPublisher extends BroadcastReceiver {
                 .setBigContentTitle("Details of Today's Class")
                 .build();
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(index, notification);
+        if (notificationManager != null) {
+            notificationManager.notify(index, notification);
+        }
     }
 
     private int getNotificationIcon() {

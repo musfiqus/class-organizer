@@ -48,9 +48,6 @@ public class DayDataDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments().containsKey("DayDataDetails")) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
             Bundle bundle = getArguments();
             mItem = bundle.getParcelable("DayDataDetails");
 
@@ -78,10 +75,8 @@ public class DayDataDetailFragment extends Fragment {
                         intent.putExtra("DAYDATA", (Parcelable) mItem);
                         intent.putExtra("DAYDETAIL", true);
                         rootView.getContext().startActivity(intent);
-                        getActivity().finish();
                         return true;
                     } else if (menuItem.getItemId() == R.id.save_class) {
-
                         MaterialDialog.Builder builder = new MaterialDialog.Builder(rootView.getContext());
                         builder.title("Save to");
                         View dialogView = LayoutInflater.from(rootView.getContext()).inflate(R.layout.class_spinner_layout, null);

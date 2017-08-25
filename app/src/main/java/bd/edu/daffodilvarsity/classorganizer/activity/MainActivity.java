@@ -50,6 +50,7 @@ import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.adapter.DayFragmentPagerAdapter;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.service.DatabaseUpdateIntentService;
+import bd.edu.daffodilvarsity.classorganizer.service.NotificationRestartService;
 import bd.edu.daffodilvarsity.classorganizer.utils.AlarmHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.DatabaseHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
@@ -69,10 +70,10 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Colorful.applyTheme(this);
         setContentView(R.layout.activity_main);
         prefManager = new PrefManager(this);
         prefManager.recoverSavedData();
+        prefManager.repairData();
 
         routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), this, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
 
@@ -128,10 +129,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         boolean hasNotification = preferences.getBoolean("notification_preference", true);
         if (hasNotification) {
             if (!alarmRecreated) {
-                AlarmHelper alarmHelper = new AlarmHelper(this);
-                alarmHelper.cancelAll();
-                alarmHelper.startAll();
-                alarmRecreated = true;
+                startService(new Intent(this, NotificationRestartService.class));
             }
         }
     }

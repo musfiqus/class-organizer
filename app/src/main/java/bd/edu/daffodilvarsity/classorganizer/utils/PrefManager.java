@@ -3,7 +3,6 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -67,22 +66,22 @@ public class PrefManager {
     }
 
     public void saveDayData(ArrayList<DayData> daydata) {
-        Log.e("PrefManager", "Save Called");
-        //Restarting alarms every time the data is changed
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(_context);
-        boolean hasNotification = preferences.getBoolean("notification_preference", true);
-        AlarmHelper alarmHelper = new AlarmHelper(_context);
-        if (hasNotification) {
-            alarmHelper.cancelAll();
-        }
+        if (daydata != null) {
+            //Restarting alarms every time the data is changed
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(_context);
+            boolean hasNotification = preferences.getBoolean("notification_preference", true);
+            AlarmHelper alarmHelper = new AlarmHelper(_context);
+            if (hasNotification) {
+                alarmHelper.cancelAll();
+            }
+            editor.remove(PREF_DAYDATA).apply();
+            Gson gson = new Gson();
+            String json = gson.toJson(daydata);
+            editor.putString(PREF_DAYDATA, json).apply();
 
-        editor.remove(PREF_DAYDATA).apply();
-        Gson gson = new Gson();
-        String json = gson.toJson(daydata);
-        editor.putString(PREF_DAYDATA, json).apply();
-
-        if (hasNotification) {
-            alarmHelper.startAll();
+            if (hasNotification) {
+                alarmHelper.startAll();
+            }
         }
     }
 
@@ -424,10 +423,18 @@ public class PrefManager {
             boolean rAdd = checkValidRecoveryObject(add);
             boolean rSave = checkValidRecoveryObject(save);
             resetModification(rAdd, rEdit, rSave, rDelete);
-            recoverData(edit, EDIT_DATA_TAG);
-            recoverData(delete, DELETE_DATA_TAG);
-            recoverData(add, ADD_DATA_TAG);
-            recoverData(save, SAVE_DATA_TAG);
+            if (edit != null && rEdit) {
+                recoverData(edit, EDIT_DATA_TAG);
+            }
+            if (delete != null && rDelete) {
+                recoverData(delete, DELETE_DATA_TAG);
+            }
+            if (add != null && rAdd) {
+                recoverData(add, ADD_DATA_TAG);
+            }
+            if (save != null && rSave) {
+                recoverData(save, SAVE_DATA_TAG);
+            }
             setRecoveryFinished(true);
         }
     }
@@ -444,17 +451,50 @@ public class PrefManager {
     private void recoverData(String json, final String DATA_TAG) {
         if (json != null) {
             if (json.substring(0, 6).equalsIgnoreCase("[{\"a\":")) {
-                Gson gson = new Gson();
-                Type type = new TypeToken<ArrayList<RecoverDayData>>() {
-                }.getType();
-                ArrayList<RecoverDayData> recoverDayData = gson.fromJson(json, type);
-                CourseUtils.CourseTitleGenerator titleGenerator = CourseUtils.CourseTitleGenerator.getInstance(_context);
-                for (RecoverDayData eachData : recoverDayData) {
-                    String title = titleGenerator.getCourseTitle(eachData.getA(), getDept(), getProgram());
-                    DayData dayData = new DayData(eachData.getA(), eachData.getB(), eachData.getC(), eachData.getD(), eachData.getE(), eachData.getF(), eachData.getG(), eachData.getH(), eachData.getI(), title);
-                    saveModifiedData(dayData, DATA_TAG, false);
+                if (json.contains("\"i\"")) {
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<ArrayList<RecoverDayData>>() {
+                    }.getType();
+                    ArrayList<RecoverDayData> recoverDayData = gson.fromJson(json, type);
+                    CourseUtils.CourseTitleGenerator titleGenerator = CourseUtils.CourseTitleGenerator.getInstance(_context);
+                    for (RecoverDayData eachData : recoverDayData) {
+                        String title = titleGenerator.getCourseTitle(eachData.getA(), getDept(), getProgram());
+                        if (eachData.getA() != null && eachData.getG() != null) {
+                            DayData dayData = new DayData(eachData.getA(), eachData.getB(), eachData.getC(), eachData.getD(), eachData.getE(), eachData.getF(), eachData.getG(), eachData.getH(), eachData.getI(), title);
+                            saveModifiedData(dayData, DATA_TAG, false);
+                        }
+                    }
+                } else {
+                    Gson gson = new Gson();
+                    Type type = new TypeToken<ArrayList<RecoverDayData.GenerationOne>>() {
+                    }.getType();
+                    ArrayList<RecoverDayData.GenerationOne> recoverDayData = gson.fromJson(json, type);
+                    CourseUtils.CourseTitleGenerator titleGenerator = CourseUtils.CourseTitleGenerator.getInstance(_context);
+                    for (RecoverDayData.GenerationOne eachData : recoverDayData) {
+                        String title = titleGenerator.getCourseTitle(eachData.getA(), getDept(), getProgram());
+                        if (eachData.getA() != null) {
+                            DayData dayData = new DayData(eachData.getA(), eachData.getB(), getSection(), getLevel(), getTerm(), eachData.getC(), eachData.getD(), eachData.getE(), eachData.getF(), title);
+                            saveModifiedData(dayData, DATA_TAG, false);
+                        }
+                    }
                 }
+
             }
+        }
+    }
+
+    public void repairData() {
+        ArrayList<DayData> dayDataArrayList = getSavedDayData();
+        boolean broken = false;
+        for (int i =0; i < dayDataArrayList.size(); i++) {
+            if (dayDataArrayList.get(i).isBroken()) {
+                dayDataArrayList.remove(i);
+                broken = true;
+                break;
+            }
+        }
+        if (broken) {
+            saveDayData(new RoutineLoader(getLevel(), getTerm(), getSection(), _context, getDept(), getCampus(), getProgram()).loadRoutine(true));
         }
     }
 }

@@ -36,10 +36,14 @@ public class AlarmHelper {
         boolean isRamadanTime = preferences.getBoolean("ramadan_preference", false);
         if (data != null) {
             for (int i = 0; i < data.size(); i++) {
-                int dayOfWeek = calculateDay(data.get(i).getDay());
-                int time[] = calculateTime(isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(data.get(i).getTime(), data.get(i).getTimeWeight()): data.get(i).getTime());
-                if (dayOfWeek != -1) {
-                    scheduleAlarm(dayOfWeek, i, time[0], time[1], data.get(i));
+                if (data.get(i) != null) {
+                    if (data.get(i).getDay() != null && data.get(i).getTime() != null) {
+                        int dayOfWeek = calculateDay(data.get(i).getDay());
+                        int time[] = calculateTime(isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(data.get(i).getTime(), data.get(i).getTimeWeight()): data.get(i).getTime());
+                        if (dayOfWeek != -1) {
+                            scheduleAlarm(dayOfWeek, i, time[0], time[1], data.get(i));
+                        }
+                    }
                 }
             }
         }
@@ -51,11 +55,16 @@ public class AlarmHelper {
         boolean isRamadanTime = preferences.getBoolean("ramadan_preference", false);
         if (data != null) {
             for (int i = 0; i < data.size(); i++) {
-                int dayOfWeek = calculateDay(data.get(i).getDay());
-                int time[] = calculateTime(isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(data.get(i).getTime(), data.get(i).getTimeWeight()): data.get(i).getTime());
-                if (dayOfWeek != -1) {
-                    cancelAlarm(dayOfWeek, i, time[0], time[1], data.get(i));
+                if (data.get(i) != null) {
+                    if (data.get(i).getDay() != null && data.get(i).getTime() != null) {
+                        int dayOfWeek = calculateDay(data.get(i).getDay());
+                        int time[] = calculateTime(isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(data.get(i).getTime(), data.get(i).getTimeWeight()): data.get(i).getTime());
+                        if (dayOfWeek != -1) {
+                            cancelAlarm(dayOfWeek, i, time[0], time[1], data.get(i));
+                        }
+                    }
                 }
+
             }
         }
     }
@@ -120,31 +129,38 @@ public class AlarmHelper {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, index, dayDataIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            if (alarmManager != null) {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            }
         } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            if (alarmManager != null) {
+                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            }
         }
     }
 
 
     private int calculateDay(String day) {
-        int dayOfWeek = -1;
-        if (day.equalsIgnoreCase("Saturday")) {
-            dayOfWeek = Calendar.SATURDAY;
-        } else if (day.equalsIgnoreCase("Sunday")) {
-            dayOfWeek = Calendar.SUNDAY;
-        } else if (day.equalsIgnoreCase("Monday")) {
-            dayOfWeek = Calendar.MONDAY;
-        } else if (day.equalsIgnoreCase("Tuesday")) {
-            dayOfWeek = Calendar.TUESDAY;
-        } else if (day.equalsIgnoreCase("Wednesday")) {
-            dayOfWeek = Calendar.WEDNESDAY;
-        } else if (day.equalsIgnoreCase("Thursday")) {
-            dayOfWeek = Calendar.THURSDAY;
-        } else if (day.equalsIgnoreCase("Friday")) {
-            dayOfWeek = Calendar.FRIDAY;
+        if (day != null) {
+            int dayOfWeek = -1;
+            if (day.equalsIgnoreCase("Saturday")) {
+                dayOfWeek = Calendar.SATURDAY;
+            } else if (day.equalsIgnoreCase("Sunday")) {
+                dayOfWeek = Calendar.SUNDAY;
+            } else if (day.equalsIgnoreCase("Monday")) {
+                dayOfWeek = Calendar.MONDAY;
+            } else if (day.equalsIgnoreCase("Tuesday")) {
+                dayOfWeek = Calendar.TUESDAY;
+            } else if (day.equalsIgnoreCase("Wednesday")) {
+                dayOfWeek = Calendar.WEDNESDAY;
+            } else if (day.equalsIgnoreCase("Thursday")) {
+                dayOfWeek = Calendar.THURSDAY;
+            } else if (day.equalsIgnoreCase("Friday")) {
+                dayOfWeek = Calendar.FRIDAY;
+            }
+            return dayOfWeek;
         }
-        return dayOfWeek;
+        return -1;
     }
 
     private int[] calculateTime(String time) {

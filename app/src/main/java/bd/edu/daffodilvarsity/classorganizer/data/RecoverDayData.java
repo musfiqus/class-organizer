@@ -90,4 +90,57 @@ public class RecoverDayData {
     public String getJ() {
         return j;
     }
+
+    public class GenerationOne {
+        @SerializedName("a")
+        private String a;
+
+        @SerializedName("b")
+        private String b;
+
+        @SerializedName("c")
+        private String c;
+
+        @SerializedName("d")
+        private String d;
+
+        @SerializedName("e")
+        private String e;
+
+        @SerializedName("f")
+        private double f;
+
+        public GenerationOne(String a, String b, String c, String d, String e, double f) {
+            this.a = a;
+            this.b = b;
+            this.c = c;
+            this.d = d;
+            this.e = e;
+            this.f = f;
+        }
+
+        public String getA() {
+            return a;
+        }
+
+        public String getB() {
+            return b;
+        }
+
+        public String getC() {
+            return c;
+        }
+
+        public String getD() {
+            return d;
+        }
+
+        public String getE() {
+            return e;
+        }
+
+        public double getF() {
+            return f;
+        }
+    }
 }

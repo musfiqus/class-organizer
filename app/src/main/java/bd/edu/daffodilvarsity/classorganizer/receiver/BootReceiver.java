@@ -16,13 +16,14 @@ import bd.edu.daffodilvarsity.classorganizer.service.NotificationRestartService;
 public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
-
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-            boolean hasNotification = preferences.getBoolean("notification_preference", true);
-            if (hasNotification) {
-                Intent i = new Intent(context, NotificationRestartService.class);
-                context.startService(i);
+        if (intent != null && intent.getAction() != null) {
+            if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                boolean hasNotification = preferences.getBoolean("notification_preference", true);
+                if (hasNotification) {
+                    Intent i = new Intent(context, NotificationRestartService.class);
+                    context.startService(i);
+                }
             }
         }
     }

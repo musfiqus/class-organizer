@@ -98,6 +98,28 @@ public class DayData implements Serializable, Parcelable {
         return courseTitle;
     }
 
+    public boolean isBroken() {
+        if (this.courseCode == null) {
+            return true;
+        }
+        if (this.teachersInitial == null) {
+            return true;
+        }
+        if (this.section == null) {
+            return true;
+        }
+        if (this.roomNo == null) {
+            return true;
+        }
+        if (this.time == null) {
+            return true;
+        }
+        if (this.day == null) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof DayData)) {
@@ -150,6 +172,7 @@ public class DayData implements Serializable, Parcelable {
             return result;
         }
     }
+
 
     @Override
     public int describeContents() {

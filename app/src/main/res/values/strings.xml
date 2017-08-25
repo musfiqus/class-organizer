@@ -76,14 +76,14 @@
     <!--Preference -->
 
     <string name="time_delay_summary">"Currently you're receiving reminders %1$s before the class"</string>
-    <string name="notification_enabled_summary">Class notification are currently enabled</string>
-    <string name="notification_disabled_summary">Class notification are currently disabled</string>
+    <string name="notification_enabled_summary">Class notifications are currently enabled</string>
+    <string name="notification_disabled_summary">Class notifications are currently disabled</string>
     <string name="ramadan_enabled_summary">Ramadan timetable is enabled</string>
     <string name="ramadan_disabled_summary">Ramadan timetable is disabled</string>
     <string name="department_preference_summary">Current Department: &lt;b>%1$s&lt;/b>, Program: &lt;b>%2$s&lt;/b>, Campus: &lt;b>%3$s&lt;/b></string>
     <string name="routine_preference_summary">"Current Section: &lt;b>%1$s&lt;/b>, Level: &lt;b>%2$d&lt;/b>, Term: &lt;b>%3$d&lt;/b></string>
-    <string name="limit_preference_enabled_summary">Currently you\'re modification will show up in only on your modified section</string>
-    <string name="limit_preference_disabled_summary">Currently you\'re modification will show up in all sections</string>
+    <string name="limit_preference_enabled_summary">Currently your modifications will show up only on your modified section</string>
+    <string name="limit_preference_disabled_summary">Currently your modifications will show up on all sections</string>
     <string name="empty_search_hint">You can search by course code or course name or teacher\'s initial or room no</string>
     <string name="not_found_search_hint">No classes found</string>
     <string name="select_your_campus">Select your campus</string>

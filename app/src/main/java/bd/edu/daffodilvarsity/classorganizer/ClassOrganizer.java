@@ -3,6 +3,8 @@ package bd.edu.daffodilvarsity.classorganizer;
 import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.firebase.FirebaseApp;
+
 import io.fabric.sdk.android.Fabric;
 import org.polaric.colorful.Colorful;
 
@@ -23,5 +25,6 @@ public class ClassOrganizer extends Application {
                 .dark(false);
 
         Colorful.init(this);
+        FirebaseApp.initializeApp(this);
     }
 }
