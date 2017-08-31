@@ -182,9 +182,9 @@ public class SettingsActivity extends ColorfulActivity {
             builder.onPositive(new MaterialDialog.SingleButtonCallback() {
                 @Override
                 public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
-                    prefManager.saveCampus(campusHelper.getCampus().toLowerCase().substring(0, 4));
+                    prefManager.saveCampus(campusHelper.getCampus().toLowerCase());
                     prefManager.saveDept(campusHelper.getDept().toLowerCase());
-                    prefManager.saveProgram(campusHelper.getProgram().toLowerCase().substring(0, 3));
+                    prefManager.saveProgram(campusHelper.getProgram().toLowerCase());
                     DataChecker checker = new DataChecker(getContext(), prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
                     if (!oldDept.equalsIgnoreCase(prefManager.getDept()) || !oldCampus.equalsIgnoreCase(prefManager.getCampus()) || !oldProgram.equalsIgnoreCase(prefManager.getProgram()) && checker.dataChecker() == 0) {
                         prefManager.setHasCampusSettingsChanged(true);

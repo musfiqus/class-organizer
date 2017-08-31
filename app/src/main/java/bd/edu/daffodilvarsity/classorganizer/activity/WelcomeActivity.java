@@ -20,7 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
-import bd.edu.daffodilvarsity.classorganizer.adapter.SlidePagerAdapter;
+import bd.edu.daffodilvarsity.classorganizer.adapter.WelcomeSlidePagerAdapter;
 import bd.edu.daffodilvarsity.classorganizer.utils.DataChecker;
 import bd.edu.daffodilvarsity.classorganizer.utils.DatabaseHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
@@ -29,7 +29,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
 
 
     private ViewPager viewPager;
-    private SlidePagerAdapter myViewPagerAdapter;
+    private WelcomeSlidePagerAdapter myViewPagerAdapter;
     private LinearLayout dotsLayout;
     private TextView[] dots;
     private int[] layouts;
@@ -93,7 +93,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
         /* making notification bar transparent*/
         changeStatusBarColor();
 
-        myViewPagerAdapter = new SlidePagerAdapter(this, layouts);
+        myViewPagerAdapter = new WelcomeSlidePagerAdapter(this, layouts);
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
         //Disabling previous on the opening page

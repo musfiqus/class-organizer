@@ -21,7 +21,7 @@ import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelper;
  * musfiqus@gmail.com
  */
 
-public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnItemSelectedListener {
+public class WelcomeSlidePagerAdapter extends PagerAdapter implements AdapterView.OnItemSelectedListener {
     private Context context;
     private int[] layouts;
     private String campus;
@@ -39,7 +39,7 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
     private SpinnerHelper classHelper;
     private SpinnerHelper campusHelper;
 
-    public SlidePagerAdapter(Context context, int[] layouts) {
+    public WelcomeSlidePagerAdapter(Context context, int[] layouts) {
         this.context = context;
         this.layouts = layouts;
         this.prefManager = new PrefManager(context);
@@ -85,15 +85,15 @@ public class SlidePagerAdapter extends PagerAdapter implements AdapterView.OnIte
         campus = campusHelper.getCampus();
         dept = campusHelper.getDept();
         program = campusHelper.getProgram();
-        if (campus != null) {
-            campus = campus.substring(0, 4).toLowerCase();
-        }
-        if (dept != null) {
-            dept = dept.toLowerCase();
-        }
-        if (program != null) {
-            program = program.substring(0, 3).toLowerCase();
-        }
+//        if (campus != null) {
+//            campus = campus.substring(0, 4).toLowerCase();
+//        }
+//        if (dept != null) {
+//            dept = dept.toLowerCase();
+//        }
+//        if (program != null) {
+//            program = program.substring(0, 3).toLowerCase();
+//        }
         prefManager.saveCampus(campus);
         prefManager.saveDept(dept);
         prefManager.saveProgram(program);

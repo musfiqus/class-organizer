@@ -392,6 +392,13 @@ public class PrefManager {
     }
 
     public String getCampus() {
+        //Moving from 4 char campuses to full name
+        String campus = pref.getString(SAVE_CAMPUS, null);
+        if (campus != null) {
+            if (campus.equalsIgnoreCase("perm")) {
+                saveCampus("permanent");
+            }
+        }
         return pref.getString(SAVE_CAMPUS, null);
     }
 
@@ -400,6 +407,13 @@ public class PrefManager {
     }
 
     public String getProgram() {
+        //Moving from 3 char programs to full name
+        String program = pref.getString(SAVE_PROGRAM, null);
+        if(program != null) {
+            if (program.equalsIgnoreCase("eve")) {
+                saveProgram("evening");
+            }
+        }
         return pref.getString(SAVE_PROGRAM, null);
     }
 

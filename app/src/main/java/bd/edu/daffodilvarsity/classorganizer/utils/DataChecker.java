@@ -17,9 +17,9 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 public class DataChecker {
     private static final String CAMPUS_MAIN = "main";
-    private static final String CAMPUS_PERMANENT = "perm";
+    private static final String CAMPUS_PERMANENT = "permanent";
     private static final String PROGRAM_DAY = "day";
-    private static final String PROGRAM_EVENING = "eve";
+    private static final String PROGRAM_EVENING = "evening";
     private static final String DEPARTMENT_CSE = "cse";
 
     private static final int VALID_CHOICE = 0;
@@ -65,20 +65,14 @@ public class DataChecker {
         if (program == null) {
             return false;
         }
-        if (program.length() < 3) {
-            return false;
-        }
-        return PROGRAM_EVENING.equalsIgnoreCase(program.substring(0, 3));
+        return PROGRAM_EVENING.equalsIgnoreCase(program);
     }
 
     public static boolean isDay(String program) {
         if (program == null) {
             return false;
         }
-        if (program.length() < 3) {
-            return false;
-        }
-        return PROGRAM_DAY.equalsIgnoreCase(program.substring(0, 3));
+        return PROGRAM_DAY.equalsIgnoreCase(program);
     }
 
     public static boolean isMain(String campus) {
@@ -86,20 +80,14 @@ public class DataChecker {
         if (campus == null) {
             return false;
         }
-        if (campus.length() < 4) {
-            return false;
-        }
-        return CAMPUS_MAIN.equalsIgnoreCase(campus.substring(0, 4));
+        return CAMPUS_MAIN.equalsIgnoreCase(campus);
     }
 
     public static boolean isPermanent(String campus) {
         if (campus == null) {
             return false;
         }
-        if (campus.length() < 4) {
-            return false;
-        }
-        return CAMPUS_PERMANENT.equalsIgnoreCase(campus.substring(0, 4));
+        return CAMPUS_PERMANENT.equalsIgnoreCase(campus);
     }
 
     public static boolean isCSE(String department) {
