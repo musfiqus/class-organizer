@@ -470,9 +470,9 @@ public class PrefManager {
                     Type type = new TypeToken<ArrayList<RecoverDayData>>() {
                     }.getType();
                     ArrayList<RecoverDayData> recoverDayData = gson.fromJson(json, type);
-                    CourseUtils.CourseTitleGenerator titleGenerator = CourseUtils.CourseTitleGenerator.getInstance(_context);
+                    CourseUtils titleGenerator = CourseUtils.getInstance(_context);
                     for (RecoverDayData eachData : recoverDayData) {
-                        String title = titleGenerator.getCourseTitle(eachData.getA(), getDept(), getProgram());
+                        String title = titleGenerator.getCourseTitle(eachData.getA(), getCampus(), getDept(), getProgram());
                         if (eachData.getA() != null && eachData.getG() != null) {
                             DayData dayData = new DayData(eachData.getA(), eachData.getB(), eachData.getC(), eachData.getD(), eachData.getE(), eachData.getF(), eachData.getG(), eachData.getH(), eachData.getI(), title);
                             saveModifiedData(dayData, DATA_TAG, false);
@@ -483,9 +483,9 @@ public class PrefManager {
                     Type type = new TypeToken<ArrayList<RecoverDayData.GenerationOne>>() {
                     }.getType();
                     ArrayList<RecoverDayData.GenerationOne> recoverDayData = gson.fromJson(json, type);
-                    CourseUtils.CourseTitleGenerator titleGenerator = CourseUtils.CourseTitleGenerator.getInstance(_context);
+                    CourseUtils titleGenerator = CourseUtils.getInstance(_context);
                     for (RecoverDayData.GenerationOne eachData : recoverDayData) {
-                        String title = titleGenerator.getCourseTitle(eachData.getA(), getDept(), getProgram());
+                        String title = titleGenerator.getCourseTitle(eachData.getA(), getCampus(), getDept(), getProgram());
                         if (eachData.getA() != null) {
                             DayData dayData = new DayData(eachData.getA(), eachData.getB(), getSection(), getLevel(), getTerm(), eachData.getC(), eachData.getD(), eachData.getE(), eachData.getF(), title);
                             saveModifiedData(dayData, DATA_TAG, false);

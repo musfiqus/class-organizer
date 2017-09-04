@@ -5,9 +5,7 @@ import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 /**
@@ -53,81 +51,8 @@ public class RoutineLoader {
         }
     }
 
-    public static ArrayList<String> courseCodeGenerator(Context context, int semester, String campus, String dept, String program) {
-        if (DataChecker.isMain(campus)) {
-            if (DataChecker.isCSE(dept)) {
-                if (DataChecker.isDay(program)) {
-                    return cseDayCourses(semester, context);
-                } else {
-                    return cseEveCourse(semester, context);
-                }
-            }
-        } else {
-            if (DataChecker.isCSE(dept)) {
-                if (DataChecker.isDay(program)) {
-                    return cseDayCourses(semester, context);
-                }
-            }
-        }
-        return null;
-    }
-
-    private static ArrayList<String> cseDayCourses(int semester, Context context) {
-        if (semester == 1) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L1T1)));
-        } else if (semester == 2) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L1T2)));
-        } else if (semester == 3) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L1T3)));
-        } else if (semester == 4) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L2T1)));
-        } else if (semester == 5) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L2T2)));
-        } else if (semester == 6) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L2T3)));
-        } else if (semester == 7) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L3T1)));
-        } else if (semester == 8) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L3T2)));
-        } else if (semester == 9) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L3T3)));
-        } else if (semester == 10) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L4T1)));
-        } else if (semester == 11) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L4T2)));
-        } else if (semester == 12) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_DAY_MAIN_L4T3)));
-        } else {
-            return null;
-        }
-    }
-
-    private static ArrayList<String> cseEveCourse(int semester, Context context) {
-        if (semester == 1) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L1T1)));
-        } else if (semester == 2) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L1T2)));
-        } else if (semester == 3) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L1T3)));
-        } else if (semester == 4) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L2T1)));
-        } else if (semester == 5) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L2T2)));
-        } else if (semester == 6) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L2T3)));
-        } else if (semester == 7) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L3T1)));
-        } else if (semester == 8) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L3T2)));
-        } else if (semester == 9) {
-            return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(R.array.CSE_EVE_MAIN_L3T3)));
-        } else {
-            return null;
-        }
-    }
-
     private ArrayList<String> courseCodeGenerator(int semester) {
-        return courseCodeGenerator(context, semester, campus, dept, program);
+        return CourseUtils.getInstance(context).getCourseCodes(semester, campus, dept, program);
     }
 
     public ArrayList<DayData> loadRoutine(boolean loadPersonal) {

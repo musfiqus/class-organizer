@@ -1,6 +1,5 @@
 package bd.edu.daffodilvarsity.classorganizer.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.activity.DayDataDetailActivity;
-import bd.edu.daffodilvarsity.classorganizer.activity.MainActivity;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 /**

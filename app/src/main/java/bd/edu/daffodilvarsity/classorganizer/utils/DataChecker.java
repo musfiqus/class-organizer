@@ -1,7 +1,6 @@
 package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -76,7 +75,6 @@ public class DataChecker {
     }
 
     public static boolean isMain(String campus) {
-        Log.e("Campus: ", " "+campus);
         if (campus == null) {
             return false;
         }
@@ -110,7 +108,7 @@ public class DataChecker {
         if (!checkProgram(campus, dept, program)) {
             return INVALID_PROGRAM;
         }
-        ArrayList<String> codes = RoutineLoader.courseCodeGenerator(context, RoutineLoader.getSemester(level, term), campus, dept, program);
+        ArrayList<String> codes = CourseUtils.getInstance(context).getCourseCodes(RoutineLoader.getSemester(level, term), campus, dept, program);
         if (codes == null) {
             return INVALID_LEVEL_TERM;
         } else {
@@ -121,11 +119,9 @@ public class DataChecker {
         if (section != null) {
             ArrayList<DayData> size = new RoutineLoader(level, term, section, context, dept, campus, program).loadRoutine(false);
             if (size == null) {
-                Log.e("PC", "Null");
                 return INVALID_SECTION;
             } else {
                 if (size.size() == 0) {
-                    Log.e("PC", "0");
                     return INVALID_SECTION;
                 }
             }
@@ -179,7 +175,7 @@ public class DataChecker {
                 message = "Routine for this program isn't yet available";
             }
             if (errorCode == INVALID_LEVEL_TERM) {
-                message = "Routine for this level or term isn't yet available";
+                message = "Routine for this level or term or program isn't yet available";
             }
             if (errorCode == INVALID_SECTION) {
                 message = "Routine for this section isn't yet included";

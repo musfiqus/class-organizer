@@ -42,7 +42,7 @@ public class UpdatedDatabaseHelper extends SQLiteAssetHelper {
         if (finalDayData != null) {
             finalDayData.clear();
         }
-        CourseUtils.CourseTitleGenerator courseTitleGenerator = CourseUtils.CourseTitleGenerator.getInstance(mContext);
+        CourseUtils courseUtils = CourseUtils.getInstance(mContext);
         if (courseCodes != null) {
             for (String eachCourse : courseCodes) {
                 String id = DatabaseHelper.removeSpaces(eachCourse) + DatabaseHelper.strippedStringMinimal(section);
@@ -51,7 +51,7 @@ public class UpdatedDatabaseHelper extends SQLiteAssetHelper {
                         new String[]{id}, null, null, null, null);
                 if (cursor.moveToFirst()) {
                     do {
-                        DayData newDayData = new DayData(DatabaseHelper.getCourseCode(eachCourse), DatabaseHelper.trimInitial(cursor.getString(1)), section, level, term, cursor.getString(3), DatabaseHelper.getTime(cursor.getString(4)), cursor.getString(2), DatabaseHelper.getTimeWeight(cursor.getString(4)), courseTitleGenerator.getCourseTitle(eachCourse, dept, program));
+                        DayData newDayData = new DayData(DatabaseHelper.getCourseCode(eachCourse), DatabaseHelper.trimInitial(cursor.getString(1)), section, level, term, cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), DatabaseHelper.getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(eachCourse, campus, dept, program));
                         finalDayData.add(newDayData);
                     } while (cursor.moveToNext());
                 }

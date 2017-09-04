@@ -185,7 +185,7 @@ public class SettingsActivity extends ColorfulActivity {
                     prefManager.saveCampus(campusHelper.getCampus().toLowerCase());
                     prefManager.saveDept(campusHelper.getDept().toLowerCase());
                     prefManager.saveProgram(campusHelper.getProgram().toLowerCase());
-                    DataChecker checker = new DataChecker(getContext(), prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
+                    DataChecker checker = new DataChecker(getContext(), 0, 0, "A", prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
                     if (!oldDept.equalsIgnoreCase(prefManager.getDept()) || !oldCampus.equalsIgnoreCase(prefManager.getCampus()) || !oldProgram.equalsIgnoreCase(prefManager.getProgram()) && checker.dataChecker() == 0) {
                         prefManager.setHasCampusSettingsChanged(true);
                         prefManager.saveReCreate(true);

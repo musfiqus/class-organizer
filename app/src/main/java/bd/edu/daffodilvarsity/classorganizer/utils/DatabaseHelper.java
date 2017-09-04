@@ -17,7 +17,7 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 public class DatabaseHelper extends SQLiteAssetHelper {
     //Increment the version to erase previous db
-    public static final int OFFLINE_DATABASE_VERSION = 52;
+    public static final int OFFLINE_DATABASE_VERSION = 54;
     static final String COLUMN_COURSE_CODE = "course_code";
     static final String COLUMN_TEACHERS_INITIAL = "teachers_initial";
     static final String COLUMN_WEEK_DAYS = "week_days";
@@ -48,7 +48,7 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         if (finalDayData != null) {
             finalDayData.clear();
         }
-        CourseUtils.CourseTitleGenerator courseTitleGenerator = CourseUtils.CourseTitleGenerator.getInstance(mContext);
+        CourseUtils courseUtils = CourseUtils.getInstance(mContext);
         if (courseCodes != null) {
             for (String eachCourse : courseCodes) {
                 String id = removeSpaces(eachCourse).toUpperCase() + strippedStringMinimal(section).toUpperCase();
@@ -57,7 +57,7 @@ public class DatabaseHelper extends SQLiteAssetHelper {
                         new String[]{id}, null, null, null, null);
                 if (cursor.moveToFirst()) {
                     do {
-                        DayData newDayData = new DayData(getCourseCode(eachCourse), trimInitial(cursor.getString(1)), section, level, term, cursor.getString(3), getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseTitleGenerator.getCourseTitle(eachCourse, dept, program));
+                        DayData newDayData = new DayData(getCourseCode(eachCourse), trimInitial(cursor.getString(1)), section, level, term, cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(eachCourse, campus, dept, program));
                         finalDayData.add(newDayData);
                     } while (cursor.moveToNext());
                 }
@@ -82,43 +82,6 @@ public class DatabaseHelper extends SQLiteAssetHelper {
         String[] split = {courseCode.substring(0, 3), courseCode.substring(3)};
         courseCode = split[0] + " " + split[1];
         return courseCode;
-    }
-
-    static String getTime(String time) {
-        switch (time) {
-            case "1.0":
-                return "08.30 AM - 10.00 AM";
-            case "2.0":
-                return "10.00 AM - 11.30 AM";
-            case "3.0":
-                return "11.30 AM - 01.00 PM";
-            case "4.0":
-                return "01.00 PM - 02.30 PM";
-            case "5.0":
-                return "02.30 PM - 04.00 PM";
-            case "6.0":
-                return "04.00 PM - 05.30 PM";
-            case "7.0":
-                return "06.00 PM - 07.30 PM";
-            case "8.0":
-                return "07.30 PM - 09.00 PM";
-            case "9.0":
-                return "09.00 PM - 12.00 AM";
-            case "1.5":
-                return "09.00 AM - 11.00 AM";
-            case "2.5":
-                return "11.00 AM - 01.00 PM";
-            case "3.5":
-                return "01.00 PM - 03.00 PM";
-            case "4.5":
-                return "03.00 PM - 05.00 PM";
-            case "4.6":
-                return "03.00 PM - 06.00 PM";
-            case "7.5":
-                return "06.00 PM - 09.00 PM";
-            default:
-                return null;
-        }
     }
 
     static String strippedStringMinimal(String string) {
