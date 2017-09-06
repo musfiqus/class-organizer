@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.utils.AlarmHelper;
+import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.DataChecker;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.RoutineLoader;
@@ -151,13 +152,7 @@ public class SettingsActivity extends ColorfulActivity {
         public void resetLevelTermSection() {
             prefManager.saveLevel(0);
             prefManager.saveTerm(0);
-            String[] sections;
-            if (DataChecker.isMain(prefManager.getCampus())) {
-                sections = getResources().getStringArray(R.array.cse_main_day_section_array);
-            } else {
-                sections = getResources().getStringArray(R.array.cse_perm_section_array);
-            }
-            prefManager.saveSection(sections[0]);
+            prefManager.saveSection(CourseUtils.getInstance(getContext()).getSections(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()).get(0));
             RoutineLoader routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), getContext(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
             ArrayList<DayData> resetData = routineLoader.loadRoutine(false);
             prefManager.saveDayData(resetData);
@@ -175,9 +170,7 @@ public class SettingsActivity extends ColorfulActivity {
             final String oldDept = prefManager.getDept();
             final String oldCampus = prefManager.getCampus();
             final String oldProgram = prefManager.getProgram();
-            campusHelper.setCampusSpinnerPositions(campusHelper.spinnerPositionGenerator(R.array.campuses, oldCampus),
-                    campusHelper.spinnerPositionGenerator(R.array.departments, oldDept),
-                    campusHelper.spinnerPositionGenerator(R.array.programs, oldProgram));
+            campusHelper.setCampusSpinnerPositions(oldCampus, oldDept, oldProgram);
             builder.positiveText(android.R.string.ok);
             builder.onPositive(new MaterialDialog.SingleButtonCallback() {
                 @Override
@@ -185,7 +178,7 @@ public class SettingsActivity extends ColorfulActivity {
                     prefManager.saveCampus(campusHelper.getCampus().toLowerCase());
                     prefManager.saveDept(campusHelper.getDept().toLowerCase());
                     prefManager.saveProgram(campusHelper.getProgram().toLowerCase());
-                    DataChecker checker = new DataChecker(getContext(), 0, 0, "A", prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
+                    DataChecker checker = new DataChecker(getContext(), 0, 0, CourseUtils.getInstance(getContext()).getSections(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()).get(0), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
                     if (!oldDept.equalsIgnoreCase(prefManager.getDept()) || !oldCampus.equalsIgnoreCase(prefManager.getCampus()) || !oldProgram.equalsIgnoreCase(prefManager.getProgram()) && checker.dataChecker() == 0) {
                         prefManager.setHasCampusSettingsChanged(true);
                         prefManager.saveReCreate(true);
@@ -280,12 +273,8 @@ public class SettingsActivity extends ColorfulActivity {
                     View dialogView = getActivity().getLayoutInflater().inflate(R.layout.class_spinner_layout, getListView(), false);
                     classHelper = new SpinnerHelper(getContext(), dialogView, R.layout.spinner_row);
                     classHelper.setupClassLabelBlack();
-                    classHelper.setupClass(prefManager.getCampus());
-                    if (DataChecker.isMain(prefManager.getCampus())) {
-                        classHelper.setClassSpinnerPositions(levelRoot, termRoot, classHelper.spinnerPositionGenerator(R.array.cse_main_day_section_array, sectionRoot));
-                    } else {
-                        classHelper.setClassSpinnerPositions(levelRoot, termRoot, classHelper.spinnerPositionGenerator(R.array.cse_perm_section_array, sectionRoot));
-                    }
+                    classHelper.setupClass(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
+                    classHelper.setClassSpinnerPositions(levelRoot, termRoot, sectionRoot);
 
                     builder.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
                         @Override

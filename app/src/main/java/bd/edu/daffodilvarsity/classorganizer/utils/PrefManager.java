@@ -30,7 +30,6 @@ public class PrefManager {
     private static final String SAVE_SNACK_TAG = "SnackTag";
     private static final String SAVE_SNACK = "Snack";
     private static final String SAVE_SEMESTER = "Semester";
-    private static final String SAVE_DATABASE_VERSION = "dbversion";
     private static final String SAVE_CAMPUS = "campus";
     private static final String SAVE_DEPT = "department";
     private static final String SAVE_PROGRAM = "program";
@@ -38,18 +37,19 @@ public class PrefManager {
     private static final String PREF_SAVED_DAYDATA = "saved_daydata";
     private static final String PREF_DELETED_DAYDATA = "deleted_daydata";
     private static final String PREF_EDITED_DAYDATA = "edited_daydata";
-    private static final String PREF_SUPPRESSED_UPDATE_DB_VERSION = "SuppressedUpdateDbVersion";
+    private static final String PREF_SUPPRESSED_MASTER_DB_VERSION = "Suppressed_MasterDB_Version";
     private static final String HAS_CAMPUS_SETTINGS_CHANGED = "HasCampusChanged";
     private static final String IS_CAMPUS_CHANGE_ALERT_DISABLED = "IsCampusChangeAlertDisabled";
     private static final String IS_ROUTINE_UPDATED_ONLINE = "IsRoutineUpdatedOnline";
-    private static final String IS_RAMADAN_GREETINGS_ENABLED = "IsRamadanGreetingsEnabled";
-    private static final String IS_REMINDER_GREETINGS_ENABLED = "IsReminderGreetingsEnabled";
     private static final String IS_RECOVERY_FINISHED = "IsRecoveryFinished";
     private static final String PREF_REMINDER_TIME_DELAY = "ReminderTimeDelayInMinutes";
+    private static final String SAVE_MASTERDB_VERSION = "MasterDB_Version";
+    private static final String PREF_SEMESTER_COUNT = "Current_Semester_Count";
     public static final String SAVE_DATA_TAG = "save";
     public static final String ADD_DATA_TAG = "add";
     public static final String EDIT_DATA_TAG = "edit";
     public static final String DELETE_DATA_TAG = "delete";
+
 
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
@@ -126,11 +126,6 @@ public class PrefManager {
     public void saveSnackData(String snack) {
         editor.remove(SAVE_SNACK_TAG).apply();
         editor.putString(SAVE_SNACK_TAG, snack).apply();
-    }
-
-    public void saveDatabaseVersion(int version) {
-        editor.remove(SAVE_DATABASE_VERSION).apply();
-        editor.putInt(SAVE_DATABASE_VERSION, version).apply();
     }
 
     public void saveCampus(String campus) {
@@ -234,6 +229,15 @@ public class PrefManager {
         }
     }
 
+    public void setSemesterCount(int value) {
+        editor.remove(PREF_SEMESTER_COUNT).apply();
+        editor.putInt(PREF_SEMESTER_COUNT, value).apply();
+    }
+
+    public int getSemesterCount() {
+        return pref.getInt(PREF_SEMESTER_COUNT, 1);
+    }
+
     public void setHasCampusSettingsChanged(boolean value) {
         editor.remove(HAS_CAMPUS_SETTINGS_CHANGED).apply();
         editor.putBoolean(HAS_CAMPUS_SETTINGS_CHANGED, value).apply();
@@ -242,6 +246,15 @@ public class PrefManager {
     public void setIsCampusChangeAlertDisabled(boolean value) {
         editor.remove(IS_CAMPUS_CHANGE_ALERT_DISABLED).apply();
         editor.putBoolean(IS_CAMPUS_CHANGE_ALERT_DISABLED, value).apply();
+    }
+
+    public void setMasterDbVersion(int version) {
+        editor.remove(SAVE_MASTERDB_VERSION).apply();
+        editor.putInt(SAVE_MASTERDB_VERSION, version).apply();
+    }
+
+    public int getMasterDBVersion() {
+        return pref.getInt(SAVE_MASTERDB_VERSION, 1);
     }
 
     public boolean isCampusChangeAlertDisabled() {
@@ -328,23 +341,13 @@ public class PrefManager {
         editor.putBoolean(IS_ROUTINE_UPDATED_ONLINE, value).apply();
     }
 
-    public void setSuppressedUpdateDbVersion(int dbVersion) {
-        editor.remove(PREF_SUPPRESSED_UPDATE_DB_VERSION).apply();
-        editor.putInt(PREF_SUPPRESSED_UPDATE_DB_VERSION, dbVersion).apply();
+    public void setSuppressedMasterDbVersion(int dbVersion) {
+        editor.remove(PREF_SUPPRESSED_MASTER_DB_VERSION).apply();
+        editor.putInt(PREF_SUPPRESSED_MASTER_DB_VERSION, dbVersion).apply();
     }
 
-    public void showRamadanGreetings(boolean value) {
-        editor.remove(IS_RAMADAN_GREETINGS_ENABLED).apply();
-        editor.remove(IS_REMINDER_GREETINGS_ENABLED).apply();
-        editor.putBoolean(IS_REMINDER_GREETINGS_ENABLED, value).apply();
-    }
-
-    public boolean isRamadanGreetingsEnabled() {
-        return pref.getBoolean(IS_REMINDER_GREETINGS_ENABLED, true);
-    }
-
-    public int getSuppressedUpdateDbVersion() {
-        return pref.getInt(PREF_SUPPRESSED_UPDATE_DB_VERSION, 0);
+    public int getSuppressedMasterDbVersion() {
+        return pref.getInt(PREF_SUPPRESSED_MASTER_DB_VERSION, 0);
     }
 
     public boolean isUpdatedOnline() {
@@ -385,10 +388,6 @@ public class PrefManager {
 
     public int getReminderDelay() {
         return pref.getInt(PREF_REMINDER_TIME_DELAY, 15);
-    }
-
-    public int getDatabaseVersion() {
-        return pref.getInt(SAVE_DATABASE_VERSION, 1);
     }
 
     public String getCampus() {

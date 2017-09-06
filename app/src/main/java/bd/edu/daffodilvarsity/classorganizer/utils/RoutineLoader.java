@@ -61,13 +61,8 @@ public class RoutineLoader {
         ArrayList<DayData> vanillaRoutine;
         //Initializing DB Helper
 
-        if (prefManager.isUpdatedOnline()) {
-            UpdatedDatabaseHelper updatedDatabaseHelper = UpdatedDatabaseHelper.getInstance(context, prefManager.getDatabaseVersion());
-            vanillaRoutine = updatedDatabaseHelper.getDayData(courseCodes, section, level, term, dept, campus, program);
-        } else {
-            DatabaseHelper databaseHelper = DatabaseHelper.getInstance(context);
-            vanillaRoutine = databaseHelper.getDayData(courseCodes, section, level, term, dept, campus, program);
-        }
+        CourseUtils courseUtils = CourseUtils.getInstance(context);
+        vanillaRoutine = courseUtils.getDayData(courseCodes, section, level, term, dept, campus, program);
         if (!loadPersonal) {
             return vanillaRoutine;
         } else {
@@ -145,10 +140,17 @@ public class RoutineLoader {
         return loadedDayData;
     }
 
-    public boolean verifyUpdatedDb(int dbVersion) {
-        UpdatedDatabaseHelper databaseHelper = UpdatedDatabaseHelper.getInstance(context, dbVersion);
+    public boolean verifyUpdatedDb() {
+        CourseUtils courseUtils = CourseUtils.getInstance(context);
         ArrayList<String> courseCodes = courseCodeGenerator(getSemester());
-        ArrayList<DayData> vanillaRoutine = databaseHelper.getDayData(courseCodes, section, level, term, dept, campus, program);
+        if (courseCodes == null || courseCodes.size() == 0) {
+            return false;
+        }
+        ArrayList<String> sections = courseUtils.getSections(campus, dept, program);
+        if (sections == null || sections.size() == 0) {
+            return false;
+        }
+        ArrayList<DayData> vanillaRoutine = courseUtils.getDayData(courseCodes, sections.get(0), level, term, dept, campus, program);
         if (vanillaRoutine == null) {
             return false;
         }

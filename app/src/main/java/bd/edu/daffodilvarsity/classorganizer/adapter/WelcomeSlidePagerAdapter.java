@@ -57,7 +57,7 @@ public class WelcomeSlidePagerAdapter extends PagerAdapter implements AdapterVie
         }
         if (layouts[position] == R.layout.welcome_slide3) {
             classHelper = new SpinnerHelper(context, view, R.layout.spinner_class_row_welcome, this);
-            classHelper.setupClass(campus);
+            classHelper.setupClass(campus, dept, program);
         }
         return view;
     }
@@ -85,29 +85,22 @@ public class WelcomeSlidePagerAdapter extends PagerAdapter implements AdapterVie
         campus = campusHelper.getCampus();
         dept = campusHelper.getDept();
         program = campusHelper.getProgram();
-//        if (campus != null) {
-//            campus = campus.substring(0, 4).toLowerCase();
-//        }
-//        if (dept != null) {
-//            dept = dept.toLowerCase();
-//        }
-//        if (program != null) {
-//            program = program.substring(0, 3).toLowerCase();
-//        }
-        prefManager.saveCampus(campus);
-        prefManager.saveDept(dept);
-        prefManager.saveProgram(program);
+        if (campus != null) {
+            prefManager.saveCampus(campus);
+        }
+        if (dept != null) {
+            prefManager.saveDept(dept);
+        }
+        if (program != null) {
+            prefManager.saveProgram(program);
+        }
+
         if (parent.getId() == R.id.level_spinner) {
             level = parent.getSelectedItemPosition();
         } else if (parent.getId() == R.id.term_spinner) {
             term = parent.getSelectedItemPosition();
         } else if (parent.getId() == R.id.section_selection) {
             section = parent.getSelectedItem().toString().toUpperCase();
-        } else if (parent.getId() == R.id.campus_selection) {
-            if(campus != null && classHelper != null && parent.getSelectedItemPosition() != previousCampusSelection) {
-                classHelper.sectionAdapter(campus);
-                previousCampusSelection = parent.getSelectedItemPosition();
-            }
         }
         campusDataCode = new DataChecker(context, dept, campus, program).dataChecker();
         classDataCode = new DataChecker(context, level, term, section, dept, campus, program).dataChecker();
@@ -116,6 +109,11 @@ public class WelcomeSlidePagerAdapter extends PagerAdapter implements AdapterVie
         prefManager.saveTerm(term);
         prefManager.saveLevel(level);
 
+    }
+
+    //Sets up section spinner on Next button press
+    public void setupSectionAdapter() {
+        classHelper.sectionAdapter(campus, dept, program);
     }
 
     @Override

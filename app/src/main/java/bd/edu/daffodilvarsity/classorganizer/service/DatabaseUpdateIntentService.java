@@ -11,8 +11,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import bd.edu.daffodilvarsity.classorganizer.utils.UpdatedDatabaseHelper;
-
 /**
  * Created by Mushfiqus Salehin on 5/28/2017.
  * musfiqus@gmail.com
@@ -21,7 +19,11 @@ import bd.edu.daffodilvarsity.classorganizer.utils.UpdatedDatabaseHelper;
 public class DatabaseUpdateIntentService extends IntentService {
     public static final int DOWNLOAD_ERROR = 10;
     public static final int DOWNLOAD_SUCCESS = 11;
-    private static final String DATABASE_URL = "https://mushfiqussalehin.me/routinedb/updated.db";
+    public static final String TAG_DATABASE_VERSION = "db_version";
+    public static final String TAG_RECEIVER = "receiver";
+    public static final String TAG_DATABASE_NAME = "db_name";
+    public static final String TAG_DB_URL = "db_url";
+    public static final String TAG_FILE_PATH = "filePath";
 
     public DatabaseUpdateIntentService() {
         super("DatabaseUpdateIntentService");
@@ -29,16 +31,18 @@ public class DatabaseUpdateIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        final ResultReceiver receiver = intent.getParcelableExtra("receiver");
-        int dbVersion = intent.getIntExtra("db_version", 0);
+        final ResultReceiver receiver = intent.getParcelableExtra(TAG_RECEIVER);
+        int dbVersion = intent.getIntExtra(TAG_DATABASE_VERSION, 0);
+        final String dbName = intent.getStringExtra(TAG_DATABASE_NAME);
+        final String dbURL = intent.getStringExtra(TAG_DB_URL);
         Bundle bundle = new Bundle();
-        File downloadFile = new File(getDatabasePath(UpdatedDatabaseHelper.UPDATED_DATABASE_NAME).getAbsolutePath());
+        File downloadFile = new File(getDatabasePath(dbName).getAbsolutePath());
         if (downloadFile.exists()) {
             downloadFile.delete();
         }
         try {
             downloadFile.createNewFile();
-            URL downloadURL = new URL(DATABASE_URL);
+            URL downloadURL = new URL(dbURL);
             HttpURLConnection conn = (HttpURLConnection) downloadURL
                     .openConnection();
             int responseCode = conn.getResponseCode();
@@ -55,8 +59,9 @@ public class DatabaseUpdateIntentService extends IntentService {
             is.close();
 
             String filePath = downloadFile.getPath();
-            bundle.putString("filePath", filePath);
-            bundle.putInt("db_version", dbVersion);
+            bundle.putString(TAG_FILE_PATH, filePath);
+            bundle.putString(TAG_DATABASE_NAME, dbName);
+            bundle.putInt(TAG_DATABASE_VERSION, dbVersion);
             receiver.send(DOWNLOAD_SUCCESS, bundle);
 
         } catch (Exception e) {

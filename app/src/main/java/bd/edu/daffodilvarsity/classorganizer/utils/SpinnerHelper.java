@@ -2,6 +2,7 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -77,9 +78,9 @@ public class SpinnerHelper {
         programLabel.setTextColor(ContextCompat.getColor(context, android.R.color.black));
     }
 
-    public void setupClass(String campus) {
+    public void setupClass(String campus, String department, String program) {
         setupClassSpinners();
-        setupClassAdapters(campus);
+        setupClassAdapters(campus, department, program);
     }
 
     public void setupCampus() {
@@ -93,13 +94,13 @@ public class SpinnerHelper {
         termSpinner = (Spinner) view.findViewById(R.id.term_spinner);
     }
 
-    public void setupClassAdapters(String campus) {
+    public void setupClassAdapters(String campus, String department, String program) {
         ArrayAdapter<CharSequence>  levelAdapter, termAdapter;
         levelAdapter = ArrayAdapter.createFromResource(context, R.array.cse_main_day_level_array, spinnerRowResource);
         termAdapter = ArrayAdapter.createFromResource(context, R.array.term_array, spinnerRowResource);
         levelSpinner.setAdapter(levelAdapter);
         termSpinner.setAdapter(termAdapter);
-        sectionAdapter(campus);
+        sectionAdapter(campus, department, program);
         if (onItemSelectedListener != null) {
             levelSpinner.setOnItemSelectedListener(onItemSelectedListener);
             termSpinner.setOnItemSelectedListener(onItemSelectedListener);
@@ -107,16 +108,21 @@ public class SpinnerHelper {
         }
     }
 
-    public void sectionAdapter(String campus) {
+    public void sectionAdapter(String campus, String department, String program) {
+        Log.e(getClass().getSimpleName(), "Method called");
         if (sectionSpinner != null) {
-            ArrayAdapter<CharSequence> sectionAdapter;
-            if (DataChecker.isMain(campus)) {
-                sectionAdapter = ArrayAdapter.createFromResource(context, R.array.cse_main_day_section_array, spinnerRowResource);
+            Log.e(getClass().getSimpleName(), "2nd step");
+            ArrayList<String> sections = CourseUtils.getInstance(context).getSections(campus, department, program);
+            ArrayAdapter<String> sectionAdapter;
+            if (sections != null && sections.size() != 0) {
+                sectionAdapter = new ArrayAdapter<>(context, spinnerRowResource, sections);
             } else {
-                sectionAdapter =  ArrayAdapter.createFromResource(context, R.array.cse_perm_section_array, spinnerRowResource);
+                sectionAdapter = null;
             }
-            sectionSpinner.setAdapter(sectionAdapter);
-            sectionSpinner.setOnItemSelectedListener(onItemSelectedListener);
+            if (sectionAdapter != null) {
+                sectionSpinner.setAdapter(sectionAdapter);
+                sectionSpinner.setOnItemSelectedListener(onItemSelectedListener);
+            }
         }
     }
 
@@ -127,8 +133,8 @@ public class SpinnerHelper {
     }
 
     public void setupCampusAdapters() {
-        ArrayAdapter<CharSequence> campusAdapter = ArrayAdapter.createFromResource(context, R.array.campuses, spinnerRowResource);
-        ArrayAdapter<CharSequence> deptAdapter = ArrayAdapter.createFromResource(context, R.array.departments, spinnerRowResource);
+        ArrayAdapter<String> campusAdapter = new ArrayAdapter<>(context, spinnerRowResource, CourseUtils.getInstance(context).getSpinnerList(CourseUtils.GET_CAMPUS));
+        ArrayAdapter<String> deptAdapter = new ArrayAdapter<>(context, spinnerRowResource, CourseUtils.getInstance(context).getSpinnerList(CourseUtils.GET_DEPARTMENT));
         ArrayAdapter<CharSequence> programAdapter = ArrayAdapter.createFromResource(context, R.array.programs, spinnerRowResource);
         campusSpinner.setAdapter(campusAdapter);
         deptSpinner.setAdapter(deptAdapter);
@@ -141,12 +147,6 @@ public class SpinnerHelper {
     }
 
     public int spinnerPositionGenerator(int id, String string) {
-        if (DataChecker.isPermanent(string)) {
-            string = "permanent";
-        }
-        if (DataChecker.isEvening(string)) {
-            string = "evening";
-        }
         ArrayList<String> sectionList = new ArrayList<>(Arrays.asList(context.getResources().getStringArray(id)));
         for (int i = 0; i < sectionList.size(); i++) {
             if (sectionList.get(i).toLowerCase().equalsIgnoreCase(string)) {
@@ -156,16 +156,35 @@ public class SpinnerHelper {
         return 0;
     }
 
-    public void setClassSpinnerPositions(int level, int term, int section) {
+    public int spinnerPositionGenerator(ArrayList<String> list, String string) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).toLowerCase().equalsIgnoreCase(string)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public void setClassSpinnerPositions(int level, int term, String section) {
         setLevelSpinnerPosition(level);
         setTermSpinnerPosition(term);
-        setSectionSpinnerPosition(section);
+        PrefManager prefManager = new PrefManager(context);
+        int position = spinnerPositionGenerator(CourseUtils.getInstance(context).getSections(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()), section);
+        setSectionSpinnerPosition(position);
     }
 
     public void setCampusSpinnerPositions(int campus, int dept, int program) {
         setCampusSpinnerPosition(campus);
         setDeptSpinnerPosition(dept);
         setProgramSpinnerPosition(program);
+    }
+
+    public void setCampusSpinnerPositions(String campus, String dept, String program) {
+        ArrayList<String> campuses = CourseUtils.getInstance(context).getSpinnerList(CourseUtils.GET_CAMPUS);
+        ArrayList<String> departments = CourseUtils.getInstance(context).getSpinnerList(CourseUtils.GET_DEPARTMENT);
+        setCampusSpinnerPosition(spinnerPositionGenerator(campuses, campus));
+        setDeptSpinnerPosition(spinnerPositionGenerator(departments, dept));
+        setProgramSpinnerPosition(spinnerPositionGenerator(R.array.programs, program));
     }
 
     public void setLevelSpinnerPosition(int position) {
@@ -212,14 +231,14 @@ public class SpinnerHelper {
     }
 
     public String getDept() {
-        if (deptSpinner == null) {
+        if (deptSpinner == null || deptSpinner.getSelectedItem() == null) {
             return null;
         }
         return deptSpinner.getSelectedItem().toString();
     }
 
     public String getProgram() {
-        if (programSpinner == null) {
+        if (programSpinner == null || programSpinner.getSelectedItem() == null) {
             return null;
         }
         return programSpinner.getSelectedItem().toString();

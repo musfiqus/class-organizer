@@ -21,8 +21,8 @@ import android.widget.TextView;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.adapter.WelcomeSlidePagerAdapter;
+import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.DataChecker;
-import bd.edu.daffodilvarsity.classorganizer.utils.DatabaseHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 
 public class WelcomeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -131,6 +131,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                         showSnackBar(myViewPagerAdapter.getCampus(), myViewPagerAdapter.getDept(), myViewPagerAdapter.getProgram(), myViewPagerAdapter.getSection(), Integer.toString(myViewPagerAdapter.getLevel() + 1), Integer.toString(myViewPagerAdapter.getTerm() + 1));
                         viewPager.setCurrentItem(current - 1);
                     } else {
+
                         viewPager.setCurrentItem(current);
                     }
                 } else if (current == layouts.length - 2) {
@@ -139,14 +140,16 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                         showSnackBar(myViewPagerAdapter.getCampus(), myViewPagerAdapter.getDept(), myViewPagerAdapter.getProgram(), myViewPagerAdapter.getSection(), Integer.toString(myViewPagerAdapter.getLevel() + 1), Integer.toString(myViewPagerAdapter.getTerm() + 1));
                         viewPager.setCurrentItem(current -1);
                     } else {
+                        myViewPagerAdapter.setupSectionAdapter();
                         viewPager.setCurrentItem(current);
                     }
                 } else if (current < layouts.length) {
                     // move to next screen
                     viewPager.setCurrentItem(current);
                 } else {
-                    prefManager.saveSemester(getResources().getString(R.string.current_semester));
-                    prefManager.saveDatabaseVersion(DatabaseHelper.OFFLINE_DATABASE_VERSION);
+                    prefManager.setSemesterCount(CourseUtils.getInstance(getApplicationContext()).getSemesterCount(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()));
+                    prefManager.saveSemester(CourseUtils.getInstance(getApplicationContext()).getCurrentSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()));
+                    prefManager.setMasterDbVersion(CourseUtils.OFFLINE_DATABASE_VERSION);
                     myViewPagerAdapter.loadSemester();
                     launchHomeScreen();
                 }

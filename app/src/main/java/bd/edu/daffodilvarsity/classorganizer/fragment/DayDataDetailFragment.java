@@ -82,12 +82,8 @@ public class DayDataDetailFragment extends Fragment {
                         View dialogView = LayoutInflater.from(rootView.getContext()).inflate(R.layout.class_spinner_layout, null);
                         final SpinnerHelper classHelper = new SpinnerHelper(getContext(), dialogView, R.layout.spinner_row);
                         classHelper.setupClassLabelBlack();
-                        classHelper.setupClass(prefManager.getCampus());
-                        if (DataChecker.isMain(prefManager.getCampus())) {
-                            classHelper.setClassSpinnerPositions(prefManager.getLevel(), prefManager.getTerm(), classHelper.spinnerPositionGenerator(R.array.cse_main_day_section_array, prefManager.getSection()));
-                        } else {
-                            classHelper.setClassSpinnerPositions(prefManager.getLevel(), prefManager.getTerm(), classHelper.spinnerPositionGenerator(R.array.cse_perm_section_array, prefManager.getSection()));
-                        }
+                        classHelper.setupClass(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
+                        classHelper.setClassSpinnerPositions(prefManager.getLevel(), prefManager.getTerm(),  prefManager.getSection());
                         builder.customView(dialogView, true);
                         builder.positiveText("SAVE");
                         builder.negativeText(android.R.string.cancel);
