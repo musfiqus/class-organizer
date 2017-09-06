@@ -2,7 +2,6 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -109,9 +108,7 @@ public class SpinnerHelper {
     }
 
     public void sectionAdapter(String campus, String department, String program) {
-        Log.e(getClass().getSimpleName(), "Method called");
         if (sectionSpinner != null) {
-            Log.e(getClass().getSimpleName(), "2nd step");
             ArrayList<String> sections = CourseUtils.getInstance(context).getSections(campus, department, program);
             ArrayAdapter<String> sectionAdapter;
             if (sections != null && sections.size() != 0) {
@@ -171,12 +168,6 @@ public class SpinnerHelper {
         PrefManager prefManager = new PrefManager(context);
         int position = spinnerPositionGenerator(CourseUtils.getInstance(context).getSections(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()), section);
         setSectionSpinnerPosition(position);
-    }
-
-    public void setCampusSpinnerPositions(int campus, int dept, int program) {
-        setCampusSpinnerPosition(campus);
-        setDeptSpinnerPosition(dept);
-        setProgramSpinnerPosition(program);
     }
 
     public void setCampusSpinnerPositions(String campus, String dept, String program) {

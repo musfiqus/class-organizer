@@ -3,7 +3,6 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
@@ -20,15 +19,17 @@ public class CourseUtils extends SQLiteAssetHelper {
     public static final int OFFLINE_DATABASE_VERSION = 1;
 
     //Increment the version to erase previous db
-    static final String COLUMN_COURSE_CODE = "course_code";
-    static final String COLUMN_TEACHERS_INITIAL = "teachers_initial";
-    static final String COLUMN_WEEK_DAYS = "week_days";
-    static final String COLUMN_ROOM_NO = "room_no";
-    static final String COLUMN_TIME = "time_data";
+    private static final String COLUMN_COURSE_CODE = "course_code";
+    private static final String COLUMN_TEACHERS_INITIAL = "teachers_initial";
+    private static final String COLUMN_WEEK_DAYS = "week_days";
+    private static final String COLUMN_ROOM_NO = "room_no";
+    private static final String COLUMN_TIME = "time_data";
     private ArrayList<DayData> finalDayData = new ArrayList<>();
 
     public static final int GET_CAMPUS = 0;
     public static final int GET_DEPARTMENT = 1;
+    public static final int GET_START_TIME = 2;
+    public static final int GET_END_TIME = 4;
     private static final String DATABASE_NAME = "masterdb.db";
     public static final String UPDATED_DATABASE_NAME = "masterdb_updated.db";
     public static final int ROUTINEDB_URL_CODE = 0;
@@ -161,9 +162,7 @@ public class CourseUtils extends SQLiteAssetHelper {
         final String TABLE_NAME = "sections";
         String[] columnNames = getColumnNames(TABLE_NAME);
         String columnName = (campus+"_"+department+"_"+program).toLowerCase();
-        Log.e(getClass().getSimpleName(), columnName);
         int column = getColumnNumber(columnNames, columnName);
-        Log.e(getClass().getSimpleName(), "Column: "+column);
         if (column >= 0) {
             return getRowsByColumn(column, TABLE_NAME, columnNames);
         }
@@ -174,13 +173,11 @@ public class CourseUtils extends SQLiteAssetHelper {
     public ArrayList<String> getSpinnerList(int code) {
         final String TABLE_NAME = "spinners";
         String[] columnNames = getColumnNames(TABLE_NAME);
-        switch (code) {
-            case GET_CAMPUS: return getRowsByColumn(GET_CAMPUS, TABLE_NAME, columnNames);
-            case GET_DEPARTMENT: return getRowsByColumn(GET_DEPARTMENT, TABLE_NAME, columnNames);
-            default: return null;
-        }
+        return getRowsByColumn(code, TABLE_NAME, columnNames);
     }
 
+
+    //Gets the total number of semester for the course. EG: for cse day it's 12. If it doesn't exist the value is 0
     public int getTotalSemester(String campus, String department, String program) {
         SQLiteDatabase db = this.getReadableDatabase();
         final String TABLE_NAME = "departments_"+campus;
@@ -202,12 +199,11 @@ public class CourseUtils extends SQLiteAssetHelper {
     public String getUpdateURL(int code) {
         final String TABLE_NAME = "update_urls";
         String[] columnNames = getColumnNames(TABLE_NAME);
-        Log.e(getClass().getSimpleName(), getRowsByColumn(code, TABLE_NAME, columnNames).get(0));
         return getRowsByColumn(code, TABLE_NAME, columnNames).get(0);
     }
 
 
-
+    //Gets the name of the current semester
     public String getCurrentSemester(String campus, String department, String program) {
         final String TABLE_NAME = "current_semester";
         String[] columnNames = getColumnNames(TABLE_NAME);
@@ -227,6 +223,8 @@ public class CourseUtils extends SQLiteAssetHelper {
         return semester;
     }
 
+    //Gets the integer value of current semester of database
+    //This value determines whether to update semester or not
     public int getSemesterCount(String campus, String department, String program) {
         final String TABLE_NAME = "current_semester";
         String[] columnNames = getColumnNames(TABLE_NAME);
@@ -246,8 +244,31 @@ public class CourseUtils extends SQLiteAssetHelper {
         return semester;
     }
 
-    //Checks if table exists in the db
-    private boolean doesTableExist(final String TABLE_NAME) {
+    //Get time weight from start time
+    public double getTimeWeightFromStart(String startTime) {
+        ArrayList<String> startTimes = getSpinnerList(GET_START_TIME);
+        ArrayList<String> weights = getSpinnerList(3);
+        String strippedTime = removeSpaces(startTime);
+        String weight = null;
+        for (int i = 0; i < startTimes.size(); i++) {
+            if (removeSpaces(startTimes.get(i)).equalsIgnoreCase(strippedTime)) {
+                weight = weights.get(i);
+                break;
+            }
+        }
+        double timeWeight = 0;
+        if (weight != null) {
+            try {
+                timeWeight = Double.parseDouble(weight);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return timeWeight;
+    }
+
+    //Checks if table exists in the db using table name
+    public boolean doesTableExist(final String TABLE_NAME) {
         SQLiteDatabase db = this.getReadableDatabase();
         boolean isTableExisting;
         try {
@@ -269,6 +290,7 @@ public class CourseUtils extends SQLiteAssetHelper {
         return columnNames;
     }
 
+    //Get column number using column name from an  array of column names
     private int getColumnNumber(String[] columnNames, String columnName) {
         for (int i = 0; i < columnNames.length; i++) {
             if (columnName.equalsIgnoreCase(columnNames[i])) {
@@ -278,6 +300,7 @@ public class CourseUtils extends SQLiteAssetHelper {
         return -1;
     }
 
+    //Get all the values of a particular column
     private ArrayList<String> getRowsByColumn(int column, final String TABLE_NAME, String[] columnNames) {
         ArrayList<String> rows = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -286,7 +309,6 @@ public class CourseUtils extends SQLiteAssetHelper {
         if (cursor.moveToFirst()) {
             do {
                 if (cursor.getString(column) != null) {
-                    Log.e(getClass().getSimpleName(), cursor.getString(column));
                     rows.add(cursor.getString(column));
                 }
             } while (cursor.moveToNext());
@@ -295,7 +317,7 @@ public class CourseUtils extends SQLiteAssetHelper {
         return rows;
     }
 
-    static double getTimeWeight(String weight) {
+    private double getTimeWeight(String weight) {
         weight = weight.replace("\\s+", "");
         double timeWeight = 0;
         try {
@@ -306,13 +328,13 @@ public class CourseUtils extends SQLiteAssetHelper {
         return timeWeight;
     }
 
-    static String getCourseCode(String courseCode) {
+    private String getCourseCode(String courseCode) {
         String[] split = {courseCode.substring(0, 3), courseCode.substring(3)};
         courseCode = split[0] + " " + split[1];
         return courseCode;
     }
 
-    static String strippedStringMinimal(String string) {
+    private String strippedStringMinimal(String string) {
         if (string != null) {
             string = string.replaceAll("\\s+", "");
             string = string.replaceAll("\\p{P}", "");
@@ -320,12 +342,32 @@ public class CourseUtils extends SQLiteAssetHelper {
         return string;
     }
 
-    static String trimInitial(String initial) {
+    private String trimInitial(String initial) {
         return initial.replaceAll("\\s+", "");
     }
 
     private String removeSpaces(String strings) {
         return strings.replaceAll("\\s+", "");
+    }
+
+
+    //All methods below this are for DataChecker
+    public boolean checkDepartment(String campus, String department) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        final String TABLE_NAME = "departments_" + campus;
+        final String COLUMN_DEPARTMENTS = "departments";
+        String[] columnNames = getColumnNames(TABLE_NAME);
+        String found = null;
+        Cursor cursor = db.query(TABLE_NAME, columnNames, COLUMN_DEPARTMENTS + "=?", new String[]{department}, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                if (cursor.getString(0) != null) {
+                    found = cursor.getString(0);
+                }
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return found != null && found.equalsIgnoreCase(department);
     }
 
 }

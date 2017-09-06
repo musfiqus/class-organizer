@@ -178,8 +178,9 @@ public class SettingsActivity extends ColorfulActivity {
                     prefManager.saveCampus(campusHelper.getCampus().toLowerCase());
                     prefManager.saveDept(campusHelper.getDept().toLowerCase());
                     prefManager.saveProgram(campusHelper.getProgram().toLowerCase());
-                    DataChecker checker = new DataChecker(getContext(), 0, 0, CourseUtils.getInstance(getContext()).getSections(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()).get(0), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
-                    if (!oldDept.equalsIgnoreCase(prefManager.getDept()) || !oldCampus.equalsIgnoreCase(prefManager.getCampus()) || !oldProgram.equalsIgnoreCase(prefManager.getProgram()) && checker.dataChecker() == 0) {
+                    DataChecker campusChecker = new DataChecker(getContext());
+                    int campusCode = campusChecker.campusChecker( prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
+                    if (!oldDept.equalsIgnoreCase(prefManager.getDept()) || !oldCampus.equalsIgnoreCase(prefManager.getCampus()) || !oldProgram.equalsIgnoreCase(prefManager.getProgram()) && campusCode == 0) {
                         prefManager.setHasCampusSettingsChanged(true);
                         prefManager.saveReCreate(true);
                         onCreate(Bundle.EMPTY);
@@ -188,7 +189,7 @@ public class SettingsActivity extends ColorfulActivity {
                         prefManager.saveCampus(oldCampus);
                         prefManager.saveDept(oldDept);
                         prefManager.saveProgram(oldProgram);
-                        DataChecker.errorMessage(getContext(), checker.dataChecker(), null);
+                        DataChecker.errorMessage(getContext(), campusCode, null);
                         showSnackBar(getActivity(), getResources().getString(R.string.no_changes));
                     }
                 }
@@ -283,8 +284,9 @@ public class SettingsActivity extends ColorfulActivity {
                             int term = classHelper.getTerm();
                             String section = classHelper.getSection();
                             RoutineLoader newRoutine = new RoutineLoader(level, term, section, getActivity(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
-                            DataChecker checker = new DataChecker(getContext(), level, term, section, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
-                            if (checker.dataChecker() == 0) {
+                            DataChecker classChecker = new DataChecker(getContext());
+                            int classCode = classChecker.classChecker(section, level, term);
+                            if (classCode == 0) {
                                 prefManager.saveLevel(level);
                                 prefManager.saveTerm(term);
                                 prefManager.saveSection(section);
@@ -294,7 +296,7 @@ public class SettingsActivity extends ColorfulActivity {
                                 showSnackBar(getActivity(), getResources().getString(R.string.saved));
                                 dialog.dismiss();
                             } else {
-                                DataChecker.errorMessage(getContext(), checker.dataChecker(), null);
+                                DataChecker.errorMessage(getContext(), classCode, null);
                             }
                         }
                     });

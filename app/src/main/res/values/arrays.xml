@@ -13,6 +13,7 @@
         <item>Tuesday</item>
         <item>Wednesday</item>
         <item>Thursday</item>
+        <item>Friday</item>
     </string-array>
     <string-array name="cse_main_day_level_array">
         <item>Level 1</item>
@@ -30,85 +31,6 @@
         <item>Level 2</item>
         <item>Level 3</item>
     </string-array>
-    <string-array name="cse_main_day_section_array">
-        <item>A</item>
-        <item>B</item>
-        <item>C</item>
-        <item>D</item>
-        <item>E</item>
-        <item>F</item>
-        <item>G</item>
-        <item>H</item>
-        <item>I</item>
-        <item>J</item>
-        <item>K</item>
-        <item>L</item>
-        <item>M</item>
-        <item>N</item>
-        <item>O</item>
-        <item>P</item>
-        <item>Q</item>
-        <item>R</item>
-        <item>S</item>
-        <item>T</item>
-        <item>U</item>
-        <item>V</item>
-        <item>W</item>
-        <item>X</item>
-        <item>Y</item>
-        <item>Z</item>
-        <item>R1</item>
-        <item>R2</item>
-        <item>R3</item>
-    </string-array>
-    <string-array name="cse_perm_section_array">
-        <item>PC-A</item>
-        <item>PC-B</item>
-        <item>PC-C</item>
-        <item>PC-D</item>
-        <item>PC-E</item>
-        <item>PC-F</item>
-        <item>PC-G</item>
-        <item>PC-H</item>
-        <item>PC-I</item>
-        <item>PC-J</item>
-        <item>PC-K</item>
-        <item>PC-L</item>
-        <item>PC-M</item>
-        <item>PC-N</item>
-        <item>PC-O</item>
-    </string-array>
-
-    <!--Start of semester courses-->
-    <string-array name="start_time">
-        <item>08.30 AM</item>
-        <item>09.00 AM</item>
-        <item>10.00 AM</item>
-        <item>11.00 AM</item>
-        <item>11.30 AM</item>
-        <item>01.00 PM</item>
-        <item>02.30 PM</item>
-        <item>03.00 PM</item>
-        <item>04.00 PM</item>
-        <item>06.00 PM</item>
-        <item>07.30 PM</item>
-        <item>09.00 PM</item>
-    </string-array>
-    <string-array name="end_time">
-        <item>10.00 AM</item>
-        <item>11.00 AM</item>
-        <item>11.30 AM</item>
-        <item>01.00 PM</item>
-        <item>02.30 PM</item>
-        <item>03.00 PM</item>
-        <item>04.00 PM</item>
-        <item>05.00 PM</item>
-        <item>05.30 PM</item>
-        <item>06.00 PM</item>
-        <item>07.30 PM</item>
-        <item>09.00 PM</item>
-        <item>12.00 AM</item>
-    </string-array>
 
     <string-array name="time_delay">
         <item>15 minutes</item>
@@ -123,32 +45,5 @@
         <item>Day</item>
         <item>Evening</item>
     </string-array>
-    <string-array name="departments">
-        <item>CSE</item>
-    </string-array>
-    <string-array name="campuses">
-        <item>Main</item>
-        <item>Permanent</item>
-    </string-array>
-
-    <!--Departments-->
-
-    <string-array name="main_departments">
-        <item>CSE</item>
-    </string-array>
-    <string-array name="permanent_departments">
-        <item>CSE</item>
-    </string-array>
-
-    <!--Programs-->
-    <string-array name="cse_main_programs">
-        <item>day</item>
-        <item>evening</item>
-    </string-array>
-    <string-array name="cse_perm_programs">
-        <item>day</item>
-    </string-array>
-
-
 
 </resources>

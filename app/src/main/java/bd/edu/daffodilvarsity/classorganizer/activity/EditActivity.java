@@ -21,6 +21,7 @@ import org.polaric.colorful.ColorfulActivity;
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.R;
 
@@ -72,6 +73,7 @@ public class EditActivity extends ColorfulActivity {
     }
 
     private void setupCurrentDay() {
+        CourseUtils courseUtils = CourseUtils.getInstance(this);
         courseCodeText = (TextView) findViewById(R.id.course_code_title);
         courseCodeText.setText(dayData.getCourseCode());
 
@@ -91,7 +93,7 @@ public class EditActivity extends ColorfulActivity {
         //Getting the position of current day in spinner
         int spinnerPos = termAdapter.getPosition(dayData.getDay().substring(0, 1).toUpperCase() + dayData.getDay().substring(1).toLowerCase());
         // Specify the layout to use when the list of choices appears
-        termAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        termAdapter.setDropDownViewResource(R.layout.spinner_row);
         // Apply the adapter to the spinner
         weekDaySpinner.setAdapter(termAdapter);
         weekDaySpinner.setSelection(spinnerPos);
@@ -104,20 +106,20 @@ public class EditActivity extends ColorfulActivity {
         //Start time spinner
         startTimeSpinner = (Spinner) findViewById(R.id.modify_time_start);
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> startTimeAdapter = ArrayAdapter.createFromResource(this, R.array.start_time, R.layout.spinner_row);
+        ArrayAdapter<String> startTimeAdapter = new ArrayAdapter<>(this, R.layout.spinner_row, courseUtils.getSpinnerList(CourseUtils.GET_START_TIME));
         //Getting the position of start time in spinner
         int startTimePos = startTimeAdapter.getPosition(startTime);
-        startTimeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        startTimeAdapter.setDropDownViewResource(R.layout.spinner_row);
         startTimeSpinner.setAdapter(startTimeAdapter);
         startTimeSpinner.setSelection(startTimePos);
 
         //End time spinner
         endTimeSpinner = (Spinner) findViewById(R.id.modify_time_end);
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> endTimeAdapter = ArrayAdapter.createFromResource(this, R.array.end_time, R.layout.spinner_row);
+        ArrayAdapter<String> endTimeAdapter = new ArrayAdapter<>(this, R.layout.spinner_row, courseUtils.getSpinnerList(CourseUtils.GET_END_TIME));
         //Getting the position of start time in spinner
         int endTimePos = endTimeAdapter.getPosition(endTime);
-        endTimeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        endTimeAdapter.setDropDownViewResource(R.layout.spinner_row);
         endTimeSpinner.setAdapter(endTimeAdapter);
         endTimeSpinner.setSelection(endTimePos);
     }
@@ -137,39 +139,8 @@ public class EditActivity extends ColorfulActivity {
         String room = editRoom.getText().toString();
         String time = timeJoiner(startTimeSpinner.getSelectedItem().toString(), endTimeSpinner.getSelectedItem().toString());
         String day = weekDaySpinner.getSelectedItem().toString();
-        double timeWeight = timeWeight(startTimeSpinner.getSelectedItem().toString());
+        double timeWeight = CourseUtils.getInstance(getApplicationContext()).getTimeWeightFromStart(startTimeSpinner.getSelectedItem().toString());
         return new DayData(courseCode, initial, prefManager.getSection(), prefManager.getLevel(), prefManager.getTerm(), room, time, day, timeWeight, newCourseTitle);
-    }
-
-    private double timeWeight(String startTime) {
-        switch (startTime) {
-            case "08.30 AM":
-                return 1.0;
-            case "10.00 AM":
-                return 2.0;
-            case "11.30 AM":
-                return 3.0;
-            case "01.00 PM":
-                return 4.0;
-            case "02.30 PM":
-                return 5.0;
-            case "04.00 PM":
-                return 6.0;
-            case "06.00 PM":
-                return 7.0;
-            case "07.30 PM":
-                return 8.0;
-            case "09.00 PM":
-                return 9.0;
-            case "09.00 AM":
-                return 1.5;
-            case "11.00 AM":
-                return 2.5;
-            case "03.00 PM":
-                return 4.5;
-            default:
-                return 0;
-        }
     }
 
     @Override

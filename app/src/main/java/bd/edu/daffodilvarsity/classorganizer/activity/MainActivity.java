@@ -72,6 +72,9 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         prefManager = new PrefManager(this);
         prefManager.recoverSavedData();
         prefManager.repairData();
+        if (prefManager.getSemester().equalsIgnoreCase(getString(R.string.current_semester))) {
+            prefManager.setSemesterCount(1);
+        }
 
         routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), this, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
 

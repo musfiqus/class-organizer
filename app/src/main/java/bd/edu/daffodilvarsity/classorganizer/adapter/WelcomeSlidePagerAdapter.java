@@ -102,8 +102,8 @@ public class WelcomeSlidePagerAdapter extends PagerAdapter implements AdapterVie
         } else if (parent.getId() == R.id.section_selection) {
             section = parent.getSelectedItem().toString().toUpperCase();
         }
-        campusDataCode = new DataChecker(context, dept, campus, program).dataChecker();
-        classDataCode = new DataChecker(context, level, term, section, dept, campus, program).dataChecker();
+        campusDataCode = new DataChecker(context).campusChecker(campus, dept, program);
+        classDataCode = new DataChecker(context).classChecker(section, level, term);
         //Saving selections
         prefManager.saveSection(section);
         prefManager.saveTerm(term);

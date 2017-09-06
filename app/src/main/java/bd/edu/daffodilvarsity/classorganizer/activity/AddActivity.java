@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 
 public class AddActivity extends ColorfulActivity {
@@ -54,6 +55,7 @@ public class AddActivity extends ColorfulActivity {
     }
 
     private void setupCurrentView() {
+        CourseUtils courseUtils = CourseUtils.getInstance(this);
         courseCode = (EditText) findViewById(R.id.add_course_code);
         courseTitle = (EditText) findViewById(R.id.add_course_title);
         addInitial = (EditText) findViewById(R.id.add_initial);
@@ -63,23 +65,23 @@ public class AddActivity extends ColorfulActivity {
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> termAdapter = ArrayAdapter.createFromResource(this, R.array.weekdays, R.layout.spinner_row);
         // Specify the layout to use when the list of choices appears
-        termAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        termAdapter.setDropDownViewResource(R.layout.spinner_row);
         // Apply the adapter to the spinner
         weekDaySpinner.setAdapter(termAdapter);
         //Start time spinner
         startTimeSpinner = (Spinner) findViewById(R.id.add_time_start);
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> startTimeAdapter = ArrayAdapter.createFromResource(this, R.array.start_time, R.layout.spinner_row);
+        ArrayAdapter<String> startTimeAdapter = new ArrayAdapter<>(this, R.layout.spinner_row, courseUtils.getSpinnerList(CourseUtils.GET_START_TIME));
         //Getting the position of start time in spinner
-        startTimeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        startTimeAdapter.setDropDownViewResource(R.layout.spinner_row);
         startTimeSpinner.setAdapter(startTimeAdapter);
 
         //End time spinner
         endTimeSpinner = (Spinner) findViewById(R.id.add_time_end);
         // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> endTimeAdapter = ArrayAdapter.createFromResource(this, R.array.end_time, R.layout.spinner_row);
+        ArrayAdapter<String> endTimeAdapter = new ArrayAdapter<>(this, R.layout.spinner_row, courseUtils.getSpinnerList(CourseUtils.GET_END_TIME));
         //Getting the position of start time in spinner
-        endTimeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        endTimeAdapter.setDropDownViewResource(R.layout.spinner_row);
         endTimeSpinner.setAdapter(endTimeAdapter);
     }
 
@@ -99,40 +101,9 @@ public class AddActivity extends ColorfulActivity {
             Toast.makeText(this, "Fields can't be empty", Toast.LENGTH_SHORT).show();
             return null;
         } else {
-            return new DayData(courseCode.getText().toString(), addInitial.getText().toString(), prefManager.getSection(), prefManager.getLevel(), prefManager.getTerm(), addRoom.getText().toString(), timeJoiner(startTimeSpinner.getSelectedItem().toString(), endTimeSpinner.getSelectedItem().toString()), weekDaySpinner.getSelectedItem().toString(), timeWeight(startTimeSpinner.getSelectedItem().toString()), courseTitle.getText().toString());
+            return new DayData(courseCode.getText().toString(), addInitial.getText().toString(), prefManager.getSection(), prefManager.getLevel(), prefManager.getTerm(), addRoom.getText().toString(), timeJoiner(startTimeSpinner.getSelectedItem().toString(), endTimeSpinner.getSelectedItem().toString()), weekDaySpinner.getSelectedItem().toString(), CourseUtils.getInstance(getApplicationContext()).getTimeWeightFromStart(startTimeSpinner.getSelectedItem().toString()), courseTitle.getText().toString());
         }
 
-    }
-
-    private double timeWeight(String startTime) {
-        switch (startTime) {
-            case "08.30 AM":
-                return 1.0;
-            case "10.00 AM":
-                return 2.0;
-            case "11.30 AM":
-                return 3.0;
-            case "01.00 PM":
-                return 4.0;
-            case "02.30 PM":
-                return 5.0;
-            case "04.00 PM":
-                return 6.0;
-            case "06.00 PM":
-                return 7.0;
-            case "07.30 PM":
-                return 8.0;
-            case "09.00 PM":
-                return 9.0;
-            case "09.00 AM":
-                return 1.5;
-            case "11.00 AM":
-                return 2.5;
-            case "03.00 PM":
-                return 4.5;
-            default:
-                return 0;
-        }
     }
 
     @Override

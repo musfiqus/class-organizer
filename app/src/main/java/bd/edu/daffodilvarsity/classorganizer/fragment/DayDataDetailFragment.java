@@ -27,7 +27,6 @@ import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.activity.EditActivity;
 import bd.edu.daffodilvarsity.classorganizer.adapter.DayDataAdapter;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
-import bd.edu.daffodilvarsity.classorganizer.utils.DataChecker;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelper;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
