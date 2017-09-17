@@ -12,7 +12,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <!--Sensitive-->
-    <string name="current_semester">Summer - 2017</string>
+    <string name="legacy_semester">Summer - 2017</string>
 
     <!-- Day titles -->
     <string name="saturday">Saturday</string>

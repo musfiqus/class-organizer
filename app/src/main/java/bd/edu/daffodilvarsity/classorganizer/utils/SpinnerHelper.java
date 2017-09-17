@@ -215,7 +215,7 @@ public class SpinnerHelper {
     }
 
     public String getCampus() {
-        if (campusSpinner == null) {
+        if (campusSpinner == null || campusSpinner.getSelectedItem() == null) {
             return null;
         }
         return campusSpinner.getSelectedItem().toString();
@@ -250,7 +250,7 @@ public class SpinnerHelper {
     }
 
     public String getSection() {
-        if (sectionSpinner == null) {
+        if (sectionSpinner == null || sectionSpinner.getSelectedItem() == null) {
             return null;
         }
         return sectionSpinner.getSelectedItem().toString();

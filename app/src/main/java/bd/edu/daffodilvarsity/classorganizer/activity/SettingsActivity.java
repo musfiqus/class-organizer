@@ -175,22 +175,23 @@ public class SettingsActivity extends ColorfulActivity {
             builder.onPositive(new MaterialDialog.SingleButtonCallback() {
                 @Override
                 public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
-                    prefManager.saveCampus(campusHelper.getCampus().toLowerCase());
-                    prefManager.saveDept(campusHelper.getDept().toLowerCase());
-                    prefManager.saveProgram(campusHelper.getProgram().toLowerCase());
+                    String campus = campusHelper.getCampus().toLowerCase();
+                    String department = campusHelper.getDept().toLowerCase();
+                    String program = campusHelper.getProgram().toLowerCase();
                     DataChecker campusChecker = new DataChecker(getContext());
-                    int campusCode = campusChecker.campusChecker( prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
-                    if (!oldDept.equalsIgnoreCase(prefManager.getDept()) || !oldCampus.equalsIgnoreCase(prefManager.getCampus()) || !oldProgram.equalsIgnoreCase(prefManager.getProgram()) && campusCode == 0) {
+                    int campusCode = campusChecker.campusChecker(campus, department, program);
+                    if (oldDept.equalsIgnoreCase(campus) && oldCampus.equalsIgnoreCase(department) && oldProgram.equalsIgnoreCase(program)) {
+                        showSnackBar(getActivity(), getResources().getString(R.string.no_changes));
+                    } else if (campusCode == 0) {
+                        prefManager.saveCampus(campus);
+                        prefManager.saveDept(department);
+                        prefManager.saveProgram(program);
                         prefManager.setHasCampusSettingsChanged(true);
                         prefManager.saveReCreate(true);
                         onCreate(Bundle.EMPTY);
                         showSnackBar(getActivity(), getResources().getString(R.string.dept_settings_changed));
                     } else {
-                        prefManager.saveCampus(oldCampus);
-                        prefManager.saveDept(oldDept);
-                        prefManager.saveProgram(oldProgram);
                         DataChecker.errorMessage(getContext(), campusCode, null);
-                        showSnackBar(getActivity(), getResources().getString(R.string.no_changes));
                     }
                 }
             });

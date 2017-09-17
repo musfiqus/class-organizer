@@ -104,7 +104,9 @@ public class AlarmHelper {
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, index, dayDataIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(pendingIntent);
+        if (alarmManager != null) {
+            alarmManager.cancel(pendingIntent);
+        }
     }
 
     public void scheduleAlarm(int dayOfWeek, int index, int hour, int timeBefore, DayData dayData) {

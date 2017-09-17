@@ -82,9 +82,11 @@ public class WelcomeSlidePagerAdapter extends PagerAdapter implements AdapterVie
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         //Saving selections on first launch
-        campus = campusHelper.getCampus();
-        dept = campusHelper.getDept();
-        program = campusHelper.getProgram();
+        if (campusHelper != null) {
+            campus = campusHelper.getCampus();
+            dept = campusHelper.getDept();
+            program = campusHelper.getProgram();
+        }
         if (campus != null) {
             prefManager.saveCampus(campus);
         }

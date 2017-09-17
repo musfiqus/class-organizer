@@ -63,6 +63,8 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     private RoutineLoader routineLoader;
     private boolean isActivityRunning = false;
     private boolean updateDialogueBlocked = false;
+    //TODO Comment it out before publishing, only for testing purpose
+//    private static final String DATABASE_VERSION_TAG = "AlphaDatabaseVersion";
     private static final String DATABASE_VERSION_TAG = "MasterDatabaseVersion";
 
     @Override
@@ -70,11 +72,12 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         prefManager = new PrefManager(this);
+        //Managing compat with previous version
+        if (prefManager.getMasterDBVersion() <= CourseUtils.OFFLINE_DATABASE_VERSION) {
+            prefManager.setUpdatedOnline(false);
+        }
         prefManager.recoverSavedData();
         prefManager.repairData();
-        if (prefManager.getSemester().equalsIgnoreCase(getString(R.string.current_semester))) {
-            prefManager.setSemesterCount(1);
-        }
 
         routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), this, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
 
@@ -264,6 +267,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         }
     }
 
+    //Processes the update if the in app db is updated
     private void offlineUpdate() {
         //If there is a new routine, update
         if (CourseUtils.OFFLINE_DATABASE_VERSION > prefManager.getMasterDBVersion()) {
@@ -279,13 +283,19 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         }
     }
 
+    //Checks if a new version of db is availabelvia the db version stored in cloud
     private void checkFirebase() {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = firebaseDatabase.getReference(DATABASE_VERSION_TAG);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                final int newDBVersion = dataSnapshot.getValue(Integer.class);
+                int newVersion = 0;
+                try {
+                    newVersion = dataSnapshot.getValue(Integer.class);
+                } catch (Exception ignored) {
+                }
+                final int newDBVersion = newVersion;
                 if (prefManager.getMasterDBVersion() < newDBVersion) {
                     if (isActivityRunning) {
                         if (newDBVersion > prefManager.getMasterDBVersion() && newDBVersion != prefManager.getSuppressedMasterDbVersion()) {
@@ -307,7 +317,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
                                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                                         @Override
                                         public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
-                                            startDBUpdate(newDBVersion, CourseUtils.MASTERDB_URL_CODE);
+                                            startDBUpdate(newDBVersion);
                                         }
                                     });
                             MaterialDialog dialog = builder.build();
@@ -328,6 +338,8 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         });
     }
 
+
+    //Shows new semester upgrade dialogue and upgrades it
     private void upgradeRoutine(final int dbVersion) {
         if (isNewSemesterAvailable()) {
             if (isActivityRunning) {
@@ -363,6 +375,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         }
     }
 
+    //Simple update function loads new routine if db version changes
     private boolean updateRoutine(boolean personalRoutine, int dbVersion) {
         routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), this, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
         ArrayList<DayData> updatedRoutine = routineLoader.loadRoutine(personalRoutine);
@@ -376,7 +389,8 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         return true;
     }
 
-    private void startDBUpdate(int newVersion, int which) {
+    //This method starts the online db downloading process
+    private void startDBUpdate(int newVersion) {
         if (isActivityRunning) {
             showSnackBar(MainActivity.this, "Updating routine");
         }
@@ -389,6 +403,8 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         startService(updateIntent);
     }
 
+    //Checks if a new semester is available in db, if it's available it informs upgrade function
+    // to process upgrade
     private boolean isNewSemesterAvailable() {
         int maxSemester = CourseUtils.getInstance(this).getTotalSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
         int currentSemester = RoutineLoader.getSemester(prefManager.getLevel(), prefManager.getTerm());
@@ -398,6 +414,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         return false;
     }
 
+    //Calculates the new level and term upon a new semester routine
     private void setLevelTermOnUpgrade() {
         int currentLevel = prefManager.getLevel();
         int currentTerm = prefManager.getTerm();
@@ -415,6 +432,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     }
 
 
+    //This function provides the skeleton of the suggestion email
     public void composeEmail() {
         String message = "Your suggestions: ";
         String subject = "Suggestions for DIU Class Organizer";
@@ -434,6 +452,8 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT).show();
     }
 
+
+    //This class start db download and processes the result in case of success or failure
     public class DatabaseUpdateResultReceiver extends ResultReceiver {
 
         public DatabaseUpdateResultReceiver(Context context, Handler handler) {
