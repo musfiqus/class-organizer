@@ -64,9 +64,14 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     private RoutineLoader routineLoader;
     private boolean isActivityRunning = false;
     private boolean updateDialogueBlocked = false;
+
+
     //TODO Comment it out before publishing, only for testing purpose
-    private static final String DATABASE_VERSION_TAG = "AlphaDatabaseVersion";
-//    private static final String DATABASE_VERSION_TAG = "MasterDatabaseVersion";
+//    private static final String DATABASE_VERSION_TAG = "AlphaDatabaseVersion";
+
+
+
+    private static final String DATABASE_VERSION_TAG = "MasterDatabaseVersion";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
