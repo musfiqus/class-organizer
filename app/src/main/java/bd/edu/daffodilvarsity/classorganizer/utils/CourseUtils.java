@@ -16,7 +16,7 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
  */
 
 public class CourseUtils extends SQLiteAssetHelper {
-    public static final int OFFLINE_DATABASE_VERSION = 4;
+    public static final int OFFLINE_DATABASE_VERSION = 8;
 
     //Increment the version to erase previous db
     private static final String COLUMN_COURSE_CODE = "course_code";
@@ -43,7 +43,10 @@ public class CourseUtils extends SQLiteAssetHelper {
     private CourseUtils(Context context) {
         super(context, (new PrefManager(context).isUpdatedOnline()) ? UPDATED_DATABASE_NAME : DATABASE_NAME,
                 null, OFFLINE_DATABASE_VERSION);
-        setForcedUpgrade();
+        if (!new PrefManager(context).isUpdatedOnline()) {
+            setForcedUpgrade();
+        }
+//        setForcedUpgrade();
         mContext = context.getApplicationContext();
     }
 
@@ -61,7 +64,12 @@ public class CourseUtils extends SQLiteAssetHelper {
 
     @Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion != newVersion) {
-            mContext.deleteDatabase(DATABASE_NAME);
+            PrefManager prefManager = new PrefManager(mContext);
+            if (prefManager.isUpdatedOnline()) {
+                mContext.deleteDatabase(UPDATED_DATABASE_NAME);
+            } else {
+                mContext.deleteDatabase(DATABASE_NAME);
+            }
             new CourseUtils(mContext);
         }else
             super.onUpgrade(db, oldVersion, newVersion);

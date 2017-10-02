@@ -1,6 +1,8 @@
 package bd.edu.daffodilvarsity.classorganizer.activity;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -238,9 +240,25 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
     }
 
     public void composeEmail(String campus, String department, String program, String section, String level, String term) {
-        String message = "Campus: "+campus+" Department: "+department+" Program: "+program;
-        message += "\nSection: " + section + "Level: " + level + "Term: " + term;
-        message += "\nPlease insert or attach your routine for quicker response";
+        String appVersion = null;
+        PackageInfo packageInfo = null;
+        try {
+            packageInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        if (packageInfo != null) {
+            appVersion = packageInfo.versionName;
+        }
+        String message = "Campus: "+campus.substring(0,1).toUpperCase()+campus.substring(1, campus.length()).toLowerCase();
+        message += "\nDepartment: "+department.toUpperCase() ;
+        message += "\nProgram: "+program.substring(0,1).toUpperCase()+program.substring(1, program.length()).toLowerCase();
+        message += "\nSection: " + section + "\nLevel: " + level + "\nTerm: " + term;
+        message += "\nApp version: "+ appVersion;
+        message += "\nDB version: "+ ((prefManager.getMasterDBVersion() > CourseUtils.OFFLINE_DATABASE_VERSION) ? prefManager.getMasterDBVersion(): CourseUtils.OFFLINE_DATABASE_VERSION);
+        message += "\n";
+        message += "\n*** Important: Insert your class routine for quicker response ***";
         String subject = getString(R.string.suggestion_email_subject);
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setData(Uri.parse("mailto:")); // only email apps should handle this

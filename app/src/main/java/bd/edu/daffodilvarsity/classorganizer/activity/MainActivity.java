@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -64,8 +65,8 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     private boolean isActivityRunning = false;
     private boolean updateDialogueBlocked = false;
     //TODO Comment it out before publishing, only for testing purpose
-//    private static final String DATABASE_VERSION_TAG = "AlphaDatabaseVersion";
-    private static final String DATABASE_VERSION_TAG = "MasterDatabaseVersion";
+    private static final String DATABASE_VERSION_TAG = "AlphaDatabaseVersion";
+//    private static final String DATABASE_VERSION_TAG = "MasterDatabaseVersion";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -265,6 +266,13 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
                 prefManager.saveShowSnack(false);
             }
         }
+    }
+
+    //Checking if activity is in state loss
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        isActivityRunning = false;
     }
 
     //Processes the update if the in app db is updated
