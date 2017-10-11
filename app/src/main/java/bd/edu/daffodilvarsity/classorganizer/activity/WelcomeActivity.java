@@ -25,6 +25,7 @@ import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.adapter.WelcomeSlidePagerAdapter;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.DataChecker;
+import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOffline;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 
 public class WelcomeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -151,7 +152,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                 } else {
                     prefManager.setSemesterCount(CourseUtils.getInstance(getApplicationContext()).getSemesterCount(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()));
                     prefManager.saveSemester(CourseUtils.getInstance(getApplicationContext()).getCurrentSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()));
-                    prefManager.setMasterDbVersion(CourseUtils.OFFLINE_DATABASE_VERSION);
+                    prefManager.setMasterDbVersion(MasterDBOffline.OFFLINE_DATABASE_VERSION);
                     myViewPagerAdapter.loadSemester();
                     launchHomeScreen();
                 }
@@ -256,7 +257,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
         message += "\nProgram: "+program.substring(0,1).toUpperCase()+program.substring(1, program.length()).toLowerCase();
         message += "\nSection: " + section + "\nLevel: " + level + "\nTerm: " + term;
         message += "\nApp version: "+ appVersion;
-        message += "\nDB version: "+ ((prefManager.getMasterDBVersion() > CourseUtils.OFFLINE_DATABASE_VERSION) ? prefManager.getMasterDBVersion(): CourseUtils.OFFLINE_DATABASE_VERSION);
+        message += "\nDB version: "+ prefManager.getMasterDBVersion();
         message += "\n";
         message += "\n*** Important: Insert your class routine for quicker response ***";
         String subject = getString(R.string.suggestion_email_subject);

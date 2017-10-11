@@ -4,6 +4,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
@@ -141,19 +146,77 @@ public class RoutineLoader {
     }
 
     public boolean verifyUpdatedDb() {
-        CourseUtils courseUtils = CourseUtils.getInstance(context);
+        CourseUtils dbChecker = new CourseUtils(context, true);
+        //First we'll check if a new semester is available
+        if (!dbChecker.getCurrentSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()).equalsIgnoreCase(prefManager.getSemester())) {
+            //If available we won't do any further checks
+            return true;
+        }
         ArrayList<String> courseCodes = courseCodeGenerator(getSemester());
         if (courseCodes == null || courseCodes.size() == 0) {
             return false;
         }
-        ArrayList<String> sections = courseUtils.getSections(campus, dept, program);
+        ArrayList<String> sections = dbChecker.getSections(campus, dept, program);
         if (sections == null || sections.size() == 0) {
             return false;
         }
-        ArrayList<DayData> vanillaRoutine = courseUtils.getDayData(courseCodes, sections.get(0), level, term, dept, campus, program);
+        ArrayList<DayData> vanillaRoutine = dbChecker.getDayData(courseCodes, sections.get(0), level, term, dept, campus, program);
         if (vanillaRoutine == null) {
             return false;
         }
-        return vanillaRoutine.size() > 0;
+        if (vanillaRoutine.size() == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    //Checks if a new semester is available in db, if it's available it informs upgrade function
+    // to process upgrade
+    private boolean isNewSemesterAvailable(boolean isUpdatedOnline) {
+        int maxSemester = new CourseUtils(context, isUpdatedOnline).getTotalSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
+        int currentSemester = RoutineLoader.getSemester(prefManager.getLevel(), prefManager.getTerm());
+        if (prefManager.getSemesterCount() < CourseUtils.getInstance(context).getSemesterCount(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()) && currentSemester < maxSemester) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isNewSemesterAvailable() {
+        return isNewSemesterAvailable(prefManager.isUpdatedOnline());
+    }
+
+    public void copyFile(File sourceFile, File destFile) throws IOException {
+        if (!destFile.exists()) {
+            destFile.createNewFile();
+        }
+        FileChannel source = null;
+        FileChannel destination = null;
+        FileInputStream is = null;
+        FileOutputStream os = null;
+        try {
+            is = new FileInputStream(sourceFile);
+            os = new FileOutputStream(destFile);
+            source = is.getChannel();
+            destination = os.getChannel();
+
+            long count = 0;
+            long size = source.size();
+            while ((count += destination.transferFrom(source, count, size - count)) < size)
+                ;
+        } catch (Exception ex) {
+        } finally {
+            if (source != null) {
+                source.close();
+            }
+            if (is != null) {
+                is.close();
+            }
+            if (destination != null) {
+                destination.close();
+            }
+            if (os != null) {
+                os.close();
+            }
+        }
     }
 }
