@@ -1,12 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/welcome_choice_layout_2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_screen2">
 
-    <include
-        android:id="@+id/campus_layout_include_id"
-        layout="@layout/campus_spinner_layout"
-         />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="72dp">
+
+        <ImageView
+            android:id="@+id/cloud_icon"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_cloud_done_white_48dp"
+            android:layout_marginBottom="36dp"/>
+
+
+        <TextView
+            android:id="@+id/check_Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/desc_padding"
+            android:paddingRight="@dimen/desc_padding"
+            android:text="@string/already_updated_text"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+        <com.github.ybq.android.spinkit.SpinKitView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/spin_kit"
+            style="@style/SpinKitView.Small.ThreeBounce"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            app:SpinKit_Color="@color/md_white_1000" />
+
+    </LinearLayout>
 </RelativeLayout>

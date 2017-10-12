@@ -69,13 +69,13 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
 
 
     //TODO Comment it out before publishing, only for testing purpose
-    private static final String DATABASE_VERSION_TAG = "AlphaDatabaseVersion";
-    private static final String DATABASE_URL_TAG = "AlphaURL";
+//    public static final String DATABASE_VERSION_TAG = "AlphaDatabaseVersion";
+//    public static final String DATABASE_URL_TAG = "AlphaURL";
 
 
 
-//    private static final String DATABASE_VERSION_TAG = "MasterDatabaseVersion";
-//    private static final String DATABASE_URL_TAG = "MasterURL";
+    public static final String DATABASE_VERSION_TAG = "MasterDatabaseVersion";
+    public static final String DATABASE_URL_TAG = "MasterURL";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

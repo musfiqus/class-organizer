@@ -34,7 +34,6 @@ public class WelcomeSlidePagerAdapter extends PagerAdapter implements AdapterVie
     private PrefManager prefManager;
     private int classDataCode;
     private int campusDataCode;
-    private int previousCampusSelection = 0;
 
     private SpinnerHelper classHelper;
     private SpinnerHelper campusHelper;
@@ -51,11 +50,11 @@ public class WelcomeSlidePagerAdapter extends PagerAdapter implements AdapterVie
 
         view = layoutInflater.inflate(layouts[position], container, false);
         container.addView(view);
-        if (layouts[position] == R.layout.welcome_slide2) {
+        if (layouts[position] == R.layout.welcome_slide3) {
             campusHelper = new SpinnerHelper(context, view, R.layout.spinner_campus_row_welcome, this);
             campusHelper.setupCampus();
         }
-        if (layouts[position] == R.layout.welcome_slide3) {
+        if (layouts[position] == R.layout.welcome_slide4) {
             classHelper = new SpinnerHelper(context, view, R.layout.spinner_class_row_welcome, this);
             classHelper.setupClass(campus, dept, program);
         }
