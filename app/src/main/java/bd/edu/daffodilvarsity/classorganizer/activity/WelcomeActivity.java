@@ -44,7 +44,6 @@ import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.adapter.WelcomeSlidePagerAdapter;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.DataChecker;
-import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOffline;
 import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOnline;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 
@@ -182,7 +181,6 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                 } else {
                     prefManager.setSemesterCount(CourseUtils.getInstance(getApplicationContext()).getSemesterCount(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()));
                     prefManager.saveSemester(CourseUtils.getInstance(getApplicationContext()).getCurrentSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()));
-                    prefManager.setMasterDbVersion(MasterDBOffline.OFFLINE_DATABASE_VERSION);
                     myViewPagerAdapter.loadSemester();
                     launchHomeScreen();
                 }
@@ -361,7 +359,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                     isUpdateAlreadyExecuted = true;
                     checkText.setText(R.string.already_updated_text);
                     cloud.setImageResource(R.drawable.ic_cloud_done_white_48dp);
-                    btnNext.setVisibility(View.VISIBLE);
+                    btnNext.setText(R.string.next);
                 }
             }
 
