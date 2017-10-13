@@ -72,16 +72,17 @@ public class DayDataDetailActivity extends ColorfulActivity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = getIntent().getExtras();
-            dayData = arguments.getParcelable("DayDataDetails");
-            Bundle bundle = arguments.getBundle("bundled_data");
-            if (bundle != null) {
-                byte[] byteDayData = bundle.getByteArray("NotificationData");
-                if (byteDayData != null) {
-                    dayData = convertToDayData(byteDayData);
-                    fromNotification = true;
+            if (arguments != null) {
+                dayData = arguments.getParcelable("DayDataDetails");
+                Bundle bundle = arguments.getBundle("bundled_data");
+                if (bundle != null) {
+                    byte[] byteDayData = bundle.getByteArray("NotificationData");
+                    if (byteDayData != null) {
+                        dayData = convertToDayData(byteDayData);
+                        fromNotification = true;
+                    }
                 }
             }
-
             Bundle newArgs = new Bundle();
             newArgs.putParcelable("DayDataDetails", dayData);
             DayDataDetailFragment fragment = new DayDataDetailFragment();

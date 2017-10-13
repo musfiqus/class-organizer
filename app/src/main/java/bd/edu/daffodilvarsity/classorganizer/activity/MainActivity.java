@@ -519,6 +519,9 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
                             if (isVerified) {
                                 routineLoader = null;
                                 prefManager.setUpdatedOnline(true);
+                                if (routineLoader == null) {
+                                    routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), getApplicationContext(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
+                                }
                                 if (routineLoader.isNewSemesterAvailable()) {
                                     upgradeRoutine(true, dbVersion, false);
                                 } else {
