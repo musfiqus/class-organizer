@@ -42,6 +42,7 @@ public class PrefManager {
     private static final String IS_ROUTINE_UPDATED_ONLINE = "IsRoutineUpdatedOnline";
     private static final String PREF_REMINDER_TIME_DELAY = "ReminderTimeDelayInMinutes";
     private static final String SAVE_MASTERDB_VERSION = "MasterDB_Version";
+    private static final String SAVE_DATABASE_VERSION = "Incremental_Database_Version";
     private static final String PREF_SEMESTER_COUNT = "Current_Semester_Count";
     public static final String SAVE_DATA_TAG = "save";
     public static final String ADD_DATA_TAG = "add";
@@ -89,6 +90,17 @@ public class PrefManager {
         Type type = new TypeToken<ArrayList<DayData>>() {
         }.getType();
         return gson.fromJson(json, type);
+    }
+
+    public void incrementDatabaseVersion() {
+        int prev = pref.getInt(SAVE_DATABASE_VERSION, getMasterDBVersion());
+        prev++;
+        editor.remove(SAVE_DATABASE_VERSION).apply();
+        editor.putInt(SAVE_DATABASE_VERSION, prev).apply();
+    }
+
+    public int getDatabaseVersion() {
+        return pref.getInt(SAVE_DATABASE_VERSION, getMasterDBVersion());
     }
 
     public void saveSection(String section) {

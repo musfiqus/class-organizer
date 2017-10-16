@@ -31,7 +31,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
     private static MasterDBOffline mInstance = null;
 
     private MasterDBOffline(Context context) {
-        super(context, DATABASE_NAME, null, new PrefManager(context).getMasterDBVersion());
+        super(context, DATABASE_NAME, null, new PrefManager(context).getDatabaseVersion());
         setForcedUpgrade();
         mContext = context.getApplicationContext();
     }

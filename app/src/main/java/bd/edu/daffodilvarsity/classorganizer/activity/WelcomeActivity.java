@@ -465,10 +465,11 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
             super.onPostExecute(aVoid);
             //If skip button wasn't pressed
             if (!hasSkipped) {
+                spinKitView.setVisibility(View.GONE);
                 //Forcing db to update by increasing version
                 int prevDB = prefManager.getMasterDBVersion();
                 prefManager.setMasterDbVersion(newDBVersion);
-
+                prefManager.incrementDatabaseVersion();
                 CourseUtils courseUtils = new CourseUtils(getApplicationContext(), true);
                 if (!courseUtils.doesTableExist("departments_main")) {
                     isUpdateSuccessful = false;
@@ -480,7 +481,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                         checkText.setText(R.string.update_successful_text);
                         cloud.setImageResource(R.drawable.ic_cloud_done_white_48dp);
                         prefManager.setUpdatedOnline(true);
-                        spinKitView.setVisibility(View.GONE);
+
                     } else {
                         checkText.setText(R.string.update_failed_text);
                     }
