@@ -2,16 +2,14 @@ package bd.edu.daffodilvarsity.classorganizer.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.PersistableBundle;
-import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -49,13 +47,13 @@ import java.util.Locale;
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.adapter.DayFragmentPagerAdapter;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
-import bd.edu.daffodilvarsity.classorganizer.service.DatabaseUpdateIntentService;
 import bd.edu.daffodilvarsity.classorganizer.service.NotificationRestartService;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
+import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOffline;
+import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOnline;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.RoutineLoader;
-import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOnline;
 
 public class MainActivity extends ColorfulActivity implements NavigationView.OnNavigationItemSelectedListener {
     private PrefManager prefManager;
@@ -66,6 +64,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     private RoutineLoader routineLoader;
     private boolean isActivityRunning = false;
     private boolean updateDialogueBlocked = false;
+    private boolean isDownloadSuccessful;
 
 
     //TODO Comment it out before publishing, only for testing purpose
@@ -287,6 +286,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         //If there is a new routine, update
         if (MasterDBOffline.OFFLINE_DATABASE_VERSION > prefManager.getMasterDBVersion()) {
             prefManager.setUpdatedOnline(false);
+            prefManager.incrementDatabaseVersion();
             if (routineLoader.isNewSemesterAvailable()) {
                 upgradeRoutine(true, MasterDBOffline.OFFLINE_DATABASE_VERSION, false);
             } else {
@@ -442,13 +442,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         if (isActivityRunning) {
             showSnackBar(MainActivity.this, "Updating routine");
         }
-        DatabaseUpdateResultReceiver resultReceiver = new DatabaseUpdateResultReceiver(this, new Handler());
-        Intent updateIntent = new Intent(MainActivity.this, DatabaseUpdateIntentService.class);
-        updateIntent.putExtra(DatabaseUpdateIntentService.TAG_DATABASE_NAME, MasterDBOnline.UPDATED_DATABASE_NAME);
-        updateIntent.putExtra(DatabaseUpdateIntentService.TAG_DB_URL, dbURL);
-        updateIntent.putExtra(DatabaseUpdateIntentService.TAG_DATABASE_VERSION, newVersion);
-        updateIntent.putExtra(DatabaseUpdateIntentService.TAG_RECEIVER, resultReceiver);
-        startService(updateIntent);
+        new DbDownloadTask().execute(dbURL, String.valueOf(newVersion));
     }
 
     //Calculates the new level and term upon a new semester routine
@@ -485,61 +479,66 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
 
     /*Method to display snackbar properly*/
     public void showSnackBar(Activity activity, String message) {
-        View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
-        Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT).show();
+        if (isActivityRunning) {
+            View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+            Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT).show();
+        }
     }
 
 
-    //This class start db download and processes the result in case of success or failure
-    public class DatabaseUpdateResultReceiver extends ResultReceiver {
+    private class DbDownloadTask extends AsyncTask<String, Void, Void> {
+        private int newDBVersion;
 
-        public DatabaseUpdateResultReceiver(Context context, Handler handler) {
-            super(handler);
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            isDownloadSuccessful = true;
         }
 
         @Override
-        protected void onReceiveResult(int resultCode, Bundle resultData) {
-            switch (resultCode) {
-                case DatabaseUpdateIntentService.DOWNLOAD_ERROR:
-                    //Do nothing for now
-                    if (isActivityRunning) {
-                        showSnackBar(MainActivity.this, "Error downloading update");
-                    }
-                    break;
-                case DatabaseUpdateIntentService.DOWNLOAD_SUCCESS:
-                    int dbVersion = resultData.getInt(DatabaseUpdateIntentService.TAG_DATABASE_VERSION);
-                    String dbName = resultData.getString(DatabaseUpdateIntentService.TAG_DATABASE_NAME);
-                    if (dbName != null) {
-                        if (dbName.equalsIgnoreCase(MasterDBOnline.UPDATED_DATABASE_NAME)) {
-                            boolean prevUpdateValue = prefManager.isUpdatedOnline();
-                            int prevDatabaseValue = prefManager.getMasterDBVersion();
-                            prefManager.setUpdatedOnline(true);
-                            prefManager.setMasterDbVersion(dbVersion);
-                            prefManager.incrementDatabaseVersion();
-                            boolean isVerified = routineLoader.verifyUpdatedDb();
-                            if (isVerified) {
-                                routineLoader = null;
-                                prefManager.setUpdatedOnline(true);
-                                if (routineLoader == null) {
-                                    routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), getApplicationContext(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
-                                }
-                                if (routineLoader.isNewSemesterAvailable()) {
-                                    upgradeRoutine(true, dbVersion, false);
-                                } else {
-                                    upgradeRoutine(false, dbVersion, true);
-                                }
-                            } else {
-                                prefManager.setUpdatedOnline(prevUpdateValue);
-                                prefManager.setMasterDbVersion(prevDatabaseValue);
-                                if (isActivityRunning) {
-                                    showSnackBar(MainActivity.this, "Update corrupted");
-                                }
-                            }
-                        }
-                    }
-
+        protected Void doInBackground(String... params) {
+            try {
+                String dlURL = params[0];
+                newDBVersion = Integer.parseInt(params[1]);
+                if (dlURL != null) {
+                    FileUtils.dbDownloader(dlURL, getDatabasePath(MasterDBOnline.UPDATED_DATABASE_NAME).getAbsolutePath());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                isDownloadSuccessful = false;
             }
-            super.onReceiveResult(resultCode, resultData);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (isDownloadSuccessful) {
+                boolean prevUpdateValue = prefManager.isUpdatedOnline();
+                int prevDatabaseValue = prefManager.getMasterDBVersion();
+                prefManager.setUpdatedOnline(true);
+                prefManager.setMasterDbVersion(newDBVersion);
+                prefManager.incrementDatabaseVersion();
+                boolean isVerified = routineLoader.verifyUpdatedDb();
+                if (isVerified) {
+                    routineLoader = null;
+                    prefManager.setUpdatedOnline(true);
+                    if (routineLoader == null) {
+                        routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), getApplicationContext(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
+                    }
+                    if (routineLoader.isNewSemesterAvailable()) {
+                        upgradeRoutine(true, newDBVersion, false);
+                    } else {
+                        upgradeRoutine(false, newDBVersion, true);
+                    }
+                } else {
+                    prefManager.setUpdatedOnline(prevUpdateValue);
+                    prefManager.setMasterDbVersion(prevDatabaseValue);
+                    showSnackBar(MainActivity.this, "Update corrupted");
+                }
+            } else {
+                showSnackBar(MainActivity.this, "Download failed");
+            }
         }
     }
 

@@ -44,6 +44,7 @@ import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.adapter.WelcomeSlidePagerAdapter;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.DataChecker;
+import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOnline;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 
@@ -423,36 +424,12 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
 
         @Override
         protected Void doInBackground(String... params) {
-            File downloadFile = new File(getDatabasePath(MasterDBOnline.UPDATED_DATABASE_NAME).getAbsolutePath());
-            if (downloadFile.exists()) {
-                downloadFile.delete();
-            }
             try {
-                downloadFile.createNewFile();
                 String dlURL = params[0];
                 newDBVersion = Integer.parseInt(params[1]);
                 if (dlURL != null) {
-                    URL downloadURL = new URL(dlURL);
-                    HttpURLConnection conn = (HttpURLConnection) downloadURL
-                            .openConnection();
-                    int responseCode = conn.getResponseCode();
-                    if (responseCode != 200)
-                        throw new Exception("Error in connection");
-                    conn.connect();
-                    InputStream is = conn.getInputStream();
-                    FileOutputStream os = new FileOutputStream(downloadFile);
-                    byte buffer[] = new byte[1024];
-                    int byteCount;
-                    while ((byteCount = is.read(buffer)) != -1) {
-                        // Write data to file
-                        os.write(buffer, 0, byteCount);
-                    }
-                    os.close();
-                    is.close();
-                } else {
-                    throw new Exception("Error parsing URL");
+                    FileUtils.dbDownloader(dlURL, getDatabasePath(MasterDBOnline.UPDATED_DATABASE_NAME).getAbsolutePath());
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
                 isUpdateSuccessful = false;
