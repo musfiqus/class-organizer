@@ -173,6 +173,9 @@ public class RoutineLoader {
     //Checks if a new semester is available in db, if it's available it informs upgrade function
     // to process upgrade
     private boolean isNewSemesterAvailable(boolean isUpdatedOnline) {
+        if (!new CourseUtils(context, isUpdatedOnline).doesTableExist("departments_"+prefManager.getCampus())) {
+            return false;
+        }
         int maxSemester = new CourseUtils(context, isUpdatedOnline).getTotalSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
         int currentSemester = RoutineLoader.getSemester(prefManager.getLevel(), prefManager.getTerm());
         if (prefManager.getSemesterCount() < CourseUtils.getInstance(context).getSemesterCount(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()) && currentSemester < maxSemester) {

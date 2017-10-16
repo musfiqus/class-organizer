@@ -17,7 +17,7 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 public class MasterDBOffline extends SQLiteAssetHelper {
 
-    public static final int OFFLINE_DATABASE_VERSION = 10;
+    public static final int OFFLINE_DATABASE_VERSION = 15;
 
     //Increment the version to erase previous db
     private static final String COLUMN_COURSE_CODE = "course_code";
@@ -55,7 +55,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
     }
 
     ArrayList<DayData> getDayData(ArrayList<String> courseCodes, String section, int level, int term, String dept, String campus, String program) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         final String currentTable = "routine_"+campus.toLowerCase() + "_" + dept.toLowerCase() + "_" + program.toLowerCase();
         if (finalDayData != null) {
             finalDayData.clear();
@@ -80,7 +80,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
     }
 
     public String getCourseTitle(String courseCode, String campus, String dept, String program) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         final String COLUMN_COURSE_CODE = "course_code";
         final String COLUMN_COURSE_TITLE = "course_title";
         final String TABLE_NAME = "course_title_"+campus+"_"+dept+"_"+program;
@@ -104,7 +104,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
     }
 
     public String getTime(String timeData) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         final String COLUMN_TIME_DATA = "time_data";
         final String COLUMN_TIME = "time";
         final String TABLE_NAME = "time_table";
@@ -166,7 +166,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
 
     //Gets the total number of semester for the course. EG: for cse day it's 12. If it doesn't exist the value is 0
     public int getTotalSemester(String campus, String department, String program) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         final String TABLE_NAME = "departments_"+campus;
         final String COLUMN_DEPARTMENTS = "departments";
         String[] columnNames = getColumnNames(TABLE_NAME);
@@ -194,7 +194,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
     public String getCurrentSemester(String campus, String department, String program) {
         final String TABLE_NAME = "current_semester";
         String[] columnNames = getColumnNames(TABLE_NAME);
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(TABLE_NAME, columnNames, null, null, null, null, null);
         String semester = null;
         if (cursor.moveToFirst()) {
@@ -215,7 +215,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
     public int getSemesterCount(String campus, String department, String program) {
         final String TABLE_NAME = "current_semester";
         String[] columnNames = getColumnNames(TABLE_NAME);
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(TABLE_NAME, columnNames, null, null, null, null, null);
         int semester = 1;
         if (cursor.moveToFirst()) {
@@ -256,7 +256,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
 
     //Checks if table exists in the db using table name
     public boolean doesTableExist(final String TABLE_NAME) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         boolean isTableExisting;
         try {
             Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
@@ -270,7 +270,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
 
     //Finds the list of column names of a table
     private String[] getColumnNames(final String TABLE_NAME) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
         String[] columnNames = cursor.getColumnNames();
         cursor.close();
@@ -290,7 +290,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
     //Get all the values of a particular column
     private ArrayList<String> getRowsByColumn(int column, final String TABLE_NAME, String[] columnNames) {
         ArrayList<String> rows = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = null;
         cursor = db.query(TABLE_NAME, columnNames, null, null, null, null, null);
         if (cursor.moveToFirst()) {
@@ -340,7 +340,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
 
     //All methods below this are for DataChecker
     public boolean checkDepartment(String campus, String department) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = getWritableDatabase();
         final String TABLE_NAME = "departments_" + campus;
         final String COLUMN_DEPARTMENTS = "departments";
         String[] columnNames = getColumnNames(TABLE_NAME);

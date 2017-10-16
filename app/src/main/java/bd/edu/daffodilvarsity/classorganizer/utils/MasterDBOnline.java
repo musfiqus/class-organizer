@@ -13,6 +13,7 @@ public class MasterDBOnline extends MasterDBOffline {
 
     private MasterDBOnline(Context context) {
         super(context, UPDATED_DATABASE_NAME, new PrefManager(context).getMasterDBVersion());
+        setForcedUpgrade();
     }
 
     public static MasterDBOnline getInstance(Context context) {
