@@ -16,8 +16,7 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
  */
 
 public class MasterDBOffline extends SQLiteAssetHelper {
-
-    public static final int OFFLINE_DATABASE_VERSION = 15;
+    public static final int OFFLINE_DATABASE_VERSION = 16;
 
     //Increment the version to erase previous db
     private static final String COLUMN_COURSE_CODE = "course_code";
@@ -26,12 +25,11 @@ public class MasterDBOffline extends SQLiteAssetHelper {
     private static final String COLUMN_ROOM_NO = "room_no";
     private static final String COLUMN_TIME = "time_data";
     private ArrayList<DayData> finalDayData = new ArrayList<>();
-    public static final String DATABASE_NAME = "masterdb.db";
     private Context mContext;
     private static MasterDBOffline mInstance = null;
 
     private MasterDBOffline(Context context) {
-        super(context, DATABASE_NAME, null, new PrefManager(context).getDatabaseVersion());
+        super(context, new PrefManager(context).getOfflineDbName(), null, new PrefManager(context).getDatabaseVersion());
         setForcedUpgrade();
         mContext = context.getApplicationContext();
     }

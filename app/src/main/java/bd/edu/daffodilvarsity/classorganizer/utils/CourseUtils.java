@@ -12,13 +12,12 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
  */
 
 public class CourseUtils{
-    public static final int OFFLINE_DATABASE_VERSION = 8;
+
 
     public static final int GET_CAMPUS = 0;
     public static final int GET_DEPARTMENT = 1;
     public static final int GET_START_TIME = 2;
     public static final int GET_END_TIME = 4;
-    public static final String DATABASE_NAME = "masterdb.db";
 
     private Context mContext;
     private boolean isUpdatedOnline;
@@ -154,5 +153,7 @@ public class CourseUtils{
             return MasterDBOffline.getInstance(mContext).checkDepartment(campus, department);
         }
     }
+
+
 
 }

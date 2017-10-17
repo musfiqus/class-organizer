@@ -51,7 +51,6 @@ import bd.edu.daffodilvarsity.classorganizer.service.NotificationRestartService;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOffline;
-import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOnline;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.RoutineLoader;
 
@@ -68,24 +67,19 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
 
 
     //TODO Comment it out before publishing, only for testing purpose
-    public static final String DATABASE_VERSION_TAG = "AlphaDatabaseVersion";
-    public static final String DATABASE_URL_TAG = "AlphaURL";
+//    public static final String DATABASE_VERSION_TAG = "AlphaDatabaseVersion";
+//    public static final String DATABASE_URL_TAG = "AlphaURL";
 
 
 
-//    public static final String DATABASE_VERSION_TAG = "MasterDatabaseVersion";
-//    public static final String DATABASE_URL_TAG = "MasterURL";
+    public static final String DATABASE_VERSION_TAG = "MasterDatabaseVersion";
+    public static final String DATABASE_URL_TAG = "MasterURL";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         prefManager = new PrefManager(this);
-        //Managing compat with previous version
-        if (prefManager.getMasterDBVersion() <= MasterDBOffline.OFFLINE_DATABASE_VERSION) {
-            prefManager.setUpdatedOnline(false);
-        }
-
         routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), this, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -122,6 +116,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
             }
         }
 
+
         //Checking for built in DB updates
         offlineUpdate();
         //Checking if we missed any semester update
@@ -136,6 +131,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
 
         //Aaannnd just before loading data we'll check for an online update
         checkFirebase();
+
     }
 
     @Override
@@ -284,7 +280,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     //Processes the update if the in app db is updated
     private void offlineUpdate() {
         //If there is a new routine, update
-        if (MasterDBOffline.OFFLINE_DATABASE_VERSION > prefManager.getMasterDBVersion()) {
+        if (MasterDBOffline.OFFLINE_DATABASE_VERSION > prefManager.getOfflineDbVersion() && MasterDBOffline.OFFLINE_DATABASE_VERSION > prefManager.getOnlineDbVersion()) {
             prefManager.setUpdatedOnline(false);
             prefManager.incrementDatabaseVersion();
             if (routineLoader.isNewSemesterAvailable()) {
@@ -295,6 +291,8 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
                     showSnackBar(this, "Error loading updated routine!");
                 }
             }
+            FileUtils.deleteMasterDb(this, false, prefManager.getOfflineDbVersion());
+            prefManager.saveOfflineDbVersion(MasterDBOffline.OFFLINE_DATABASE_VERSION);
         }
     }
 
@@ -501,7 +499,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
                 String dlURL = params[0];
                 newDBVersion = Integer.parseInt(params[1]);
                 if (dlURL != null) {
-                    FileUtils.dbDownloader(dlURL, getDatabasePath(MasterDBOnline.UPDATED_DATABASE_NAME).getAbsolutePath());
+                    FileUtils.dbDownloader(dlURL, FileUtils.generateMasterOnlineDbPath(getApplicationContext(), newDBVersion));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -531,12 +529,20 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
                     } else {
                         upgradeRoutine(false, newDBVersion, true);
                     }
+                    //Delete previous db
+                    FileUtils.deleteMasterDb(getApplicationContext(), true, prefManager.getOnlineDbVersion());
+                    prefManager.saveOnlineDbVersion(newDBVersion);
                 } else {
+                    //Delete newly downloaded db
+                    FileUtils.deleteMasterDb(getApplicationContext(), true, newDBVersion);
                     prefManager.setUpdatedOnline(prevUpdateValue);
                     prefManager.setMasterDbVersion(prevDatabaseValue);
+                    prefManager.incrementDatabaseVersion();
                     showSnackBar(MainActivity.this, "Update corrupted");
                 }
             } else {
+                //Delete downloaded db
+                FileUtils.deleteMasterDb(getApplicationContext(), true, newDBVersion);
                 showSnackBar(MainActivity.this, "Download failed");
             }
         }

@@ -47,7 +47,7 @@ public final class FileUtils {
         }
     }
 
-    public void copyFile(File sourceFile, File destFile) throws IOException {
+    public static void copyFile(File sourceFile, File destFile) throws IOException {
         if (!destFile.exists()) {
             destFile.createNewFile();
         }
@@ -78,6 +78,49 @@ public final class FileUtils {
             }
             if (os != null) {
                 os.close();
+            }
+        }
+    }
+
+    public static String generateMasterOnlineDbPath(Context context, int dbVersion) {
+        return context.getApplicationContext().getDatabasePath("masterdb_online_"+dbVersion+".db").getAbsolutePath();
+    }
+
+    public static String generateMasterOfflineDbPath(Context context, int dbVersion) {
+        return context.getApplicationContext().getDatabasePath("masterdb_offline_"+dbVersion+".db").getAbsolutePath();
+    }
+
+    public static String getOnlineDbName(int dbVersion) {
+        return "masterdb_online_"+dbVersion+".db";
+    }
+
+    public static String getOfflineDbName(int dbVersion) {
+        return "masterdb_offline_"+dbVersion+".db";
+    }
+
+    public static void deleteMasterDb(Context context, boolean isOnline, int dbVersion) {
+        if (isOnline) {
+            context.deleteDatabase(getOnlineDbName(dbVersion));
+        } else {
+            context.deleteDatabase(getOfflineDbName(dbVersion));
+        }
+        if (isOnline) {
+            File deleteFile = new File(generateMasterOnlineDbPath(context, dbVersion));
+            if (deleteFile.exists()) {
+                File deleteJournal = new File(generateMasterOnlineDbPath(context, dbVersion)+"-journal");
+                if (deleteJournal.exists()) {
+                    deleteJournal.getAbsoluteFile().delete();
+                }
+                deleteFile.getAbsoluteFile().delete();
+            }
+        } else {
+            File deleteFile = new File(generateMasterOfflineDbPath(context, dbVersion));
+            if (deleteFile.exists()) {
+                File deleteJournal = new File(generateMasterOfflineDbPath(context, dbVersion)+"-journal");
+                if (deleteJournal.exists()) {
+                    deleteJournal.getAbsoluteFile().delete();
+                }
+                deleteFile.getAbsoluteFile().delete();
             }
         }
     }

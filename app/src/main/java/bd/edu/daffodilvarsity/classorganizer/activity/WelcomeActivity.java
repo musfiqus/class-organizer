@@ -30,22 +30,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.net.URL;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.adapter.WelcomeSlidePagerAdapter;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.DataChecker;
 import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
-import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOnline;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 
 public class WelcomeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -334,7 +328,6 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                 }
                 final int newDBVersion = newVersion;
                 if (prefManager.getMasterDBVersion() < newDBVersion) {
-                    isUpdateAvailable = true;
                     DatabaseReference urlReference = firebaseDatabase.getReference(MainActivity.DATABASE_URL_TAG);
                     urlReference.addValueEventListener(new ValueEventListener() {
                         @Override
@@ -345,7 +338,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                             } catch (Exception ignored) {
                             }
                             if (dbURL != null) {
-                                String[] arr = new String[]{dbURL, ""+newDBVersion};
+                                String[] arr = new String[]{dbURL, "" + newDBVersion};
                                 new DbDownloadTask().execute(arr);
                             }
                         }
@@ -373,10 +366,11 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
 
     private class StartUpdateTask extends AsyncTask<Void, Void, Void> {
         private boolean isOnline;
+
         // TCP/HTTP/DNS (depending on the port, 53=DNS, 80=HTTP, etc.)
         public boolean isOnline() {
             try {
-                int timeoutMs = 1500;
+                int timeoutMs = 2000;
                 Socket sock = new Socket();
                 SocketAddress sockaddr = new InetSocketAddress("8.8.8.8", 53);
 
@@ -384,7 +378,9 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                 sock.close();
 
                 return true;
-            } catch (IOException e) { return false; }
+            } catch (IOException e) {
+                return false;
+            }
         }
 
         @Override
@@ -428,7 +424,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                 String dlURL = params[0];
                 newDBVersion = Integer.parseInt(params[1]);
                 if (dlURL != null) {
-                    FileUtils.dbDownloader(dlURL, getDatabasePath(MasterDBOnline.UPDATED_DATABASE_NAME).getAbsolutePath());
+                    FileUtils.dbDownloader(dlURL, FileUtils.generateMasterOnlineDbPath(getApplicationContext(), newDBVersion));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -452,26 +448,27 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                     isUpdateSuccessful = false;
                     prefManager.setMasterDbVersion(prevDB);
                 }
-                if (isUpdateAvailable) {
-                    if (isUpdateSuccessful) {
-                        isUpdateAlreadyExecuted = true;
-                        checkText.setText(R.string.update_successful_text);
-                        cloud.setImageResource(R.drawable.ic_cloud_done_white_48dp);
-                        prefManager.setUpdatedOnline(true);
-
-                    } else {
-                        checkText.setText(R.string.update_failed_text);
-                    }
-                } else {
+                if (isUpdateSuccessful) {
                     isUpdateAlreadyExecuted = true;
-                    checkText.setText(R.string.already_updated_text);
+                    checkText.setText(R.string.update_successful_text);
                     cloud.setImageResource(R.drawable.ic_cloud_done_white_48dp);
+                    prefManager.setUpdatedOnline(true);
+                    prefManager.setMasterDbVersion(newDBVersion);
+                    //Delete previous db if available
+                    FileUtils.deleteMasterDb(getApplicationContext(), true, prefManager.getOnlineDbVersion());
+                    prefManager.saveOnlineDbVersion(newDBVersion);
+                } else {
+                    //Delete newly downloaded db
+                    FileUtils.deleteMasterDb(getApplicationContext(), true, newDBVersion);
+                    checkText.setText(R.string.update_failed_text);
                 }
                 btnNext.setText(R.string.next);
+            } else {
+                //Delete newly downloaded db
+                FileUtils.deleteMasterDb(getApplicationContext(), true, newDBVersion);
             }
         }
     }
-
 
 
 }

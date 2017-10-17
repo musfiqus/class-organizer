@@ -43,6 +43,8 @@ public class PrefManager {
     private static final String PREF_REMINDER_TIME_DELAY = "ReminderTimeDelayInMinutes";
     private static final String SAVE_MASTERDB_VERSION = "MasterDB_Version";
     private static final String SAVE_DATABASE_VERSION = "Incremental_Database_Version";
+    private static final String SAVE_ONLINEDB_VERSION = "Online_Database_Version";
+    private static final String SAVE_OFFLINEDB_VERSION = "Offline_Database_Version";
     private static final String PREF_SEMESTER_COUNT = "Current_Semester_Count";
     public static final String SAVE_DATA_TAG = "save";
     public static final String ADD_DATA_TAG = "add";
@@ -82,6 +84,32 @@ public class PrefManager {
                 alarmHelper.startAll();
             }
         }
+    }
+
+    public void saveOnlineDbVersion(int dbVersion) {
+        editor.remove(SAVE_ONLINEDB_VERSION).apply();
+        editor.putInt(SAVE_ONLINEDB_VERSION, dbVersion).apply();
+    }
+
+    public int getOnlineDbVersion() {
+        return pref.getInt(SAVE_ONLINEDB_VERSION, 1);
+    }
+
+    public void saveOfflineDbVersion(int dbVersion) {
+        editor.remove(SAVE_OFFLINEDB_VERSION).apply();
+        editor.putInt(SAVE_OFFLINEDB_VERSION, dbVersion).apply();
+    }
+
+    public int getOfflineDbVersion() {
+        return pref.getInt(SAVE_OFFLINEDB_VERSION, MasterDBOffline.OFFLINE_DATABASE_VERSION-1);
+    }
+
+    public final String getOnlineDbName() {
+        return "masterdb_online_"+getMasterDBVersion()+".db";
+    }
+
+    public final String getOfflineDbName() {
+        return "masterdb_offline_"+MasterDBOffline.OFFLINE_DATABASE_VERSION+".db";
     }
 
     public ArrayList<DayData> getSavedDayData() {

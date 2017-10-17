@@ -8,11 +8,10 @@ import android.content.Context;
  */
 
 public class MasterDBOnline extends MasterDBOffline {
-    public static final String UPDATED_DATABASE_NAME = "masterdb_online.db";
     private static MasterDBOnline mInstance = null;
 
     private MasterDBOnline(Context context) {
-        super(context, UPDATED_DATABASE_NAME, new PrefManager(context).getDatabaseVersion());
+        super(context, new PrefManager(context).getOnlineDbName(), new PrefManager(context).getDatabaseVersion());
         setForcedUpgrade();
     }
 
