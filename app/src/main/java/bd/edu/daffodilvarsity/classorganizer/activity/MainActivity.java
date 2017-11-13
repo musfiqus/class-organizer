@@ -29,6 +29,8 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -64,6 +66,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     private boolean isActivityRunning = false;
     private boolean updateDialogueBlocked = false;
     private boolean isDownloadSuccessful;
+    private AdView adView;
 
 
     //TODO Comment it out before publishing, only for testing purpose
@@ -79,6 +82,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         prefManager = new PrefManager(this);
         routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), this, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
 
@@ -131,6 +135,12 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
 
         //Aaannnd just before loading data we'll check for an online update
         checkFirebase();
+
+        //And load adz
+        if (adView == null) {
+            adView = (AdView) findViewById(R.id.adView);
+        }
+        adView.loadAd(new AdRequest.Builder().build());
 
     }
 

@@ -8,11 +8,27 @@
     android:background="@android:color/white"
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
-
-    <include
-        layout="@layout/app_bar_main"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+        <include
+            android:id="@+id/main_view"
+            layout="@layout/app_bar_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <com.google.android.gms.ads.AdView
+            xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            ads:adSize="BANNER"
+            ads:adUnitId="@string/admob_ad_unit_classes">
+        </com.google.android.gms.ads.AdView>
+
+    </RelativeLayout>
+
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"

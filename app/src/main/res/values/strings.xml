@@ -132,4 +132,12 @@
     <string name="update_failed_text">Update failed! Press Next</string>
     <string name="skip">SKIP</string>
     <string name="check_latest_routine_text">Checking for latest routines</string>
+
+    <!-- Admob Ad unitID -->
+    <string name="admob_ad_unit_classes">admob_unit_id</string>
+
+    <!-- Admob appID -->
+    <string name="admob_app_id">admob_pub_id</string>
+
+    <string name="notification_channel_name">Classes</string>
 </resources>

@@ -20,7 +20,7 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
     <!-- App bar style -->
-    <style name="RoutineAppBarStyle" parent="style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+    <style name="RoutineAppBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <!-- Remove the shadow below the app bar -->
         <item name="elevation">0dp</item>
     </style>

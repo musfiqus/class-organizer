@@ -27,16 +27,16 @@ def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 27
+    buildToolsVersion "27.0.0"
     defaultConfig {
         applicationId "bd.edu.daffodilvarsity.classorganizer"
         minSdkVersion 16
-        targetSdkVersion 25
-        versionName '4.2.3'
+        targetSdkVersion 27
+        versionName '4.2.4'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 43
+        versionCode 44
     }
     signingConfigs {
         release {
@@ -65,27 +65,47 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
+    //Colorful theme, modified
     compile project(':Colorful')
-    compile('com.crashlytics.sdk.android:crashlytics:2.7.0@aar') {
-        transitive = true
-    }
+
+    //All support lib shit
     compile "com.android.support:appcompat-v7:$supportLibVersion"
     compile "com.android.support:support-v13:$supportLibVersion"
     compile "com.android.support:design:$supportLibVersion"
     compile "com.android.support.constraint:constraint-layout:1.0.2"
     compile "com.android.support:cardview-v7:$supportLibVersion"
-    compile "com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1"
-    compile "com.google.code.gson:gson:2.8.0"
     compile "com.android.support:support-v4:$supportLibVersion"
     compile "com.android.support:support-vector-drawable:$supportLibVersion"
     compile "com.android.support:preference-v7:$supportLibVersion"
     compile "com.android.support:preference-v14:$supportLibVersion"
-    compile "com.afollestad.material-dialogs:core:0.9.4.5"
     compile "com.android.support:recyclerview-v7:$supportLibVersion"
-    compile "io.github.yavski:fab-speed-dial:1.0.6"
+
+    //Sqlite asset helper for preloaded db
+    compile "com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1"
+
+    //Lib for loading animations
     compile 'com.github.ybq:Android-SpinKit:1.1.0'
+
+    //Expanded fab button lib
+    compile "io.github.yavski:fab-speed-dial:1.0.6"
+
+    //Material dialogues
+    compile "com.afollestad.material-dialogs:core:0.9.4.5"
+
+    //GSON for saving objects
+    compile "com.google.code.gson:gson:2.8.2"
+
     //Do not update that shitty firebase
-    compile "com.google.firebase:firebase-database:11.0.4"
+    compile "com.google.firebase:firebase-database:11.6.0"
+    compile 'com.google.firebase:firebase-core:11.6.0'
+    compile('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
+        transitive = true
+    }
+
+    //Firebase admob
+    compile 'com.google.firebase:firebase-ads:11.6.0'
+
     testCompile "junit:junit:4.12"
 }
 apply plugin: 'com.google.gms.google-services'

@@ -1,12 +1,14 @@
 package bd.edu.daffodilvarsity.classorganizer.receiver;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.preference.PreferenceManager;
@@ -45,6 +47,11 @@ public class NotificationPublisher extends BroadcastReceiver {
     }
 
     private void showNotification(int index, Context context, DayData dayData) {
+
+        //Create notification channel ID
+        String CHANNEL_ID = "notification_channel_01";
+
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean isRamadanTime = preferences.getBoolean("ramadan_preference", false);
 
@@ -62,7 +69,7 @@ public class NotificationPublisher extends BroadcastReceiver {
             article = "a";
         }
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle("You have " + article + " " + dayData.getCourseCode() + " class soon")
                 .setContentText("Today's class is at "
                         + (isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(dayData.getTime(), dayData.getTimeWeight()).substring(0, 8) : dayData.getTime()).substring(0, 8)
@@ -73,14 +80,23 @@ public class NotificationPublisher extends BroadcastReceiver {
                 .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND)
                 .setSmallIcon(getNotificationIcon())
                 .setContentIntent(pendingIntent);
+
         Notification notification = new NotificationCompat.InboxStyle(builder)
                 .addLine("Time: " + (isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(dayData.getTime(), dayData.getTimeWeight()).substring(0, 8) : dayData.getTime()).substring(0, 8))
                 .addLine("Room: " + dayData.getRoomNo())
                 .setSummaryText(dayData.getCourseTitle())
                 .setBigContentTitle("Details of Today's Class")
                 .build();
+
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (notificationManager != null) {
+
+            //Create notification channel if OREO
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel channel = new NotificationChannel(CHANNEL_ID, context.getResources().getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_HIGH);
+                notificationManager.createNotificationChannel(channel);
+            }
+
             notificationManager.notify(index, notification);
         }
     }

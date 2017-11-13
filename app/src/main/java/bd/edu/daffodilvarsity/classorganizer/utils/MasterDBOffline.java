@@ -61,17 +61,20 @@ public class MasterDBOffline extends SQLiteAssetHelper {
         CourseUtils courseUtils = CourseUtils.getInstance(mContext);
         if (courseCodes != null) {
             for (String eachCourse : courseCodes) {
-                String id = removeSpaces(eachCourse).toUpperCase() + strippedStringMinimal(section).toUpperCase();
-                Cursor cursor = db.query(currentTable, new String[]{COLUMN_COURSE_CODE,
-                                COLUMN_TEACHERS_INITIAL, COLUMN_WEEK_DAYS, COLUMN_ROOM_NO, COLUMN_TIME}, COLUMN_COURSE_CODE + "=?",
-                        new String[]{id}, null, null, null, null);
-                if (cursor.moveToFirst()) {
-                    do {
-                        DayData newDayData = new DayData(getCourseCode(eachCourse), trimInitial(cursor.getString(1)), section, level, term, cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(eachCourse, campus, dept, program));
-                        finalDayData.add(newDayData);
-                    } while (cursor.moveToNext());
+                //Checking if any course is null
+                if (eachCourse != null) {
+                    String id = removeSpaces(eachCourse).toUpperCase() + strippedStringMinimal(section).toUpperCase();
+                    Cursor cursor = db.query(currentTable, new String[]{COLUMN_COURSE_CODE,
+                                    COLUMN_TEACHERS_INITIAL, COLUMN_WEEK_DAYS, COLUMN_ROOM_NO, COLUMN_TIME}, COLUMN_COURSE_CODE + "=?",
+                            new String[]{id}, null, null, null, null);
+                    if (cursor.moveToFirst()) {
+                        do {
+                            DayData newDayData = new DayData(getCourseCode(eachCourse), trimInitial(cursor.getString(1)), section, level, term, cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(eachCourse, campus, dept, program));
+                            finalDayData.add(newDayData);
+                        } while (cursor.moveToNext());
+                    }
+                    cursor.close();
                 }
-                cursor.close();
             }
         }
         return finalDayData;

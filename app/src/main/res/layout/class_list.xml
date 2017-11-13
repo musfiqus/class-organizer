@@ -9,4 +9,6 @@
     android:divider="@null"
     android:dividerHeight="0dp"
     android:drawSelectorOnTop="true"
-    android:orientation="vertical" />
+    android:orientation="vertical"
+    android:paddingBottom="64dp"
+    android:clipToPadding="false"/>

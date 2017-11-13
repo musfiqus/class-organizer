@@ -122,12 +122,7 @@ public class DayFragmentPagerAdapter extends FragmentStatePagerAdapter {
             pageCount++;
 
             //Sort daydata by time weight, ascending order
-            Collections.sort(satDayData, new Comparator<DayData>() {
-                @Override
-                public int compare(DayData o1, DayData o2) {
-                    return Double.valueOf(o1.getTimeWeight()).compareTo(o2.getTimeWeight());
-                }
-            });
+            sortDayData(satDayData);
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList(BUNDLE_TAG, satDayData);
             bundles.add(bundle);
@@ -136,12 +131,7 @@ public class DayFragmentPagerAdapter extends FragmentStatePagerAdapter {
         if (hasSunDay) {
             pageCount++;
             //Sort daydata by time weight, ascending order
-            Collections.sort(sunDayData, new Comparator<DayData>() {
-                @Override
-                public int compare(DayData o1, DayData o2) {
-                    return Double.valueOf(o1.getTimeWeight()).compareTo(o2.getTimeWeight());
-                }
-            });
+            sortDayData(sunDayData);
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList(BUNDLE_TAG, sunDayData);
             bundles.add(bundle);
@@ -150,12 +140,7 @@ public class DayFragmentPagerAdapter extends FragmentStatePagerAdapter {
         if (hasMonDay) {
             pageCount++;
             //Sort daydata by time weight, ascending order
-            Collections.sort(monDayData, new Comparator<DayData>() {
-                @Override
-                public int compare(DayData o1, DayData o2) {
-                    return Double.valueOf(o1.getTimeWeight()).compareTo(o2.getTimeWeight());
-                }
-            });
+            sortDayData(monDayData);
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList(BUNDLE_TAG, monDayData);
             bundles.add(bundle);
@@ -164,12 +149,7 @@ public class DayFragmentPagerAdapter extends FragmentStatePagerAdapter {
         if (hasTueDay) {
             pageCount++;
             //Sort daydata by time weight, ascending order
-            Collections.sort(tueDayData, new Comparator<DayData>() {
-                @Override
-                public int compare(DayData o1, DayData o2) {
-                    return Double.valueOf(o1.getTimeWeight()).compareTo(o2.getTimeWeight());
-                }
-            });
+            sortDayData(tueDayData);
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList(BUNDLE_TAG, tueDayData);
             bundles.add(bundle);
@@ -178,12 +158,7 @@ public class DayFragmentPagerAdapter extends FragmentStatePagerAdapter {
         if (hasWedDay) {
             pageCount++;
             //Sort daydata by time weight, ascending order
-            Collections.sort(wedDayData, new Comparator<DayData>() {
-                @Override
-                public int compare(DayData o1, DayData o2) {
-                    return Double.valueOf(o1.getTimeWeight()).compareTo(o2.getTimeWeight());
-                }
-            });
+            sortDayData(wedDayData);
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList(BUNDLE_TAG, wedDayData);
             bundles.add(bundle);
@@ -192,12 +167,7 @@ public class DayFragmentPagerAdapter extends FragmentStatePagerAdapter {
         if (hasThuDay) {
             pageCount++;
             //Sort daydata by time weight, ascending order
-            Collections.sort(thuDayData, new Comparator<DayData>() {
-                @Override
-                public int compare(DayData o1, DayData o2) {
-                    return Double.valueOf(o1.getTimeWeight()).compareTo(o2.getTimeWeight());
-                }
-            });
+            sortDayData(thuDayData);
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList(BUNDLE_TAG, thuDayData);
             bundles.add(bundle);
@@ -206,16 +176,20 @@ public class DayFragmentPagerAdapter extends FragmentStatePagerAdapter {
         if (hasFriDay) {
             pageCount++;
             //Sort daydata by time weight, ascending order
-            Collections.sort(friDayData, new Comparator<DayData>() {
-                @Override
-                public int compare(DayData o1, DayData o2) {
-                    return Double.valueOf(o1.getTimeWeight()).compareTo(o2.getTimeWeight());
-                }
-            });
+            sortDayData(friDayData);
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList(BUNDLE_TAG, friDayData);
             bundles.add(bundle);
             titles.add(context.getString(R.string.friday));
         }
+    }
+
+    private void sortDayData(ArrayList<DayData> dayDataList) {
+        Collections.sort(dayDataList, new Comparator<DayData>() {
+            @Override
+            public int compare(DayData o1, DayData o2) {
+                return Double.valueOf(o1.getTimeWeight()).compareTo(o2.getTimeWeight());
+            }
+        });
     }
 }
