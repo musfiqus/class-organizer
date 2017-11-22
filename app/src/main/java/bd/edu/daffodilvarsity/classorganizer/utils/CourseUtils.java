@@ -2,6 +2,12 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.content.Context;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
@@ -154,6 +160,45 @@ public class CourseUtils{
         }
     }
 
+    public static DayData convertToDayData(byte[] dayByte) {
+        ByteArrayInputStream bis = new ByteArrayInputStream(dayByte);
+        ObjectInput in = null;
+        DayData dayData = null;
+        try {
+            in = new ObjectInputStream(bis);
+            dayData = (DayData)in.readObject();
+        } catch (ClassNotFoundException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return dayData;
+    }
 
-
+    public static byte[] convertToByteArray(DayData dayData) {
+        byte[] data = null;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        ObjectOutputStream out;
+        try {
+            out = new ObjectOutputStream(bos);
+            out.writeObject(dayData);
+            out.flush();
+            data = bos.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                bos.close();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return data;
+    }
 }

@@ -49,7 +49,7 @@ import java.util.Locale;
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.adapter.DayFragmentPagerAdapter;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
-import bd.edu.daffodilvarsity.classorganizer.service.NotificationRestartService;
+import bd.edu.daffodilvarsity.classorganizer.service.NotificationRestartJobIntentService;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOffline;
@@ -116,7 +116,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         boolean hasNotification = preferences.getBoolean("notification_preference", true);
         if (hasNotification) {
             if (!alarmRecreated) {
-                startService(new Intent(this, NotificationRestartService.class));
+                NotificationRestartJobIntentService.enqueueWork(this, new Intent(this, NotificationRestartJobIntentService.class));
             }
         }
 

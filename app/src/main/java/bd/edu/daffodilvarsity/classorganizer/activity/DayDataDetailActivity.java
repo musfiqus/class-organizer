@@ -20,6 +20,7 @@ import java.io.ObjectInputStream;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.fragment.DayDataDetailFragment;
 import bd.edu.daffodilvarsity.classorganizer.R;
+import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 
 /**
  * An activity representing a single DayData detail screen. This
@@ -78,7 +79,7 @@ public class DayDataDetailActivity extends ColorfulActivity {
                 if (bundle != null) {
                     byte[] byteDayData = bundle.getByteArray("NotificationData");
                     if (byteDayData != null) {
-                        dayData = convertToDayData(byteDayData);
+                        dayData = CourseUtils.convertToDayData(byteDayData);
                         fromNotification = true;
                     }
                 }
@@ -103,27 +104,6 @@ public class DayDataDetailActivity extends ColorfulActivity {
             outState.putCharSequence("AppBarTitle", bundle.getCharSequence("AppBarTitle"));
         }
 
-    }
-
-    private DayData convertToDayData(byte[] dayByte) {
-        ByteArrayInputStream bis = new ByteArrayInputStream(dayByte);
-        ObjectInput in = null;
-        DayData dayData = null;
-        try {
-            in = new ObjectInputStream(bis);
-            dayData = (DayData)in.readObject();
-        } catch (ClassNotFoundException | IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-        return dayData;
     }
 
     @Override

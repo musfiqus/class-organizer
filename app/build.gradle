@@ -28,15 +28,15 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     compileSdkVersion 27
-    buildToolsVersion "27.0.0"
+    buildToolsVersion "27.0.1"
     defaultConfig {
         applicationId "bd.edu.daffodilvarsity.classorganizer"
         minSdkVersion 16
         targetSdkVersion 27
-        versionName '4.2.4'
+        versionName '4.2.5'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 44
+        versionCode 45
     }
     signingConfigs {
         release {
@@ -70,6 +70,7 @@ dependencies {
     compile project(':Colorful')
 
     //All support lib shit
+    implementation "com.android.support:preference-v7:$supportLibVersion"
     compile "com.android.support:appcompat-v7:$supportLibVersion"
     compile "com.android.support:support-v13:$supportLibVersion"
     compile "com.android.support:design:$supportLibVersion"

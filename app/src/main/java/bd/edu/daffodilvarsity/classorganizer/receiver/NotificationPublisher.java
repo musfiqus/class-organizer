@@ -22,6 +22,7 @@ import bd.edu.daffodilvarsity.classorganizer.activity.DayDataDetailActivity;
 import bd.edu.daffodilvarsity.classorganizer.adapter.DayDataAdapter;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.utils.AlarmHelper;
+import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 
 /**
  * Created by Mushfiqus Salehin on 6/5/2017.
@@ -29,6 +30,7 @@ import bd.edu.daffodilvarsity.classorganizer.utils.AlarmHelper;
  */
 
 public class NotificationPublisher extends BroadcastReceiver {
+    private static String CHANNEL_ID = "notification_channel_01";
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getBundleExtra("bundled_data");
@@ -47,30 +49,18 @@ public class NotificationPublisher extends BroadcastReceiver {
     }
 
     private void showNotification(int index, Context context, DayData dayData) {
-
-        //Create notification channel ID
-        String CHANNEL_ID = "notification_channel_01";
-
-
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean isRamadanTime = preferences.getBoolean("ramadan_preference", false);
 
         Intent notificationIntent = new Intent(context, DayDataDetailActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putByteArray("NotificationData", convertToByteArray(dayData));
+        bundle.putByteArray("NotificationData", CourseUtils.convertToByteArray(dayData));
         notificationIntent.putExtra("bundled_data", bundle);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context, index, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        String article = dayData.getCourseCode().substring(0, 1);
-        if (article.equalsIgnoreCase("a") || article.equalsIgnoreCase("e") || article.equalsIgnoreCase("i") || article.equalsIgnoreCase("o") || article.equalsIgnoreCase("u")) {
-            article = "an";
-        } else {
-            article = "a";
-        }
-
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setContentTitle("You have " + article + " " + dayData.getCourseCode() + " class soon")
+                .setContentTitle("You have " + article(dayData.getCourseCode().substring(0, 1)) + " " + dayData.getCourseCode() + " class soon")
                 .setContentText("Today's class is at "
                         + (isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(dayData.getTime(), dayData.getTimeWeight()).substring(0, 8) : dayData.getTime()).substring(0, 8)
                         + " in room " + dayData.getRoomNo())
@@ -106,24 +96,11 @@ public class NotificationPublisher extends BroadcastReceiver {
         return useWhiteIcon ? R.drawable.icon_silhouette : R.mipmap.ic_launcher;
     }
 
-    private byte[] convertToByteArray(DayData dayData) {
-        byte[] data = null;
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream out;
-        try {
-            out = new ObjectOutputStream(bos);
-            out.writeObject(dayData);
-            out.flush();
-            data = bos.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                bos.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+    private String article(String firstChar) {
+        if (firstChar.equalsIgnoreCase("a") || firstChar.equalsIgnoreCase("e") || firstChar.equalsIgnoreCase("i") || firstChar.equalsIgnoreCase("o") || firstChar.equalsIgnoreCase("u")) {
+            return "an";
+        } else {
+            return "a";
         }
-        return data;
     }
 }

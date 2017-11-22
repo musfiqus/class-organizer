@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
 
-import bd.edu.daffodilvarsity.classorganizer.service.NotificationRestartService;
+import bd.edu.daffodilvarsity.classorganizer.service.NotificationRestartJobIntentService;
 
 /**
  * Created by Mushfiqus Salehin on 6/6/2017.
@@ -21,8 +21,8 @@ public class BootReceiver extends BroadcastReceiver {
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                 boolean hasNotification = preferences.getBoolean("notification_preference", true);
                 if (hasNotification) {
-                    Intent i = new Intent(context, NotificationRestartService.class);
-                    context.startService(i);
+                    Intent i = new Intent(context, NotificationRestartJobIntentService.class);
+                    NotificationRestartJobIntentService.enqueueWork(context, i);
                 }
             }
         }
