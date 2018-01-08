@@ -6,5 +6,5 @@
     android:gravity="center"
     android:textAllCaps="true"
     android:fontFamily="sans-serif"
-    android:textColor="@color/dot_dark_screen4"
+    android:textColor="@color/dot_dark_screen5"
     android:textSize="18sp" />

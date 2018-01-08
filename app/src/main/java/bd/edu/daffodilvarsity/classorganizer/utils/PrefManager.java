@@ -46,6 +46,8 @@ public class PrefManager {
     private static final String SAVE_ONLINEDB_VERSION = "Online_Database_Version";
     private static final String SAVE_OFFLINEDB_VERSION = "Offline_Database_Version";
     private static final String PREF_SEMESTER_COUNT = "Current_Semester_Count";
+    private static final String PREF_USER_TYPE = "Current_User_Type";
+    private static final String PREF_TEACHER_INITIAL = "User_Teacher_Initial";
     public static final String SAVE_DATA_TAG = "save";
     public static final String ADD_DATA_TAG = "add";
     public static final String EDIT_DATA_TAG = "edit";
@@ -131,10 +133,25 @@ public class PrefManager {
         return pref.getInt(SAVE_DATABASE_VERSION, getMasterDBVersion());
     }
 
+    public void setUserType(boolean isStudent) {
+        editor.remove(PREF_USER_TYPE).apply();
+        editor.putBoolean(PREF_USER_TYPE, isStudent).apply();
+    }
+
+    public boolean isUserStudent() {
+        return pref.getBoolean(PREF_USER_TYPE, true);
+    }
+
     public void saveSection(String section) {
         editor.remove(SAVE_SECTION).apply();
         editor.putString(SAVE_SECTION, section).apply();
     }
+
+    public void saveTeacherInitial(String initial) {
+        editor.remove(PREF_TEACHER_INITIAL).apply();
+        editor.putString(PREF_TEACHER_INITIAL, initial).apply();
+    }
+
 
     public void saveTerm(int term) {
         editor.remove(SAVE_TERM).apply();
@@ -399,6 +416,10 @@ public class PrefManager {
 
     public String getSection() {
         return pref.getString(SAVE_SECTION, null);
+    }
+
+    public String getTeacherInitial() {
+        return pref.getString(PREF_TEACHER_INITIAL, null);
     }
 
     public int getTerm() {

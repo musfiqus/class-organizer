@@ -163,8 +163,8 @@ public class SettingsActivity extends ColorfulActivity {
             MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
             builder.title(R.string.dept_popup_title);
             final View dialogView = getActivity().getLayoutInflater().inflate(R.layout.campus_spinner_layout, getListView(), false);
-            //Designing the spinners
-            campusHelper = new SpinnerHelper(getContext(), dialogView, R.layout.spinner_row);
+            //Designing the spinners TODO
+            campusHelper = new SpinnerHelper(getContext(), dialogView, R.layout.spinner_row, true, true);
             campusHelper.setupCampusLabelBlack();
             campusHelper.setupCampus();
             final String oldDept = prefManager.getDept();
@@ -273,7 +273,7 @@ public class SettingsActivity extends ColorfulActivity {
                     builder.setTitle("Choose Your Current Class");
                     //Setting up spinners for class settings
                     View dialogView = getActivity().getLayoutInflater().inflate(R.layout.class_spinner_layout, getListView(), false);
-                    classHelper = new SpinnerHelper(getContext(), dialogView, R.layout.spinner_row);
+                    classHelper = new SpinnerHelper(getContext(), dialogView, R.layout.spinner_row, true ,false);
                     classHelper.setupClassLabelBlack();
                     classHelper.setupClass(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
                     classHelper.setClassSpinnerPositions(levelRoot, termRoot, sectionRoot);

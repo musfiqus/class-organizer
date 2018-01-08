@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -44,6 +45,7 @@ import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 
 public class WelcomeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
+    private static final String TAG = "WelcomeActivity";
 
     private ViewPager viewPager;
     private WelcomeSlidePagerAdapter myViewPagerAdapter;
@@ -110,7 +112,8 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                 R.layout.welcome_slide2,
                 R.layout.welcome_slide3,
                 R.layout.welcome_slide4,
-                R.layout.welcome_slide5};
+                R.layout.welcome_slide5,
+                R.layout.welcome_slide6};
 
         // adding bottom dots
         addBottomDots(0);
@@ -136,6 +139,9 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
             @Override
             public void onClick(View v) {
                 int current = getItem(0);
+                if (findViewById(R.id.spinner_load_spin) != null) {
+                    findViewById(R.id.spinner_load_spin).setVisibility(View.GONE);
+                }
                 viewPager.setCurrentItem(current - 1);
                 if ((current - 1) == 0) {
                     onPageSelectedCustom(0);
@@ -154,6 +160,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                     hasSkipped = true;
                 }
                 if (current == layouts.length - 1) {
+                    //class slide
                     if (myViewPagerAdapter.getClassDataCode() > 0) {
                         DataChecker.errorMessage(getApplicationContext(), myViewPagerAdapter.getClassDataCode(), null);
                         showSnackBar(myViewPagerAdapter.getCampus(), myViewPagerAdapter.getDept(), myViewPagerAdapter.getProgram(), myViewPagerAdapter.getSection(), Integer.toString(myViewPagerAdapter.getLevel() + 1), Integer.toString(myViewPagerAdapter.getTerm() + 1));
@@ -162,14 +169,13 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                         viewPager.setCurrentItem(current);
                     }
                 } else if (current == layouts.length - 2) {
-                    if (myViewPagerAdapter.getCampusDataCode() > 0) {
-                        DataChecker.errorMessage(getApplicationContext(), myViewPagerAdapter.getCampusDataCode(), null);
-                        showSnackBar(myViewPagerAdapter.getCampus(), myViewPagerAdapter.getDept(), myViewPagerAdapter.getProgram(), myViewPagerAdapter.getSection(), Integer.toString(myViewPagerAdapter.getLevel() + 1), Integer.toString(myViewPagerAdapter.getTerm() + 1));
-                        viewPager.setCurrentItem(current - 1);
-                    } else {
-                        myViewPagerAdapter.setupSectionAdapter();
-                        viewPager.setCurrentItem(current);
-                    }
+                    //campus slide
+                    String[] params = new String[] {myViewPagerAdapter.getCampus(), myViewPagerAdapter.getDept(), myViewPagerAdapter.getProgram()};
+                    new ClassSlidePreloadTask().execute(params);
+
+                } else if (current == layouts.length - 3) {
+                    //user type slide
+                    viewPager.setCurrentItem(current);
                 } else if (current < layouts.length) {
                     // move to next screen
                     viewPager.setCurrentItem(current);
@@ -272,7 +278,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
         String message = getString(R.string.contact_mailll);
         View rootView = findViewById(R.id.welcome_view_pager_parent);
         Snackbar snackbar = Snackbar.make(rootView, message, Snackbar.LENGTH_LONG);
-        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.bg_screen3));
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.bg_screen4));
         snackbar.setAction(R.string.send_mail, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -470,5 +476,55 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
         }
     }
 
+    private class ClassSlidePreloadTask extends AsyncTask<String, Void, Void> {
 
+        private static final String TAG = "ClassSlidePreloadTask";
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Log.e(TAG, "Started");
+            SpinKitView spinKitView = (SpinKitView) findViewById(R.id.spinner_load_spin);
+            spinKitView.setVisibility(View.VISIBLE);
+            btnNext.setVisibility(View.GONE);
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            if (myViewPagerAdapter.isStudent()) {
+                if (myViewPagerAdapter.getCampusDataCode() > 0) {
+                    DataChecker.errorMessage(getApplicationContext(), myViewPagerAdapter.getCampusDataCode(), null);
+                    showSnackBar(myViewPagerAdapter.getCampus(), myViewPagerAdapter.getDept(), myViewPagerAdapter.getProgram(), myViewPagerAdapter.getSection(), Integer.toString(myViewPagerAdapter.getLevel() + 1), Integer.toString(myViewPagerAdapter.getTerm() + 1));
+                } else {
+                    myViewPagerAdapter.getClassHelper().createClassAdapters(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
+                }
+            } else {
+                String campus = params[0];
+                String department = params[1];
+                String program = params[2];
+                myViewPagerAdapter.getClassHelper().createTeacherInitAdapter(campus, department, program);
+                Log.e(TAG, "Doing");
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void current) {
+            super.onPostExecute(current);
+            spinKitView.setVisibility(View.GONE);
+            if (myViewPagerAdapter.isStudent()) {
+                if (myViewPagerAdapter.getCampusDataCode() > 0) {
+                    viewPager.setCurrentItem(layouts.length - 3);
+                } else {
+                    myViewPagerAdapter.getClassHelper().attachClassSpinners();
+                    viewPager.setCurrentItem(layouts.length - 2);
+                }
+            } else {
+                myViewPagerAdapter.getClassHelper().attachTeacherInitAdapter();
+                viewPager.setCurrentItem(layouts.length - 2);
+            }
+            btnNext.setVisibility(View.VISIBLE);
+            Log.e(TAG, "Finished");
+        }
+    }
 }

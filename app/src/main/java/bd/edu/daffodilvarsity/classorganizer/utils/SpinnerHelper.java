@@ -2,6 +2,7 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.IllegalFormatCodePointException;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
 
@@ -18,44 +20,93 @@ import bd.edu.daffodilvarsity.classorganizer.R;
  * musfiqus@gmail.com
  */
 
-public class SpinnerHelper {
+public class SpinnerHelper implements AdapterView.OnItemSelectedListener {
 
+    private static final String TAG = "SpinnerHelper";
 
+    private PrefManager prefManager;
     private Context context;
     private View view;
     private int spinnerRowResource;
-    private AdapterView.OnItemSelectedListener onItemSelectedListener = null;
+    private boolean isStudent;
 
     private Spinner campusSpinner;
+    private ArrayAdapter<String> campusAdapter;
+
     private Spinner deptSpinner;
+    ArrayAdapter<String> deptAdapter;
+
     private Spinner programSpinner;
+    ArrayAdapter<CharSequence> programAdapter;
+
+    private ArrayAdapter<CharSequence>  levelAdapter, termAdapter;
     private Spinner levelSpinner;
     private Spinner termSpinner;
     private Spinner sectionSpinner;
+    private ArrayAdapter<String> sectionAdapter;
 
-    public SpinnerHelper(Context context, View view, int spinnerRowResource, AdapterView.OnItemSelectedListener onItemSelectedListener) {
+    private Spinner teachersInitialSpinner;
+    private ArrayAdapter<String> teacherAdapter;
+
+    private String campus;
+    private String dept;
+    private String program;
+    private int level;
+    private int term;
+    private String section;
+    private String teachersInitial;
+
+    private int classDataCode;
+    private int campusDataCode;
+
+    private boolean isCampusMode;
+
+
+    public SpinnerHelper(Context context, View view, int spinnerRowResource, boolean isStudent, boolean isCampusMode) {
+        this.isCampusMode = isCampusMode;
         this.context = context;
+        this.prefManager = new PrefManager(context);
         this.spinnerRowResource = spinnerRowResource;
+        this.isStudent = isStudent;
         viewChooser(view);
-        this.onItemSelectedListener = onItemSelectedListener;
-    }
-
-
-    public SpinnerHelper(Context context, View view, int spinnerRowResource) {
-        this.context = context;
-        viewChooser(view);
-        this.spinnerRowResource = spinnerRowResource;
     }
 
     private void viewChooser(View view) {
         if (view.getId() == R.id.class_spinner_layout_id || view.getId() == R.id.campus_spinner_layout_id) {
             this.view = view;
         } else {
-            if (view.getId() == R.id.welcome_choice_layout_3) {
-                this.view = view.findViewById(R.id.section_layout_include_id);
+            if (view.getId() == R.id.welcome_choice_layout_5) {
+                Log.e(TAG, "User type: "+ (isStudent ? "Student" : "teacher"));
+                if (isStudent) {
+                    //user student
+                    view.findViewById(R.id.teachers_initial_layout).setVisibility(View.GONE);
+                    this.view = view.findViewById(R.id.section_layout_include_id);
+                } else {
+                    //user teacher
+                    view.findViewById(R.id.section_layout_include_id).setVisibility(View.GONE);
+                    this.view = view.findViewById(R.id.teachers_initial_layout);
+                }
             } else {
                 this.view = view.findViewById(R.id.campus_layout_include_id);
             }
+        }
+    }
+
+    public void createTeacherInitSpinners() {
+        teachersInitialSpinner = (Spinner) view.findViewById(R.id.teachers_initial_selection_welcome);
+
+    }
+
+    public void createTeacherInitAdapter(String campus, String dept, String program) {
+        teacherAdapter = new ArrayAdapter<String>(context, R.layout.spinner_row, CourseUtils.getInstance(context).getTeachersInitials(campus, dept, program));
+    }
+
+    public void attachTeacherInitAdapter() {
+        if (teachersInitialSpinner != null && teacherAdapter != null) {
+            teachersInitialSpinner.setAdapter(teacherAdapter);
+            teachersInitialSpinner.setOnItemSelectedListener(this);
+        } else {
+            Log.e(TAG, "Teacher Spinner or Adapter null");
         }
     }
 
@@ -83,8 +134,35 @@ public class SpinnerHelper {
     }
 
     public void setupCampus() {
-        setupCampusSpinners();
+        createCampusSpinners();
         setupCampusAdapters();
+    }
+
+    //New separate Thread methods
+    public void createClassSpinners() {
+        sectionSpinner = (Spinner) view.findViewById(R.id.section_selection);
+        levelSpinner = (Spinner) view.findViewById(R.id.level_spinner);
+        termSpinner = (Spinner) view.findViewById(R.id.term_spinner);
+    }
+
+    public void createClassAdapters(String campus, String department, String program) {
+        levelAdapter = ArrayAdapter.createFromResource(context, R.array.cse_main_day_level_array, spinnerRowResource);
+        termAdapter = ArrayAdapter.createFromResource(context, R.array.term_array, spinnerRowResource);
+        ArrayList<String> sections = CourseUtils.getInstance(context).getSections(campus, department, program);
+        if (sections != null && sections.size() != 0) {
+            sectionAdapter = new ArrayAdapter<>(context, spinnerRowResource, sections);
+        } else {
+            sectionAdapter = null;
+        }
+    }
+
+    public void attachClassSpinners() {
+        levelSpinner.setAdapter(levelAdapter);
+        termSpinner.setAdapter(termAdapter);
+        sectionSpinner.setAdapter(sectionAdapter);
+        levelSpinner.setOnItemSelectedListener(this);
+        termSpinner.setOnItemSelectedListener(this);
+        sectionSpinner.setOnItemSelectedListener(this);
     }
 
     public void setupClassSpinners() {
@@ -100,14 +178,13 @@ public class SpinnerHelper {
         levelSpinner.setAdapter(levelAdapter);
         termSpinner.setAdapter(termAdapter);
         sectionAdapter(campus, department, program);
-        if (onItemSelectedListener != null) {
-            levelSpinner.setOnItemSelectedListener(onItemSelectedListener);
-            termSpinner.setOnItemSelectedListener(onItemSelectedListener);
-            sectionSpinner.setOnItemSelectedListener(onItemSelectedListener);
-        }
+        levelSpinner.setOnItemSelectedListener(this);
+        termSpinner.setOnItemSelectedListener(this);
+        sectionSpinner.setOnItemSelectedListener(this);
     }
 
     public void sectionAdapter(String campus, String department, String program) {
+        Log.e(TAG, campus+department+program);
         if (sectionSpinner != null) {
             ArrayList<String> sections = CourseUtils.getInstance(context).getSections(campus, department, program);
             ArrayAdapter<String> sectionAdapter;
@@ -118,15 +195,30 @@ public class SpinnerHelper {
             }
             if (sectionAdapter != null) {
                 sectionSpinner.setAdapter(sectionAdapter);
-                sectionSpinner.setOnItemSelectedListener(onItemSelectedListener);
+                sectionSpinner.setOnItemSelectedListener(this);
             }
         }
     }
 
-    public void setupCampusSpinners() {
+    public void createCampusSpinners() {
         campusSpinner = (Spinner) view.findViewById(R.id.campus_selection);
         deptSpinner = (Spinner) view.findViewById(R.id.dept_selection);
         programSpinner = (Spinner) view.findViewById(R.id.program_selection);
+    }
+
+    public void createCampusAdapters() {
+        campusAdapter = new ArrayAdapter<>(context, spinnerRowResource, CourseUtils.getInstance(context).getSpinnerList(CourseUtils.GET_CAMPUS));
+        deptAdapter = new ArrayAdapter<>(context, spinnerRowResource, CourseUtils.getInstance(context).getSpinnerList(CourseUtils.GET_DEPARTMENT));
+        programAdapter = ArrayAdapter.createFromResource(context, R.array.programs, spinnerRowResource);
+    }
+
+    public void attachCampusAdapters() {
+        campusSpinner.setAdapter(campusAdapter);
+        deptSpinner.setAdapter(deptAdapter);
+        programSpinner.setAdapter(programAdapter);
+        campusSpinner.setOnItemSelectedListener(this);
+        deptSpinner.setOnItemSelectedListener(this);
+        programSpinner.setOnItemSelectedListener(this);
     }
 
     public void setupCampusAdapters() {
@@ -136,11 +228,9 @@ public class SpinnerHelper {
         campusSpinner.setAdapter(campusAdapter);
         deptSpinner.setAdapter(deptAdapter);
         programSpinner.setAdapter(programAdapter);
-        if (onItemSelectedListener != null) {
-            campusSpinner.setOnItemSelectedListener(onItemSelectedListener);
-            deptSpinner.setOnItemSelectedListener(onItemSelectedListener);
-            programSpinner.setOnItemSelectedListener(onItemSelectedListener);
-        }
+            campusSpinner.setOnItemSelectedListener(this);
+            deptSpinner.setOnItemSelectedListener(this);
+            programSpinner.setOnItemSelectedListener(this);
     }
 
     public int spinnerPositionGenerator(int id, String string) {
@@ -254,5 +344,89 @@ public class SpinnerHelper {
             return null;
         }
         return sectionSpinner.getSelectedItem().toString();
+    }
+
+    public String getTeachersInitial() {
+        return teachersInitial;
+    }
+
+    private boolean isCampusSpinnersNull() {
+        if (campusSpinner == null) {
+            return true;
+        }
+        if (deptSpinner == null) {
+            return true;
+        }
+        if (programSpinner == null) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int i, long l) {
+
+
+        //Saving selections on first launch
+        if (isCampusMode) {
+            if (!isCampusSpinnersNull()) {
+                campus = getCampus();
+                dept = getDept();
+                program = getProgram();
+            }
+            if (campus != null) {
+                prefManager.saveCampus(campus);
+            }
+            if (dept != null) {
+                prefManager.saveDept(dept);
+            }
+            if (program != null) {
+                prefManager.saveProgram(program);
+            }
+        }
+
+        if (!isCampusMode) {
+            if (isStudent) {
+                if (parent.getId() == R.id.level_spinner) {
+                    level = getLevel();
+                } else if (parent.getId() == R.id.term_spinner) {
+                    term = getTerm();
+                } else if (parent.getId() == R.id.section_selection) {
+                    section = getSection();
+                }
+                //Saving selections
+                prefManager.saveSection(section);
+                prefManager.saveTerm(term);
+                prefManager.saveLevel(level);
+            } else {
+                if (parent.getId() == R.id.teachers_initial_selection_welcome) {
+                    teachersInitial = teachersInitialSpinner.getSelectedItem().toString();
+                    prefManager.saveTeacherInitial(teachersInitial);
+                }
+            }
+
+        }
+        campusDataCode = new DataChecker(context).campusChecker(campus, dept, program);
+        if (isStudent) {
+            classDataCode = new DataChecker(context).classChecker(section, level, term);
+        } else {
+            classDataCode = new DataChecker(context).classChecker(teachersInitial);
+        }
+
+
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
+    public int getCampusDataCode() {
+        return campusDataCode;
+    }
+
+    public int getClassDataCode() {
+        return classDataCode;
     }
 }

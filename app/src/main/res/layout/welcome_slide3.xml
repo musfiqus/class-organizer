@@ -3,10 +3,28 @@
     android:id="@+id/welcome_choice_layout_2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_screen3">
+    android:background="@color/bg_screen3"
+    android:orientation="vertical">
 
-    <include
-        android:id="@+id/campus_layout_include_id"
-        layout="@layout/campus_spinner_layout"
-         />
+    <LinearLayout
+        android:id="@+id/campus_spinner_layout_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/user_type_spinner_label"
+            style="@style/SpinnerTitle"
+            android:text="@string/how_are_you_going_to_use_the_app" />
+
+        <Spinner
+            android:id="@+id/user_type_selection"
+            style="@style/SpinnerStyle"
+            android:layout_width="150dp"/>
+
+
+    </LinearLayout>
 </RelativeLayout>

@@ -28,6 +28,7 @@ public class RoutineLoader {
     private String dept;
     private String campus;
     private String program;
+    private String teachersInitial;
 
     public RoutineLoader(int level, int term, String section, Context context, String dept, String campus, String program) {
         this.level = level;
@@ -38,6 +39,15 @@ public class RoutineLoader {
         this.campus = campus;
         this.program = program;
         prefManager = new PrefManager(context);
+    }
+
+    public RoutineLoader(String teachersInitial, String campus, String dept, String program, Context context) {
+        this.context = context;
+        this.prefManager = new PrefManager(context);
+        this.campus = campus;
+        this.dept = dept;
+        this.program = program;
+        this.teachersInitial = teachersInitial;
     }
 
     private int getSemester() {
@@ -56,23 +66,54 @@ public class RoutineLoader {
         }
     }
 
+    public static int[] getLevelTerm(int semester) {
+        int level = 0, term = 0;
+        if (semester <= 3) {
+            level = 0;
+            term = semester - 1;
+        } else if (semester <= 6) {
+            level = 1;
+            term = semester -4;
+        } else if (semester <= 9) {
+            level = 2;
+            term = semester - 7;
+        } else {
+            level = 3;
+            term = semester - 10;
+        }
+        return new int[]{level, term};
+    }
+
     private ArrayList<String> courseCodeGenerator(int semester) {
         return CourseUtils.getInstance(context).getCourseCodes(semester, campus, dept, program);
     }
 
     public ArrayList<DayData> loadRoutine(boolean loadPersonal) {
-        //Generating course codes from generated semester
-        ArrayList<String> courseCodes = courseCodeGenerator(getSemester());
-        ArrayList<DayData> vanillaRoutine;
-        //Initializing DB Helper
+        if (prefManager.isUserStudent()) {
+            //User is a student
+            //Generating course codes from generated semester
+            ArrayList<String> courseCodes = courseCodeGenerator(getSemester());
+            ArrayList<DayData> vanillaRoutine;
+            //Initializing DB Helper
 
-        CourseUtils courseUtils = CourseUtils.getInstance(context);
-        vanillaRoutine = courseUtils.getDayData(courseCodes, section, level, term, dept, campus, program);
-        if (!loadPersonal) {
-            return vanillaRoutine;
+            CourseUtils courseUtils = CourseUtils.getInstance(context);
+            vanillaRoutine = courseUtils.getDayData(courseCodes, section, level, term, dept, campus, program);
+            if (!loadPersonal) {
+                return vanillaRoutine;
+            } else {
+                return loadPersonalDayData(vanillaRoutine);
+            }
         } else {
-            return loadPersonalDayData(vanillaRoutine);
+            //User is a teacher
+            CourseUtils courseUtils = CourseUtils.getInstance(context);
+            ArrayList<DayData> dayData = courseUtils.getDayDataByQuery(campus, dept, program, teachersInitial, MasterDBOffline.COLUMN_TEACHERS_INITIAL);
+            if (!loadPersonal) {
+                return dayData;
+            } else {
+                return loadPersonalDayData(dayData);
+            }
         }
+
     }
 
     public ArrayList<DayData> loadPersonalDayData(ArrayList<DayData> loadedDayData) {

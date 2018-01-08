@@ -79,7 +79,7 @@ public class DayDataDetailFragment extends Fragment {
                         MaterialDialog.Builder builder = new MaterialDialog.Builder(rootView.getContext());
                         builder.title("Save to");
                         View dialogView = LayoutInflater.from(rootView.getContext()).inflate(R.layout.class_spinner_layout, null);
-                        final SpinnerHelper classHelper = new SpinnerHelper(getContext(), dialogView, R.layout.spinner_row);
+                        final SpinnerHelper classHelper = new SpinnerHelper(getContext(), dialogView, R.layout.spinner_row, true, false);
                         classHelper.setupClassLabelBlack();
                         classHelper.setupClass(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
                         classHelper.setClassSpinnerPositions(prefManager.getLevel(), prefManager.getTerm(),  prefManager.getSection());

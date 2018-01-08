@@ -22,6 +22,7 @@ public class DataChecker {
     private static final int INVALID_CAMPUS = 5;
     private static final int INVALID_CAMPUS_MIXED = 6;
     private static final int INVALID_CLASS_MIXED = 7;
+    private static final int INVALID_TEACHER_INITIAL = 9;
 
     private static Toast toast;
     private Context context;
@@ -75,6 +76,16 @@ public class DataChecker {
         ArrayList<DayData> routine = new RoutineLoader(level,term, section, context, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram()).loadRoutine(false);
         if (routine == null || routine.size() == 0) {
             return INVALID_CLASS_MIXED;
+        }
+        return VALID_CHOICE;
+    }
+
+    public int classChecker(String teachersInitial) {
+        CourseUtils courseUtils = CourseUtils.getInstance(context);
+        PrefManager prefManager = new PrefManager(context);
+        ArrayList<DayData> routine = new RoutineLoader(teachersInitial, prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram(), context).loadRoutine(false);
+        if (routine == null || routine.size() == 0) {
+            return INVALID_TEACHER_INITIAL;
         }
         return VALID_CHOICE;
     }

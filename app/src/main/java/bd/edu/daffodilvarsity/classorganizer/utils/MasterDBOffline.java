@@ -3,10 +3,14 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
@@ -16,11 +20,12 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
  */
 
 public class MasterDBOffline extends SQLiteAssetHelper {
+    private static final String TAG = "MasterDBOffline";
     public static final int OFFLINE_DATABASE_VERSION = 16;
 
     //Increment the version to erase previous db
     private static final String COLUMN_COURSE_CODE = "course_code";
-    private static final String COLUMN_TEACHERS_INITIAL = "teachers_initial";
+    public static final String COLUMN_TEACHERS_INITIAL = "teachers_initial";
     private static final String COLUMN_WEEK_DAYS = "week_days";
     private static final String COLUMN_ROOM_NO = "room_no";
     private static final String COLUMN_TIME = "time_data";
@@ -62,7 +67,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
         if (courseCodes != null) {
             for (String eachCourse : courseCodes) {
                 //Checking if any course is null
-                if (eachCourse != null) {
+                if (eachCourse != null && section != null) {
                     String id = removeSpaces(eachCourse).toUpperCase() + strippedStringMinimal(section).toUpperCase();
                     Cursor cursor = db.query(currentTable, new String[]{COLUMN_COURSE_CODE,
                                     COLUMN_TEACHERS_INITIAL, COLUMN_WEEK_DAYS, COLUMN_ROOM_NO, COLUMN_TIME}, COLUMN_COURSE_CODE + "=?",
@@ -78,6 +83,49 @@ public class MasterDBOffline extends SQLiteAssetHelper {
             }
         }
         return finalDayData;
+    }
+
+    ArrayList<DayData> getDayDataByQuery(String campus, String dept, String program, String query, String columnName) {
+        Log.e(TAG, "QUERY: "+query+" Column: "+columnName);
+        ArrayList<DayData> list = new ArrayList<>();
+        if (query != null) {
+
+            SQLiteDatabase db = getWritableDatabase();
+            final String TABLE_NAME = "routine_"+campus.toLowerCase() + "_" + dept.toLowerCase() + "_" + program.toLowerCase();
+            CourseUtils courseUtils = CourseUtils.getInstance(mContext);
+            String[] columnNames = getColumnNames(TABLE_NAME);
+            Cursor cursor = db.query(TABLE_NAME, columnNames, columnName + "=?",
+                    new String[]{query}, null, null, null, null);
+
+            if (cursor.moveToFirst()) {
+                do {
+                    if (cursor.getString(0) != null) {
+                        String string = cursor.getString(0);
+                        String courseCode = string.substring(0, string.length()-1);
+                        String section = string.substring(string.length() -1, string.length());
+                        int semester = getColumnNumberByQuery("course_codes_"+campus+"_"+dept+"_"+program, courseCode);
+                        int[] levelTerm = RoutineLoader.getLevelTerm(semester+1);
+                        DayData newDayData = new DayData(courseCode, trimInitial(cursor.getString(1)), section, levelTerm[0], levelTerm[1], cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(courseCode, campus, dept, program));
+                        list.add(newDayData);
+                    }
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+
+        }
+        return list;
+    }
+
+    int getColumnNumberByQuery(final String TABLE_NAME, String query) {
+        SQLiteDatabase db = getWritableDatabase();
+        String[] columnNames = getColumnNames(TABLE_NAME);
+        for (int i = 0; i < columnNames.length; i++) {
+            ArrayList<String> data = getRowsByColumn(i, TABLE_NAME, columnNames);
+            if (data.contains(query)) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     public String getCourseTitle(String courseCode, String campus, String dept, String program) {
@@ -184,10 +232,37 @@ public class MasterDBOffline extends SQLiteAssetHelper {
         return count;
     }
 
-    public String getUpdateURL(int code) {
-        final String TABLE_NAME = "update_urls";
-        String[] columnNames = getColumnNames(TABLE_NAME);
-        return getRowsByColumn(code, TABLE_NAME, columnNames).get(0);
+    public ArrayList<String> getTeachersInitials(String campus, String department, String program) {
+        final String TABLE_NAME = "routine_"+campus.toLowerCase() + "_" + department.toLowerCase() + "_" + program.toLowerCase();
+        boolean isTableExisting = doesTableExist(TABLE_NAME);
+        if (isTableExisting) {
+            String[] columnNames = getColumnNames(TABLE_NAME);
+            int column = getColumnNumber(columnNames, "teachers_initial");
+            ArrayList<String> initials = new ArrayList<>();
+            SQLiteDatabase db = getWritableDatabase();
+            Cursor cursor = db.query(TABLE_NAME, columnNames, null, null, null, null, null);
+            StringBuilder teacherLongString = new StringBuilder();
+            if (cursor.moveToFirst()) {
+                do {
+                    if (cursor.getString(column) != null) {
+                        String newInitial = cursor.getString(column);
+                        if (!teacherLongString.toString().contains(newInitial) && !newInitial.equalsIgnoreCase("N/A")) {
+                            teacherLongString.append(" ").append(newInitial);
+                            initials.add(newInitial);
+                        }
+                    }
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+            Collections.sort(initials, new Comparator<String>() {
+                @Override
+                public int compare(String s1, String s2) {
+                    return s1.compareToIgnoreCase(s2);
+                }
+            });
+            return initials;
+        }
+        return null;
     }
 
 

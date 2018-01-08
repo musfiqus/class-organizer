@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/welcome_choice_layout_5"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_screen5">
 
-    <LinearLayout
+    <include
+        android:id="@+id/section_layout_include_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        tools:visibility="gone"
+        layout="@layout/class_spinner_layout"
+         />
+    <LinearLayout
+        android:id="@+id/teachers_initial_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/slide_3_title"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/slide_title"
-            android:textStyle="bold" />
+            android:id="@+id/teachers_initial_selection_welcome_title"
+            style="@style/SpinnerTitle"
+            android:text="@string/select_your_initial" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:paddingLeft="@dimen/desc_padding"
-            android:paddingRight="@dimen/desc_padding"
-            android:text="@string/slide_3_desc"
-            android:textAlignment="center"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/slide_desc" />
-
+        <Spinner
+            android:id="@+id/teachers_initial_selection_welcome"
+            style="@style/SpinnerStyle"
+            android:completionThreshold="1" />
     </LinearLayout>
-
-</RelativeLayout>
+</FrameLayout>

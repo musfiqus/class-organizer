@@ -33,10 +33,10 @@ android {
         applicationId "bd.edu.daffodilvarsity.classorganizer"
         minSdkVersion 16
         targetSdkVersion 27
-        versionName '4.2.5'
+        versionName '4.3.X'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 45
+        versionCode 46
     }
     signingConfigs {
         release {
@@ -100,8 +100,8 @@ dependencies {
     //Do not update that shitty firebase
     compile "com.google.firebase:firebase-database:11.6.0"
     compile 'com.google.firebase:firebase-core:11.6.0'
-    compile('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
-        transitive = true
+    compile('com.crashlytics.sdk.android:crashlytics:2.8.0@aar') {
+        transitive = true;
     }
 
     //Firebase admob

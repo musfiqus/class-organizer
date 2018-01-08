@@ -140,4 +140,6 @@
     <string name="admob_app_id">admob_pub_id</string>
 
     <string name="notification_channel_name">Classes</string>
+    <string name="how_are_you_going_to_use_the_app">How are you going to use the app?</string>
+    <string name="select_your_initial">Select your initial</string>
 </resources>

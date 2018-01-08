@@ -62,6 +62,14 @@ public class CourseUtils{
         }
     }
 
+    ArrayList<DayData> getDayDataByQuery(String campus, String dept, String program, String query, String columnName) {
+        if (isUpdatedOnline) {
+            return MasterDBOnline.getInstance(mContext).getDayDataByQuery(campus, dept, program, query, columnName);
+        } else {
+            return MasterDBOffline.getInstance(mContext).getDayDataByQuery(campus, dept, program, query, columnName);
+        }
+    }
+
     public String getCourseTitle(String courseCode, String campus, String dept, String program) {
         if (isUpdatedOnline) {
             return MasterDBOnline.getInstance(mContext).getCourseTitle(courseCode, campus, dept, program);
@@ -148,6 +156,14 @@ public class CourseUtils{
             return MasterDBOnline.getInstance(mContext).doesTableExist(TABLE_NAME);
         } else {
             return MasterDBOffline.getInstance(mContext).doesTableExist(TABLE_NAME);
+        }
+    }
+
+    public ArrayList<String> getTeachersInitials(String campus, String department, String program) {
+        if (isUpdatedOnline) {
+            return MasterDBOnline.getInstance(mContext).getTeachersInitials(campus, department, program);
+        } else {
+            return MasterDBOffline.getInstance(mContext).getTeachersInitials(campus, department, program);
         }
     }
 
