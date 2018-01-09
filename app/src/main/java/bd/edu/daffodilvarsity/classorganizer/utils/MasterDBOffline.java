@@ -21,7 +21,7 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 public class MasterDBOffline extends SQLiteAssetHelper {
     private static final String TAG = "MasterDBOffline";
-    public static final int OFFLINE_DATABASE_VERSION = 16;
+    public static final int OFFLINE_DATABASE_VERSION = 17;
 
     //Increment the version to erase previous db
     private static final String COLUMN_COURSE_CODE = "course_code";

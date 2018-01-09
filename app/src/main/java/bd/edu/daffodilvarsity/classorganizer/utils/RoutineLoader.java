@@ -188,27 +188,36 @@ public class RoutineLoader {
 
     public boolean verifyUpdatedDb() {
         CourseUtils dbChecker = new CourseUtils(context, true);
+
         //First we'll check if a new semester is available
         if (!dbChecker.getCurrentSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()).equalsIgnoreCase(prefManager.getSemester())) {
             //If available we won't do any further checks
             return true;
         }
-        ArrayList<String> courseCodes = courseCodeGenerator(getSemester());
-        if (courseCodes == null || courseCodes.size() == 0) {
-            return false;
+        if (new PrefManager(context).isUserStudent()) {
+            ArrayList<String> courseCodes = courseCodeGenerator(getSemester());
+            if (courseCodes == null || courseCodes.size() == 0) {
+                return false;
+            }
+            ArrayList<String> sections = dbChecker.getSections(campus, dept, program);
+            if (sections == null || sections.size() == 0) {
+                return false;
+            }
+            ArrayList<DayData> vanillaRoutine = dbChecker.getDayData(courseCodes, sections.get(0), level, term, dept, campus, program);
+            if (vanillaRoutine == null) {
+                return false;
+            }
+            if (vanillaRoutine.size() == 0) {
+                return false;
+            }
+            return true;
+        } else {
+            ArrayList<DayData> vanillaRoutine = dbChecker.getDayDataByQuery(campus, dept, program, teachersInitial, MasterDBOffline.COLUMN_TEACHERS_INITIAL);
+            if (vanillaRoutine.size() == 0) {
+                return false;
+            }
+            return true;
         }
-        ArrayList<String> sections = dbChecker.getSections(campus, dept, program);
-        if (sections == null || sections.size() == 0) {
-            return false;
-        }
-        ArrayList<DayData> vanillaRoutine = dbChecker.getDayData(courseCodes, sections.get(0), level, term, dept, campus, program);
-        if (vanillaRoutine == null) {
-            return false;
-        }
-        if (vanillaRoutine.size() == 0) {
-            return false;
-        }
-        return true;
     }
 
     //Checks if a new semester is available in db, if it's available it informs upgrade function

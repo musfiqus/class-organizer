@@ -21,6 +21,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,14 +56,17 @@ import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOffline;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.RoutineLoader;
+import bd.edu.daffodilvarsity.classorganizer.utils.UpdateTask;
 
 public class MainActivity extends ColorfulActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    private static final String TAG = "MainActivity";
+    
     private PrefManager prefManager;
     private ArrayList<DayData> mDayData;
     private boolean onStart = false;
     private boolean onCreate = false;
     private boolean alarmRecreated = false;
-    private RoutineLoader routineLoader;
     private boolean isActivityRunning = false;
     private boolean updateDialogueBlocked = false;
     private boolean isDownloadSuccessful;
@@ -84,8 +88,6 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         setContentView(R.layout.activity_main);
 
         prefManager = new PrefManager(this);
-        routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), this, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -120,13 +122,9 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
             }
         }
 
-
         //Checking for built in DB updates
         offlineUpdate();
         //Checking if we missed any semester update
-        if (routineLoader.isNewSemesterAvailable()) {
-            upgradeRoutine(true, prefManager.getMasterDBVersion(), false);
-        }
 
         if (prefManager.showSnack()) {
             showSnackBar(this, prefManager.getSnackData());
@@ -223,9 +221,6 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         }
         if (updateDialogueBlocked) {
             checkFirebase();
-            if (routineLoader.isNewSemesterAvailable()) {
-                upgradeRoutine(true, prefManager.getMasterDBVersion(), false);
-            }
             updateDialogueBlocked = false;
         }
         if (prefManager.showSnack()) {
@@ -291,18 +286,10 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     private void offlineUpdate() {
         //If there is a new routine, update
         if (MasterDBOffline.OFFLINE_DATABASE_VERSION > prefManager.getOfflineDbVersion() && MasterDBOffline.OFFLINE_DATABASE_VERSION > prefManager.getOnlineDbVersion()) {
-            prefManager.setUpdatedOnline(false);
-            prefManager.incrementDatabaseVersion();
-            if (routineLoader.isNewSemesterAvailable()) {
-                upgradeRoutine(true, MasterDBOffline.OFFLINE_DATABASE_VERSION, false);
-            } else {
-                boolean isNotUpdated = upgradeRoutine(false, MasterDBOffline.OFFLINE_DATABASE_VERSION, true);
-                if (isNotUpdated) {
-                    showSnackBar(this, "Error loading updated routine!");
-                }
-            }
-            FileUtils.deleteMasterDb(this, false, prefManager.getOfflineDbVersion());
-            prefManager.saveOfflineDbVersion(MasterDBOffline.OFFLINE_DATABASE_VERSION);
+            Log.e(TAG, "OFFLINE: "+MasterDBOffline.OFFLINE_DATABASE_VERSION+" SAVED OFFLINE: "+prefManager.getOfflineDbVersion()+" SAVED ONLINE: "+prefManager.getOnlineDbVersion());
+            Log.e(TAG, "Y THO?");
+            String[] params = new String[]{"offline", ""+MasterDBOffline.OFFLINE_DATABASE_VERSION};
+            new UpdateTask(this, getApplicationContext()).execute(params);
         }
     }
 
@@ -379,72 +366,6 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         });
     }
 
-    private boolean upgradeRoutine(boolean isUpgrade, final int dbVersion, boolean loadPersonal) {
-        if (isUpgrade) {
-            //Shows new semester upgrade dialogue and upgrades it
-            if (routineLoader.isNewSemesterAvailable()) {
-                if (isActivityRunning) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("New Semester!");
-                    builder.setMessage("The routine was updated as per " + CourseUtils.getInstance(this).getCurrentSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()) + " semester.\n" +
-                            "Note: Your level and term will automatically get updated based on current selection and your modifications will be reset. ");
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            setLevelTermOnUpgrade();
-                            //Deleting modified data before loading new semester routine
-                            prefManager.resetModification(true, true, true, true);
-                            boolean loadCheck = upgradeRoutine(false, dbVersion, false);
-                            if (!loadCheck) {
-                                prefManager.saveShowSnack(true);
-                                prefManager.saveSnackData("Routine updated");
-                                prefManager.setSemesterCount(CourseUtils.getInstance(getApplicationContext()).getSemesterCount(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()));
-                                prefManager.saveSemester(CourseUtils.getInstance(getApplicationContext()).getCurrentSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()));
-                                routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), getApplicationContext(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
-                                ArrayList<DayData> updatedRoutine = routineLoader.loadRoutine(false);
-                                prefManager.saveDayData(updatedRoutine);
-                                loadData();
-                            } else {
-                                Toast.makeText(getApplicationContext(), "Error loading routine", Toast.LENGTH_SHORT).show();
-                            }
-                            dialog.dismiss();
-                        }
-                    });
-
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-
-                } else {
-                    updateDialogueBlocked = true;
-                }
-            }
-            return true;
-        } else {
-            //Simple update function loads new routine if db version changes
-            routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), this, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
-            ArrayList<DayData> updatedRoutine = routineLoader.loadRoutine(loadPersonal);
-            if (updatedRoutine != null) {
-                if (updatedRoutine.size() > 0) {
-                    prefManager.saveDayData(updatedRoutine);
-                    prefManager.setMasterDbVersion(dbVersion);
-                    if (isActivityRunning) {
-                        loadData();
-                        showSnackBar(MainActivity.this, "Routine Updated");
-                    } else {
-                        prefManager.saveReCreate(true);
-                        prefManager.saveShowSnack(true);
-                        prefManager.saveSnackData("Routine Updated");
-                    }
-                    return false;
-                }
-            }
-            return true;
-        }
-    }
-
-
-
-
     //This method starts the online db downloading process
     private void startDBUpdate(int newVersion, final String dbURL) {
         if (isActivityRunning) {
@@ -452,24 +373,6 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         }
         new DbDownloadTask().execute(dbURL, String.valueOf(newVersion));
     }
-
-    //Calculates the new level and term upon a new semester routine
-    private void setLevelTermOnUpgrade() {
-        int currentLevel = prefManager.getLevel();
-        int currentTerm = prefManager.getTerm();
-        if (currentTerm == 2) {
-            if (currentLevel < 3) {
-                currentLevel++;
-                prefManager.saveLevel(currentLevel);
-            }
-            currentTerm = 0;
-            prefManager.saveTerm(currentTerm);
-        } else {
-            currentTerm++;
-            prefManager.saveTerm(currentTerm);
-        }
-    }
-
 
     //This function provides the skeleton of the suggestion email
     public void composeEmail() {
@@ -493,6 +396,9 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         }
     }
 
+    public boolean isActivityRunning() {
+        return isActivityRunning;
+    }
 
     private class DbDownloadTask extends AsyncTask<String, Void, Void> {
         private int newDBVersion;
@@ -522,34 +428,8 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             if (isDownloadSuccessful) {
-                boolean prevUpdateValue = prefManager.isUpdatedOnline();
-                int prevDatabaseValue = prefManager.getMasterDBVersion();
-                prefManager.setUpdatedOnline(true);
-                prefManager.setMasterDbVersion(newDBVersion);
-                prefManager.incrementDatabaseVersion();
-                boolean isVerified = routineLoader.verifyUpdatedDb();
-                if (isVerified) {
-                    routineLoader = null;
-                    prefManager.setUpdatedOnline(true);
-                    if (routineLoader == null) {
-                        routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), getApplicationContext(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
-                    }
-                    if (routineLoader.isNewSemesterAvailable()) {
-                        upgradeRoutine(true, newDBVersion, false);
-                    } else {
-                        upgradeRoutine(false, newDBVersion, true);
-                    }
-                    //Delete previous db
-                    FileUtils.deleteMasterDb(getApplicationContext(), true, prefManager.getOnlineDbVersion());
-                    prefManager.saveOnlineDbVersion(newDBVersion);
-                } else {
-                    //Delete newly downloaded db
-                    FileUtils.deleteMasterDb(getApplicationContext(), true, newDBVersion);
-                    prefManager.setUpdatedOnline(prevUpdateValue);
-                    prefManager.setMasterDbVersion(prevDatabaseValue);
-                    prefManager.incrementDatabaseVersion();
-                    showSnackBar(MainActivity.this, "Update corrupted");
-                }
+                String[] params = new String[]{"online", ""+newDBVersion};
+                new UpdateTask(MainActivity.this, getApplicationContext()).execute(params);
             } else {
                 //Delete downloaded db
                 FileUtils.deleteMasterDb(getApplicationContext(), true, newDBVersion);
