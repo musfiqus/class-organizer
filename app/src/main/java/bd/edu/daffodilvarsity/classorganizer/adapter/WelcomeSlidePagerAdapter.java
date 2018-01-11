@@ -7,18 +7,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
-import bd.edu.daffodilvarsity.classorganizer.utils.DataChecker;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.RoutineLoader;
-import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelper;
+import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelperCampus;
+import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelperClass;
 import bd.edu.daffodilvarsity.classorganizer.utils.UserTypeHelper;
 
 /**
@@ -34,8 +31,8 @@ public class WelcomeSlidePagerAdapter extends PagerAdapter{
     private View view;
     private PrefManager prefManager;
 
-    private SpinnerHelper classHelper;
-    private SpinnerHelper campusHelper;
+    private SpinnerHelperClass classHelper;
+    private SpinnerHelperCampus campusHelper;
     private UserTypeHelper userTypeHelper;
 
 
@@ -60,12 +57,12 @@ public class WelcomeSlidePagerAdapter extends PagerAdapter{
             if (userTypeHelper == null) {
                 Log.e(TAG, "User null");
             }
-            campusHelper = new SpinnerHelper(context, view, R.layout.spinner_campus_row_welcome, userTypeHelper.isStudent(), true);
+            campusHelper = new SpinnerHelperCampus(context, view, R.layout.spinner_campus_row_welcome, userTypeHelper.isStudent(), true);
             campusHelper.setupCampus();
         }
         if (layouts[position] == R.layout.welcome_slide5) {
             Log.e(TAG, "Called Class Slide");
-            classHelper = new SpinnerHelper(context, view, R.layout.spinner_class_row_welcome, userTypeHelper.isStudent(), false);
+            classHelper = new SpinnerHelperClass(context, view, R.layout.spinner_class_row_welcome, userTypeHelper.isStudent());
             if (isStudent()) {
                 classHelper.createClassSpinners();
             } else {
@@ -157,11 +154,11 @@ public class WelcomeSlidePagerAdapter extends PagerAdapter{
         return campusHelper.getCampusDataCode();
     }
 
-    public SpinnerHelper getClassHelper() {
+    public SpinnerHelperClass getClassHelper() {
         return classHelper;
     }
 
-    public SpinnerHelper getCampusHelper() {
+    public SpinnerHelperCampus getCampusHelper() {
         return campusHelper;
     }
 }

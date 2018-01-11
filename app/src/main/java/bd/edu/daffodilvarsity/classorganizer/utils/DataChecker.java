@@ -80,10 +80,24 @@ public class DataChecker {
         return VALID_CHOICE;
     }
 
-    public int classChecker(String teachersInitial) {
+    public int teacherChecker(String teachersInitial) {
         CourseUtils courseUtils = CourseUtils.getInstance(context);
         PrefManager prefManager = new PrefManager(context);
         ArrayList<DayData> routine = new RoutineLoader(teachersInitial, prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram(), context).loadRoutine(false);
+        if (routine == null || routine.size() == 0) {
+            return INVALID_TEACHER_INITIAL;
+        }
+        return VALID_CHOICE;
+    }
+
+    public int campusTeacherChecker(String campus, String dept, String program) {
+        CourseUtils courseUtils = CourseUtils.getInstance(context);
+        PrefManager prefManager = new PrefManager(context);
+        String initial = CourseUtils.getInstance(context).getTeachersInitials(campus, dept, program).get(0);
+        if (initial == null) {
+            return INVALID_TEACHER_INITIAL;
+        }
+        ArrayList<DayData> routine = new RoutineLoader(initial,campus, dept, program, context).loadRoutine(false);
         if (routine == null || routine.size() == 0) {
             return INVALID_TEACHER_INITIAL;
         }

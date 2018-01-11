@@ -36,7 +36,9 @@ import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.DataChecker;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.RoutineLoader;
-import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelper;
+import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelperCampus;
+import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelperClass;
+import bd.edu.daffodilvarsity.classorganizer.utils.UserTypeHelper;
 
 public class SettingsActivity extends ColorfulActivity {
 
@@ -80,8 +82,8 @@ public class SettingsActivity extends ColorfulActivity {
     public static class SettingsFragment extends PreferenceFragmentCompat {
         //Getting prefmanager to get existing data
         PrefManager prefManager;
-        private SpinnerHelper classHelper;
-        private SpinnerHelper campusHelper;
+        private SpinnerHelperClass classHelper;
+        private SpinnerHelperCampus campusHelper;
         private PreferenceManager preferenceManager;
 
         @Override
@@ -90,14 +92,19 @@ public class SettingsActivity extends ColorfulActivity {
             preferenceManager = getPreferenceManager();
             prefManager = new PrefManager(getActivity());
             if (prefManager.hasCampusSettingsChanged()) {
-                resetLevelTermSection();
+                if (prefManager.isUserStudent()) {
+                    resetLevelTermSection();
+                } else {
+                    resetInitial();
+                }
                 prefManager.saveModifiedData(null, PrefManager.ADD_DATA_TAG, true);
                 prefManager.saveModifiedData(null, PrefManager.DELETE_DATA_TAG, true);
                 prefManager.saveModifiedData(null, PrefManager.SAVE_DATA_TAG, true);
                 prefManager.saveModifiedData(null, PrefManager.EDIT_DATA_TAG, true);
                 prefManager.setHasCampusSettingsChanged(false);
-                prefManager.saveDayData(new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), getContext(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram()).loadRoutine(true));
             }
+            //Set user type
+            userSettings();
             //Setting department preference
             departmentSettings();
             //Designing class preference
@@ -146,9 +153,83 @@ public class SettingsActivity extends ColorfulActivity {
 
         }
 
+        private void userSettings() {
+            final Preference userPreference = findPreference("user_preference");
+            String user;
+            if (prefManager.isUserStudent()) {
+                user = "Student";
+            } else {
+                user = "Teacher";
+            }
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                userPreference.setSummary(Html.fromHtml(getString(R.string.user_preference_summary, user.toUpperCase()), Html.FROM_HTML_MODE_LEGACY));
+            } else {
+                userPreference.setSummary(Html.fromHtml(getString(R.string.user_preference_summary, user.toUpperCase())));
+            }
+            userPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    if (!prefManager.isCampusChangeAlertDisabled()) {
+                        MaterialDialog.Builder alertBuilder = new MaterialDialog.Builder(getActivity());
+                        alertBuilder.title(R.string.warning);
+                        alertBuilder.content(R.string.warning_msg);
+                        alertBuilder.positiveText(R.string.proceed);
+                        alertBuilder.negativeText(getString(android.R.string.cancel));
+                        alertBuilder.checkBoxPrompt(getResources().getString(R.string.dont_show_this_again), false, new CompoundButton.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                prefManager.setIsCampusChangeAlertDisabled(isChecked);
+                            }
+                        });
+                        alertBuilder.onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
+                                showUserChangeDialogue();
+                            }
+                        });
+                        MaterialDialog materialDialog = alertBuilder.build();
+                        materialDialog.show();
+                    } else {
+                        showUserChangeDialogue();
+                    }
+                    return true;
+                }
+            });
+        }
+
+        private void showUserChangeDialogue() {
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+            builder.title(R.string.user_popup_title);
+            final View dialogView = getActivity().getLayoutInflater().inflate(R.layout.user_spinner_layout, getListView(), false);
+            //Designing the spinners TODO
+            final UserTypeHelper userTypeHelper = new UserTypeHelper(getContext(), dialogView);
+            userTypeHelper.setupUser();
+            userTypeHelper.setUserTypeLabelBlack();
+            final boolean oldUser = prefManager.isUserStudent();
+            builder.positiveText(android.R.string.ok);
+            builder.onPositive(new MaterialDialog.SingleButtonCallback() {
+                @Override
+                public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
+                    boolean newUser = userTypeHelper.isStudent();
+                    if (oldUser == newUser) {
+                        showSnackBar(getActivity(), getResources().getString(R.string.no_changes));
+                    } else {
+                        prefManager.setUserType(newUser);
+                        prefManager.setHasCampusSettingsChanged(true);
+                        prefManager.saveReCreate(true);
+                        onCreate(Bundle.EMPTY);
+                        showSnackBar(getActivity(), getResources().getString(R.string.user_settings_changed));
+                    }
+                }
+            });
+            builder.negativeText(android.R.string.cancel);
+            builder.customView(dialogView, true);
+            MaterialDialog dialog = builder.build();
+            dialog.show();
+        }
 
 
-        //Reset method for the reset option
+        //Reset methods for the reset option
         public void resetLevelTermSection() {
             prefManager.saveLevel(0);
             prefManager.saveTerm(0);
@@ -158,13 +239,20 @@ public class SettingsActivity extends ColorfulActivity {
             prefManager.saveDayData(resetData);
         }
 
+        public void resetInitial() {
+            prefManager.saveTeacherInitial(CourseUtils.getInstance(getContext()).getTeachersInitials(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()).get(0));
+            RoutineLoader routineLoader = new RoutineLoader(prefManager.getTeacherInitial(), prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram(), getContext());
+            ArrayList<DayData> resetData = routineLoader.loadRoutine(false);
+            prefManager.saveDayData(resetData);
+        }
+
 
         private void showCampusChangeDialogue() {
             MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
             builder.title(R.string.dept_popup_title);
             final View dialogView = getActivity().getLayoutInflater().inflate(R.layout.campus_spinner_layout, getListView(), false);
-            //Designing the spinners TODO
-            campusHelper = new SpinnerHelper(getContext(), dialogView, R.layout.spinner_row, true, true);
+            //Designing the spinners
+            campusHelper = new SpinnerHelperCampus(getContext(), dialogView, R.layout.spinner_row, true, true);
             campusHelper.setupCampusLabelBlack();
             campusHelper.setupCampus();
             final String oldDept = prefManager.getDept();
@@ -179,7 +267,12 @@ public class SettingsActivity extends ColorfulActivity {
                     String department = campusHelper.getDept().toLowerCase();
                     String program = campusHelper.getProgram().toLowerCase();
                     DataChecker campusChecker = new DataChecker(getContext());
-                    int campusCode = campusChecker.campusChecker(campus, department, program);
+                    int campusCode;
+                    if (prefManager.isUserStudent()) {
+                        campusCode = campusChecker.campusChecker(campus, department, program);
+                    } else {
+                        campusCode = campusChecker.campusTeacherChecker(campus, department, program);
+                    }
                     if (oldDept.equalsIgnoreCase(campus) && oldCampus.equalsIgnoreCase(department) && oldProgram.equalsIgnoreCase(program)) {
                         showSnackBar(getActivity(), getResources().getString(R.string.no_changes));
                     } else if (campusCode == 0) {
@@ -257,23 +350,33 @@ public class SettingsActivity extends ColorfulActivity {
         }
 
         private void classSettings() {
+
+            if (prefManager.isUserStudent()) {
+                studentClassSettings();
+            } else {
+                teacherClassSettings();
+            }
+
+        }
+
+        private void studentClassSettings() {
             final Preference routinePreference = findPreference("routine_preference");
             final String sectionRoot = prefManager.getSection();
             final int levelRoot = prefManager.getLevel();
             final int termRoot = prefManager.getTerm();
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                routinePreference.setSummary(Html.fromHtml(getString(R.string.routine_preference_summary, sectionRoot, (levelRoot + 1), (termRoot + 1)), Html.FROM_HTML_MODE_LEGACY));
+                routinePreference.setSummary(Html.fromHtml(getString(R.string.routine_preference_summary_student, sectionRoot, (levelRoot + 1), (termRoot + 1)), Html.FROM_HTML_MODE_LEGACY));
             } else {
-                routinePreference.setSummary(Html.fromHtml(getString(R.string.routine_preference_summary, sectionRoot, (levelRoot + 1), (termRoot + 1))));
+                routinePreference.setSummary(Html.fromHtml(getString(R.string.routine_preference_summary_student, sectionRoot, (levelRoot + 1), (termRoot + 1))));
             }
             routinePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(final Preference preference) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle("Choose Your Current Class");
+                    builder.setTitle("Choose Your New Class");
                     //Setting up spinners for class settings
                     View dialogView = getActivity().getLayoutInflater().inflate(R.layout.class_spinner_layout, getListView(), false);
-                    classHelper = new SpinnerHelper(getContext(), dialogView, R.layout.spinner_row, true ,false);
+                    classHelper = new SpinnerHelperClass(getContext(), dialogView, R.layout.spinner_row, true);
                     classHelper.setupClassLabelBlack();
                     classHelper.setupClass(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
                     classHelper.setClassSpinnerPositions(levelRoot, termRoot, sectionRoot);
@@ -291,6 +394,62 @@ public class SettingsActivity extends ColorfulActivity {
                                 prefManager.saveLevel(level);
                                 prefManager.saveTerm(term);
                                 prefManager.saveSection(section);
+                                prefManager.saveReCreate(true);
+                                prefManager.saveDayData(newRoutine.loadRoutine(true));
+                                onCreate(Bundle.EMPTY);
+                                showSnackBar(getActivity(), getResources().getString(R.string.saved));
+                                dialog.dismiss();
+                            } else {
+                                DataChecker.errorMessage(getContext(), classCode, null);
+                            }
+                        }
+                    });
+
+                    builder.setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.setView(dialogView);
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    return true;
+                }
+            });
+        }
+
+        private void teacherClassSettings() {
+            final Preference routinePreference = findPreference("routine_preference");
+            final String teacherInitialRoot = prefManager.getTeacherInitial();
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                routinePreference.setSummary(Html.fromHtml(getString(R.string.routine_preference_summary_teacher, teacherInitialRoot), Html.FROM_HTML_MODE_LEGACY));
+            } else {
+                routinePreference.setSummary(Html.fromHtml(getString(R.string.routine_preference_summary_teacher, teacherInitialRoot)));
+            }
+            routinePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(final Preference preference) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Choose Your New Initial");
+                    //Setting up spinners for class settings
+                    View dialogView = getActivity().getLayoutInflater().inflate(R.layout.teacher_spinner_layout, getListView(), false);
+                    classHelper = new SpinnerHelperClass(getContext(), dialogView, R.layout.spinner_row, false);
+                    classHelper.createTeacherInitSpinners();
+                    classHelper.createTeacherInitAdapter(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
+                    classHelper.attachTeacherInitAdapter();
+                    classHelper.setTeacherSpinnerPosition();
+                    classHelper.setupTeacherLabelBlack();
+
+                    builder.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String teacherInitial = classHelper.getTeachersInitial();
+                            RoutineLoader newRoutine = new RoutineLoader(teacherInitial, prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram(), getContext());
+                            DataChecker classChecker = new DataChecker(getContext());
+                            int classCode = classChecker.teacherChecker(teacherInitial);
+                            if (classCode == 0) {
+                                prefManager.saveTeacherInitial(teacherInitial);
                                 prefManager.saveReCreate(true);
                                 prefManager.saveDayData(newRoutine.loadRoutine(true));
                                 onCreate(Bundle.EMPTY);

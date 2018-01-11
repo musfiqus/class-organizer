@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/teachers_spinner_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerInParent="true"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/teachers_initial_selection_welcome_title"
+        style="@style/SpinnerTitle"
+        android:layout_marginTop="16dp"
+        android:text="@string/select_your_initial" />
+
+    <Spinner
+        android:id="@+id/teachers_initial_selection_welcome"
+        style="@style/SpinnerStyle"
+        android:layout_marginBottom="16dp"/>
+</LinearLayout>

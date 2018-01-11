@@ -4,6 +4,10 @@ xmlns:colorpicker="http://schemas.android.com/apk/res-auto">
     <android.support.v7.preference.PreferenceCategory
         android:title="Routine">
         <Preference
+            android:key="user_preference"
+            android:summary="Place holder summary"
+            android:title="Choose User Type" />
+        <Preference
             android:key="dept_preference"
             android:summary="Place holder summary"
             android:title="Choose Your Department" />

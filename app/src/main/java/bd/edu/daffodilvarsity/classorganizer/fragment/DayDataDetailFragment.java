@@ -28,7 +28,8 @@ import bd.edu.daffodilvarsity.classorganizer.activity.EditActivity;
 import bd.edu.daffodilvarsity.classorganizer.adapter.DayDataAdapter;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
-import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelper;
+import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelperCampus;
+import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelperClass;
 import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
@@ -79,7 +80,7 @@ public class DayDataDetailFragment extends Fragment {
                         MaterialDialog.Builder builder = new MaterialDialog.Builder(rootView.getContext());
                         builder.title("Save to");
                         View dialogView = LayoutInflater.from(rootView.getContext()).inflate(R.layout.class_spinner_layout, null);
-                        final SpinnerHelper classHelper = new SpinnerHelper(getContext(), dialogView, R.layout.spinner_row, true, false);
+                        final SpinnerHelperClass classHelper = new SpinnerHelperClass(getContext(), dialogView, R.layout.spinner_row, true);
                         classHelper.setupClassLabelBlack();
                         classHelper.setupClass(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
                         classHelper.setClassSpinnerPositions(prefManager.getLevel(), prefManager.getTerm(),  prefManager.getSection());

@@ -1,10 +1,12 @@
 package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
 
@@ -30,6 +32,13 @@ public class UserTypeHelper implements AdapterView.OnItemSelectedListener{
         userTypeSpinner.setOnItemSelectedListener(this);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.user_type, R.layout.spinner_row);
         userTypeSpinner.setAdapter(adapter);
+    }
+
+    public void setUserTypeLabelBlack() {
+        TextView userTypeLabel = (TextView) view.findViewById(R.id.user_type_spinner_label);
+        if (userTypeLabel != null) {
+            userTypeLabel.setTextColor(ContextCompat.getColor(context, android.R.color.black));
+        }
     }
 
     @Override

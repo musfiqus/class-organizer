@@ -14,22 +14,12 @@
         tools:visibility="gone"
         layout="@layout/class_spinner_layout"
          />
-    <LinearLayout
-        android:id="@+id/teachers_initial_layout"
+    <include
+        android:id="@+id/teachers_spinner_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/teachers_initial_selection_welcome_title"
-            style="@style/SpinnerTitle"
-            android:text="@string/select_your_initial" />
-
-        <Spinner
-            android:id="@+id/teachers_initial_selection_welcome"
-            style="@style/SpinnerStyle"
-            android:completionThreshold="1" />
-    </LinearLayout>
+        tools:visibility="gone"
+        layout="@layout/teacher_spinner_layout"
+        />
 </FrameLayout>

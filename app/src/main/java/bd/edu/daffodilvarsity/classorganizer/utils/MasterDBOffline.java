@@ -100,12 +100,12 @@ public class MasterDBOffline extends SQLiteAssetHelper {
             if (cursor.moveToFirst()) {
                 do {
                     if (cursor.getString(0) != null) {
-                        String string = cursor.getString(0);
-                        String courseCode = string.substring(0, string.length()-1);
-                        String section = string.substring(string.length() -1, string.length());
+                        String[] dynamicCode = dynamicCourseCode(cursor.getString(0));
+                        String courseCode = dynamicCode[0];
+                        String section = dynamicCode[1];
                         int semester = getColumnNumberByQuery("course_codes_"+campus+"_"+dept+"_"+program, courseCode);
                         int[] levelTerm = RoutineLoader.getLevelTerm(semester+1);
-                        DayData newDayData = new DayData(courseCode, trimInitial(cursor.getString(1)), section, levelTerm[0], levelTerm[1], cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(courseCode, campus, dept, program));
+                        DayData newDayData = new DayData(getCourseCode(courseCode), trimInitial(cursor.getString(1)), section, levelTerm[0], levelTerm[1], cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(courseCode, campus, dept, program));
                         list.add(newDayData);
                     }
                 } while (cursor.moveToNext());
@@ -403,6 +403,42 @@ public class MasterDBOffline extends SQLiteAssetHelper {
             string = string.replaceAll("\\p{P}", "");
         }
         return string;
+    }
+
+    private String[] dynamicCourseCode(String rawCode) {
+        int i = 0;
+        int beginIndex = 0;
+        boolean brake = false;
+
+        while(!brake) {
+            try {
+                Integer.parseInt(rawCode.substring(i, i+1));
+                brake = true;
+            } catch (NumberFormatException e) {
+                i++;
+                brake = false;
+            }
+        }
+        String course = rawCode.substring(beginIndex, i);
+        brake = false;
+        beginIndex = i;
+        Log.e(TAG, rawCode);
+        while (!brake) {
+            if (rawCode.substring(i, i+1).equalsIgnoreCase("L") && rawCode.length() != i+1) {
+                i++;
+                continue;
+            }
+            try {
+                Integer.parseInt(rawCode.substring(i, i+1));
+                brake = false;
+                i++;
+            } catch (NumberFormatException e) {
+                brake = true;
+            }
+        }
+        String code = rawCode.substring(beginIndex, i);
+        String section = rawCode.substring(i, rawCode.length());
+        return new String[]{getCourseCode(course+code), section};
     }
 
     private String trimInitial(String initial) {
