@@ -1,8 +1,6 @@
 package bd.edu.daffodilvarsity.classorganizer.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -26,12 +24,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,11 +46,9 @@ import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.adapter.DayFragmentPagerAdapter;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.service.NotificationRestartJobIntentService;
-import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOffline;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
-import bd.edu.daffodilvarsity.classorganizer.utils.RoutineLoader;
 import bd.edu.daffodilvarsity.classorganizer.utils.UpdateTask;
 
 public class MainActivity extends ColorfulActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -70,7 +63,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     private boolean isActivityRunning = false;
     private boolean updateDialogueBlocked = false;
     private boolean isDownloadSuccessful;
-    private AdView adView;
+//    private AdView adView;
 
 
     //TODO Comment it out before publishing, only for testing purpose
@@ -135,10 +128,10 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         checkFirebase();
 
         //And load adz
-        if (adView == null) {
-            adView = (AdView) findViewById(R.id.adView);
-        }
-        adView.loadAd(new AdRequest.Builder().build());
+//        if (adView == null) {
+//            adView = (AdView) findViewById(R.id.adView);
+//        }
+//        adView.loadAd(new AdRequest.Builder().build());
 
     }
 

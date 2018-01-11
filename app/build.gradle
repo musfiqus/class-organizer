@@ -36,7 +36,7 @@ android {
         versionName '4.3.0'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 46
+        versionCode 47
     }
     signingConfigs {
         release {
@@ -105,7 +105,7 @@ dependencies {
     }
 
     //Firebase admob
-    compile "com.google.firebase:firebase-ads:$firebaseLibVersion"
+//    compile "com.google.firebase:firebase-ads:$firebaseLibVersion"
 
     testCompile "junit:junit:4.12"
 }
