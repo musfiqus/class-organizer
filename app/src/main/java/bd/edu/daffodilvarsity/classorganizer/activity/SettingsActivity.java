@@ -557,28 +557,44 @@ public class SettingsActivity extends ColorfulActivity {
 
         private void limitSettings() {
             final SwitchPreferenceCompat limitPreference = (SwitchPreferenceCompat) findPreference("limit_preference");
-            limitPreference.setChecked(preferenceManager.getSharedPreferences().getBoolean("limit_preference", true));
             if (preferenceManager.getSharedPreferences().getBoolean("limit_preference", true)) {
                 limitPreference.setSummary(getString(R.string.limit_preference_enabled_summary));
             } else {
                 limitPreference.setSummary(getString(R.string.limit_preference_disabled_summary));
             }
-            limitPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-                @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue) {
-                    boolean isLimited = (boolean) newValue;
+            if (!prefManager.isUserStudent()) {
+                if (preferenceManager.getSharedPreferences().getBoolean("limit_preference", true)) {
+                    limitPreference.setChecked(false);
                     RoutineLoader routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), getContext(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
                     ArrayList<DayData> newDayData = routineLoader.loadRoutine(true);
                     prefManager.saveDayData(newDayData);
-                    if (isLimited) {
-                        limitPreference.setSummary(getString(R.string.limit_preference_enabled_summary));
-                    } else {
-                        limitPreference.setSummary(getString(R.string.limit_preference_disabled_summary));
-                    }
-                    prefManager.saveReCreate(true);
-                    return true;
                 }
-            });
+                if (limitPreference.isEnabled()) {
+                    limitPreference.setEnabled(false);
+                }
+            } else {
+                if (!limitPreference.isEnabled()) {
+                    limitPreference.setEnabled(true);
+                }
+                limitPreference.setChecked(preferenceManager.getSharedPreferences().getBoolean("limit_preference", true));
+                limitPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                    @Override
+                    public boolean onPreferenceChange(Preference preference, Object newValue) {
+                        boolean isLimited = (boolean) newValue;
+                        RoutineLoader routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), getContext(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
+                        ArrayList<DayData> newDayData = routineLoader.loadRoutine(true);
+                        prefManager.saveDayData(newDayData);
+                        if (isLimited) {
+                            limitPreference.setSummary(getString(R.string.limit_preference_enabled_summary));
+                        } else {
+                            limitPreference.setSummary(getString(R.string.limit_preference_disabled_summary));
+                        }
+                        prefManager.saveReCreate(true);
+                        return true;
+                    }
+                });
+            }
+
         }
 
         private void ramadanSettings() {

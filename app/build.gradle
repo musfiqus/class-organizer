@@ -33,7 +33,7 @@ android {
         applicationId "bd.edu.daffodilvarsity.classorganizer"
         minSdkVersion 16
         targetSdkVersion 27
-        versionName '4.3.X'
+        versionName '4.3.0'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         versionCode 46
@@ -98,14 +98,14 @@ dependencies {
     compile "com.google.code.gson:gson:2.8.2"
 
     //Do not update that shitty firebase
-    compile "com.google.firebase:firebase-database:11.6.0"
-    compile 'com.google.firebase:firebase-core:11.6.0'
+    compile "com.google.firebase:firebase-database:$firebaseLibVersion"
+    compile "com.google.firebase:firebase-core:$firebaseLibVersion"
     compile('com.crashlytics.sdk.android:crashlytics:2.8.0@aar') {
         transitive = true;
     }
 
     //Firebase admob
-    compile 'com.google.firebase:firebase-ads:11.6.0'
+    compile "com.google.firebase:firebase-ads:$firebaseLibVersion"
 
     testCompile "junit:junit:4.12"
 }
