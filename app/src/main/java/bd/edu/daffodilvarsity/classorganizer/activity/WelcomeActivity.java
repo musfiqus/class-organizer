@@ -162,7 +162,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                 if (current == layouts.length - 1) {
                     //class slide
                     if (myViewPagerAdapter.getClassDataCode() > 0) {
-                        DataChecker.errorMessage(getApplicationContext(), myViewPagerAdapter.getClassDataCode(), null);
+                        DataChecker.errorMessage(WelcomeActivity.this, myViewPagerAdapter.getClassDataCode(), null);
                         showSnackBar(myViewPagerAdapter.getCampus(), myViewPagerAdapter.getDept(), myViewPagerAdapter.getProgram(), myViewPagerAdapter.getSection(), Integer.toString(myViewPagerAdapter.getLevel() + 1), Integer.toString(myViewPagerAdapter.getTerm() + 1));
                         viewPager.setCurrentItem(current - 1);
                     } else {
@@ -493,7 +493,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
         protected Void doInBackground(String... params) {
             if (myViewPagerAdapter.isStudent()) {
                 if (myViewPagerAdapter.getCampusDataCode() > 0) {
-                    DataChecker.errorMessage(getApplicationContext(), myViewPagerAdapter.getCampusDataCode(), null);
+                    DataChecker.errorMessage(WelcomeActivity.this, myViewPagerAdapter.getCampusDataCode(), null);
                     showSnackBar(myViewPagerAdapter.getCampus(), myViewPagerAdapter.getDept(), myViewPagerAdapter.getProgram(), myViewPagerAdapter.getSection(), Integer.toString(myViewPagerAdapter.getLevel() + 1), Integer.toString(myViewPagerAdapter.getTerm() + 1));
                 } else {
                     myViewPagerAdapter.getClassHelper().createClassAdapters(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());

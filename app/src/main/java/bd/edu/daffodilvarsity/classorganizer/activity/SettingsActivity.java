@@ -284,7 +284,7 @@ public class SettingsActivity extends ColorfulActivity {
                         onCreate(Bundle.EMPTY);
                         showSnackBar(getActivity(), getResources().getString(R.string.dept_settings_changed));
                     } else {
-                        DataChecker.errorMessage(getContext(), campusCode, null);
+                        DataChecker.errorMessage(getActivity(), campusCode, null);
                     }
                 }
             });
@@ -400,7 +400,7 @@ public class SettingsActivity extends ColorfulActivity {
                                 showSnackBar(getActivity(), getResources().getString(R.string.saved));
                                 dialog.dismiss();
                             } else {
-                                DataChecker.errorMessage(getContext(), classCode, null);
+                                DataChecker.errorMessage(getActivity(), classCode, null);
                             }
                         }
                     });
@@ -456,7 +456,7 @@ public class SettingsActivity extends ColorfulActivity {
                                 showSnackBar(getActivity(), getResources().getString(R.string.saved));
                                 dialog.dismiss();
                             } else {
-                                DataChecker.errorMessage(getContext(), classCode, null);
+                                DataChecker.errorMessage(getActivity(), classCode, null);
                             }
                         }
                     });

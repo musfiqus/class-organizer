@@ -10,7 +10,9 @@ import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
@@ -21,7 +23,7 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 public class MasterDBOffline extends SQLiteAssetHelper {
     private static final String TAG = "MasterDBOffline";
-    public static final int OFFLINE_DATABASE_VERSION = 18;
+    public static final int OFFLINE_DATABASE_VERSION = 19;
 
     //Increment the version to erase previous db
     private static final String COLUMN_COURSE_CODE = "course_code";
@@ -116,7 +118,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
         return list;
     }
 
-    int getColumnNumberByQuery(final String TABLE_NAME, String query) {
+    private int getColumnNumberByQuery(final String TABLE_NAME, String query) {
         SQLiteDatabase db = getWritableDatabase();
         String[] columnNames = getColumnNames(TABLE_NAME);
         for (int i = 0; i < columnNames.length; i++) {
@@ -241,19 +243,19 @@ public class MasterDBOffline extends SQLiteAssetHelper {
             ArrayList<String> initials = new ArrayList<>();
             SQLiteDatabase db = getWritableDatabase();
             Cursor cursor = db.query(TABLE_NAME, columnNames, null, null, null, null, null);
-            StringBuilder teacherLongString = new StringBuilder();
+            Set<String> set = new HashSet<>();
             if (cursor.moveToFirst()) {
                 do {
                     if (cursor.getString(column) != null) {
                         String newInitial = cursor.getString(column);
-                        if (!teacherLongString.toString().contains(newInitial) && !newInitial.equalsIgnoreCase("N/A")) {
-                            teacherLongString.append(" ").append(newInitial);
-                            initials.add(newInitial);
+                        if (!newInitial.equalsIgnoreCase("N/A")) {
+                            set.add(newInitial);
                         }
                     }
                 } while (cursor.moveToNext());
             }
             cursor.close();
+            initials.addAll(set);
             Collections.sort(initials, new Comparator<String>() {
                 @Override
                 public int compare(String s1, String s2) {

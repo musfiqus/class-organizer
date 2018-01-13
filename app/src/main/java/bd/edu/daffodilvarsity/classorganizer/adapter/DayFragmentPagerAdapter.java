@@ -77,7 +77,7 @@ public class DayFragmentPagerAdapter extends FragmentStatePagerAdapter {
         boolean hasFriDay = false;
 
         for (DayData eachDay : dayData) {
-            if (eachDay != null) {
+            if (eachDay != null && eachDay.getDay() != null) {
                 if (eachDay.getDay().equalsIgnoreCase("saturday")) {
                     satDayData.add(eachDay);
                     if (!hasSatDay) {

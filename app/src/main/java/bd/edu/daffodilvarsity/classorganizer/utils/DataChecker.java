@@ -1,5 +1,6 @@
 package bd.edu.daffodilvarsity.classorganizer.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.widget.Toast;
 
@@ -24,7 +25,6 @@ public class DataChecker {
     private static final int INVALID_CLASS_MIXED = 7;
     private static final int INVALID_TEACHER_INITIAL = 9;
 
-    private static Toast toast;
     private Context context;
 
     public DataChecker(Context context) {
@@ -104,7 +104,7 @@ public class DataChecker {
         return VALID_CHOICE;
     }
 
-    public static void errorMessage(Context context, int errorCode, String message) {
+    public static void errorMessage(final Activity activity, int errorCode, String message) {
         if (message == null) {
             if (errorCode == INVALID_CAMPUS) {
                 message = "Invalid Campus Selection";
@@ -128,10 +128,13 @@ public class DataChecker {
                 message = "Routine for this section in this level or term isn't available yet.";
             }
         }
-        if (message != null && toast == null) {
-            toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
-            toast.show();
-            toast = null;
+        if (message != null && activity != null) {
+            final String finalMessage = message;
+            activity.runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(activity, finalMessage, Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 }
