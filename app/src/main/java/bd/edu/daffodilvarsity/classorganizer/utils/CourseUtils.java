@@ -1,6 +1,7 @@
 package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,6 +20,7 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 public class CourseUtils{
 
+    private static final String TAG = "CourseUtils";
 
     public static final int GET_CAMPUS = 0;
     public static final int GET_DEPARTMENT = 1;

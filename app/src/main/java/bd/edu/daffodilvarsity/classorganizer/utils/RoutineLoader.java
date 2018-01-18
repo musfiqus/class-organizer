@@ -3,6 +3,7 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,6 +20,8 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
  */
 
 public class RoutineLoader {
+
+    private static final String TAG = "RoutineLoader";
 
     private PrefManager prefManager;
     private int level;
@@ -98,6 +101,9 @@ public class RoutineLoader {
 
             CourseUtils courseUtils = CourseUtils.getInstance(context);
             vanillaRoutine = courseUtils.getDayData(courseCodes, section, level, term, dept, campus, program);
+            if (vanillaRoutine == null || vanillaRoutine.size() == 0) {
+                Log.e(TAG, "DAPUQ?");
+            }
             if (!loadPersonal) {
                 return vanillaRoutine;
             } else {

@@ -49,3 +49,8 @@
 ##---------------End: proguard configuration for Gson  ----------
 ##---------------Proguard rules for Crashlytics -----------------
 -keepattributes SourceFile,LineNumberTable
+
+#crashlytics
+-keep class com.crashlytics.** { *; }
+-dontwarn com.crashlytics.**
+-keep public class * extends java.lang.Exception

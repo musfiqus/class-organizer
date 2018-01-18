@@ -62,7 +62,7 @@ public class WelcomeSlidePagerAdapter extends PagerAdapter{
         }
         if (layouts[position] == R.layout.welcome_slide5) {
             Log.e(TAG, "Called Class Slide");
-            classHelper = new SpinnerHelperClass(context, view, R.layout.spinner_class_row_welcome, userTypeHelper.isStudent());
+            classHelper = new SpinnerHelperClass(context, view, R.layout.spinner_class_row_welcome, userTypeHelper == null || userTypeHelper.isStudent());
             if (isStudent()) {
                 classHelper.createClassSpinners();
             } else {
@@ -115,7 +115,10 @@ public class WelcomeSlidePagerAdapter extends PagerAdapter{
     }
 
     public boolean isStudent() {
-        return userTypeHelper.isStudent();
+        if (userTypeHelper != null) {
+            return userTypeHelper.isStudent();
+        }
+        return true;
     }
 
     public String getCampus() {

@@ -241,9 +241,15 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                 checkText = (TextView) findViewById(R.id.check_Text);
             }
             if (!isUpdateAlreadyExecuted) {
-                checkText.setText(R.string.check_latest_routine_text);
-                spinKitView.setVisibility(View.VISIBLE);
-                cloud.setImageResource(R.drawable.ic_cloud_download_white_48dp);
+                if (checkText != null) {
+                    checkText.setText(R.string.check_latest_routine_text);
+                }
+                if (spinKitView != null) {
+                    spinKitView.setVisibility(View.VISIBLE);
+                }
+                if (cloud != null) {
+                    cloud.setImageResource(R.drawable.ic_cloud_download_white_48dp);
+                }
                 new StartUpdateTask().execute();
             }
         } else {
@@ -495,8 +501,10 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                 if (myViewPagerAdapter.getCampusDataCode() > 0) {
                     DataChecker.errorMessage(WelcomeActivity.this, myViewPagerAdapter.getCampusDataCode(), null);
                     showSnackBar(myViewPagerAdapter.getCampus(), myViewPagerAdapter.getDept(), myViewPagerAdapter.getProgram(), myViewPagerAdapter.getSection(), Integer.toString(myViewPagerAdapter.getLevel() + 1), Integer.toString(myViewPagerAdapter.getTerm() + 1));
+                    return null;
                 } else {
                     myViewPagerAdapter.getClassHelper().createClassAdapters(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
+                    return null;
                 }
             } else {
                 String campus = params[0];
@@ -504,8 +512,8 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                 String program = params[2];
                 myViewPagerAdapter.getClassHelper().createTeacherInitAdapter(campus, department, program);
                 Log.e(TAG, "Doing");
+                return null;
             }
-            return null;
         }
 
         @Override

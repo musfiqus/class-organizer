@@ -173,21 +173,21 @@ public class SpinnerHelperCampus implements AdapterView.OnItemSelectedListener {
         if (campusSpinner == null || campusSpinner.getSelectedItem() == null) {
             return null;
         }
-        return campusSpinner.getSelectedItem().toString();
+        return campusSpinner.getSelectedItem().toString().toLowerCase();
     }
 
     public String getDept() {
         if (deptSpinner == null || deptSpinner.getSelectedItem() == null) {
             return null;
         }
-        return deptSpinner.getSelectedItem().toString();
+        return deptSpinner.getSelectedItem().toString().toLowerCase();
     }
 
     public String getProgram() {
         if (programSpinner == null || programSpinner.getSelectedItem() == null) {
             return null;
         }
-        return programSpinner.getSelectedItem().toString();
+        return programSpinner.getSelectedItem().toString().toLowerCase();
     }
 
     private boolean isCampusSpinnersNull() {
@@ -225,6 +225,8 @@ public class SpinnerHelperCampus implements AdapterView.OnItemSelectedListener {
             }
         }
         campusDataCode = new DataChecker(context).campusChecker(campus, dept, program);
+        Log.e(TAG, "CampusCode: "+campusDataCode);
+        Log.e(TAG, "Kampus: "+campus+" Dept:"+dept+" Program:"+program);
     }
 
     @Override

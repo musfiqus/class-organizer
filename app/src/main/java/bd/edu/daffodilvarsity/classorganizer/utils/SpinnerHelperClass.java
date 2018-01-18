@@ -90,12 +90,15 @@ public class SpinnerHelperClass implements AdapterView.OnItemSelectedListener {
     }
 
     public void attachClassSpinners() {
-        levelSpinner.setAdapter(levelAdapter);
-        termSpinner.setAdapter(termAdapter);
-        sectionSpinner.setAdapter(sectionAdapter);
-        levelSpinner.setOnItemSelectedListener(this);
-        termSpinner.setOnItemSelectedListener(this);
-        sectionSpinner.setOnItemSelectedListener(this);
+        if (levelSpinner != null && termSpinner != null && sectionSpinner != null &&
+                levelAdapter != null && termAdapter != null && sectionAdapter != null) {
+            levelSpinner.setAdapter(levelAdapter);
+            termSpinner.setAdapter(termAdapter);
+            sectionSpinner.setAdapter(sectionAdapter);
+            levelSpinner.setOnItemSelectedListener(this);
+            termSpinner.setOnItemSelectedListener(this);
+            sectionSpinner.setOnItemSelectedListener(this);
+        }
     }
 
     public void setupClassSpinners() {

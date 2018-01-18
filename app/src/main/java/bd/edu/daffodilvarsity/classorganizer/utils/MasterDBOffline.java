@@ -23,7 +23,7 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 public class MasterDBOffline extends SQLiteAssetHelper {
     private static final String TAG = "MasterDBOffline";
-    public static final int OFFLINE_DATABASE_VERSION = 19;
+    public static final int OFFLINE_DATABASE_VERSION = 20;
 
     //Increment the version to erase previous db
     private static final String COLUMN_COURSE_CODE = "course_code";
@@ -103,12 +103,15 @@ public class MasterDBOffline extends SQLiteAssetHelper {
                 do {
                     if (cursor.getString(0) != null) {
                         String[] dynamicCode = dynamicCourseCode(cursor.getString(0));
-                        String courseCode = dynamicCode[0];
-                        String section = dynamicCode[1];
-                        int semester = getColumnNumberByQuery("course_codes_"+campus+"_"+dept+"_"+program, courseCode);
-                        int[] levelTerm = RoutineLoader.getLevelTerm(semester+1);
-                        DayData newDayData = new DayData(getCourseCode(courseCode), trimInitial(cursor.getString(1)), section, levelTerm[0], levelTerm[1], cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(courseCode, campus, dept, program));
-                        list.add(newDayData);
+                        if (dynamicCode != null) {
+                            String courseCode = dynamicCode[0];
+                            String section = dynamicCode[1];
+                            int semester = getColumnNumberByQuery("course_codes_"+campus+"_"+dept+"_"+program, courseCode);
+                            int[] levelTerm = RoutineLoader.getLevelTerm(semester+1);
+                            DayData newDayData = new DayData(getCourseCode(courseCode), trimInitial(cursor.getString(1)), section, levelTerm[0], levelTerm[1], cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(courseCode, campus, dept, program));
+                            list.add(newDayData);
+                        }
+
                     }
                 } while (cursor.moveToNext());
             }
@@ -419,6 +422,9 @@ public class MasterDBOffline extends SQLiteAssetHelper {
             } catch (NumberFormatException e) {
                 i++;
                 brake = false;
+            }
+            if (rawCode.length() == i+1) {
+                return null;
             }
         }
         String course = rawCode.substring(beginIndex, i);

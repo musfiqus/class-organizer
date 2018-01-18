@@ -2,6 +2,7 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
  */
 
 public class DataChecker {
+
+    private static final String TAG = "DataChecker";
 
     private static final int VALID_CHOICE = 0;
     private static final int INVALID_LEVEL_TERM = 1;
@@ -54,10 +57,12 @@ public class DataChecker {
         }
         ArrayList<String> sections = courseUtils.getSections(campus, department, program);
         if (sections == null || sections.size() == 0) {
+            Log.e(TAG, "HEREEEEEE");
             return INVALID_CAMPUS_MIXED;
         }
         ArrayList<DayData> routine = new RoutineLoader(0,0, sections.get(0), context, department, campus, program).loadRoutine(false);
         if (routine == null || routine.size() == 0) {
+            Log.e(TAG, "NOOOOOOO HEREEEEEE");
             return INVALID_CAMPUS_MIXED;
         }
         return VALID_CHOICE;
