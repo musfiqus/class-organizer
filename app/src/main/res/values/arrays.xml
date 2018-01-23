@@ -51,4 +51,15 @@
         <item>As a Teacher</item>
     </string-array>
 
+    <string-array name="search_page_titles">
+        <item>Your routine</item>
+        <item>Free rooms</item>
+        <item>Teachers</item>
+    </string-array>
+
+    <string-array name="search_room_type">
+        <item>By Room</item>
+        <item>By Time</item>
+    </string-array>
+
 </resources>

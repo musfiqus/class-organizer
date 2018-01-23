@@ -121,6 +121,52 @@ public class MasterDBOffline extends SQLiteAssetHelper {
         return list;
     }
 
+    ArrayList<DayData> getFreeRoomsByTime(String campus, String dept, String program, String day, String timeWeight) {
+        SQLiteDatabase db = getWritableDatabase();
+        final String currentTable = "routine_"+campus.toLowerCase() + "_" + dept.toLowerCase() + "_" + program.toLowerCase();
+        String[] columnNames = getColumnNames(currentTable);
+        final String SELECTION = columnNames[0] + "=?" + " AND " + columnNames[1] + "=?" + " AND " +columnNames[2] + " LIKE ?" + " AND " +columnNames[4] + " LIKE ?";
+        ArrayList<DayData> list = new ArrayList<>();
+        final String[] SELECTION_ARGS = { "N/A", "N/A", day, timeWeight };
+        Cursor cursor = db.query(currentTable, columnNames, SELECTION, SELECTION_ARGS, null, null, null, null);
+        CourseUtils courseUtils = CourseUtils.getInstance(mContext);
+        if (cursor.moveToFirst()) {
+            do {
+                if (cursor.getString(0) != null) {
+                    String courseCode = cursor.getString(0);
+                    DayData newDayData = new DayData(getCourseCode(courseCode), trimInitial(cursor.getString(1)), "B", 0, 0, cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(courseCode, campus, dept, program));
+                    list.add(newDayData);
+
+                }
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return list;
+    }
+
+    ArrayList<DayData> getFreeRoomsByRoom(String campus, String dept, String program, String room) {
+        SQLiteDatabase db = getWritableDatabase();
+        final String currentTable = "routine_"+campus.toLowerCase() + "_" + dept.toLowerCase() + "_" + program.toLowerCase();
+        String[] columnNames = getColumnNames(currentTable);
+        final String SELECTION = columnNames[0] + "=?" + " AND " + columnNames[1] + "=?" + " AND " +columnNames[3] + " LIKE ?";
+        ArrayList<DayData> list = new ArrayList<>();
+        final String[] SELECTION_ARGS = { "N/A", "N/A", room };
+        Cursor cursor = db.query(currentTable, columnNames, SELECTION, SELECTION_ARGS, null, null, null, null);
+        CourseUtils courseUtils = CourseUtils.getInstance(mContext);
+        if (cursor.moveToFirst()) {
+            do {
+                if (cursor.getString(0) != null) {
+                    String courseCode = cursor.getString(0);
+                    DayData newDayData = new DayData(getCourseCode(courseCode), trimInitial(cursor.getString(1)), "B", 0, 0, cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(courseCode, campus, dept, program));
+                    list.add(newDayData);
+
+                }
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return list;
+    }
+
     private int getColumnNumberByQuery(final String TABLE_NAME, String query) {
         SQLiteDatabase db = getWritableDatabase();
         String[] columnNames = getColumnNames(TABLE_NAME);
@@ -266,6 +312,39 @@ public class MasterDBOffline extends SQLiteAssetHelper {
                 }
             });
             return initials;
+        }
+        return null;
+    }
+
+    public ArrayList<String> getRoomNo(String campus, String department, String program) {
+        final String TABLE_NAME = "routine_"+campus.toLowerCase() + "_" + department.toLowerCase() + "_" + program.toLowerCase();
+        boolean isTableExisting = doesTableExist(TABLE_NAME);
+        if (isTableExisting) {
+            String[] columnNames = getColumnNames(TABLE_NAME);
+            int column = getColumnNumber(columnNames, "room_no");
+            ArrayList<String> rooms = new ArrayList<>();
+            SQLiteDatabase db = getWritableDatabase();
+            Cursor cursor = db.query(TABLE_NAME, columnNames, null, null, null, null, null);
+            Set<String> set = new HashSet<>();
+            if (cursor.moveToFirst()) {
+                do {
+                    if (cursor.getString(column) != null) {
+                        String newRoom = cursor.getString(column);
+                        if (!newRoom.equalsIgnoreCase("N/A")) {
+                            set.add(newRoom);
+                        }
+                    }
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+            rooms.addAll(set);
+            Collections.sort(rooms, new Comparator<String>() {
+                @Override
+                public int compare(String s1, String s2) {
+                    return s1.compareToIgnoreCase(s2);
+                }
+            });
+            return rooms;
         }
         return null;
     }

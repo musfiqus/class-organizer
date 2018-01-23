@@ -147,4 +147,13 @@
     <string name="how_are_you_going_to_use_the_app">How are you going to use the app?</string>
     <string name="select_your_initial">Select your initial</string>
     <string name="title_activity_search_refined">SearchRefinedActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="advanced">Advanced</string>
+    <string name="hide">Hide</string>
+    <string name="enter_search_phrase">Enter search phrase</string>
+    <string name="select_search_options">Select search options</string>
+    <string name="available">Available</string>
+    <string name="status">STATUS</string>
 </resources>

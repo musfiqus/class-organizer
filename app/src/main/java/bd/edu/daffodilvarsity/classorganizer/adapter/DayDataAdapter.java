@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.Parcelable;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +33,14 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
 
     public DayDataAdapter(ArrayList<DayData> dayDataArrayList, Context context, int itemResource) {
         this.dayDataArrayList = dayDataArrayList;
+        this.context = context;
+        this.itemResource = itemResource;
+        this.copyOfDayDataList = new ArrayList<>();
+        this.copyOfDayDataList.addAll(dayDataArrayList);
+    }
+
+    public DayDataAdapter(Context context, int itemResource) {
+        this.dayDataArrayList = new ArrayList<>();
         this.context = context;
         this.itemResource = itemResource;
         this.copyOfDayDataList = new ArrayList<>();
@@ -65,7 +75,7 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
 
     public void filter(String query, boolean courseCode, boolean courseTitle, boolean teacher, boolean room) {
         dayDataArrayList.clear();
-        if (query.isEmpty()) {
+        if (query == null || query.isEmpty()) {
             dayDataArrayList.clear();
         } else {
             query = query.toLowerCase();
@@ -110,6 +120,13 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
             return dayDataArrayList.size();
         }
         return 0;
+    }
+    public void loadResult(ArrayList<DayData> result) {
+        if (result != null) {
+            dayDataArrayList.clear();
+            dayDataArrayList.addAll(result);
+        }
+        notifyDataSetChanged();
     }
 
     /**

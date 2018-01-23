@@ -46,6 +46,7 @@ import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.adapter.DayFragmentPagerAdapter;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.service.NotificationRestartJobIntentService;
+import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOffline;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
@@ -163,7 +164,8 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
             Intent intent = new Intent(this, AddActivity.class);
             startActivity(intent);
         } else if (item.getItemId() == R.id.search_button_main) {
-            Intent intent = new Intent(this, SearchActivity.class);
+//            Intent intent = new Intent(this, SearchActivity.class);
+            Intent intent = new Intent(this, SearchRefinedActivity.class);
             startActivity(intent);
         }
         return true;

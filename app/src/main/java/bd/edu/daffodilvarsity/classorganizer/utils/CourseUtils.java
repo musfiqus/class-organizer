@@ -64,11 +64,27 @@ public class CourseUtils{
         }
     }
 
-    ArrayList<DayData> getDayDataByQuery(String campus, String dept, String program, String query, String columnName) {
+    public ArrayList<DayData> getDayDataByQuery(String campus, String dept, String program, String query, String columnName) {
         if (isUpdatedOnline) {
             return MasterDBOnline.getInstance(mContext).getDayDataByQuery(campus, dept, program, query, columnName);
         } else {
             return MasterDBOffline.getInstance(mContext).getDayDataByQuery(campus, dept, program, query, columnName);
+        }
+    }
+
+    public ArrayList<DayData> getFreeRoomsByTime(String campus, String dept, String program, String day, String timeWeight) {
+        if (isUpdatedOnline) {
+            return MasterDBOnline.getInstance(mContext).getFreeRoomsByTime(campus, dept, program, day, timeWeight);
+        } else {
+            return MasterDBOffline.getInstance(mContext).getFreeRoomsByTime(campus, dept, program, day, timeWeight);
+        }
+    }
+
+    public ArrayList<DayData> getFreeRoomsByRoom(String campus, String dept, String program, String room) {
+        if (isUpdatedOnline) {
+            return MasterDBOnline.getInstance(mContext).getFreeRoomsByRoom(campus, dept, program, room);
+        } else {
+            return MasterDBOffline.getInstance(mContext).getFreeRoomsByRoom(campus, dept, program, room);
         }
     }
 
@@ -166,6 +182,14 @@ public class CourseUtils{
             return MasterDBOnline.getInstance(mContext).getTeachersInitials(campus, department, program);
         } else {
             return MasterDBOffline.getInstance(mContext).getTeachersInitials(campus, department, program);
+        }
+    }
+
+    public ArrayList<String> getRoomNo(String campus, String department, String program) {
+        if (isUpdatedOnline) {
+            return MasterDBOnline.getInstance(mContext).getRoomNo(campus, department, program);
+        } else {
+            return MasterDBOffline.getInstance(mContext).getRoomNo(campus, department, program);
         }
     }
 

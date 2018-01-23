@@ -79,6 +79,11 @@
             </intent-filter>
         </receiver>
 
+        <activity
+            android:name=".activity.SearchRefinedActivity"
+            android:label="Search"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activity.BaseActivity"></activity>
     </application>
 
 </manifest>

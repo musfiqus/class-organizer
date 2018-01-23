@@ -11,7 +11,7 @@
         <!-- specify enter and exit transitions -->
     </style>
 
-    <style name="AppTheme.NoActionBar">
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
@@ -60,6 +60,18 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="PrimaryButton" parent="AppTheme">
+        <item name="colorButtonNormal">?attr/colorPrimary</item>
+        <item name="colorControlHighlight">?attr/colorPrimaryDark</item>
+    </style>
+    <style name="SearchPageTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:textColor">@color/md_black_1000</item>
     </style>
 
 </resources>
