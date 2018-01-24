@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Parcelable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,6 +31,16 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
     private final ArrayList<DayData> copyOfDayDataList;
     private Context context;
     private int itemResource;
+    private DayListItemClickListener onItemClickListener;
+
+    public DayDataAdapter(ArrayList<DayData> dayDataArrayList, Context context, int itemResource, DayListItemClickListener onItemClickListener) {
+        this.dayDataArrayList = dayDataArrayList;
+        this.context = context;
+        this.itemResource = itemResource;
+        this.copyOfDayDataList = new ArrayList<>();
+        this.copyOfDayDataList.addAll(dayDataArrayList);
+        this.onItemClickListener = onItemClickListener;
+    }
 
     public DayDataAdapter(ArrayList<DayData> dayDataArrayList, Context context, int itemResource) {
         this.dayDataArrayList = dayDataArrayList;
@@ -57,16 +68,17 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
     public void onBindViewHolder(final DayDataHolder holder, int position) {
         final DayData dayData = dayDataArrayList.get(position);
         holder.bindDayData(dayData);
-        holder.getMView().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context context = v.getContext();
-                Intent intent = new Intent(context, DayDataDetailActivity.class);
-                intent.putExtra("DayDataDetails", (Parcelable) dayData);
-                context.startActivity(intent);
-            }
-        });
+        if (onItemClickListener != null) {
+            holder.getMView().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.onDayItemClick(holder.getAdapterPosition(), dayData, holder);
+                }
+            });
+        }
+
     }
+
 
     @Override
     public int getItemCount() {
@@ -135,10 +147,10 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
 
     public static class DayDataHolder extends RecyclerView.ViewHolder {
         private Context context;
-        private TextView courseCodeTextView;
-        private TextView teachersInitialTextView;
-        private TextView roomNoTextView;
-        private TextView timeTextView;
+        public TextView courseCodeTextView;
+        public TextView teachersInitialTextView;
+        public TextView roomNoTextView;
+        public TextView timeTextView;
         private ViewGroup parent;
         private DayData dayData;
         private final View mView;
@@ -234,5 +246,9 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
             }
             return startTime + " - " +endTime;
         }
+    }
+
+    public interface DayListItemClickListener {
+        void onDayItemClick(int pos, DayData dayData, DayDataHolder holder);
     }
 }

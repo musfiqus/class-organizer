@@ -60,8 +60,6 @@
             android:name="io.fabric.ApiKey"
             android:value="97134746f7e815b6aad25190b01c4712d2c523ec" />
 
-        <activity android:name=".activity.SearchActivity" />
-
         <service
             android:name=".service.NotificationRestartJobIntentService"
             android:enabled="true"
@@ -83,7 +81,7 @@
             android:name=".activity.SearchRefinedActivity"
             android:label="Search"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activity.BaseActivity"></activity>
+        <activity android:name=".activity.BaseActivity" />
     </application>
 
 </manifest>

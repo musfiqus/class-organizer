@@ -18,7 +18,8 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:scaleType="centerCrop"
-        app:srcCompat="@drawable/ic_nav_drawer_icon" />
+        app:srcCompat="@drawable/ic_nav_drawer_icon"
+        android:contentDescription="@string/silhouette" />
 
     <TextView
         android:layout_width="match_parent"

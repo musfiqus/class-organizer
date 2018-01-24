@@ -1,8 +1,14 @@
 package bd.edu.daffodilvarsity.classorganizer.fragment;
 
 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.Pair;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +17,8 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
+import bd.edu.daffodilvarsity.classorganizer.activity.DayDataDetailActivity;
+import bd.edu.daffodilvarsity.classorganizer.activity.MainActivity;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.adapter.DayDataAdapter;
@@ -19,7 +27,7 @@ import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DayFragment extends Fragment {
+public class DayFragment extends Fragment implements DayDataAdapter.DayListItemClickListener {
     PrefManager prefManager;
     private DayDataAdapter adapter;
 
@@ -39,7 +47,7 @@ public class DayFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         assert courseData != null;
-        adapter = new DayDataAdapter(courseData, getContext(), R.layout.list_item);
+        adapter = new DayDataAdapter(courseData, getContext(), R.layout.list_item, this);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
         return rootView;
@@ -48,5 +56,14 @@ public class DayFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+    }
+
+    @Override
+    public void onDayItemClick(int pos, DayData dayData, DayDataAdapter.DayDataHolder holder) {
+        if (getActivity() != null) {
+            Intent intent = new Intent(getActivity(), DayDataDetailActivity.class);
+            intent.putExtra("DayDataDetails", (Parcelable) dayData);
+            startActivity(intent);
+        }
     }
 }

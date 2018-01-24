@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -34,7 +35,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.polaric.colorful.Colorful;
-import org.polaric.colorful.ColorfulActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,13 +46,12 @@ import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.adapter.DayFragmentPagerAdapter;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.service.NotificationRestartJobIntentService;
-import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOffline;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.UpdateTask;
 
-public class MainActivity extends ColorfulActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
     
@@ -64,6 +63,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
     private boolean isActivityRunning = false;
     private boolean updateDialogueBlocked = false;
     private boolean isDownloadSuccessful;
+    private DayFragmentPagerAdapter adapter;
 //    private AdView adView;
 
 
@@ -84,7 +84,10 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
         prefManager = new PrefManager(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            getWindow().setEnterTransition(null);
+//            getWindow().setExitTransition(null);
+//        }
         //If primary color and accent are same we are setting tab indicator to white
         if (Colorful.getThemeDelegate().getAccentColor() == Colorful.getThemeDelegate().getPrimaryColor()) {
             TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -133,6 +136,19 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
 //            adView = (AdView) findViewById(R.id.adView);
 //        }
 //        adView.loadAd(new AdRequest.Builder().build());
+//        final Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                //Do something after 100ms
+//                Log.e(TAG, "UPDATEZ");
+//                ArrayList<DayData> dayData = new ArrayList<>();
+//                DayData dayData1 = new DayData("BAL101", "CHAL101" , "B", 2, 0, "DAL101", "12.00 AM - 2.30 AM", "Saturday", 1.0, "DALBALCHAL");
+//                dayData.add(dayData1);
+//                adapter.updateData(dayData);
+//
+//            }
+//        }, 2000);
 
     }
 
@@ -243,7 +259,7 @@ public class MainActivity extends ColorfulActivity implements NavigationView.OnN
             // Find the view pager that will allow the user to swipe between fragments
             ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
             // Create an adapter that knows which fragment should be shown on each page
-            DayFragmentPagerAdapter adapter = new DayFragmentPagerAdapter(this, getSupportFragmentManager(), mDayData);
+            adapter = new DayFragmentPagerAdapter(this, getSupportFragmentManager(), mDayData);
             // Set the adapter onto the view pager
             viewPager.setAdapter(adapter);
             //Setting current date and tab

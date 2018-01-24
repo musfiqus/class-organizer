@@ -29,7 +29,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+            </android.support.v7.widget.Toolbar>
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
@@ -39,6 +40,155 @@
         android:id="@+id/daydata_detail_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+        <android.support.design.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:fitsSystemWindows="true"
+            android:id="@+id/details_root">
+            <LinearLayout
+                android:id="@+id/main_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/dark_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="?attr/colorPrimary"
+                    android:orientation="vertical"
+                    android:paddingEnd="16dp"
+                    android:paddingLeft="36dp"
+                    android:paddingRight="16dp"
+                    android:paddingStart="36dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="4dp"
+                        android:text="@string/course_title"
+                        android:textColor="@color/md_white_1000"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/course_title_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="8dp"
+                        android:paddingTop="6dp"
+                        android:text="@string/abc_course"
+                        android:textColor="@android:color/white"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="8dp"
+                        android:text="@string/teacher_s_initial"
+                        android:textColor="@color/md_white_1000"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/teachers_initial_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="8dp"
+                        android:paddingTop="6dp"
+                        android:text="@string/tm"
+                        android:textColor="@android:color/white"
+                        android:textSize="24sp" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/light_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginLeft="36dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginStart="36dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="8dp"
+                        android:text="@string/weekday"
+                        android:textColor="#9E9E9E"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/weekday_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="8dp"
+                        android:text="@string/zenday"
+                        android:textSize="18sp" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="16dp"
+                        android:text="@string/room_no"
+                        android:textColor="#9E9E9E"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/room_no_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="8dp"
+                        android:text="@string/_101_dt5"
+                        android:textAllCaps="true"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="16dp"
+                        android:text="@string/time"
+                        android:textColor="#9E9E9E"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/time_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="8dp"
+                        android:text="@string/_10_00_am_11_30_am"
+                        android:textAllCaps="true"
+                        android:textSize="18sp" />
+                </LinearLayout>
+            </LinearLayout>
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="24dp"
+                android:paddingRight="24dp"
+                app:layout_anchor="@id/light_view"
+                >
+
+                <io.github.yavski.fabspeeddial.FabSpeedDial
+                    android:id="@+id/fab_speed_dial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|end"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    app:fabGravity="top_end"
+                    app:fabMenu="@menu/popup_menu"
+                    app:miniFabBackgroundTint="@android:color/white"
+                    app:miniFabDrawableTint="?attr/colorAccent"
+                    app:miniFabTitleTextColor="?attr/colorAccent" />
+
+            </RelativeLayout>
+        </android.support.design.widget.CoordinatorLayout>
+    </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

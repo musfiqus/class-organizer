@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +23,8 @@ import static bd.edu.daffodilvarsity.classorganizer.R.string.saturday;
  */
 
 public class DayFragmentPagerAdapter extends FragmentStatePagerAdapter {
+
+    private static final String TAG = "DayFragmentPagerAdapter";
 
     private final static String BUNDLE_TAG = "anyDay";
     private ArrayList<DayData> dayData = new ArrayList<>();
@@ -192,4 +195,6 @@ public class DayFragmentPagerAdapter extends FragmentStatePagerAdapter {
             }
         });
     }
+
+
 }
