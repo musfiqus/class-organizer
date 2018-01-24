@@ -147,19 +147,20 @@ public class SearchFragmentRoom extends Fragment implements AdapterView.OnItemSe
     private void searchByRoom() {
 
         if (mSearchByRoom != null) {
-            showResultLayout(true);
-            String room = mSearchByRoom.getText().toString();
-            CourseUtils courseUtils = CourseUtils.getInstance(mOptionLayout.getContext());
-            PrefManager prefManager = new PrefManager(mOptionLayout.getContext());
-            ArrayList<DayData> result = courseUtils.getFreeRoomsByRoom(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram(),room);
-            if (result.size() == 0) {
-                noResult(true);
-                adapter.loadResult(result);
-            } else {
-                noResult(false);
-                adapter.loadResult(result);
+            if (validateInput()) {
+                showResultLayout(true);
+                String room = mSearchByRoom.getText().toString();
+                CourseUtils courseUtils = CourseUtils.getInstance(mOptionLayout.getContext());
+                PrefManager prefManager = new PrefManager(mOptionLayout.getContext());
+                ArrayList<DayData> result = courseUtils.getFreeRoomsByRoom(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram(),room);
+                if (result.size() == 0) {
+                    noResult(true);
+                    adapter.loadResult(result);
+                } else {
+                    noResult(false);
+                    adapter.loadResult(result);
+                }
             }
-
         }
     }
 
@@ -222,6 +223,23 @@ public class SearchFragmentRoom extends Fragment implements AdapterView.OnItemSe
                 mSearchByTimeLayout.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    private boolean validateInput() {
+        boolean valid = true;
+
+        if (mSearchByRoom == null) {
+            return false;
+        }
+        String searchPhrase = mSearchByRoom.getText().toString();
+        if (searchPhrase.isEmpty()) {
+            mSearchByRoom.setError("enter a keyword");
+            valid = false;
+        } else {
+            mSearchByRoom.setError(null);
+        }
+
+        return valid;
     }
 
 

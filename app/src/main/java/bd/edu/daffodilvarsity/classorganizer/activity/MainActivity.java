@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -136,19 +135,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 //            adView = (AdView) findViewById(R.id.adView);
 //        }
 //        adView.loadAd(new AdRequest.Builder().build());
-//        final Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                //Do something after 100ms
-//                Log.e(TAG, "UPDATEZ");
-//                ArrayList<DayData> dayData = new ArrayList<>();
-//                DayData dayData1 = new DayData("BAL101", "CHAL101" , "B", 2, 0, "DAL101", "12.00 AM - 2.30 AM", "Saturday", 1.0, "DALBALCHAL");
-//                dayData.add(dayData1);
-//                adapter.updateData(dayData);
-//
-//            }
-//        }, 2000);
 
     }
 
@@ -213,7 +199,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onStart() {
         super.onStart();
         if (!onCreate) {
-            loadData();
+            updateData();
         }
         //won't run again on onResume
         onStart = true;
@@ -224,10 +210,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         super.onResume();
         isActivityRunning = true;
         if (!onStart) {
-            loadData();
+            updateData();
         }
         if (prefManager.getReCreate()) {
-            loadData();
+            updateData();
             prefManager.saveReCreate(false);
         }
         if (updateDialogueBlocked) {
@@ -286,6 +272,22 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
     }
 
+    public void updateData() {
+        Log.i(TAG, "updateData() called");
+        mDayData.clear();
+        mDayData = prefManager.getSavedDayData();
+        if (adapter != null) {
+            adapter.updateData(mDayData);
+        } else {
+            Log.w(TAG, "DayFragmentPagerAdapter is null");
+            loadData();
+        }
+        if (prefManager.showSnack()) {
+            showSnackBar(this, prefManager.getSnackData());
+            prefManager.saveShowSnack(false);
+        }
+    }
+
     //Checking if activity is in state loss
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
@@ -297,8 +299,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private void offlineUpdate() {
         //If there is a new routine, update
         if (MasterDBOffline.OFFLINE_DATABASE_VERSION > prefManager.getOfflineDbVersion() && MasterDBOffline.OFFLINE_DATABASE_VERSION > prefManager.getOnlineDbVersion()) {
-            Log.e(TAG, "OFFLINE: "+MasterDBOffline.OFFLINE_DATABASE_VERSION+" SAVED OFFLINE: "+prefManager.getOfflineDbVersion()+" SAVED ONLINE: "+prefManager.getOnlineDbVersion());
-            Log.e(TAG, "Y THO?");
             String[] params = new String[]{"offline", ""+MasterDBOffline.OFFLINE_DATABASE_VERSION};
             new UpdateTask(this, getApplicationContext()).execute(params);
         }

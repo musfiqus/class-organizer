@@ -53,6 +53,15 @@ public class RoutineLoader {
         this.teachersInitial = teachersInitial;
     }
 
+    public static RoutineLoader newInstance(Context context) {
+        PrefManager prefManager = new PrefManager(context);
+        if (prefManager.isUserStudent()) {
+            return new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), context, prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
+        } else {
+            return new RoutineLoader(prefManager.getTeacherInitial(), prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram(), context);
+        }
+    }
+
     private int getSemester() {
         return getSemester(this.level, this.term);
     }

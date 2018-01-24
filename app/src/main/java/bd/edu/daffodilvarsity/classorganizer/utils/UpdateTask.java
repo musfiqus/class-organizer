@@ -240,7 +240,7 @@ public class UpdateTask extends AsyncTask<String, Void, String> {
                         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                activity.loadData();
+                                activity.updateData();
                                 dialog.dismiss();
                             }
                         });
@@ -248,7 +248,7 @@ public class UpdateTask extends AsyncTask<String, Void, String> {
                         AlertDialog dialog = builder.create();
                         dialog.show();
                     } else {
-                        activity.loadData();
+                        activity.updateData();
                         activity.showSnackBar(activity, "Routine updated");
                     }
 

@@ -196,5 +196,22 @@ public class DayFragmentPagerAdapter extends FragmentStatePagerAdapter {
         });
     }
 
-
+    public void updateData(ArrayList<DayData> dayData) {
+        //CLEAR EVERYTHING
+        this.dayData.clear();
+        this.bundles.clear();
+        this.titles.clear();
+        this.satDayData.clear();
+        this.sunDayData.clear();
+        this.monDayData.clear();
+        this.tueDayData.clear();
+        this.wedDayData.clear();
+        this.thuDayData.clear();
+        this.friDayData.clear();
+        pageCount = 0;
+        //REGENERATE #POWAH
+        this.dayData.addAll(dayData);
+        weekDayGenerator();
+        notifyDataSetChanged();
+    }
 }
