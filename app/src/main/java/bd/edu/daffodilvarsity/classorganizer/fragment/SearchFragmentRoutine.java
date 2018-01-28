@@ -102,7 +102,7 @@ public class SearchFragmentRoutine extends Fragment implements DayDataAdapter.Da
         LinearLayoutManager layoutManager = new LinearLayoutManager(mResultLayout.getContext());
         recyclerView.setLayoutManager(layoutManager);
         ArrayList<DayData> loadedRoutine = routineLoader.loadRoutine(true);
-        adapter = new DayDataAdapter(loadedRoutine, mView.getContext(), R.layout.list_item, this);
+        adapter = new DayDataAdapter(loadedRoutine, mView.getContext(), R.layout.list_item, DayDataAdapter.HOLDER_ROOM, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setNestedScrollingEnabled(false);
         filterAdapter();

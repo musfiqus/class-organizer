@@ -26,24 +26,30 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
     private Context context;
     private int itemResource;
     private DayListItemClickListener onItemClickListener;
+    private int holderType;
+    public static final int HOLDER_ROUTINE = 0;
+    public static final int HOLDER_ROOM = 1;
+    public static final int HOLDER_TEACHER = 2;
 
-    public DayDataAdapter(ArrayList<DayData> dayDataArrayList, Context context, int itemResource, DayListItemClickListener onItemClickListener) {
+    public DayDataAdapter(ArrayList<DayData> dayDataArrayList, Context context, int itemResource, int holderType, DayListItemClickListener onItemClickListener) {
         this.dayDataArrayList = dayDataArrayList;
         this.context = context;
         this.itemResource = itemResource;
         this.copyOfDayDataList = new ArrayList<>();
         this.copyOfDayDataList.addAll(dayDataArrayList);
         this.onItemClickListener = onItemClickListener;
+        this.holderType = holderType;
     }
 
 
-    public DayDataAdapter(Context context, int itemResource, DayListItemClickListener onItemClickListener) {
+    public DayDataAdapter(Context context, int itemResource, int holderType, DayListItemClickListener onItemClickListener) {
         this.dayDataArrayList = new ArrayList<>();
         this.context = context;
         this.itemResource = itemResource;
         this.copyOfDayDataList = new ArrayList<>();
         this.copyOfDayDataList.addAll(dayDataArrayList);
         this.onItemClickListener = onItemClickListener;
+        this.holderType = holderType;
     }
 
     @Override
@@ -55,7 +61,7 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
     @Override
     public void onBindViewHolder(final DayDataHolder holder, int position) {
         final DayData dayData = dayDataArrayList.get(position);
-        holder.bindDayData(dayData);
+        holder.bindDayData(dayData, holderType);
         if (onItemClickListener != null) {
             holder.getMView().setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -110,10 +116,6 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
         }
         notifyDataSetChanged();
     }
-    public void clearDayData() {
-        dayDataArrayList.clear();
-        notifyDataSetChanged();
-    }
 
     public int dayDataSize() {
         if (dayDataArrayList != null) {
@@ -140,6 +142,7 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
         public TextView roomNoTextView;
         public TextView timeTextView;
         private ViewGroup parent;
+        private TextView statusLabel;
         private DayData dayData;
         private final View mView;
 
@@ -150,22 +153,52 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
             this.teachersInitialTextView = (TextView) itemView.findViewById(R.id.teachers_initial);
             this.roomNoTextView = (TextView) itemView.findViewById(R.id.room_no);
             this.timeTextView = (TextView) itemView.findViewById(R.id.schedule);
+            this.statusLabel = (TextView) itemView.findViewById(R.id.room_label);
             this.parent = parent;
             this.mView = itemView;
         }
 
-        public void bindDayData(final DayData dayData) {
-            this.dayData = dayData;
-            this.courseCodeTextView.setText(this.dayData.getCourseCode());
-            this.teachersInitialTextView.setText(this.dayData.getTeachersInitial());
-            this.roomNoTextView.setText(this.dayData.getRoomNo());
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-            boolean isRamadan = preferences.getBoolean("ramadan_preference", false);
-            if (isRamadan) {
-                this.timeTextView.setText(convertToRamadanTime(this.dayData.getTime(), this.dayData.getTimeWeight()));
-            } else {
-                this.timeTextView.setText(this.dayData.getTime());
+        public void bindDayData(final DayData dayData, int holderType) {
+            if (holderType == HOLDER_ROUTINE) {
+                this.dayData = dayData;
+                this.courseCodeTextView.setText(this.dayData.getCourseCode());
+                this.teachersInitialTextView.setText(this.dayData.getTeachersInitial());
+                this.roomNoTextView.setText(this.dayData.getRoomNo());
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                boolean isRamadan = preferences.getBoolean("ramadan_preference", false);
+                if (isRamadan) {
+                    this.timeTextView.setText(convertToRamadanTime(this.dayData.getTime(), this.dayData.getTimeWeight()));
+                } else {
+                    this.timeTextView.setText(this.dayData.getTime());
+                }
+            } else if (holderType == HOLDER_ROOM) {
+                this.dayData = dayData;
+                this.courseCodeTextView.setText(this.dayData.getRoomNo());
+                this.teachersInitialTextView.setText(this.dayData.getDay());
+                this.roomNoTextView.setText(R.string.available);
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                boolean isRamadan = preferences.getBoolean("ramadan_preference", false);
+                if (isRamadan) {
+                    this.timeTextView.setText(convertToRamadanTime(this.dayData.getTime(), this.dayData.getTimeWeight()));
+                } else {
+                    this.timeTextView.setText(this.dayData.getTime());
+                }
+                statusLabel.setText(R.string.status);
+            } else if (holderType == HOLDER_TEACHER){
+                statusLabel.setText(R.string.day);
+                this.dayData = dayData;
+                this.courseCodeTextView.setText(this.dayData.getCourseCode());
+                this.teachersInitialTextView.setText(this.dayData.getTeachersInitial());
+                this.roomNoTextView.setText(this.dayData.getDay());
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                boolean isRamadan = preferences.getBoolean("ramadan_preference", false);
+                if (isRamadan) {
+                    this.timeTextView.setText(convertToRamadanTime(this.dayData.getTime(), this.dayData.getTimeWeight()));
+                } else {
+                    this.timeTextView.setText(this.dayData.getTime());
+                }
             }
+
 
         }
 

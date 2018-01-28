@@ -112,7 +112,7 @@ public class SearchFragmentTeacher extends Fragment implements DayDataAdapter.Da
         RecyclerView recyclerView = (RecyclerView) mResultLayout.findViewById(R.id.class_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mResultLayout.getContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new DayDataAdapter(mView.getContext(), R.layout.list_item, this);
+        adapter = new DayDataAdapter(mView.getContext(), R.layout.list_item, DayDataAdapter.HOLDER_TEACHER, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setNestedScrollingEnabled(false);
         //hiding result section on first time SUPPRRRISSE MADAPAKA

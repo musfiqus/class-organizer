@@ -25,6 +25,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
+import bd.edu.daffodilvarsity.classorganizer.adapter.DayDataAdapter;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.CustomFilterArrayAdapter;
@@ -54,7 +55,7 @@ public class SearchFragmentRoom extends Fragment implements AdapterView.OnItemSe
     private RelativeLayout mSearchByRoomLayout;
     private RelativeLayout mSearchByTimeLayout;
     private TextView resultTitle;
-    private ResultDayDataAdapter adapter;
+    private DayDataAdapter adapter;
 
     public SearchFragmentRoom() {
         // Required empty public constructor
@@ -120,7 +121,7 @@ public class SearchFragmentRoom extends Fragment implements AdapterView.OnItemSe
         RecyclerView recyclerView = (RecyclerView) mResultLayout.findViewById(R.id.class_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mResultLayout.getContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new ResultDayDataAdapter(mView.getContext(), R.layout.list_item);
+        adapter = new DayDataAdapter(mView.getContext(), R.layout.list_item, DayDataAdapter.HOLDER_ROOM, null);
         recyclerView.setAdapter(adapter);
         recyclerView.setNestedScrollingEnabled(false);
         //hiding result section on first time SUPPRRRISSE MADAPAKA
@@ -256,150 +257,5 @@ public class SearchFragmentRoom extends Fragment implements AdapterView.OnItemSe
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
-    }
-
-    public class ResultDayDataAdapter extends RecyclerView.Adapter<SearchFragmentRoom.DayDataHolder> {
-
-        private ArrayList<DayData> dayDataArrayList;
-        private final ArrayList<DayData> copyOfDayDataList;
-        private Context context;
-        private int itemResource;
-
-        public ResultDayDataAdapter(Context context, int itemResource) {
-            this.dayDataArrayList = new ArrayList<>();
-            this.context = context;
-            this.itemResource = itemResource;
-            this.copyOfDayDataList = new ArrayList<>();
-            this.copyOfDayDataList.addAll(dayDataArrayList);
-        }
-
-        @Override
-        public SearchFragmentRoom.DayDataHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(itemResource, parent, false);
-            return new SearchFragmentRoom.DayDataHolder(context, view, parent);
-        }
-
-        @Override
-        public void onBindViewHolder(final SearchFragmentRoom.DayDataHolder holder, int position) {
-            final DayData dayData = dayDataArrayList.get(position);
-            holder.bindDayData(dayData);
-        }
-
-        @Override
-        public int getItemCount() {
-            return dayDataArrayList.size();
-        }
-
-        public void loadResult(ArrayList<DayData> result) {
-            if (result != null) {
-                dayDataArrayList.clear();
-                dayDataArrayList.addAll(result);
-            }
-            notifyDataSetChanged();
-        }
-
-    }
-
-    public static class DayDataHolder extends RecyclerView.ViewHolder {
-        private Context context;
-        private TextView roomNoView;
-        private TextView dayView;
-        private TextView statusView;
-        private TextView timeTextView;
-        private TextView statusLabel;
-        private ViewGroup parent;
-        private DayData dayData;
-        private final View mView;
-
-        public DayDataHolder(Context context, View itemView, ViewGroup parent) {
-            super(itemView);
-            this.context = context;
-            this.roomNoView = (TextView) itemView.findViewById(R.id.course_code);
-            this.dayView = (TextView) itemView.findViewById(R.id.teachers_initial);
-            this.statusView = (TextView) itemView.findViewById(R.id.room_no);
-            this.timeTextView = (TextView) itemView.findViewById(R.id.schedule);
-            this.statusLabel = (TextView) itemView.findViewById(R.id.room_label);
-            this.parent = parent;
-            this.mView = itemView;
-        }
-
-        public void bindDayData(final DayData dayData) {
-            this.dayData = dayData;
-            this.roomNoView.setText(this.dayData.getRoomNo());
-            this.dayView.setText(this.dayData.getDay());
-            this.statusView.setText(R.string.available);
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-            boolean isRamadan = preferences.getBoolean("ramadan_preference", false);
-            if (isRamadan) {
-                this.timeTextView.setText(convertToRamadanTime(this.dayData.getTime(), this.dayData.getTimeWeight()));
-            } else {
-                this.timeTextView.setText(this.dayData.getTime());
-            }
-            statusLabel.setText(R.string.status);
-            statusLabel.setAllCaps(true);
-
-        }
-
-        public static String convertToRamadanTime(String normalTime, double timeWeight) {
-            String startTime = normalTime.substring(0, 8);
-            String endTime = normalTime.substring(normalTime.length() - 8, normalTime.length());
-            if (timeWeight == 1.5 || timeWeight == 2.5 || timeWeight == 3.5 || timeWeight == 4.5) {
-                if (startTime.equalsIgnoreCase("09.00 AM")) {
-                    startTime = "09.30 AM";
-                } else if (startTime.equalsIgnoreCase("11.00 AM")) {
-                    startTime = "11.00 AM";
-                } else if (startTime.equalsIgnoreCase("01.00 PM")) {
-                    startTime = "12.30 PM";
-                } else if (startTime.equalsIgnoreCase("03.00 PM")) {
-                    startTime = "02.00 PM";
-                }
-                if (endTime.equalsIgnoreCase("11.00 AM")) {
-                    endTime = "11.00 AM";
-                } else if (endTime.equalsIgnoreCase("01.00 PM")) {
-                    endTime = "12.30 AM";
-                } else if (endTime.equalsIgnoreCase("03.00 PM")) {
-                    endTime = "02.00 PM";
-                } else if (endTime.equalsIgnoreCase("05.00 PM")) {
-                    endTime = "03.30 PM";
-                }
-                return startTime + " - " +endTime;
-            }
-            if (startTime.equalsIgnoreCase("08.30 AM")) {
-                startTime = "09.30 AM";
-            } else if (startTime.equalsIgnoreCase("10.00 AM")) {
-                startTime = "10.25 AM";
-            } else if (startTime.equalsIgnoreCase("11.30 AM")) {
-                startTime = "11.20 AM";
-            } else if (startTime.equalsIgnoreCase("01.00 PM")) {
-                startTime = "12.15 PM";
-            } else if (startTime.equalsIgnoreCase("02.30 PM")) {
-                startTime = "01.40 PM";
-            } else if (startTime.equalsIgnoreCase("04.00 PM")) {
-                startTime = "02.35 PM";
-            } else if (startTime.equalsIgnoreCase("06.00 PM")) {
-                startTime = "03.30 PM";
-            } else if (startTime.equalsIgnoreCase("07.30 PM")) {
-                startTime = "04.30 PM";
-            }
-
-            if (endTime.equalsIgnoreCase("10.00 AM")) {
-                endTime = "10.25 AM";
-            } else if (endTime.equalsIgnoreCase("11.30 AM")) {
-                endTime = "11.20 AM";
-            } else if (endTime.equalsIgnoreCase("01.00 PM")) {
-                endTime = "12.15 PM";
-            } else if (endTime.equalsIgnoreCase("02.30 PM")) {
-                endTime = "01.10 PM";
-            } else if (endTime.equalsIgnoreCase("04.00 PM")) {
-                endTime = "02.35 PM";
-            } else if (endTime.equalsIgnoreCase("05.30 PM")) {
-                endTime = "03.30 PM";
-            } else if (endTime.equalsIgnoreCase("07.30 PM")) {
-                endTime = "04.30 PM";
-            } else if (endTime.equalsIgnoreCase("09.00 PM")) {
-                endTime = "05.30 PM";
-            }
-            return startTime + " - " +endTime;
-        }
     }
 }
