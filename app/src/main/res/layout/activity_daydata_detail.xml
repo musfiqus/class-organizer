@@ -94,7 +94,7 @@
                         android:id="@+id/teachers_initial_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingBottom="8dp"
+                        android:layout_marginBottom="8dp"
                         android:paddingTop="6dp"
                         android:text="@string/tm"
                         android:textColor="@android:color/white"
@@ -116,7 +116,42 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingTop="8dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/section"
+                        android:textColor="#9E9E9E"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/section_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        tools:text="B"
+                        android:textAllCaps="true"
+                        android:textSize="18sp" />
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/room_no"
+                        android:textColor="#9E9E9E"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/room_no_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/_101_dt5"
+                        android:textAllCaps="true"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
                         android:text="@string/weekday"
                         android:textColor="#9E9E9E"
                         android:textSize="14sp" />
@@ -127,24 +162,6 @@
                         android:layout_height="wrap_content"
                         android:paddingTop="8dp"
                         android:text="@string/zenday"
-                        android:textSize="18sp" />
-
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="16dp"
-                        android:text="@string/room_no"
-                        android:textColor="#9E9E9E"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/room_no_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="8dp"
-                        android:text="@string/_101_dt5"
-                        android:textAllCaps="true"
                         android:textSize="18sp" />
 
                     <TextView

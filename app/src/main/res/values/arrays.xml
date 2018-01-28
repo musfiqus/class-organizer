@@ -53,7 +53,7 @@
 
     <string-array name="search_page_titles">
         <item>Your routine</item>
-        <item>Free rooms</item>
+        <item>Empty rooms</item>
         <item>Teachers</item>
     </string-array>
 

@@ -62,7 +62,7 @@ public class DayFragment extends Fragment implements DayDataAdapter.DayListItemC
     public void onDayItemClick(int pos, DayData dayData, DayDataAdapter.DayDataHolder holder) {
         if (getActivity() != null) {
             Intent intent = new Intent(getActivity(), DayDataDetailActivity.class);
-            intent.putExtra("DayDataDetails", (Parcelable) dayData);
+            intent.putExtra(DayDataDetailActivity.DAYDATA_DETAIL_TAG, (Parcelable) dayData);
             startActivity(intent);
         }
     }

@@ -1,6 +1,9 @@
 package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.content.Context;
+import android.util.Log;
+
+import com.crashlytics.android.Crashlytics;
 
 /**
  * Created by Mushfiqus Salehin on 10/5/2017.
@@ -8,6 +11,8 @@ import android.content.Context;
  */
 
 public class MasterDBOnline extends MasterDBOffline {
+    private static final String TAG = "MasterDBOnline";
+
     private static MasterDBOnline mInstance = null;
 
     private MasterDBOnline(Context context) {
@@ -25,5 +30,11 @@ public class MasterDBOnline extends MasterDBOffline {
         }
         mInstance = new MasterDBOnline(context.getApplicationContext());
         return mInstance;
+    }
+
+    @Override
+    protected void errorLog(Exception e) {
+        Log.e(TAG, e.toString());
+        Crashlytics.logException(e);
     }
 }

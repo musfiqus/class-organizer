@@ -2,6 +2,8 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.content.Context;
 
+import com.crashlytics.android.Crashlytics;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,7 +18,7 @@ import java.nio.channels.FileChannel;
  * musfiqus@gmail.com
  */
 public final class FileUtils {
-    private static final String TAG = FileUtils.class.getSimpleName();
+    private static final String TAG = "FileUtils";
 
     public static void dbDownloader(String dlURL, String filePath) throws Exception {
         File downloadFile = new File(filePath);
@@ -99,6 +101,7 @@ public final class FileUtils {
     }
 
     public static void deleteMasterDb(Context context, boolean isOnline, int dbVersion) {
+        Crashlytics.log("Deleting "+(isOnline ? "online ": "offline ")+" corrupt db version "+dbVersion);
         if (isOnline) {
             context.deleteDatabase(getOnlineDbName(dbVersion));
         } else {

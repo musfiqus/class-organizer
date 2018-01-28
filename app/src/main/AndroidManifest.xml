@@ -56,10 +56,6 @@
                 android:value="bd.edu.daffodilvarsity.classorganizer.activity.MainActivity" />
         </activity>
 
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="97134746f7e815b6aad25190b01c4712d2c523ec" />
-
         <service
             android:name=".service.NotificationRestartJobIntentService"
             android:enabled="true"
@@ -82,6 +78,10 @@
             android:label="Search"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activity.BaseActivity" />
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="97134746f7e815b6aad25190b01c4712d2c523ec" />
     </application>
 
 </manifest>

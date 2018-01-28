@@ -1,7 +1,6 @@
 package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -18,7 +17,7 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
  * musfiqus@gmail.com
  */
 
-public class CourseUtils{
+public class CourseUtils {
 
     private static final String TAG = "CourseUtils";
 
@@ -54,6 +53,14 @@ public class CourseUtils{
         }
         mInstance = new CourseUtils(context.getApplicationContext());
         return mInstance;
+    }
+
+    public boolean isDatabaseWritable() {
+        if (isUpdatedOnline) {
+            return MasterDBOnline.getInstance(mContext).isDatabaseWritable();
+        } else {
+            return MasterDBOffline.getInstance(mContext).isDatabaseWritable();
+        }
     }
 
     ArrayList<DayData> getDayData(ArrayList<String> courseCodes, String section, int level, int term, String dept, String campus, String program) {

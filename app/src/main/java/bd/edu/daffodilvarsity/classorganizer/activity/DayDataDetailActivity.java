@@ -46,6 +46,7 @@ public class DayDataDetailActivity extends ColorfulActivity {
     private DayData dayData;
     private Bundle bundle;
     private boolean fromNotification = false;
+    public static final String DAYDATA_DETAIL_TAG = "DayDataDetails";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +92,7 @@ public class DayDataDetailActivity extends ColorfulActivity {
             // using a fragment transaction.
             Bundle arguments = getIntent().getExtras();
             if (arguments != null) {
-                dayData = arguments.getParcelable("DayDataDetails");
+                dayData = arguments.getParcelable(DAYDATA_DETAIL_TAG);
                 Bundle bundle = arguments.getBundle("bundled_data");
                 if (bundle != null) {
                     byte[] byteDayData = bundle.getByteArray("NotificationData");
@@ -204,6 +205,7 @@ public class DayDataDetailActivity extends ColorfulActivity {
             //SET COURSE TITLE
             ((TextView) findViewById(R.id.course_title_tv)).setText((dayData.getCourseTitle() != null) ? dayData.getCourseTitle() : "N/A");
             ((TextView) findViewById(R.id.teachers_initial_tv)).setText(dayData.getTeachersInitial());
+            ((TextView) findViewById(R.id.section_tv)).setText(dayData.getSection());
             ((TextView) findViewById(R.id.weekday_tv)).setText(dayData.getDay());
             ((TextView) findViewById(R.id.room_no_tv)).setText(dayData.getRoomNo());
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -242,21 +244,10 @@ public class DayDataDetailActivity extends ColorfulActivity {
                 startActivity(new Intent(this, MainActivity.class));
                 finish();
             } else {
-                supportFinishAfterTransition();
+                onBackPressed();
             }
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        if (fromNotification) {
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
-        } else {
-            supportFinishAfterTransition();
-        }
     }
 }

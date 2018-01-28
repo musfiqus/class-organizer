@@ -1,19 +1,14 @@
 buildscript {
     repositories {
-        maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
-        classpath 'io.fabric.tools:gradle:1.22.2'
     }
 }
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
 repositories {
-    maven {
-        url 'https://maven.fabric.io/public'
-    }
 }
 
 // Create a variable called keystorePropertiesFile, and initialize it to your
@@ -33,10 +28,10 @@ android {
         applicationId "bd.edu.daffodilvarsity.classorganizer"
         minSdkVersion 16
         targetSdkVersion 27
-        versionName '4.4'
+        versionName '4.4.1'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 50
+        versionCode 51
     }
     signingConfigs {
         release {
@@ -58,8 +53,6 @@ android {
 
 }
 
-setProperty("FirebaseServiceAccountFilePath", rootProject.rootDir.absolutePath + FirebaseServiceAccountFilePath)
-
 dependencies {
     implementation 'com.android.support:support-v4:27.0.2'
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -75,7 +68,7 @@ dependencies {
     compile "com.android.support:appcompat-v7:$supportLibVersion"
     compile "com.android.support:support-v13:$supportLibVersion"
     compile "com.android.support:design:$supportLibVersion"
-    compile "com.android.support.constraint:constraint-layout:1.0.2"
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile "com.android.support:cardview-v7:$supportLibVersion"
     compile "com.android.support:support-v4:$supportLibVersion"
     compile "com.android.support:support-vector-drawable:$supportLibVersion"
@@ -84,30 +77,33 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$supportLibVersion"
 
     //Sqlite asset helper for preloaded db
-    compile "com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1"
+    compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
 
     //Lib for loading animations
     compile 'com.github.ybq:Android-SpinKit:1.1.0'
 
     //Expanded fab button lib
-    compile "io.github.yavski:fab-speed-dial:1.0.6"
+    compile 'io.github.yavski:fab-speed-dial:1.0.6'
 
     //Material dialogues
-    compile "com.afollestad.material-dialogs:core:0.9.4.5"
+    compile 'com.afollestad.material-dialogs:core:0.9.4.5'
 
     //GSON for saving objects
-    compile "com.google.code.gson:gson:2.8.2"
+    compile 'com.google.code.gson:gson:2.8.2'
 
     //Do not update that shitty firebase
     compile "com.google.firebase:firebase-database:$firebaseLibVersion"
     compile "com.google.firebase:firebase-core:$firebaseLibVersion"
-    compile('com.crashlytics.sdk.android:crashlytics:2.8.0@aar') {
-        transitive = true;
-    }
 
     //Firebase admob
-//    compile "com.google.firebase:firebase-ads:$firebaseLibVersion"
 
-    testCompile "junit:junit:4.12"
+    //    compile "com.google.firebase:firebase-ads:$firebaseLibVersion"
+    testCompile 'junit:junit:4.12'
+    compile('com.crashlytics.sdk.android:crashlytics:2.8.0@aar') {
+        transitive = true
+    }
 }
+
 apply plugin: 'com.google.gms.google-services'
+
+

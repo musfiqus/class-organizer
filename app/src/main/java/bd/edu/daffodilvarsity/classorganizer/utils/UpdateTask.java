@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -44,21 +43,6 @@ public class UpdateTask extends AsyncTask<String, Void, String> {
             currentTerm++;
             prefManager.saveTerm(currentTerm);
         }
-    }
-
-    //Checks if a new semester is available in db, if it's available it informs upgrade function
-    // to process upgrade
-    private boolean isNewSemesterAvailable(Context context, boolean isUpdatedOnline) {
-        PrefManager prefManager = new PrefManager(context);
-        if (!new CourseUtils(context, isUpdatedOnline).doesTableExist("departments_" + prefManager.getCampus())) {
-            return false;
-        }
-        int maxSemester = new CourseUtils(context, isUpdatedOnline).getTotalSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
-        int currentSemester = RoutineLoader.getSemester(prefManager.getLevel(), prefManager.getTerm());
-        if (prefManager.getSemesterCount() < CourseUtils.getInstance(context).getSemesterCount(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()) && currentSemester < maxSemester) {
-            return true;
-        }
-        return false;
     }
 
     private boolean upgradeRoutine(Context context, boolean isUpgrade, final int dbVersion, boolean loadPersonal) {
@@ -115,7 +99,6 @@ public class UpdateTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... params) {
-        Log.e(TAG, "DO");
         //params: online/offline, db version
         //Simple update function loads new routine if db version changes
         Context context = contextReference.get();
@@ -215,7 +198,6 @@ public class UpdateTask extends AsyncTask<String, Void, String> {
                 return resultStr.toString();
             }
         }
-        Log.e(TAG, "Y NULL?");
         return null;
     }
 

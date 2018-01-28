@@ -5,11 +5,6 @@ import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
@@ -203,8 +198,11 @@ public class RoutineLoader {
 
     public boolean verifyUpdatedDb() {
         CourseUtils dbChecker = new CourseUtils(context, true);
-
-        //First we'll check if a new semester is available
+        //First well check if the db is writable
+        if (!dbChecker.isDatabaseWritable()) {
+            return false;
+        }
+        // we'll check if a new semester is available
         if (!dbChecker.getCurrentSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()).equalsIgnoreCase(prefManager.getSemester())) {
             //If available we won't do any further checks
             return true;

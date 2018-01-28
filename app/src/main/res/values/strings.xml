@@ -88,13 +88,14 @@
     <string name="limit_preference_disabled_summary">Currently your modifications will show up on all sections</string>
     <string name="empty_search_hint">You can search by course code or course name or teacher\'s initial or room no</string>
     <string name="not_found_search_hint">No classes found</string>
+    <string name="not_found_search_hint_room">No rooms found</string>
     <string name="select_your_campus">Select your campus</string>
     <string name="select_your_department">Select your department</string>
     <string name="course_title">Course title</string>
     <string name="abc_course">ABC COURSE</string>
     <string name="teacher_s_initial">Teacher\'s initial</string>
     <string name="tm">TM</string>
-    <string name="weekday">Weekday</string>
+    <string name="weekday">Day</string>
     <string name="zenday">Zenday</string>
     <string name="room_no">Room No</string>
     <string name="_101_dt5">101 DT5</string>
@@ -157,4 +158,5 @@
     <string name="available">Available</string>
     <string name="status">STATUS</string>
     <string name="silhouette">Silhouette</string>
+    <string name="section">Section</string>
 </resources>

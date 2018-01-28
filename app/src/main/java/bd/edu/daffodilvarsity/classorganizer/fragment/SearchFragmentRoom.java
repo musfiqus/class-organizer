@@ -187,6 +187,7 @@ public class SearchFragmentRoom extends Fragment implements AdapterView.OnItemSe
         TextView noResult = mResultLayout.findViewById(R.id.search_routine_result_zero);
         if (noResult != null) {
             if (result) {
+                noResult.setText(R.string.not_found_search_hint_room);
                 noResult.setVisibility(View.VISIBLE);
             } else {
                 noResult.setVisibility(View.GONE);

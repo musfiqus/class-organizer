@@ -1,14 +1,9 @@
 package bd.edu.daffodilvarsity.classorganizer.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Parcelable;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +12,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
-import bd.edu.daffodilvarsity.classorganizer.activity.DayDataDetailActivity;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 /**
@@ -42,20 +36,14 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
         this.onItemClickListener = onItemClickListener;
     }
 
-    public DayDataAdapter(ArrayList<DayData> dayDataArrayList, Context context, int itemResource) {
-        this.dayDataArrayList = dayDataArrayList;
-        this.context = context;
-        this.itemResource = itemResource;
-        this.copyOfDayDataList = new ArrayList<>();
-        this.copyOfDayDataList.addAll(dayDataArrayList);
-    }
 
-    public DayDataAdapter(Context context, int itemResource) {
+    public DayDataAdapter(Context context, int itemResource, DayListItemClickListener onItemClickListener) {
         this.dayDataArrayList = new ArrayList<>();
         this.context = context;
         this.itemResource = itemResource;
         this.copyOfDayDataList = new ArrayList<>();
         this.copyOfDayDataList.addAll(dayDataArrayList);
+        this.onItemClickListener = onItemClickListener;
     }
 
     @Override

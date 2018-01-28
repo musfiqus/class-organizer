@@ -2,8 +2,10 @@ package bd.edu.daffodilvarsity.classorganizer.fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -27,6 +29,7 @@ import java.util.ArrayList;
 import javax.xml.transform.Result;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
+import bd.edu.daffodilvarsity.classorganizer.activity.DayDataDetailActivity;
 import bd.edu.daffodilvarsity.classorganizer.adapter.DayDataAdapter;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
@@ -38,7 +41,7 @@ import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
  * Use the {@link SearchFragmentTeacher#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchFragmentTeacher extends Fragment {
+public class SearchFragmentTeacher extends Fragment implements DayDataAdapter.DayListItemClickListener {
 
     private static final String TAG = "SearchFragmentRoom";
 
@@ -109,7 +112,7 @@ public class SearchFragmentTeacher extends Fragment {
         RecyclerView recyclerView = (RecyclerView) mResultLayout.findViewById(R.id.class_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mResultLayout.getContext());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new DayDataAdapter(mView.getContext(), R.layout.list_item);
+        adapter = new DayDataAdapter(mView.getContext(), R.layout.list_item, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setNestedScrollingEnabled(false);
         //hiding result section on first time SUPPRRRISSE MADAPAKA
@@ -178,4 +181,12 @@ public class SearchFragmentTeacher extends Fragment {
     }
 
 
+    @Override
+    public void onDayItemClick(int pos, DayData dayData, DayDataAdapter.DayDataHolder holder) {
+        if (getActivity() != null) {
+            Intent intent = new Intent(getActivity(), DayDataDetailActivity.class);
+            intent.putExtra(DayDataDetailActivity.DAYDATA_DETAIL_TAG, (Parcelable) dayData);
+            startActivity(intent);
+        }
+    }
 }
