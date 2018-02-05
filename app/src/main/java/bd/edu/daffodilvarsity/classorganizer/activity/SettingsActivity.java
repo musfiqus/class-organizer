@@ -16,6 +16,7 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.SwitchPreferenceCompat;
 import android.text.Html;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -242,7 +243,12 @@ public class SettingsActivity extends ColorfulActivity {
         }
 
         public void resetInitial() {
-            prefManager.saveTeacherInitial(CourseUtils.getInstance(getContext()).getTeachersInitials(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()).get(0));
+            String prevInitial = prefManager.getTeacherInitial();
+            ArrayList<String> initials = CourseUtils.getInstance(getContext()).getTeachersInitials(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
+            if (!initials.contains(prevInitial)) {
+                Log.e(TAG, "resetInitial: Doesn't contain");
+                prefManager.saveTeacherInitial(CourseUtils.getInstance(getContext()).getTeachersInitials(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()).get(0));
+            }
             RoutineLoader routineLoader = new RoutineLoader(prefManager.getTeacherInitial(), prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram(), getContext());
             ArrayList<DayData> resetData = routineLoader.loadRoutine(false);
             prefManager.saveDayData(resetData);
@@ -260,6 +266,7 @@ public class SettingsActivity extends ColorfulActivity {
             final String oldDept = prefManager.getDept();
             final String oldCampus = prefManager.getCampus();
             final String oldProgram = prefManager.getProgram();
+            final boolean isMulti = prefManager.isMultiProgram();
             campusHelper.setCampusSpinnerPositions(oldCampus, oldDept, oldProgram);
             builder.positiveText(android.R.string.ok);
             builder.onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -275,8 +282,10 @@ public class SettingsActivity extends ColorfulActivity {
                     } else {
                         campusCode = campusChecker.campusTeacherChecker(campus, department, program);
                     }
-                    if (oldDept.equalsIgnoreCase(campus) && oldCampus.equalsIgnoreCase(department) && oldProgram.equalsIgnoreCase(program)) {
+                    if (oldDept.equalsIgnoreCase(department) && oldCampus.equalsIgnoreCase(campus) && oldProgram.equalsIgnoreCase(program)
+                            && isMulti == prefManager.isMultiProgram()) {
                         showSnackBar(getActivity(), getResources().getString(R.string.no_changes));
+                        materialDialog.dismiss();
                     } else if (campusCode == 0) {
                         prefManager.saveCampus(campus);
                         prefManager.saveDept(department);
@@ -285,10 +294,17 @@ public class SettingsActivity extends ColorfulActivity {
                         prefManager.saveReCreate(true);
                         onCreate(Bundle.EMPTY);
                         showSnackBar(getActivity(), getResources().getString(R.string.dept_settings_changed));
+                        materialDialog.dismiss();
                     } else {
                         DataChecker.errorMessage(getActivity(), campusCode, null);
                     }
                 }
+            })
+            .onNegative(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            dialog.dismiss();
+                        }
             });
             builder.negativeText(android.R.string.cancel);
             builder.customView(dialogView, true);
@@ -702,9 +718,9 @@ public class SettingsActivity extends ColorfulActivity {
 
         private String timeText() {
             if (prefManager.getReminderDelay() == 60) {
-                return  getResources().getString(R.string.one_hour);
+                return getResources().getString(R.string.one_hour);
             } else {
-                return prefManager.getReminderDelay()+" minutes";
+                return prefManager.getReminderDelay() + " minutes";
             }
         }
     }

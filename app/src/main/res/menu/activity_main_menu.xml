@@ -9,7 +9,7 @@
         tools:ignore="AlwaysShowAction" />
     <item
         android:id="@+id/add_button"
-        android:icon="@drawable/ic_calendar_plus_white_24dp"
+        android:icon="@drawable/ic_add_white_24dp"
         android:title="@string/add"
         app:showAsAction="always" />
 </menu>
