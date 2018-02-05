@@ -42,6 +42,8 @@ import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelperUser;
 
 public class SettingsActivity extends ColorfulActivity {
 
+    private static final String TAG = "SettingsActivity";
+
     //Method to display snackbar properly
     public static void showSnackBar(Activity activity, String message) {
         View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
@@ -290,6 +292,7 @@ public class SettingsActivity extends ColorfulActivity {
             });
             builder.negativeText(android.R.string.cancel);
             builder.customView(dialogView, true);
+            builder.autoDismiss(false);
             MaterialDialog dialog = builder.build();
             dialog.show();
         }
@@ -384,6 +387,21 @@ public class SettingsActivity extends ColorfulActivity {
                     builder.setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+
+                    builder.setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.setView(dialogView);
+                    final AlertDialog dialog = builder.create();
+                    dialog.show();
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
                             int level = classHelper.getLevel();
                             int term = classHelper.getTerm();
                             String section = classHelper.getSection();
@@ -400,20 +418,12 @@ public class SettingsActivity extends ColorfulActivity {
                                 showSnackBar(getActivity(), getResources().getString(R.string.saved));
                                 dialog.dismiss();
                             } else {
-                                DataChecker.errorMessage(getActivity(), classCode, null);
+                                DataChecker.formattedError(getActivity(), classCode,
+                                        prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram(),
+                                        level, term, section);
                             }
                         }
                     });
-
-                    builder.setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-                    builder.setView(dialogView);
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
                     return true;
                 }
             });
@@ -565,7 +575,7 @@ public class SettingsActivity extends ColorfulActivity {
             if (!prefManager.isUserStudent()) {
                 if (preferenceManager.getSharedPreferences().getBoolean("limit_preference", true)) {
                     limitPreference.setChecked(false);
-                    RoutineLoader routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), getContext(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
+                    RoutineLoader routineLoader = RoutineLoader.newInstance(getContext());
                     ArrayList<DayData> newDayData = routineLoader.loadRoutine(true);
                     prefManager.saveDayData(newDayData);
                 }
@@ -581,7 +591,7 @@ public class SettingsActivity extends ColorfulActivity {
                     @Override
                     public boolean onPreferenceChange(Preference preference, Object newValue) {
                         boolean isLimited = (boolean) newValue;
-                        RoutineLoader routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), getContext(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
+                        RoutineLoader routineLoader = RoutineLoader.newInstance(getContext());
                         ArrayList<DayData> newDayData = routineLoader.loadRoutine(true);
                         prefManager.saveDayData(newDayData);
                         if (isLimited) {

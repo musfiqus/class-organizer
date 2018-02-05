@@ -1,12 +1,11 @@
 package bd.edu.daffodilvarsity.classorganizer.activity;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -14,7 +13,6 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -27,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -35,15 +32,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.polaric.colorful.Colorful;
 import org.polaric.colorful.ColorfulActivity;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.adapter.WelcomeSlideAdapter;
@@ -63,7 +57,6 @@ public class WelcomeActivity extends ColorfulActivity implements AdapterView.OnI
     private int[] layouts;
     private Button btnPrevious, btnNext;
     private boolean isUpdateSuccessful = true;
-    private boolean isUpdateAvailable = false;
     private TextView checkText;
     private SpinKitView spinKitView;
     private ImageView cloud;
@@ -93,7 +86,6 @@ public class WelcomeActivity extends ColorfulActivity implements AdapterView.OnI
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // Checking for first time launch - before calling setContentView()
         prefManager = new PrefManager(this);
         if (!prefManager.isFirstTimeLaunch()) {
@@ -232,7 +224,8 @@ public class WelcomeActivity extends ColorfulActivity implements AdapterView.OnI
 
     private void launchHomeScreen() {
         prefManager.setFirstTimeLaunch(false);
-        startActivity(new Intent(WelcomeActivity.this, MainActivity.class));
+        Intent i = new Intent(WelcomeActivity.this, MainActivity.class);
+        startActivity(i);
         finish();
     }
 

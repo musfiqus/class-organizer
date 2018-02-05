@@ -2,7 +2,9 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -143,5 +145,64 @@ public class DataChecker {
                 }
             });
         }
+    }
+
+    public static void errorSnack(Activity activity, int errorCode) {
+        String message;
+            if (errorCode == INVALID_CAMPUS) {
+                message = "Invalid Campus Selection";
+            } else if (errorCode == INVALID_DEPARTMENT) {
+                message = "Routine for this department isn't available yet.";
+            } else if (errorCode == INVALID_PROGRAM) {
+                message = "Routine for this program isn't available yet.";
+            } else if (errorCode == INVALID_LEVEL_TERM) {
+                message = "Routine for this level or term isn't available yet.";
+            }else if (errorCode == INVALID_SECTION) {
+                message = "Routine for this section isn't yet included";
+            } else if (errorCode == INVALID_CAMPUS_MIXED) {
+                message = "No routine found for your selection";
+            } else {
+                message = "Routine for this section in this level or term isn't available yet.";
+            }
+        showSnackBar(activity, message);
+    }
+
+    public static void formattedError(final Activity activity, int errorCode, String campus, String dept, String program, int level, int term, String section) {
+        String message;
+        if (errorCode == INVALID_CAMPUS) {
+            message = "Invalid campus selection";
+        } else if (errorCode == INVALID_DEPARTMENT) {
+            message = "Routine for "+dept.toUpperCase()+" department isn't available yet.";
+        } else if (errorCode == INVALID_PROGRAM) {
+            message = "Routine for "+program.toUpperCase()+" program isn't available yet.";
+        } else if (errorCode == INVALID_LEVEL_TERM) {
+            message = "Routine for level "+(level+1)+" or term "+(term+1)+" isn't available yet.";
+        }else if (errorCode == INVALID_SECTION) {
+            message = "Routine for section "+section+" isn't included yet.";
+        } else if (errorCode == INVALID_CAMPUS_MIXED) {
+            message = "No routine found for your selection";
+        } else {
+            message = "Routine for section "+section.toUpperCase()+" in level "+(level+1)+" term "+(term+1)+" isn't available yet.";
+        }
+        if (activity != null) {
+            final String finalMessage = message;
+            activity.runOnUiThread(new Runnable() {
+                public void run() {
+                    Toast.makeText(activity, finalMessage, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    //Method to display snackbar properly
+    public static void showSnackBar(final Activity activity, final String message) {
+        activity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+                Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
     }
 }
