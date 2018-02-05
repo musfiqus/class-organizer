@@ -188,7 +188,7 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
                 statusLabel.setText(R.string.day);
                 this.dayData = dayData;
                 this.courseCodeTextView.setText(this.dayData.getCourseCode());
-                this.teachersInitialTextView.setText(this.dayData.getTeachersInitial());
+                this.teachersInitialTextView.setText(this.dayData.getSection());
                 this.roomNoTextView.setText(this.dayData.getDay());
                 SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                 boolean isRamadan = preferences.getBoolean("ramadan_preference", false);

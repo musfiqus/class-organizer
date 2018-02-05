@@ -28,10 +28,10 @@ android {
         applicationId "bd.edu.daffodilvarsity.classorganizer"
         minSdkVersion 16
         targetSdkVersion 27
-        versionName '4.4.2'
+        versionName '4.4.3'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 52
+        versionCode 53
     }
     signingConfigs {
         release {
@@ -63,7 +63,7 @@ dependencies {
     //Colorful theme, modified
     compile project(':Colorful')
 
-    //All support lib shit
+    //All support lib
     implementation "com.android.support:preference-v7:$supportLibVersion"
     compile "com.android.support:appcompat-v7:$supportLibVersion"
     compile "com.android.support:support-v13:$supportLibVersion"

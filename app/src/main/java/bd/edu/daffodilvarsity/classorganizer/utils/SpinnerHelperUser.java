@@ -2,6 +2,7 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -14,17 +15,26 @@ import bd.edu.daffodilvarsity.classorganizer.R;
  * Created by musfiqus on 1/6/2018.
  */
 
-public class UserTypeHelper implements AdapterView.OnItemSelectedListener{
+public class SpinnerHelperUser implements AdapterView.OnItemSelectedListener{
+    private static final String TAG = "SpinnerHelperUser";
+
     private boolean isStudent = true;
     private Spinner userTypeSpinner;
     private Context context;
     private View view;
     private PrefManager prefManager;
+    private OnUserChangeListener userChangeListener;
 
-    public UserTypeHelper (Context context, View view) {
+    public SpinnerHelperUser(Context context, View view) {
         this.context = context;
         this.view = view;
         this.prefManager = new PrefManager(context);
+    }
+    public SpinnerHelperUser(Context context, View view, OnUserChangeListener userChangeListener) {
+        this.context = context;
+        this.view = view;
+        this.prefManager = new PrefManager(context);
+        this.userChangeListener = userChangeListener;
     }
 
     public void setupUser() {
@@ -49,7 +59,11 @@ public class UserTypeHelper implements AdapterView.OnItemSelectedListener{
             if (selection != null) {
                 //if selection contains student, user type is student
                 isStudent = selection.toLowerCase().contains("student");
+                Log.e(TAG, "onItemSelected: "+isStudent );
                 prefManager.setUserType(isStudent);
+                if (userChangeListener != null) {
+                    userChangeListener.onUserChange(isStudent);
+                }
             }
         }
     }
@@ -61,5 +75,9 @@ public class UserTypeHelper implements AdapterView.OnItemSelectedListener{
 
     public boolean isStudent() {
         return isStudent;
+    }
+
+    public interface OnUserChangeListener {
+        void onUserChange(boolean isStudent);
     }
 }

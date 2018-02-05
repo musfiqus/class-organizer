@@ -136,7 +136,7 @@ public class DayDataDetailActivity extends ColorfulActivity {
                     } else if (menuItem.getItemId() == R.id.save_class) {
                         MaterialDialog.Builder builder = new MaterialDialog.Builder(DayDataDetailActivity.this);
                         builder.title("Save to");
-                        View dialogView = LayoutInflater.from(DayDataDetailActivity.this).inflate(R.layout.class_spinner_layout, null);
+                        View dialogView = LayoutInflater.from(DayDataDetailActivity.this).inflate(R.layout.student_spinner_layout, null);
                         final SpinnerHelperClass classHelper = new SpinnerHelperClass(DayDataDetailActivity.this, dialogView, R.layout.spinner_row, true);
                         classHelper.setupClassLabelBlack();
                         classHelper.setupClass(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());

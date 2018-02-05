@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -24,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.github.ybq.android.spinkit.SpinKitView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,24 +35,29 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.polaric.colorful.Colorful;
+import org.polaric.colorful.ColorfulActivity;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
-import bd.edu.daffodilvarsity.classorganizer.adapter.WelcomeSlidePagerAdapter;
+import bd.edu.daffodilvarsity.classorganizer.adapter.WelcomeSlideAdapter;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.DataChecker;
 import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 
-public class WelcomeActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class WelcomeActivity extends ColorfulActivity implements AdapterView.OnItemSelectedListener {
 
     private static final String TAG = "WelcomeActivity";
 
     private ViewPager viewPager;
-    private WelcomeSlidePagerAdapter myViewPagerAdapter;
+    private WelcomeSlideAdapter myViewPagerAdapter;
     private LinearLayout dotsLayout;
     private TextView[] dots;
     private int[] layouts;
@@ -121,7 +130,7 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
         /* making notification bar transparent*/
         changeStatusBarColor();
 
-        myViewPagerAdapter = new WelcomeSlidePagerAdapter(this, layouts);
+        myViewPagerAdapter = new WelcomeSlideAdapter(this, layouts);
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
         //Disabling previous on the opening page
@@ -163,15 +172,24 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                     //class slide
                     if (myViewPagerAdapter.getClassDataCode() > 0) {
                         DataChecker.errorMessage(WelcomeActivity.this, myViewPagerAdapter.getClassDataCode(), null);
-                        showSnackBar(myViewPagerAdapter.getCampus(), myViewPagerAdapter.getDept(), myViewPagerAdapter.getProgram(), myViewPagerAdapter.getSection(), Integer.toString(myViewPagerAdapter.getLevel() + 1), Integer.toString(myViewPagerAdapter.getTerm() + 1));
+                        showSnackBar(myViewPagerAdapter.getCampus(), myViewPagerAdapter.getDept(),
+                                myViewPagerAdapter.getProgram(), myViewPagerAdapter.getSection(),
+                                Integer.toString(myViewPagerAdapter.getLevel() + 1),
+                                Integer.toString(myViewPagerAdapter.getTerm() + 1));
                         viewPager.setCurrentItem(current - 1);
                     } else {
                         viewPager.setCurrentItem(current);
                     }
                 } else if (current == layouts.length - 2) {
                     //campus slide
-                    String[] params = new String[] {myViewPagerAdapter.getCampus(), myViewPagerAdapter.getDept(), myViewPagerAdapter.getProgram()};
-                    new ClassSlidePreloadTask().execute(params);
+                    String[] params = new String[]{myViewPagerAdapter.getCampus(), myViewPagerAdapter.getDept(), myViewPagerAdapter.getProgram()};
+                    if (myViewPagerAdapter.getCampusDataCode() > 0 ) {
+                        DataChecker.errorMessage(WelcomeActivity.this, myViewPagerAdapter.getCampusDataCode(), null);
+                        viewPager.setCurrentItem(current - 1);
+                    } else {
+                        new ClassSlidePreloadTask().execute(params);
+                    }
+
 
                 } else if (current == layouts.length - 3) {
                     //user type slide
@@ -496,15 +514,14 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
         }
 
         @Override
-        protected Void doInBackground(String... params) {
+        protected Void doInBackground(final String... params) {
+            Long start = System.currentTimeMillis();
             if (myViewPagerAdapter.isStudent()) {
                 if (myViewPagerAdapter.getCampusDataCode() > 0) {
                     DataChecker.errorMessage(WelcomeActivity.this, myViewPagerAdapter.getCampusDataCode(), null);
                     showSnackBar(myViewPagerAdapter.getCampus(), myViewPagerAdapter.getDept(), myViewPagerAdapter.getProgram(), myViewPagerAdapter.getSection(), Integer.toString(myViewPagerAdapter.getLevel() + 1), Integer.toString(myViewPagerAdapter.getTerm() + 1));
-                    return null;
                 } else {
                     myViewPagerAdapter.getClassHelper().createClassAdapters(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
-                    return null;
                 }
             } else {
                 String campus = params[0];
@@ -512,27 +529,33 @@ public class WelcomeActivity extends AppCompatActivity implements AdapterView.On
                 String program = params[2];
                 myViewPagerAdapter.getClassHelper().createTeacherInitAdapter(campus, department, program);
                 Log.e(TAG, "Doing");
-                return null;
             }
+            Long end = System.currentTimeMillis();
+            Log.e(TAG, "Done in "+(end-start)+" ms");
+            return null;
         }
 
         @Override
         protected void onPostExecute(Void current) {
             super.onPostExecute(current);
-            spinKitView.setVisibility(View.GONE);
+            int currentItem;
+            Long start = System.currentTimeMillis();
             if (myViewPagerAdapter.isStudent()) {
                 if (myViewPagerAdapter.getCampusDataCode() > 0) {
-                    viewPager.setCurrentItem(layouts.length - 3);
+                    currentItem = layouts.length - 3;
                 } else {
                     myViewPagerAdapter.getClassHelper().attachClassSpinners();
-                    viewPager.setCurrentItem(layouts.length - 2);
+                    currentItem = layouts.length - 2;
                 }
             } else {
                 myViewPagerAdapter.getClassHelper().attachTeacherInitAdapter();
-                viewPager.setCurrentItem(layouts.length - 2);
+                currentItem = layouts.length - 2;
             }
+            spinKitView.setVisibility(View.GONE);
             btnNext.setVisibility(View.VISIBLE);
-            Log.e(TAG, "Finished");
+            viewPager.setCurrentItem(currentItem);
+            Long end = System.currentTimeMillis();
+            Log.e(TAG, "Finished in "+(end-start)+" ms");
         }
     }
 }

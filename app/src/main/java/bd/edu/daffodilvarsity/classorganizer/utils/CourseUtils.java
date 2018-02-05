@@ -1,6 +1,7 @@
 package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -9,7 +10,13 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.IllegalFormatCodePointException;
+import java.util.Set;
 
+import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 /**
@@ -72,27 +79,88 @@ public class CourseUtils {
     }
 
     public ArrayList<DayData> getDayDataByQuery(String campus, String dept, String program, String query, String columnName) {
-        if (isUpdatedOnline) {
-            return MasterDBOnline.getInstance(mContext).getDayDataByQuery(campus, dept, program, query, columnName);
+        PrefManager prefManager = new PrefManager(mContext);
+        ArrayList<DayData> dayDataList = new ArrayList<>();
+        if (!prefManager.isUserStudent() && prefManager.isMultiProgram()) {
+            dayDataList.clear();
+            if (isUpdatedOnline) {
+                dayDataList.addAll(MasterDBOnline.getInstance(mContext).getDayDataByQuery(campus, dept,
+                        mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase(), query, columnName));
+                dayDataList.addAll(MasterDBOnline.getInstance(mContext).getDayDataByQuery(campus, dept,
+                        mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase(), query, columnName));
+            } else {
+                ArrayList<DayData> day = MasterDBOffline.getInstance(mContext).getDayDataByQuery(campus, dept,
+                        mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase(), query, columnName);
+                ArrayList<DayData> eve = MasterDBOffline.getInstance(mContext).getDayDataByQuery(campus, dept,
+                        mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase(), query, columnName);
+                dayDataList.addAll(day);
+                dayDataList.addAll(eve);
+            }
+
         } else {
-            return MasterDBOffline.getInstance(mContext).getDayDataByQuery(campus, dept, program, query, columnName);
+            dayDataList.clear();
+            if (isUpdatedOnline) {
+                dayDataList = MasterDBOnline.getInstance(mContext).getDayDataByQuery(campus, dept, program, query, columnName);
+            } else {
+                dayDataList = MasterDBOffline.getInstance(mContext).getDayDataByQuery(campus, dept, program, query, columnName);
+            }
         }
+        return dayDataList;
+
     }
 
     public ArrayList<DayData> getFreeRoomsByTime(String campus, String dept, String program, String day, String timeWeight) {
-        if (isUpdatedOnline) {
-            return MasterDBOnline.getInstance(mContext).getFreeRoomsByTime(campus, dept, program, day, timeWeight);
+        PrefManager prefManager = new PrefManager(mContext);
+        ArrayList<DayData> dayDataList = new ArrayList<>();
+        if (!prefManager.isUserStudent() && prefManager.isMultiProgram()) {
+            dayDataList.clear();
+            if (isUpdatedOnline) {
+                dayDataList.addAll(MasterDBOnline.getInstance(mContext).getFreeRoomsByTime(campus, dept,
+                        mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase(), day, timeWeight));
+                dayDataList.addAll(MasterDBOnline.getInstance(mContext).getFreeRoomsByTime(campus, dept,
+                        mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase(), day, timeWeight));
+            } else {
+                dayDataList.addAll(MasterDBOffline.getInstance(mContext).getFreeRoomsByTime(campus, dept,
+                        mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase(), day, timeWeight));
+                dayDataList.addAll(MasterDBOffline.getInstance(mContext).getFreeRoomsByTime(campus, dept,
+                        mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase(), day, timeWeight));
+            }
         } else {
-            return MasterDBOffline.getInstance(mContext).getFreeRoomsByTime(campus, dept, program, day, timeWeight);
+            dayDataList.clear();
+            if (isUpdatedOnline) {
+                dayDataList = MasterDBOnline.getInstance(mContext).getFreeRoomsByTime(campus, dept, program, day, timeWeight);
+            } else {
+                dayDataList = MasterDBOffline.getInstance(mContext).getFreeRoomsByTime(campus, dept, program, day, timeWeight);
+            }
         }
+        return dayDataList;
     }
 
     public ArrayList<DayData> getFreeRoomsByRoom(String campus, String dept, String program, String room) {
-        if (isUpdatedOnline) {
-            return MasterDBOnline.getInstance(mContext).getFreeRoomsByRoom(campus, dept, program, room);
+        PrefManager prefManager = new PrefManager(mContext);
+        ArrayList<DayData> dayDataList = new ArrayList<>();
+        if (!prefManager.isUserStudent() && prefManager.isMultiProgram()) {
+            dayDataList.clear();
+            if (isUpdatedOnline) {
+                dayDataList.addAll(MasterDBOnline.getInstance(mContext).getFreeRoomsByRoom(campus, dept,
+                        mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase(), room));
+                dayDataList.addAll(MasterDBOnline.getInstance(mContext).getFreeRoomsByRoom(campus, dept,
+                        mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase(), room));
+            } else {
+                dayDataList.addAll(MasterDBOffline.getInstance(mContext).getFreeRoomsByRoom(campus, dept,
+                        mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase(), room));
+                dayDataList.addAll(MasterDBOffline.getInstance(mContext).getFreeRoomsByRoom(campus, dept,
+                        mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase(), room));
+            }
         } else {
-            return MasterDBOffline.getInstance(mContext).getFreeRoomsByRoom(campus, dept, program, room);
+            dayDataList.clear();
+            if (isUpdatedOnline) {
+                dayDataList = MasterDBOnline.getInstance(mContext).getFreeRoomsByRoom(campus, dept, program, room);
+            } else {
+                dayDataList = MasterDBOffline.getInstance(mContext).getFreeRoomsByRoom(campus, dept, program, room);
+            }
         }
+        return dayDataList;
     }
 
     public String getCourseTitle(String courseCode, String campus, String dept, String program) {
@@ -185,10 +253,31 @@ public class CourseUtils {
     }
 
     public ArrayList<String> getTeachersInitials(String campus, String department, String program) {
-        if (isUpdatedOnline) {
-            return MasterDBOnline.getInstance(mContext).getTeachersInitials(campus, department, program);
+        PrefManager prefManager = new PrefManager(mContext);
+        if (!prefManager.isUserStudent() && prefManager.isMultiProgram()) {
+            Set<String> dataArrayList = new HashSet<>();
+            if (isUpdatedOnline) {
+                dataArrayList.addAll(MasterDBOnline.getInstance(mContext).getTeachersInitials(campus, department, mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase()));
+                dataArrayList.addAll(MasterDBOnline.getInstance(mContext).getTeachersInitials(campus, department, mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase()));
+            } else {
+                dataArrayList.addAll(MasterDBOffline.getInstance(mContext).getTeachersInitials(campus, department, mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase()));
+                dataArrayList.addAll(MasterDBOffline.getInstance(mContext).getTeachersInitials(campus, department, mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase()));
+            }
+            ArrayList<String> list = new ArrayList<>();
+            list.addAll(dataArrayList);
+            Collections.sort(list, new Comparator<String>() {
+                @Override
+                public int compare(String s1, String s2) {
+                    return s1.compareToIgnoreCase(s2);
+                }
+            });
+            return list;
         } else {
-            return MasterDBOffline.getInstance(mContext).getTeachersInitials(campus, department, program);
+            if (isUpdatedOnline) {
+                return MasterDBOnline.getInstance(mContext).getTeachersInitials(campus, department, program);
+            } else {
+                return MasterDBOffline.getInstance(mContext).getTeachersInitials(campus, department, program);
+            }
         }
     }
 

@@ -36,6 +36,17 @@
     <Spinner
         android:id="@+id/program_selection"
         style="@style/SpinnerStyle"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+         />
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/teacher_multi_program"
+        android:theme="@style/CheckboxWhite"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:text="Include routines from both programs"
+        android:layout_marginBottom="8dp"/>
 
 </LinearLayout>

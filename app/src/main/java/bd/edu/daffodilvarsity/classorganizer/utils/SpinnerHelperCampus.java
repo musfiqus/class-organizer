@@ -1,11 +1,17 @@
 package bd.edu.daffodilvarsity.classorganizer.utils;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -38,45 +44,37 @@ public class SpinnerHelperCampus implements AdapterView.OnItemSelectedListener {
     private Spinner programSpinner;
     ArrayAdapter<CharSequence> programAdapter;
 
+    private AppCompatCheckBox multiProgramCheck;
+
     private String campus;
     private String dept;
     private String program;
 
     private int campusDataCode;
 
-    private boolean isCampusMode;
 
-
-    public SpinnerHelperCampus(Context context, View view, int spinnerRowResource, boolean isStudent, boolean isCampusMode) {
-        this.isCampusMode = isCampusMode;
+    public SpinnerHelperCampus(Context context, View view, int spinnerRowResource, boolean isStudent) {
+        viewChooser(view);
         this.context = context;
         this.prefManager = new PrefManager(context);
         this.spinnerRowResource = spinnerRowResource;
         this.isStudent = isStudent;
-        viewChooser(view);
     }
 
     private void viewChooser(View view) {
-        if (view.getId() == R.id.class_spinner_layout_id || view.getId() == R.id.campus_spinner_layout_id) {
+        if (view.getId() == R.id.campus_spinner_layout_id) {
             this.view = view;
         } else {
-            if (view.getId() == R.id.welcome_choice_layout_5) {
-                Log.e(TAG, "User type: "+ (isStudent ? "Student" : "teacher"));
-                if (isStudent) {
-                    //user student
-                    view.findViewById(R.id.teachers_spinner_layout).setVisibility(View.GONE);
-                    this.view = view.findViewById(R.id.section_layout_include_id);
-                } else {
-                    //user teacher
-                    view.findViewById(R.id.section_layout_include_id).setVisibility(View.GONE);
-                    this.view = view.findViewById(R.id.teachers_spinner_layout);
-                }
-            } else {
-                this.view = view.findViewById(R.id.campus_layout_include_id);
-            }
+            this.view = view.findViewById(R.id.campus_layout_include_id);
         }
     }
 
+
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    //* Google: setsupportbuttontintlist can only be called
+    //* Stackoverflow: https://stackoverflow.com/a/44926919
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    @SuppressLint("RestrictedApi")
     public void setupCampusLabelBlack() {
         TextView campusLabel = (TextView) view.findViewById(R.id.campus_spinner_label);
         TextView deptLabel = (TextView) view.findViewById(R.id.dept_spinner_label);
@@ -84,11 +82,57 @@ public class SpinnerHelperCampus implements AdapterView.OnItemSelectedListener {
         campusLabel.setTextColor(ContextCompat.getColor(context, android.R.color.black));
         deptLabel.setTextColor(ContextCompat.getColor(context, android.R.color.black));
         programLabel.setTextColor(ContextCompat.getColor(context, android.R.color.black));
+        if (!isStudent && multiProgramCheck != null) {
+            Log.e(TAG, "setupCampusLabelBlack: Noice");
+            ///////////////////////////////////////////////////////////////////////////////////////////
+            //* Google: change checkbox theme programmatically
+            //* Stackoverflow: https://stackoverflow.com/a/40212769
+            ///////////////////////////////////////////////////////////////////////////////////////////
+            ColorStateList colorStateList = new ColorStateList(
+                    new int[][]{
+                            new int[]{-android.R.attr.state_checked}, // unchecked
+                            new int[]{android.R.attr.state_checked}, // checked
+                    },
+                    new int[]{
+                            ContextCompat.getColor(view.getContext(), android.R.color.black),
+                            ContextCompat.getColor(view.getContext(), android.R.color.black),
+                    }
+            );
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                multiProgramCheck.setButtonTintList(colorStateList);
+            } else {
+                multiProgramCheck.setSupportButtonTintList(colorStateList);
+            }
+            multiProgramCheck.setTextColor(ContextCompat.getColor(context, android.R.color.black));
+        } else {
+            if (multiProgramCheck == null) {
+                Log.e(TAG, "setupCampusLabelBlack: NELZ");
+            }
+
+        }
     }
 
     public void setupCampus() {
         createCampusSpinners();
         setupCampusAdapters();
+        multiProgramCheck = view.findViewById(R.id.teacher_multi_program);
+        if (multiProgramCheck != null) {
+            if (isStudent) {
+                multiProgramCheck.setVisibility(View.GONE);
+            } else {
+                multiProgramCheck.setVisibility(View.VISIBLE);
+                if (prefManager != null) {
+                    multiProgramCheck.setChecked(prefManager.isMultiProgram());
+                }
+                multiProgramCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        prefManager.setMultiProgram(isChecked);
+                    }
+                });
+            }
+        }
     }
 
     public void createCampusSpinners() {
@@ -119,9 +163,9 @@ public class SpinnerHelperCampus implements AdapterView.OnItemSelectedListener {
         campusSpinner.setAdapter(campusAdapter);
         deptSpinner.setAdapter(deptAdapter);
         programSpinner.setAdapter(programAdapter);
-            campusSpinner.setOnItemSelectedListener(this);
-            deptSpinner.setOnItemSelectedListener(this);
-            programSpinner.setOnItemSelectedListener(this);
+        campusSpinner.setOnItemSelectedListener(this);
+        deptSpinner.setOnItemSelectedListener(this);
+        programSpinner.setOnItemSelectedListener(this);
     }
 
     public int spinnerPositionGenerator(int id, String string) {
@@ -208,25 +252,22 @@ public class SpinnerHelperCampus implements AdapterView.OnItemSelectedListener {
 
 
         //Saving selections on first launch
-        if (isCampusMode) {
-            if (!isCampusSpinnersNull()) {
-                campus = getCampus();
-                dept = getDept();
-                program = getProgram();
-            }
-            if (campus != null) {
-                prefManager.saveCampus(campus);
-            }
-            if (dept != null) {
-                prefManager.saveDept(dept);
-            }
-            if (program != null) {
-                prefManager.saveProgram(program);
-            }
+        if (!isCampusSpinnersNull()) {
+            campus = getCampus();
+            dept = getDept();
+            program = getProgram();
         }
-        campusDataCode = new DataChecker(context).campusChecker(campus, dept, program);
-        Log.e(TAG, "CampusCode: "+campusDataCode);
-        Log.e(TAG, "Kampus: "+campus+" Dept:"+dept+" Program:"+program);
+        if (campus != null) {
+            prefManager.saveCampus(campus);
+        }
+        if (dept != null) {
+            prefManager.saveDept(dept);
+        }
+        if (program != null) {
+            prefManager.saveProgram(program);
+        }
+        campusDataCode = new DataChecker(context).campusChecker(campus, dept, program, isStudent);
+        Log.e(TAG, "CampusCode: " + campusDataCode);
     }
 
     @Override
@@ -236,6 +277,10 @@ public class SpinnerHelperCampus implements AdapterView.OnItemSelectedListener {
 
     public int getCampusDataCode() {
         return campusDataCode;
+    }
+
+    public void setUserType(boolean isStudent) {
+        this.isStudent = isStudent;
     }
 
 }

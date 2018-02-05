@@ -38,7 +38,7 @@ import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.RoutineLoader;
 import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelperCampus;
 import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelperClass;
-import bd.edu.daffodilvarsity.classorganizer.utils.UserTypeHelper;
+import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelperUser;
 
 public class SettingsActivity extends ColorfulActivity {
 
@@ -202,15 +202,15 @@ public class SettingsActivity extends ColorfulActivity {
             builder.title(R.string.user_popup_title);
             final View dialogView = getActivity().getLayoutInflater().inflate(R.layout.user_spinner_layout, getListView(), false);
             //Designing the spinners TODO
-            final UserTypeHelper userTypeHelper = new UserTypeHelper(getContext(), dialogView);
-            userTypeHelper.setupUser();
-            userTypeHelper.setUserTypeLabelBlack();
+            final SpinnerHelperUser spinnerHelperUser = new SpinnerHelperUser(getContext(), dialogView);
+            spinnerHelperUser.setupUser();
+            spinnerHelperUser.setUserTypeLabelBlack();
             final boolean oldUser = prefManager.isUserStudent();
             builder.positiveText(android.R.string.ok);
             builder.onPositive(new MaterialDialog.SingleButtonCallback() {
                 @Override
                 public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
-                    boolean newUser = userTypeHelper.isStudent();
+                    boolean newUser = spinnerHelperUser.isStudent();
                     if (oldUser == newUser) {
                         showSnackBar(getActivity(), getResources().getString(R.string.no_changes));
                     } else {
@@ -252,9 +252,9 @@ public class SettingsActivity extends ColorfulActivity {
             builder.title(R.string.dept_popup_title);
             final View dialogView = getActivity().getLayoutInflater().inflate(R.layout.campus_spinner_layout, getListView(), false);
             //Designing the spinners
-            campusHelper = new SpinnerHelperCampus(getContext(), dialogView, R.layout.spinner_row, true, true);
-            campusHelper.setupCampusLabelBlack();
+            campusHelper = new SpinnerHelperCampus(getContext(), dialogView, R.layout.spinner_row, prefManager.isUserStudent());
             campusHelper.setupCampus();
+            campusHelper.setupCampusLabelBlack();
             final String oldDept = prefManager.getDept();
             final String oldCampus = prefManager.getCampus();
             final String oldProgram = prefManager.getProgram();
@@ -269,7 +269,7 @@ public class SettingsActivity extends ColorfulActivity {
                     DataChecker campusChecker = new DataChecker(getContext());
                     int campusCode;
                     if (prefManager.isUserStudent()) {
-                        campusCode = campusChecker.campusChecker(campus, department, program);
+                        campusCode = campusChecker.campusChecker(campus, department, program, prefManager.isUserStudent());
                     } else {
                         campusCode = campusChecker.campusTeacherChecker(campus, department, program);
                     }
@@ -375,7 +375,7 @@ public class SettingsActivity extends ColorfulActivity {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle("Choose Your New Class");
                     //Setting up spinners for class settings
-                    View dialogView = getActivity().getLayoutInflater().inflate(R.layout.class_spinner_layout, getListView(), false);
+                    View dialogView = getActivity().getLayoutInflater().inflate(R.layout.student_spinner_layout, getListView(), false);
                     classHelper = new SpinnerHelperClass(getContext(), dialogView, R.layout.spinner_row, true);
                     classHelper.setupClassLabelBlack();
                     classHelper.setupClass(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());

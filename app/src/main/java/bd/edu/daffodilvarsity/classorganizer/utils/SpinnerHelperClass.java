@@ -23,6 +23,7 @@ public class SpinnerHelperClass implements AdapterView.OnItemSelectedListener {
     private PrefManager prefManager;
     private Context context;
     private View view;
+    private View parentView;
     private int spinnerRowResource;
     private boolean isStudent;
 
@@ -45,6 +46,7 @@ public class SpinnerHelperClass implements AdapterView.OnItemSelectedListener {
         this.prefManager = new PrefManager(context);
         this.spinnerRowResource = spinnerRowResource;
         this.isStudent = isStudent;
+        this.parentView = view;
         viewChooser(view);
     }
 
@@ -108,7 +110,7 @@ public class SpinnerHelperClass implements AdapterView.OnItemSelectedListener {
     }
 
     public void setupClassAdapters(String campus, String department, String program) {
-        ArrayAdapter<CharSequence>  levelAdapter, termAdapter;
+        ArrayAdapter<CharSequence> levelAdapter, termAdapter;
         levelAdapter = ArrayAdapter.createFromResource(context, R.array.cse_main_day_level_array, spinnerRowResource);
         termAdapter = ArrayAdapter.createFromResource(context, R.array.term_array, spinnerRowResource);
         levelSpinner.setAdapter(levelAdapter);
@@ -120,7 +122,7 @@ public class SpinnerHelperClass implements AdapterView.OnItemSelectedListener {
     }
 
     public void sectionAdapter(String campus, String department, String program) {
-        Log.e(TAG, campus+department+program);
+        Log.e(TAG, campus + department + program);
         if (sectionSpinner != null) {
             ArrayList<String> sections = CourseUtils.getInstance(context).getSections(campus, department, program);
             ArrayAdapter<String> sectionAdapter;
@@ -195,25 +197,47 @@ public class SpinnerHelperClass implements AdapterView.OnItemSelectedListener {
     }
 
     private void viewChooser(View view) {
-        if (view.getId() == R.id.class_spinner_layout_id || view.getId() == R.id.campus_spinner_layout_id || view.getId() == R.id.teachers_spinner_layout) {
+        Log.e(TAG, "viewChooser: called");
+        if (view.getId() == R.id.class_spinner_layout_id || view.getId() == R.id.campus_spinner_layout_id || view.getId() == R.id.teachers_spinner_layout_id) {
             this.view = view;
+            Log.e(TAG, "viewChooser: class_spinner_layout_id or campus_spinner_layout_id or teachers_spinner_layout_id");
         } else {
             if (view.getId() == R.id.welcome_choice_layout_5) {
-                Log.e(TAG, "User type: "+ (isStudent ? "Student" : "teacher"));
+                Log.e(TAG, "viewChooser: welcome_choice_layout_5");
                 if (isStudent) {
                     //user student
-                    view.findViewById(R.id.teachers_spinner_layout).setVisibility(View.GONE);
+                    view.findViewById(R.id.teachers_layout_include_id).setVisibility(View.GONE);
                     this.view = view.findViewById(R.id.section_layout_include_id);
+                    Log.e(TAG, "viewChooser: welcome_choice_layout_5 student");
                 } else {
                     //user teacher
                     view.findViewById(R.id.section_layout_include_id).setVisibility(View.GONE);
-                    this.view = view.findViewById(R.id.teachers_spinner_layout);
+                    this.view = view.findViewById(R.id.teachers_layout_include_id);
+                    Log.e(TAG, "viewChooser: welcome_choice_layout_5 teacher");
                 }
             } else {
-                this.view = view.findViewById(R.id.campus_layout_include_id);
+                Log.wtf(TAG, "viewChooser: UNKNOWN");
             }
         }
     }
+
+//    public void changeUser(boolean isStudent) {
+//        this.isStudent = isStudent;
+//        if (parentView.getId() == R.id.welcome_choice_layout_5) {
+//            Log.e(TAG, "changeUser: Called");
+//            if (isStudent) {
+//                //user student
+//                parentView.findViewById(R.id.teachers_layout_include_id).setVisibility(View.GONE);
+//                this.view = parentView.findViewById(R.id.section_layout_include_id);
+//            } else {
+//                //user teacher
+//                parentView.findViewById(R.id.section_layout_include_id).setVisibility(View.GONE);
+//                this.view = parentView.findViewById(R.id.teachers_layout_include_id);
+//            }
+//        } else {
+//            Log.e(TAG, "changeUser: NOT Called");
+//        }
+//    }
 
     public int getLevel() {
         if (levelSpinner == null) {

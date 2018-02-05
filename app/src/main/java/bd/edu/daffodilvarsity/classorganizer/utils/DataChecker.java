@@ -34,7 +34,7 @@ public class DataChecker {
         this.context = context;
     }
 
-    public int campusChecker(String campus, String department, String program) {
+    public int campusChecker(String campus, String department, String program, boolean isUserStudent) {
         CourseUtils courseUtils = CourseUtils.getInstance(context);
         if (campus == null) {
             return INVALID_CAMPUS;
@@ -55,15 +55,17 @@ public class DataChecker {
         if (totalSemester == 0) {
             return INVALID_PROGRAM;
         }
-        ArrayList<String> sections = courseUtils.getSections(campus, department, program);
-        if (sections == null || sections.size() == 0) {
-            Log.e(TAG, "HEREEEEEE");
-            return INVALID_CAMPUS_MIXED;
-        }
-        ArrayList<DayData> routine = new RoutineLoader(0,0, sections.get(0), context, department, campus, program).loadRoutine(false);
-        if (routine == null || routine.size() == 0) {
-            Log.e(TAG, "NOOOOOOO HEREEEEEE");
-            return INVALID_CAMPUS_MIXED;
+        if (isUserStudent) {
+            ArrayList<String> sections = courseUtils.getSections(campus, department, program);
+            if (sections == null || sections.size() == 0) {
+                Log.e(TAG, "HEREEEEEE");
+                return INVALID_CAMPUS_MIXED;
+            }
+            ArrayList<DayData> routine = new RoutineLoader(0,0, sections.get(0), context, department, campus, program).loadRoutine(false);
+            if (routine == null || routine.size() == 0) {
+                Log.e(TAG, "NOOOOOOO HEREEEEEE");
+                return INVALID_CAMPUS_MIXED;
+            }
         }
         return VALID_CHOICE;
     }

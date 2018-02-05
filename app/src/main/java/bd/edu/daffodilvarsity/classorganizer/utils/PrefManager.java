@@ -45,6 +45,7 @@ public class PrefManager {
     private static final String SAVE_DATABASE_VERSION = "Incremental_Database_Version";
     private static final String SAVE_ONLINEDB_VERSION = "Online_Database_Version";
     private static final String SAVE_OFFLINEDB_VERSION = "Offline_Database_Version";
+    private static final String PREF_MULTI_PROGRAM = "Teacher_Multi_Program";
     private static final String PREF_SEMESTER_COUNT = "Current_Semester_Count";
     private static final String PREF_USER_TYPE = "Current_User_Type";
     private static final String PREF_TEACHER_INITIAL = "User_Teacher_Initial";
@@ -131,6 +132,15 @@ public class PrefManager {
 
     public int getDatabaseVersion() {
         return pref.getInt(SAVE_DATABASE_VERSION, getMasterDBVersion());
+    }
+
+    public void setMultiProgram(boolean isMulti) {
+        editor.remove(PREF_MULTI_PROGRAM).apply();
+        editor.putBoolean(PREF_MULTI_PROGRAM, isMulti).apply();
+    }
+
+    public boolean isMultiProgram() {
+        return pref.getBoolean(PREF_MULTI_PROGRAM, false);
     }
 
     public void setUserType(boolean isStudent) {

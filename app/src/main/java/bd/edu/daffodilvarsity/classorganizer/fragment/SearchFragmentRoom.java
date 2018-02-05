@@ -176,6 +176,7 @@ public class SearchFragmentRoom extends Fragment implements AdapterView.OnItemSe
             ArrayList<DayData> result = courseUtils.getFreeRoomsByTime(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram(), day, String.valueOf(timeWeight));
             if (result.size() == 0) {
                 noResult(true);
+                adapter.loadResult(result);
             } else {
                 noResult(false);
                 adapter.loadResult(result);

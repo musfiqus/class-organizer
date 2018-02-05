@@ -2,6 +2,7 @@ package bd.edu.daffodilvarsity.classorganizer.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.IllegalFormatCodePointException;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
@@ -16,27 +18,31 @@ import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.RoutineLoader;
 import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelperCampus;
 import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelperClass;
-import bd.edu.daffodilvarsity.classorganizer.utils.UserTypeHelper;
+import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelperUser;
 
 /**
  * Created by Mushfiqus Salehin on 3/26/2017.
  * musfiqus@gmail.com
  */
 
-public class WelcomeSlidePagerAdapter extends PagerAdapter{
-    private static final String TAG = "WelcomeSlidePagerAdapte";
+public class WelcomeSlideAdapter extends PagerAdapter implements SpinnerHelperUser.OnUserChangeListener{
+    private static final String TAG = "WelcomeSlideAdapter";
 
     private Context context;
     private int[] layouts;
     private View view;
     private PrefManager prefManager;
 
+    private static final String TAG_USER = "UserView";
+    private static final String TAG_CAMPUS = "CampusView";
+    private static final String TAG_CLASS = "ClassView";
+
     private SpinnerHelperClass classHelper;
     private SpinnerHelperCampus campusHelper;
-    private UserTypeHelper userTypeHelper;
+    private SpinnerHelperUser spinnerHelperUser;
 
 
-    public WelcomeSlidePagerAdapter(Context context, int[] layouts) {
+    public WelcomeSlideAdapter(Context context, int[] layouts) {
         this.context = context;
         this.layouts = layouts;
         this.prefManager = new PrefManager(context);
@@ -48,27 +54,25 @@ public class WelcomeSlidePagerAdapter extends PagerAdapter{
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         view = layoutInflater.inflate(layouts[position], container, false);
-        container.addView(view);
+
         if (layouts[position] == R.layout.welcome_slide3) {
-            userTypeHelper = new UserTypeHelper(context, view);
-            userTypeHelper.setupUser();
-        }
-        if (layouts[position] == R.layout.welcome_slide4) {
-            if (userTypeHelper == null) {
-                Log.e(TAG, "User null");
-            }
-            campusHelper = new SpinnerHelperCampus(context, view, R.layout.spinner_campus_row_welcome, userTypeHelper.isStudent(), true);
+            view.setTag(TAG_USER);
+            spinnerHelperUser = new SpinnerHelperUser(context, view, this);
+            spinnerHelperUser.setupUser();
+        } else if (layouts[position] == R.layout.welcome_slide4) {
+            view.setTag(TAG_CAMPUS);
+            campusHelper = new SpinnerHelperCampus(context, view, R.layout.spinner_campus_row_welcome, spinnerHelperUser.isStudent());
             campusHelper.setupCampus();
-        }
-        if (layouts[position] == R.layout.welcome_slide5) {
-            Log.e(TAG, "Called Class Slide");
-            classHelper = new SpinnerHelperClass(context, view, R.layout.spinner_class_row_welcome, userTypeHelper == null || userTypeHelper.isStudent());
+        } else if (layouts[position] == R.layout.welcome_slide5) {
+            view.setTag(TAG_CLASS);
+            classHelper = new SpinnerHelperClass(context, view, R.layout.spinner_class_row_welcome, spinnerHelperUser == null || spinnerHelperUser.isStudent());
             if (isStudent()) {
                 classHelper.createClassSpinners();
             } else {
                 classHelper.createTeacherInitSpinners();
             }
         }
+        container.addView(view);
         return view;
     }
 
@@ -115,8 +119,8 @@ public class WelcomeSlidePagerAdapter extends PagerAdapter{
     }
 
     public boolean isStudent() {
-        if (userTypeHelper != null) {
-            return userTypeHelper.isStudent();
+        if (spinnerHelperUser != null) {
+            return spinnerHelperUser.isStudent();
         }
         return true;
     }
@@ -163,6 +167,40 @@ public class WelcomeSlidePagerAdapter extends PagerAdapter{
 
     public SpinnerHelperCampus getCampusHelper() {
         return campusHelper;
+    }
+
+    @Override
+    public void onUserChange(boolean isStudent) {
+
+        ///////////////////////////////////////////////////////////////////////////////////////////
+        //* Google: findviewwithtag returns null
+        //* Stackoverflow: https://stackoverflow.com/a/20586547
+        ///////////////////////////////////////////////////////////////////////////////////////////
+
+        View parent = (View) view.getParent();
+        if (parent != null) {
+            View campusView = parent.findViewWithTag(TAG_CAMPUS);
+            View classView = parent.findViewWithTag(TAG_CLASS);
+            if (campusView != null) {
+                campusHelper = new SpinnerHelperCampus(context, campusView, R.layout.spinner_campus_row_welcome, isStudent);
+                campusHelper.setupCampus();
+            }
+            if (classView != null) {
+                classHelper = null;
+                classHelper = new SpinnerHelperClass(context, classView, R.layout.spinner_class_row_welcome, isStudent);
+                if (isStudent()) {
+                    classHelper.createClassSpinners();
+                } else {
+                    classHelper.createTeacherInitSpinners();
+                }
+            } else {
+                Log.e(TAG, "onUserChange: classview null");
+            }
+
+        } else {
+            Log.e(TAG, "onUserChange: Parent null");
+        }
+
     }
 }
 

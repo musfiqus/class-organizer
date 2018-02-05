@@ -29,7 +29,7 @@
         </activity>
         <activity
             android:name=".activity.WelcomeActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -82,6 +82,7 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="97134746f7e815b6aad25190b01c4712d2c523ec" />
+
     </application>
 
 </manifest>
