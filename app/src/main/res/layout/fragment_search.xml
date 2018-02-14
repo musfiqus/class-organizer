@@ -30,7 +30,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_margin="@dimen/fab_margin"
-                android:src="@drawable/ic_search_white_24dp"
+                app:srcCompat="@drawable/ic_search_white_24dp"
                 app:fabSize="mini"/>
 
             <LinearLayout

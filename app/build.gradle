@@ -28,10 +28,10 @@ android {
         applicationId "bd.edu.daffodilvarsity.classorganizer"
         minSdkVersion 16
         targetSdkVersion 27
-        versionName '4.4.3'
+        versionName '4.4.4'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 53
+        versionCode 54
     }
     signingConfigs {
         release {
