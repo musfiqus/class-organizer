@@ -11,6 +11,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,17 +92,10 @@ public class SearchFragmentRoutine extends Fragment implements DayDataAdapter.Da
         resultTitle = mView.findViewById(R.id.result_layout_title);
         mResultLayout = inflater.inflate(R.layout.layout_search_result, mResultView, true);
 
-        PrefManager prefManager = new PrefManager(mView.getContext());
-        RoutineLoader routineLoader;
-        if (prefManager.isUserStudent()) {
-            routineLoader = new RoutineLoader(prefManager.getLevel(), prefManager.getTerm(), prefManager.getSection(), mView.getContext(), prefManager.getDept(), prefManager.getCampus(), prefManager.getProgram());
-        } else {
-            routineLoader = new RoutineLoader(prefManager.getTeacherInitial(), prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram(), mView.getContext());
-        }
         RecyclerView recyclerView = (RecyclerView) mResultLayout.findViewById(R.id.class_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mResultLayout.getContext());
         recyclerView.setLayoutManager(layoutManager);
-        ArrayList<DayData> loadedRoutine = routineLoader.loadRoutine(true);
+        ArrayList<DayData> loadedRoutine = new PrefManager(getContext()).getSavedDayData();
         adapter = new DayDataAdapter(loadedRoutine, mView.getContext(), R.layout.list_item, DayDataAdapter.HOLDER_ROOM, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setNestedScrollingEnabled(false);
@@ -196,6 +190,8 @@ public class SearchFragmentRoutine extends Fragment implements DayDataAdapter.Da
             }
             if (adapter.dayDataSize() == 0) {
                 noResult(true);
+            } else {
+                noResult(false);
             }
         }
     }

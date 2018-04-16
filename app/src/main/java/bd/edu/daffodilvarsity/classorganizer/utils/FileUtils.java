@@ -1,6 +1,8 @@
 package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 
 import com.crashlytics.android.Crashlytics;
 
@@ -126,5 +128,30 @@ public final class FileUtils {
                 deleteFile.getAbsoluteFile().delete();
             }
         }
+    }
+
+    public static void logAnError(Context context, String tag, String message) {
+        PrefManager prefManager = new PrefManager(context);
+        String errorDetails = null;
+        //Get version
+        String appVersionName;
+        PackageInfo packageInfo = null;
+        try {
+            packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            appVersionName = packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            appVersionName = "App version not found";
+        }
+        errorDetails = "App version: "+appVersionName+"\n";
+        errorDetails += "Database version: "+prefManager.getMasterDBVersion()+"\n";
+        errorDetails += "Campus: "+prefManager.getCampus()+" Department: "+prefManager.getDept()+" Program: "+prefManager.getProgram()+"\n";
+        if (prefManager.isUserStudent()) {
+            errorDetails += "Level: "+prefManager.getLevel()+1+" Term: "+prefManager.getTerm()+1+" Section: "+prefManager.getSection()+"\n";
+        } else {
+            errorDetails += "Teacher's initial: "+prefManager.getTeacherInitial()+" Multi program: "+prefManager.isMultiProgram()+"\n";
+        }
+        errorDetails += "Extra message: "+message+"\n";
+        Crashlytics.log(1, tag, errorDetails);
     }
 }

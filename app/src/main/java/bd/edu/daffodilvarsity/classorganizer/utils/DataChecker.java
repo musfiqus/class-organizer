@@ -2,6 +2,7 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
@@ -68,6 +69,24 @@ public class DataChecker {
                 Log.e(TAG, "NOOOOOOO HEREEEEEE");
                 return INVALID_CAMPUS_MIXED;
             }
+        } else {
+            Log.e(TAG, "campusChecker: W T F AM I DOING HERE?");
+            Log.e(TAG, "campusTeacherChecker: isn't this called?");
+            ArrayList<String> initials = courseUtils.getTeachersInitials(campus, department, program);
+            if (initials == null || initials.size() == 0) {
+                return INVALID_PROGRAM;
+            } else {
+                Log.e(TAG, "campusTeacherChecker: say wut?");
+            }
+            String initial = CourseUtils.getInstance(context).getTeachersInitials(campus, department, program).get(0);
+            if (initial == null) {
+                return INVALID_TEACHER_INITIAL;
+            }
+            ArrayList<DayData> routine = new RoutineLoader(initial,campus, department, program, context).loadRoutine(false);
+            if (routine == null || routine.size() == 0) {
+                return INVALID_TEACHER_INITIAL;
+            }
+            return VALID_CHOICE;
         }
         return VALID_CHOICE;
     }
@@ -93,20 +112,6 @@ public class DataChecker {
         CourseUtils courseUtils = CourseUtils.getInstance(context);
         PrefManager prefManager = new PrefManager(context);
         ArrayList<DayData> routine = new RoutineLoader(teachersInitial, prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram(), context).loadRoutine(false);
-        if (routine == null || routine.size() == 0) {
-            return INVALID_TEACHER_INITIAL;
-        }
-        return VALID_CHOICE;
-    }
-
-    public int campusTeacherChecker(String campus, String dept, String program) {
-        CourseUtils courseUtils = CourseUtils.getInstance(context);
-        PrefManager prefManager = new PrefManager(context);
-        String initial = CourseUtils.getInstance(context).getTeachersInitials(campus, dept, program).get(0);
-        if (initial == null) {
-            return INVALID_TEACHER_INITIAL;
-        }
-        ArrayList<DayData> routine = new RoutineLoader(initial,campus, dept, program, context).loadRoutine(false);
         if (routine == null || routine.size() == 0) {
             return INVALID_TEACHER_INITIAL;
         }

@@ -9,12 +9,16 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.Objects;
 
+import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
+
 /**
  * Created by Mushfiqus Salehin on 3/24/2017.
  * musfiqus@gmail.com
  */
 
 public class DayData implements Serializable, Parcelable {
+    private static final String TAG = "DayData";
+
     @SerializedName("courseCode")
     private String courseCode;
 
@@ -129,10 +133,13 @@ public class DayData implements Serializable, Parcelable {
         if (!(otherData.getCourseCode().equals(this.courseCode))) {
             return false;
         }
-        if (!(otherData.getTeachersInitial().equals(this.teachersInitial))) {
+        if (otherData.getTeachersInitial() == null || !(otherData.getTeachersInitial().equals(this.teachersInitial))) {
+            if (!(otherData.getTeachersInitial() == null && this.teachersInitial == null)) {
+                return false;
+            }
             return false;
         }
-        if (!(otherData.getSection().equals(this.section))) {
+        if (otherData.getSection() == null || !(otherData.getSection().equals(this.section))) {
             return false;
         }
         if (otherData.getLevel() != this.level) {
@@ -141,13 +148,13 @@ public class DayData implements Serializable, Parcelable {
         if (otherData.getTerm() != this.term) {
             return false;
         }
-        if (!(otherData.getDay().equals(this.day))) {
+        if (otherData.getDay() == null || !(otherData.getDay().equals(this.day))) {
             return false;
         }
-        if (!(otherData.getRoomNo().equals(this.roomNo))) {
+        if (otherData.getRoomNo() == null || !(otherData.getRoomNo().equals(this.roomNo))) {
             return false;
         }
-        if (!(otherData.getTime().equals(this.time))) {
+        if (otherData.getTime() == null || !(otherData.getTime().equals(this.time))) {
             return false;
         }
         return otherData.getTimeWeight() == this.timeWeight;

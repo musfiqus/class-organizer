@@ -28,10 +28,10 @@ android {
         applicationId "bd.edu.daffodilvarsity.classorganizer"
         minSdkVersion 16
         targetSdkVersion 27
-        versionName '4.4.4'
+        versionName '4.4.5'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 54
+        versionCode 55
     }
     signingConfigs {
         release {
@@ -47,6 +47,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
+
+        debug {
+            ext.enableCrashlytics = false
+            debuggable true
+        }
     }
     productFlavors {
     }
@@ -54,7 +59,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.android.support:support-v4:27.0.2'
+    implementation "com.android.support:support-v4:$supportLibVersion"
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -99,8 +104,8 @@ dependencies {
 
     //    compile "com.google.firebase:firebase-ads:$firebaseLibVersion"
     testCompile 'junit:junit:4.12'
-    compile('com.crashlytics.sdk.android:crashlytics:2.8.0@aar') {
-        transitive = true
+    compile('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
+        transitive = true;
     }
 }
 

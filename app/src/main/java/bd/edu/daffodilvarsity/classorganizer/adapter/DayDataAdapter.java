@@ -21,6 +21,8 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataHolder> {
 
+    private static final String TAG = "DayDataAdapter";
+
     private ArrayList<DayData> dayDataArrayList;
     private final ArrayList<DayData> copyOfDayDataList;
     private Context context;

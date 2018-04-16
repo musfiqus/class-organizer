@@ -23,7 +23,7 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 public class MasterDBOffline extends SQLiteAssetHelper {
     private static final String TAG = "MasterDBOffline";
-    public static final int OFFLINE_DATABASE_VERSION = 22;
+    public static final int OFFLINE_DATABASE_VERSION = 23;
 
     //Increment the version to erase previous db
     private static final String COLUMN_COURSE_CODE = "course_code";
@@ -130,31 +130,36 @@ public class MasterDBOffline extends SQLiteAssetHelper {
                 return null;
             }
             final String TABLE_NAME = "routine_"+campus.toLowerCase() + "_" + dept.toLowerCase() + "_" + program.toLowerCase();
-            CourseUtils courseUtils = CourseUtils.getInstance(mContext);
-            String[] columnNames = getColumnNames(TABLE_NAME);
-            Cursor cursor = db.query(TABLE_NAME, columnNames, columnName + "=?",
-                    new String[]{query}, null, null, null, null);
+            if (doesTableExist(TABLE_NAME)) {
+                CourseUtils courseUtils = CourseUtils.getInstance(mContext);
+                String[] columnNames = getColumnNames(TABLE_NAME);
+                Cursor cursor = db.query(TABLE_NAME, columnNames, columnName + "=?",
+                        new String[]{query}, null, null, null, null);
 
-            if (cursor.moveToFirst()) {
-                do {
-                    if (cursor.getString(0) != null) {
-                        String[] dynamicCode = dynamicCourseCode(cursor.getString(0));
-                        if (dynamicCode != null) {
-                            String courseCode = dynamicCode[0];
-                            String section = dynamicCode[1];
-                            int semester = getColumnNumberByQuery("course_codes_"+campus+"_"+dept+"_"+program, courseCode);
-                            int[] levelTerm = RoutineLoader.getLevelTerm(semester+1);
-                            DayData newDayData = new DayData(getCourseCode(courseCode), trimInitial(cursor.getString(1)), section, levelTerm[0], levelTerm[1], cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(courseCode, campus, dept, program));
-                            list.add(newDayData);
+                if (cursor.moveToFirst()) {
+                    do {
+                        if (cursor.getString(0) != null) {
+                            String[] dynamicCode = dynamicCourseCode(cursor.getString(0));
+                            if (dynamicCode != null) {
+                                String courseCode = dynamicCode[0];
+                                String section = dynamicCode[1];
+                                int semester = getColumnNumberByQuery("course_codes_"+campus+"_"+dept+"_"+program, courseCode);
+                                int[] levelTerm = RoutineLoader.getLevelTerm(semester+1);
+                                DayData newDayData = new DayData(getCourseCode(courseCode), trimInitial(cursor.getString(1)), section, levelTerm[0], levelTerm[1], cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(courseCode, campus, dept, program));
+                                list.add(newDayData);
+                            }
+
                         }
+                    } while (cursor.moveToNext());
+                }
+                cursor.close();
 
-                    }
-                } while (cursor.moveToNext());
             }
-            cursor.close();
+            return list;
+            } else {
+                return null;
+            }
 
-        }
-        return list;
     }
 
     ArrayList<DayData> getFreeRoomsByTime(String campus, String dept, String program, String day, String timeWeight) {
@@ -594,10 +599,47 @@ public class MasterDBOffline extends SQLiteAssetHelper {
         return timeWeight;
     }
 
-    private String getCourseCode(String courseCode) {
-        String[] split = {courseCode.substring(0, 3), courseCode.substring(3)};
-        courseCode = split[0] + " " + split[1];
-        return courseCode;
+    private String getCourseCode(String rawCode) {
+        int i = 0;
+        int beginIndex = 0;
+        boolean brake = false;
+
+        while(!brake) {
+            try {
+                Integer.parseInt(rawCode.substring(i, i+1));
+                brake = true;
+            } catch (NumberFormatException e) {
+                i++;
+                brake = false;
+            }
+            if (rawCode.length() == i+1) {
+                return null;
+            }
+        }
+        String course = rawCode.substring(beginIndex, i);
+        Log.e(TAG, "getCourseCode: Course"+ course+" i: "+i);
+        brake = false;
+        beginIndex = i;
+        Log.e(TAG, rawCode);
+        while (!brake) {
+            if (rawCode.length() == i) {
+                break;
+            }
+            if (rawCode.length() != i+1 && rawCode.substring(i, i+1).equalsIgnoreCase("L")) {
+                i++;
+                Log.e(TAG, "getCourseCode: i 2nd: "+i );
+                continue;
+            }
+            try {
+                Integer.parseInt(rawCode.substring(i, i+1));
+                brake = false;
+                i++;
+            } catch (NumberFormatException e) {
+                brake = true;
+            }
+        }
+        String code = rawCode.substring(beginIndex, i);
+        return course+" "+code;
     }
 
     private String strippedStringMinimal(String string) {
@@ -644,7 +686,8 @@ public class MasterDBOffline extends SQLiteAssetHelper {
         }
         String code = rawCode.substring(beginIndex, i);
         String section = rawCode.substring(i, rawCode.length());
-        return new String[]{getCourseCode(course+code), section};
+        section = section.substring(0,1);
+        return new String[]{course+" "+code, section};
     }
 
     private String trimInitial(String initial) {

@@ -10,7 +10,7 @@
         <bitmap
             android:id="@+id/splash_icon"
             android:gravity="center"
-            android:src="@drawable/ic_welcome"/>
+            android:src="@drawable/ic_welcome_image"/>
     </item>
 
 </layer-list>

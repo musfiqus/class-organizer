@@ -277,11 +277,7 @@ public class SettingsActivity extends ColorfulActivity {
                     String program = campusHelper.getProgram().toLowerCase();
                     DataChecker campusChecker = new DataChecker(getContext());
                     int campusCode;
-                    if (prefManager.isUserStudent()) {
-                        campusCode = campusChecker.campusChecker(campus, department, program, prefManager.isUserStudent());
-                    } else {
-                        campusCode = campusChecker.campusTeacherChecker(campus, department, program);
-                    }
+                    campusCode = campusChecker.campusChecker(campus, department, program, prefManager.isUserStudent());
                     if (oldDept.equalsIgnoreCase(department) && oldCampus.equalsIgnoreCase(campus) && oldProgram.equalsIgnoreCase(program)
                             && isMulti == prefManager.isMultiProgram()) {
                         showSnackBar(getActivity(), getResources().getString(R.string.no_changes));

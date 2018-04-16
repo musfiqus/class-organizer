@@ -3,6 +3,7 @@ package bd.edu.daffodilvarsity.classorganizer;
 import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
+import com.crashlytics.android.core.CrashlyticsCore;
 import com.google.firebase.FirebaseApp;
 
 import org.polaric.colorful.Colorful;
@@ -18,7 +19,11 @@ public class ClassOrganizer extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Fabric.with(this, new Crashlytics());
+
+        //Disable crashlytics in debug builds
+        CrashlyticsCore core = new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build();
+        Fabric.with(this, new Crashlytics.Builder().core(core).build());
+
         Colorful.defaults()
                 .primaryColor(Colorful.ThemeColor.BLUE_GREY_CUSTOM)
                 .accentColor(Colorful.ThemeColor.TEAL_CUSTOM)
