@@ -61,22 +61,17 @@ public class DataChecker {
         if (isUserStudent) {
             ArrayList<String> sections = courseUtils.getSections(campus, department, program);
             if (sections == null || sections.size() == 0) {
-                Log.e(TAG, "HEREEEEEE");
                 return INVALID_CAMPUS_MIXED;
             }
             ArrayList<DayData> routine = new RoutineLoader(0,0, sections.get(0), context, department, campus, program).loadRoutine(false);
             if (routine == null || routine.size() == 0) {
-                Log.e(TAG, "NOOOOOOO HEREEEEEE");
                 return INVALID_CAMPUS_MIXED;
             }
         } else {
-            Log.e(TAG, "campusChecker: W T F AM I DOING HERE?");
-            Log.e(TAG, "campusTeacherChecker: isn't this called?");
             ArrayList<String> initials = courseUtils.getTeachersInitials(campus, department, program);
             if (initials == null || initials.size() == 0) {
+                FileUtils.logAnError(context, TAG, "campusChecker: initials empty");
                 return INVALID_PROGRAM;
-            } else {
-                Log.e(TAG, "campusTeacherChecker: say wut?");
             }
             String initial = CourseUtils.getInstance(context).getTeachersInitials(campus, department, program).get(0);
             if (initial == null) {
