@@ -1,5 +1,5 @@
 # Class Organizer
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/musfiqus/class-organizer/blob/master/LICENSE.txt)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://github.com/musfiqus/class-organizer/blob/master/LICENSE.txt)
 
 **A simple and modern looking routine management app for Android.<br>
 Built for the students of Daffodil International University.**
