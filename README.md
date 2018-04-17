@@ -21,6 +21,7 @@ Built for the students of Daffodil International University.**
 
 ## Libraries
 
+* [**Colorful**](https://github.com/garretyoder/Colorful) for theme support
 * [**Android SQLiteAssetHelper**](https://github.com/jgilfelt/android-sqlite-asset-helper) for preloaded databases
 * [**Android-SpinKit**](https://github.com/ybq/Android-SpinKit) for loading animations
 * [**Fab-speed-dial**](https://github.com/yavski/fab-speed-dial) for fab menu
