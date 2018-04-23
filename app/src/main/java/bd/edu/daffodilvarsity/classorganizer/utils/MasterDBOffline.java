@@ -8,10 +8,15 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
@@ -23,7 +28,7 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 public class MasterDBOffline extends SQLiteAssetHelper {
     private static final String TAG = "MasterDBOffline";
-    public static final int OFFLINE_DATABASE_VERSION = 23;
+    public static final int OFFLINE_DATABASE_VERSION = 24;
 
     //Increment the version to erase previous db
     private static final String COLUMN_COURSE_CODE = "course_code";
@@ -31,6 +36,14 @@ public class MasterDBOffline extends SQLiteAssetHelper {
     private static final String COLUMN_WEEK_DAYS = "week_days";
     private static final String COLUMN_ROOM_NO = "room_no";
     private static final String COLUMN_TIME = "time_data";
+    public static final String COLUMN_SCHEDULES_CLASS_START = "class_start";
+    public static final String COLUMN_SCHEDULES_CLASS_END = "class_end";
+    public static final String COLUMN_SCHEDULES_MID_START = "mid_start";
+    public static final String COLUMN_SCHEDULES_MID_END = "mid_end";
+    public static final String COLUMN_SCHEDULES_VACATION_ONE_START = "vacation_one_start";
+    public static final String COLUMN_SCHEDULES_VACATION_ONE_END = "vacation_one_end";
+    public static final String COLUMN_SCHEDULES_VACATION_TWO_START = "vacation_two_start";
+    public static final String COLUMN_SCHEDULES_VACATION_TWO_END = "vacation_two_end";
     private ArrayList<DayData> finalDayData = new ArrayList<>();
     private Context mContext;
     private static MasterDBOffline mInstance = null;
@@ -725,6 +738,50 @@ public class MasterDBOffline extends SQLiteAssetHelper {
         }
         cursor.close();
         return found != null && found.equalsIgnoreCase(department);
+    }
+
+    public Date getDateFromSchedule(final String COLUMN_NAME, String currentSemester, String campus, String department, String program) {
+        SQLiteDatabase db;
+        try {
+            db = getWritableDatabase();
+        } catch (NullPointerException e) {
+            errorLog(e);
+            return null;
+        } catch (SQLiteAssetException e) {
+            errorLog(e);
+            return null;
+        }
+        final String TABLE_NAME = "semester_schedules";
+        final String COLUMN_SEMESTER = "semester";
+        final String COLUMN_CAMPUS = "campus";
+        final String COLUMN_DEPARTMENT = "department";
+        final String COLUMN_PROGRAM = "program";
+        String[] columnNames = getColumnNames(TABLE_NAME);
+        Log.e(TAG, "getDateFromSchedule: campus dept prog"+campus+department+program+currentSemester );
+        final String SELECTION = COLUMN_SEMESTER + " =? AND "+COLUMN_CAMPUS + " =? AND " + COLUMN_DEPARTMENT + " =? AND "+COLUMN_PROGRAM+" =?";
+        Cursor cursor = db.query(TABLE_NAME, columnNames, SELECTION,
+                new String[]{ currentSemester.toLowerCase(), campus.toLowerCase(), department.toLowerCase(), program.toLowerCase()}, null, null, null, null);
+        int column = cursor.getColumnIndex(COLUMN_NAME);
+        String dateString = null;
+        Log.e(TAG, "getDateFromSchedule: cursor "+cursor.getCount() );
+        if (cursor.moveToFirst()) {
+            do {
+                dateString = cursor.getString(column);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        DateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+        Date date = null;
+        if (dateString != null) {
+            try {
+                date = format.parse(dateString);
+            } catch (ParseException e) {
+                FileUtils.logAnError(mContext, TAG, "getDateFromSchedule: Invalid date. Error: "+e.toString());
+            }
+        }
+        Log.e(TAG, "getDateFromSchedule: Date :"+date);
+
+        return date;
     }
 
     protected void errorLog(Exception e) {

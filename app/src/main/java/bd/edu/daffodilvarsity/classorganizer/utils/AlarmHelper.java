@@ -8,9 +8,11 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.preference.PreferenceManager;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import bd.edu.daffodilvarsity.classorganizer.adapter.DayDataAdapter;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
@@ -24,6 +26,8 @@ import bd.edu.daffodilvarsity.classorganizer.receiver.NotificationPublisher;
 public class AlarmHelper {
     private Context context;
     private PrefManager prefManager;
+
+    private static final String TAG = "AlarmHelper";
 
     public AlarmHelper(Context context) {
         this.context = context;
@@ -119,24 +123,28 @@ public class AlarmHelper {
         if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
             calendar.add(Calendar.DAY_OF_YEAR, 7);
         }
-        Intent dayDataIntent = new Intent(context, NotificationPublisher.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("DayData_Object", dayData);
-        bundle.putInt("index", index);
-        bundle.putInt("day", dayOfWeek);
-        bundle.putInt("hour", hour);
-        bundle.putInt("timeBefore", timeBefore);
-        dayDataIntent.putExtra("bundled_data", bundle);
+        Date date = calendar.getTime();
+        if (isDateValidForAlarm(date)) {
+            Log.e(TAG, "scheduleAlarm: Date: "+ date);
+            Intent dayDataIntent = new Intent(context, NotificationPublisher.class);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("DayData_Object", dayData);
+            bundle.putInt("index", index);
+            bundle.putInt("day", dayOfWeek);
+            bundle.putInt("hour", hour);
+            bundle.putInt("timeBefore", timeBefore);
+            dayDataIntent.putExtra("bundled_data", bundle);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, index, dayDataIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (alarmManager != null) {
-                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-            }
-        } else {
-            if (alarmManager != null) {
-                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, index, dayDataIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                if (alarmManager != null) {
+                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                }
+            } else {
+                if (alarmManager != null) {
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                }
             }
         }
     }
@@ -213,5 +221,103 @@ public class AlarmHelper {
             return hour - 1;
         }
     }
+
+    private boolean isDateValidForAlarm(Date currentDate) {
+        if (!isWithinSemester(currentDate)) {
+            Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is outside of semester");
+            return false;
+        }
+        if (isWithinMid(currentDate)) {
+            Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is during mid");
+            return false;
+        }
+        if (isWithinVacation(currentDate)) {
+            Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is during mid");
+            return false;
+        }
+        Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is valid for alarm");
+        return true;
+    }
+
+    private boolean isWithinSemester(Date currentDate) {
+        boolean result = false;
+        Date classStart = CourseUtils
+                .getInstance(context)
+                .getDateFromSchedule(
+                        MasterDBOffline.COLUMN_SCHEDULES_CLASS_START, prefManager.getSemester(),
+                        prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
+        Date classEnd = CourseUtils
+                .getInstance(context)
+                .getDateFromSchedule(
+                        MasterDBOffline.COLUMN_SCHEDULES_CLASS_END, prefManager.getSemester(),
+                        prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
+        if (classStart != null && classEnd != null) {
+            if (!(currentDate.before(classStart) || currentDate.after(classEnd))) {
+                //if the date is not before the current date and not after the end date then we're ok
+                result = true;
+            }
+        }
+        return result;
+    }
+
+    private boolean isWithinMid(Date currentDate) {
+        boolean result = false;
+        Date midStart = CourseUtils
+                .getInstance(context)
+                .getDateFromSchedule(
+                        MasterDBOffline.COLUMN_SCHEDULES_MID_START, prefManager.getSemester(),
+                        prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
+        Date midEnd = CourseUtils
+                .getInstance(context)
+                .getDateFromSchedule(
+                        MasterDBOffline.COLUMN_SCHEDULES_MID_END, prefManager.getSemester(),
+                        prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
+        if (midStart != null && midEnd != null) {
+            if (!(currentDate.before(midStart) || currentDate.after(midEnd))) {
+                //if the date is not before the current date and not after the end date then we're ok
+                result = true;
+            }
+        }
+        return result;
+    }
+
+    private boolean isWithinVacation(Date currentDate) {
+        boolean result = false;
+        Date oneStart = CourseUtils
+                .getInstance(context)
+                .getDateFromSchedule(
+                        MasterDBOffline.COLUMN_SCHEDULES_VACATION_ONE_START, prefManager.getSemester(),
+                        prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
+        Date oneEnd = CourseUtils
+                .getInstance(context)
+                .getDateFromSchedule(
+                        MasterDBOffline.COLUMN_SCHEDULES_VACATION_ONE_END, prefManager.getSemester(),
+                        prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
+
+        Date twoStart = CourseUtils
+                .getInstance(context)
+                .getDateFromSchedule(
+                        MasterDBOffline.COLUMN_SCHEDULES_VACATION_TWO_START, prefManager.getSemester(),
+                        prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
+        Date twoEnd = CourseUtils
+                .getInstance(context)
+                .getDateFromSchedule(
+                        MasterDBOffline.COLUMN_SCHEDULES_VACATION_TWO_END, prefManager.getSemester(),
+                        prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
+        if (oneStart != null && oneEnd != null) {
+            if (!(currentDate.before(oneStart) || currentDate.after(oneEnd))) {
+                //if the date is not before the current date and not after the end date then we're ok
+                result = true;
+            }
+        }
+        if (twoStart != null && twoEnd != null) {
+            if (!(currentDate.before(twoStart) || currentDate.after(twoEnd))) {
+                //if the date is not before the current date and not after the end date then we're ok
+                result = true;
+            }
+        }
+        return result;
+    }
+
 
 }

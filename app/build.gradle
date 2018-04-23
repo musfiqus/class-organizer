@@ -21,10 +21,10 @@ android {
         applicationId "bd.edu.daffodilvarsity.classorganizer"
         minSdkVersion 16
         targetSdkVersion 27
-        versionName '4.4.5'
+        versionName '4.5'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 55
+        versionCode 56
     }
     signingConfigs {
         release {
@@ -103,5 +103,15 @@ dependencies {
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
         transitive = true;
     }
+
+    //for google calendar
+//    implementation "com.google.android.gms:play-services-auth:$firebaseLibVersion"
+//    implementation 'pub.devrel:easypermissions:0.3.0'
+//    implementation('com.google.api-client:google-api-client-android:1.23.0') {
+//        exclude group: 'org.apache.httpcomponents'
+//    }
+//    implementation('com.google.apis:google-api-services-calendar:v3-rev310-1.23.0') {
+//        exclude group: 'org.apache.httpcomponents'
+//    }
 }
 apply plugin: 'com.google.gms.google-services'

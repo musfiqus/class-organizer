@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.IllegalFormatCodePointException;
 import java.util.Set;
@@ -322,6 +323,13 @@ public class CourseUtils {
             return MasterDBOnline.getInstance(mContext).checkDepartment(campus, department);
         } else {
             return MasterDBOffline.getInstance(mContext).checkDepartment(campus, department);
+        }
+    }
+    public Date getDateFromSchedule(final String COLUMN_NAME, String currentSemester, String campus, String department, String program) {
+        if (isUpdatedOnline) {
+            return MasterDBOnline.getInstance(mContext).getDateFromSchedule(COLUMN_NAME, currentSemester, campus, department, program);
+        } else {
+            return MasterDBOffline.getInstance(mContext).getDateFromSchedule(COLUMN_NAME, currentSemester, campus, department, program);
         }
     }
 
