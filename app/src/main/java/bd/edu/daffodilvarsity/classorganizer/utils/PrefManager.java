@@ -49,6 +49,7 @@ public class PrefManager {
     private static final String PREF_SEMESTER_COUNT = "Current_Semester_Count";
     private static final String PREF_USER_TYPE = "Current_User_Type";
     private static final String PREF_TEACHER_INITIAL = "User_Teacher_Initial";
+    private static final String PREF_REFRESH_DATA = "Refresh_View_Data";
     public static final String SAVE_DATA_TAG = "save";
     public static final String ADD_DATA_TAG = "add";
     public static final String EDIT_DATA_TAG = "edit";
@@ -484,6 +485,15 @@ public class PrefManager {
             }
         }
         return pref.getString(SAVE_PROGRAM, null);
+    }
+
+    public void enableDataRefresh(boolean refresh) {
+        editor.remove(PREF_REFRESH_DATA).apply();
+        editor.putBoolean(PREF_REFRESH_DATA, refresh).apply();
+    }
+
+    public boolean isRefreshPending() {
+        return pref.getBoolean(PREF_REFRESH_DATA, false);
     }
 
     public int getDayDataPosition(DayData dayData) {

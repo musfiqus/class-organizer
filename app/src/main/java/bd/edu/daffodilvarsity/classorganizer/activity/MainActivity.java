@@ -224,6 +224,11 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             showSnackBar(this, prefManager.getSnackData());
             prefManager.saveShowSnack(false);
         }
+        if (prefManager.isRefreshPending()) {
+            refreshData();
+            prefManager.enableDataRefresh(false);
+            Log.d(TAG, "onResume: Data refreshed");
+        }
     }
 
     @Override
@@ -285,6 +290,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         if (prefManager.showSnack()) {
             showSnackBar(this, prefManager.getSnackData());
             prefManager.saveShowSnack(false);
+        }
+    }
+
+    private void refreshData() {
+        mDayData.clear();
+        mDayData = prefManager.getSavedDayData();
+        if (adapter != null) {
+            adapter.updateData(mDayData);
         }
     }
 

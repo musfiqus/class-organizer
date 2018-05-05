@@ -3,6 +3,7 @@ package bd.edu.daffodilvarsity.classorganizer.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -10,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.ImageViewCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.preference.PreferenceManager;
@@ -17,6 +19,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -49,6 +53,10 @@ public class DayDataDetailActivity extends ColorfulActivity {
     private Bundle bundle;
     private boolean fromNotification = false;
     public static final String DAYDATA_DETAIL_TAG = "DayDataDetails";
+    private RelativeLayout mMuteContainer;
+    private TextView mMuteText;
+    private ImageView mMuteYes;
+    private ImageView mMuteNo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +131,42 @@ public class DayDataDetailActivity extends ColorfulActivity {
             if (appBarLayout != null) {
                 appBarLayout.setTitle(dayData.getCourseCode());
             }
+            //mute setup
+            mMuteContainer = findViewById(R.id.mute_container);
+            mMuteYes = findViewById(R.id.mute_yes);
+            mMuteNo = findViewById(R.id.mute_no);
+            mMuteText = findViewById(R.id.mute_status_text);
+            //set tint
+            ImageViewCompat.setImageTintList(mMuteNo, ColorStateList.valueOf(ContextCompat.getColor(this, R.color.detailTitleColor)));
+            ImageViewCompat.setImageTintList(mMuteYes, ColorStateList.valueOf(ContextCompat.getColor(this, R.color.detailTitleColor)));
+            //pre animate
+            animateMute(mMuteYes, mMuteNo, dayData.isMuted());
+            mMuteText.setText(dayData.isMuted() ? getResources().getString(R.string.muted_text):
+                    getResources().getString(R.string.unmuted_Text));
+
+            mMuteContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PrefManager prefManager = new PrefManager(getApplicationContext());
+                    ArrayList<DayData> updatedList = prefManager.getSavedDayData();
+                    int position = prefManager.getDayDataPosition(dayData);
+                    //update current object
+                    dayData.setMuted(!dayData.isMuted());
+                    updatedList.set(position, dayData);
+
+                    //save
+                    prefManager.saveDayData(updatedList);
+                    prefManager.enableDataRefresh(true);
+
+                    animateMute(mMuteYes, mMuteNo, dayData.isMuted());
+                    if (dayData.isMuted()) {
+                        mMuteText.setText(R.string.muted_text);
+                    } else {
+                        mMuteText.setText(R.string.unmuted_Text);
+                    }
+
+                }
+            });
             //setup fab
             FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
             fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
@@ -217,8 +261,19 @@ public class DayDataDetailActivity extends ColorfulActivity {
             } else {
                 ((TextView) findViewById(R.id.time_tv)).setText(dayData.getTime());
             }
+
+
         }
     }
+
+    public void animateMute(View imageMuted, View imageUnmuted, boolean isMuted) {
+        imageMuted.setVisibility(View.VISIBLE);
+        imageUnmuted.setVisibility(View.VISIBLE);
+
+        imageUnmuted.animate().scaleX(isMuted ? 0 : 1).scaleY(isMuted ? 0 : 1).alpha(isMuted ? 0 : 1).start();
+        imageMuted.animate().scaleX(isMuted ? 1 : 0).scaleY(isMuted ? 1 : 0).alpha(isMuted ? 1 : 0).start();
+    }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {

@@ -180,6 +180,36 @@
                         android:text="@string/_10_00_am_11_30_am"
                         android:textAllCaps="true"
                         android:textSize="18sp" />
+                    <RelativeLayout
+                        android:id="@+id/mute_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="48dp"
+                        android:focusableInTouchMode="false"
+                        android:background="?selectableItemBackgroundBorderless">
+                        <ImageView
+                            android:id="@+id/mute_no"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            app:srcCompat="@drawable/ic_unmute_24dp"
+                            />
+                        <ImageView
+                            android:id="@+id/mute_yes"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            app:srcCompat="@drawable/ic_mute_24dp" />
+                        <TextView
+                            android:id="@+id/mute_status_text"
+                            android:layout_below="@id/mute_yes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="8dp"
+                            tools:text="Unmuted"
+                            android:textSize="18sp" />
+                    </RelativeLayout>
+
+
                 </LinearLayout>
             </LinearLayout>
             <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"

@@ -156,4 +156,6 @@
     <string name="mute_action">MUTE</string>
     <string name="mute_action_filter">bd.edu.daffodilvarsity.classorganizer.receiver.MUTE_ACTION</string>
     <string name="notification_publisher_filter">bd.edu.daffodilvarsity.classorganizer.receiver.NOTIFICATION_PUBLISHER</string>
+    <string name="muted_text">Muted</string>
+    <string name="unmuted_Text">Unmuted</string>
 </resources>
