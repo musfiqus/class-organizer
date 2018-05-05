@@ -485,5 +485,15 @@ public class PrefManager {
         }
         return pref.getString(SAVE_PROGRAM, null);
     }
+
+    public int getDayDataPosition(DayData dayData) {
+        ArrayList<DayData> dataArrayList = getSavedDayData();
+        for (int i = 0; i < dataArrayList.size(); i++) {
+            if (dataArrayList.get(i).equals(dayData)) {
+                return i;
+            }
+        }
+        return -1;
+    }
 }
 

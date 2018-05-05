@@ -117,7 +117,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
                             new String[]{id}, null, null, null, null);
                     if (cursor.moveToFirst()) {
                         do {
-                            DayData newDayData = new DayData(getCourseCode(eachCourse), trimInitial(cursor.getString(1)), section, level, term, cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(eachCourse, campus, dept, program));
+                            DayData newDayData = new DayData(getCourseCode(eachCourse), trimInitial(cursor.getString(1)), section, level, term, cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(eachCourse, campus, dept, program), false);
                             finalDayData.add(newDayData);
                         } while (cursor.moveToNext());
                     }
@@ -158,7 +158,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
                                 String section = dynamicCode[1];
                                 int semester = getColumnNumberByQuery("course_codes_"+campus+"_"+dept+"_"+program, courseCode);
                                 int[] levelTerm = RoutineLoader.getLevelTerm(semester+1);
-                                DayData newDayData = new DayData(getCourseCode(courseCode), trimInitial(cursor.getString(1)), section, levelTerm[0], levelTerm[1], cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(courseCode, campus, dept, program));
+                                DayData newDayData = new DayData(getCourseCode(courseCode), trimInitial(cursor.getString(1)), section, levelTerm[0], levelTerm[1], cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(courseCode, campus, dept, program), false);
                                 list.add(newDayData);
                             }
 
@@ -197,7 +197,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
             do {
                 if (cursor.getString(0) != null) {
                     String courseCode = cursor.getString(0);
-                    DayData newDayData = new DayData(getCourseCode(courseCode), trimInitial(cursor.getString(1)), "B", 0, 0, cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(courseCode, campus, dept, program));
+                    DayData newDayData = new DayData(getCourseCode(courseCode), trimInitial(cursor.getString(1)), "B", 0, 0, cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(courseCode, campus, dept, program), false);
                     list.add(newDayData);
 
                 }
@@ -229,7 +229,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
             do {
                 if (cursor.getString(0) != null) {
                     String courseCode = cursor.getString(0);
-                    DayData newDayData = new DayData(getCourseCode(courseCode), trimInitial(cursor.getString(1)), "B", 0, 0, cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(courseCode, campus, dept, program));
+                    DayData newDayData = new DayData(getCourseCode(courseCode), trimInitial(cursor.getString(1)), "B", 0, 0, cursor.getString(3), courseUtils.getTime(cursor.getString(4)), cursor.getString(2), getTimeWeight(cursor.getString(4)), courseUtils.getCourseTitle(courseCode, campus, dept, program), false);
                     list.add(newDayData);
 
                 }

@@ -153,4 +153,7 @@
     <string name="silhouette">Silhouette</string>
     <string name="section">Section</string>
     <string name="day">Day</string>
+    <string name="mute_action">MUTE</string>
+    <string name="mute_action_filter">bd.edu.daffodilvarsity.classorganizer.receiver.MUTE_ACTION</string>
+    <string name="notification_publisher_filter">bd.edu.daffodilvarsity.classorganizer.receiver.NOTIFICATION_PUBLISHER</string>
 </resources>

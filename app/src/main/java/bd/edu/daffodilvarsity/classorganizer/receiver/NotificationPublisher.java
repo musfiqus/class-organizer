@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.preference.PreferenceManager;
+import android.util.Log;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.activity.DayDataDetailActivity;
@@ -26,16 +27,19 @@ import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
  */
 
 public class NotificationPublisher extends BroadcastReceiver {
+    private static final String TAG = "NotificationPublisher";
     private static String CHANNEL_ID = "notification_channel_01";
+    public static String TAG_NOTIFICATION_DATA = "NotificationData";
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        Bundle bundle = intent.getBundleExtra("bundled_data");
+        Bundle bundle = intent.getBundleExtra(AlarmHelper.TAG_ALARM_BUNDLE_DATA);
         if (bundle != null) {
-            DayData dayData = bundle.getParcelable("DayData_Object");
-            int index = bundle.getInt("index");
-            int dayOfWeek = bundle.getInt("day");
-            int hour = bundle.getInt("hour");
-            int timeBefore = bundle.getInt("timeBefore");
+            DayData dayData = bundle.getParcelable(AlarmHelper.TAG_ALARM_DAYDATA_OBJECT);
+            int index = bundle.getInt(AlarmHelper.TAG_ALARM_INDEX);
+            int dayOfWeek = bundle.getInt(AlarmHelper.TAG_ALARM_DAY);
+            int hour = bundle.getInt(AlarmHelper.TAG_ALARM_HOUR);
+            int timeBefore = bundle.getInt(AlarmHelper.TAG_ALARM_TIME_BEFORE);
             if (dayData != null) {
                 showNotification(index, context, dayData);
                 AlarmHelper alarmHelper = new AlarmHelper(context);
@@ -49,23 +53,27 @@ public class NotificationPublisher extends BroadcastReceiver {
         boolean isRamadanTime = preferences.getBoolean("ramadan_preference", false);
 
         Intent notificationIntent = new Intent(context, DayDataDetailActivity.class);
+        notificationIntent.setAction(context.getString(R.string.notification_publisher_filter));
         Bundle bundle = new Bundle();
-        bundle.putByteArray("NotificationData", CourseUtils.convertToByteArray(dayData));
-        notificationIntent.putExtra("bundled_data", bundle);
+        bundle.putByteArray(TAG_NOTIFICATION_DATA, CourseUtils.convertToByteArray(dayData));
+        notificationIntent.putExtra(AlarmHelper.TAG_ALARM_BUNDLE_DATA, bundle);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context, index, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setContentTitle("You have " + article(dayData.getCourseCode().substring(0, 1)) + " " + dayData.getCourseCode() + " class soon")
                 .setContentText("Today's class is at "
-                        + (isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(dayData.getTime(), dayData.getTimeWeight()).substring(0, 8) : dayData.getTime()).substring(0, 8)
+                        + (isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(dayData.getTime(),
+                        dayData.getTimeWeight()).substring(0, 8) : dayData.getTime()).substring(0, 8)
                         + " in room " + dayData.getRoomNo())
                 .setTicker("You have a class soon!")
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND)
                 .setSmallIcon(getNotificationIcon())
-                .setContentIntent(pendingIntent);
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .addAction(getMuteAction(dayData, context, index));
 
         Notification notification = new NotificationCompat.InboxStyle(builder)
                 .addLine("Time: " + (isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(dayData.getTime(), dayData.getTimeWeight()).substring(0, 8) : dayData.getTime()).substring(0, 8))
@@ -85,6 +93,21 @@ public class NotificationPublisher extends BroadcastReceiver {
 
             notificationManager.notify(index, notification);
         }
+    }
+
+    private NotificationCompat.Action getMuteAction(DayData dayData, Context context, int index) {
+        Log.d(TAG, "getMuteAction: Mute created");
+        Intent muteIntent = new Intent(context, MuteActionReceiver.class);
+        muteIntent.setAction(context.getString(R.string.mute_action_filter));
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(AlarmHelper.TAG_ALARM_DAYDATA_OBJECT, dayData);
+        bundle.putInt(AlarmHelper.TAG_ALARM_INDEX, index);
+
+        muteIntent.putExtra(AlarmHelper.TAG_ALARM_BUNDLE_DATA, bundle);
+
+        PendingIntent mutePendingIntent = PendingIntent.getBroadcast(context, index, muteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return new NotificationCompat.Action.Builder(0, context.getString(R.string.mute_action), mutePendingIntent).build();
     }
 
     private int getNotificationIcon() {

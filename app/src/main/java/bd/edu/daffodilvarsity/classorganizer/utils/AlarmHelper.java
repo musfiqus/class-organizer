@@ -27,6 +27,13 @@ public class AlarmHelper {
     private Context context;
     private PrefManager prefManager;
 
+    public static String TAG_ALARM_DAYDATA_OBJECT = "DayData_Object";
+    public static String TAG_ALARM_INDEX = "index";
+    public static String TAG_ALARM_DAY = "day";
+    public static String TAG_ALARM_HOUR = "hour";
+    public static String TAG_ALARM_TIME_BEFORE = "timeBefore";
+    public static String TAG_ALARM_BUNDLE_DATA = "bundled_data";
+
     private static final String TAG = "AlarmHelper";
 
     public AlarmHelper(Context context) {
@@ -40,7 +47,7 @@ public class AlarmHelper {
         boolean isRamadanTime = preferences.getBoolean("ramadan_preference", false);
         if (data != null) {
             for (int i = 0; i < data.size(); i++) {
-                if (data.get(i) != null) {
+                if (data.get(i) != null && !data.get(i).isMuted()) {
                     if (data.get(i).getDay() != null && data.get(i).getTime() != null) {
                         int dayOfWeek = calculateDay(data.get(i).getDay());
                         int time[] = calculateTime(isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(data.get(i).getTime(), data.get(i).getTimeWeight()): data.get(i).getTime());
@@ -99,12 +106,12 @@ public class AlarmHelper {
         }
         Intent dayDataIntent = new Intent(context, NotificationPublisher.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable("DayData_Object", dayData);
-        bundle.putInt("index", index);
-        bundle.putInt("day", dayOfWeek);
-        bundle.putInt("hour", hour);
-        bundle.putInt("timeBefore", timeBefore);
-        dayDataIntent.putExtra("bundled_data", bundle);
+        bundle.putParcelable(TAG_ALARM_DAYDATA_OBJECT, dayData);
+        bundle.putInt(TAG_ALARM_INDEX, index);
+        bundle.putInt(TAG_ALARM_DAY, dayOfWeek);
+        bundle.putInt(TAG_ALARM_HOUR, hour);
+        bundle.putInt(TAG_ALARM_TIME_BEFORE, timeBefore);
+        dayDataIntent.putExtra(TAG_ALARM_BUNDLE_DATA, bundle);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, index, dayDataIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -114,39 +121,42 @@ public class AlarmHelper {
     }
 
     public void scheduleAlarm(int dayOfWeek, int index, int hour, int timeBefore, DayData dayData) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
-        calendar.set(Calendar.HOUR_OF_DAY, hour);
-        calendar.set(Calendar.MINUTE, timeBefore);
+        if (!dayData.isMuted()) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
+            calendar.set(Calendar.HOUR_OF_DAY, hour);
+            calendar.set(Calendar.MINUTE, timeBefore);
 
-        // Check we aren't setting it in the past or present which would trigger it to fire instantly
-        if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
-            calendar.add(Calendar.DAY_OF_YEAR, 7);
-        }
-        Date date = calendar.getTime();
-        if (isDateValidForAlarm(date)) {
-            Log.e(TAG, "scheduleAlarm: Date: "+ date);
-            Intent dayDataIntent = new Intent(context, NotificationPublisher.class);
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("DayData_Object", dayData);
-            bundle.putInt("index", index);
-            bundle.putInt("day", dayOfWeek);
-            bundle.putInt("hour", hour);
-            bundle.putInt("timeBefore", timeBefore);
-            dayDataIntent.putExtra("bundled_data", bundle);
+            // Check we aren't setting it in the past or present which would trigger it to fire instantly
+            if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
+                calendar.add(Calendar.DAY_OF_YEAR, 7);
+            }
+            Date date = calendar.getTime();
+            if (isDateValidForAlarm(date)) {
+                Log.d(TAG, "scheduleAlarm: Date: "+ date);
+                Intent dayDataIntent = new Intent(context, NotificationPublisher.class);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(AlarmHelper.TAG_ALARM_DAYDATA_OBJECT, dayData);
+                bundle.putInt(AlarmHelper.TAG_ALARM_INDEX, index);
+                bundle.putInt(AlarmHelper.TAG_ALARM_DAY, dayOfWeek);
+                bundle.putInt(AlarmHelper.TAG_ALARM_HOUR, hour);
+                bundle.putInt(AlarmHelper.TAG_ALARM_TIME_BEFORE, timeBefore);
+                dayDataIntent.putExtra(AlarmHelper.TAG_ALARM_BUNDLE_DATA, bundle);
 
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, index, dayDataIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                if (alarmManager != null) {
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                }
-            } else {
-                if (alarmManager != null) {
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, index, dayDataIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    if (alarmManager != null) {
+                        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                    }
+                } else {
+                    if (alarmManager != null) {
+                        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                    }
                 }
             }
         }
+
     }
 
 
@@ -223,20 +233,21 @@ public class AlarmHelper {
     }
 
     private boolean isDateValidForAlarm(Date currentDate) {
-        if (!isWithinSemester(currentDate)) {
-            Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is outside of semester");
-            return false;
-        }
-        if (isWithinMid(currentDate)) {
-            Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is during mid");
-            return false;
-        }
-        if (isWithinVacation(currentDate)) {
-            Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is during mid");
-            return false;
-        }
-        Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is valid for alarm");
         return true;
+//        if (!isWithinSemester(currentDate)) {
+//            Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is outside of semester");
+//            return false;
+//        }
+//        if (isWithinMid(currentDate)) {
+//            Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is during mid");
+//            return false;
+//        }
+//        if (isWithinVacation(currentDate)) {
+//            Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is during mid");
+//            return false;
+//        }
+//        Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is valid for alarm");
+//        return true;
     }
 
     private boolean isWithinSemester(Date currentDate) {

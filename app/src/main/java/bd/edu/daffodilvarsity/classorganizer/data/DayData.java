@@ -49,7 +49,10 @@ public class DayData implements Serializable, Parcelable {
     @SerializedName("courseTitle")
     private String courseTitle;
 
-    public DayData(String courseCode, String teachersInitial, String section, int level, int term, String roomNo, String time, String day, double timeWeight, String courseTitle) {
+    @SerializedName("isMuted")
+    private boolean isMuted;
+
+    public DayData(String courseCode, String teachersInitial, String section, int level, int term, String roomNo, String time, String day, double timeWeight, String courseTitle, boolean isMuted) {
         this.courseCode = courseCode;
         this.teachersInitial = teachersInitial;
         this.section = section;
@@ -60,68 +63,99 @@ public class DayData implements Serializable, Parcelable {
         this.day = day;
         this.timeWeight = timeWeight;
         this.courseTitle = courseTitle;
+        this.isMuted = isMuted;
+    }
+
+    public static String getTAG() {
+        return TAG;
     }
 
     public String getCourseCode() {
         return courseCode;
     }
 
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
+
     public String getTeachersInitial() {
         return teachersInitial;
+    }
+
+    public void setTeachersInitial(String teachersInitial) {
+        this.teachersInitial = teachersInitial;
     }
 
     public String getSection() {
         return section;
     }
 
+    public void setSection(String section) {
+        this.section = section;
+    }
+
     public int getLevel() {
         return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
     }
 
     public int getTerm() {
         return term;
     }
 
+    public void setTerm(int term) {
+        this.term = term;
+    }
+
     public String getRoomNo() {
         return roomNo;
+    }
+
+    public void setRoomNo(String roomNo) {
+        this.roomNo = roomNo;
     }
 
     public String getTime() {
         return time;
     }
 
+    public void setTime(String time) {
+        this.time = time;
+    }
+
     public String getDay() {
         return day;
+    }
+
+    public void setDay(String day) {
+        this.day = day;
     }
 
     public double getTimeWeight() {
         return timeWeight;
     }
 
+    public void setTimeWeight(double timeWeight) {
+        this.timeWeight = timeWeight;
+    }
+
     public String getCourseTitle() {
         return courseTitle;
     }
 
-    public boolean isBroken() {
-        if (this.courseCode == null) {
-            return true;
-        }
-        if (this.teachersInitial == null) {
-            return true;
-        }
-        if (this.section == null) {
-            return true;
-        }
-        if (this.roomNo == null) {
-            return true;
-        }
-        if (this.time == null) {
-            return true;
-        }
-        if (this.day == null) {
-            return true;
-        }
-        return false;
+    public void setCourseTitle(String courseTitle) {
+        this.courseTitle = courseTitle;
+    }
+
+    public boolean isMuted() {
+        return isMuted;
+    }
+
+    public void setMuted(boolean muted) {
+        isMuted = muted;
     }
 
     @Override
@@ -157,7 +191,13 @@ public class DayData implements Serializable, Parcelable {
         if (otherData.getTime() == null || !(otherData.getTime().equals(this.time))) {
             return false;
         }
-        return otherData.getTimeWeight() == this.timeWeight;
+        if (otherData.getTimeWeight() != otherData.getTimeWeight()) {
+            return false;
+        }
+        if (otherData.isMuted() != otherData.isMuted()) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -180,7 +220,6 @@ public class DayData implements Serializable, Parcelable {
         }
     }
 
-
     @Override
     public int describeContents() {
         return 0;
@@ -198,6 +237,7 @@ public class DayData implements Serializable, Parcelable {
         dest.writeString(this.day);
         dest.writeDouble(this.timeWeight);
         dest.writeString(this.courseTitle);
+        dest.writeByte(this.isMuted ? (byte) 1 : (byte) 0);
     }
 
     protected DayData(Parcel in) {
@@ -211,6 +251,7 @@ public class DayData implements Serializable, Parcelable {
         this.day = in.readString();
         this.timeWeight = in.readDouble();
         this.courseTitle = in.readString();
+        this.isMuted = in.readByte() != 0;
     }
 
     public static final Parcelable.Creator<DayData> CREATOR = new Parcelable.Creator<DayData>() {

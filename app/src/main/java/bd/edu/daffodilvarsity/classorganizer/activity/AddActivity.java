@@ -101,7 +101,7 @@ public class AddActivity extends ColorfulActivity {
             Toast.makeText(this, "Fields can't be empty", Toast.LENGTH_SHORT).show();
             return null;
         } else {
-            return new DayData(courseCode.getText().toString(), addInitial.getText().toString(), prefManager.getSection(), prefManager.getLevel(), prefManager.getTerm(), addRoom.getText().toString(), timeJoiner(startTimeSpinner.getSelectedItem().toString(), endTimeSpinner.getSelectedItem().toString()), weekDaySpinner.getSelectedItem().toString(), CourseUtils.getInstance(getApplicationContext()).getTimeWeightFromStart(startTimeSpinner.getSelectedItem().toString()), courseTitle.getText().toString());
+            return new DayData(courseCode.getText().toString(), addInitial.getText().toString(), prefManager.getSection(), prefManager.getLevel(), prefManager.getTerm(), addRoom.getText().toString(), timeJoiner(startTimeSpinner.getSelectedItem().toString(), endTimeSpinner.getSelectedItem().toString()), weekDaySpinner.getSelectedItem().toString(), CourseUtils.getInstance(getApplicationContext()).getTimeWeightFromStart(startTimeSpinner.getSelectedItem().toString()), courseTitle.getText().toString(), false);
         }
 
     }

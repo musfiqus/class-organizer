@@ -65,6 +65,15 @@
             android:name=".receiver.NotificationPublisher"
             android:enabled="true" />
         <receiver
+            android:name=".receiver.MuteActionReceiver"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="bd.edu.daffodilvarsity.classorganizer.receiver.MUTE_ACTION" />
+            </intent-filter>
+        </receiver>
+
+
+        <receiver
             android:name=".receiver.BootReceiver"
             android:enabled="true"
             android:exported="true">

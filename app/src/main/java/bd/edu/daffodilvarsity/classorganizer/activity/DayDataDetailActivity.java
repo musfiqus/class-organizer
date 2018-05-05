@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.adapter.DayDataAdapter;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.receiver.NotificationPublisher;
+import bd.edu.daffodilvarsity.classorganizer.utils.AlarmHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelperClass;
@@ -93,9 +95,9 @@ public class DayDataDetailActivity extends ColorfulActivity {
             Bundle arguments = getIntent().getExtras();
             if (arguments != null) {
                 dayData = arguments.getParcelable(DAYDATA_DETAIL_TAG);
-                Bundle bundle = arguments.getBundle("bundled_data");
+                Bundle bundle = arguments.getBundle(AlarmHelper.TAG_ALARM_BUNDLE_DATA);
                 if (bundle != null) {
-                    byte[] byteDayData = bundle.getByteArray("NotificationData");
+                    byte[] byteDayData = bundle.getByteArray(NotificationPublisher.TAG_NOTIFICATION_DATA);
                     if (byteDayData != null) {
                         dayData = CourseUtils.convertToDayData(byteDayData);
                         fromNotification = true;
@@ -147,7 +149,7 @@ public class DayDataDetailActivity extends ColorfulActivity {
                         builder.onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
-                                DayData toSave = new DayData(dayData.getCourseCode(), dayData.getTeachersInitial(), classHelper.getSection(), classHelper.getLevel(), classHelper.getTerm(), dayData.getRoomNo(), dayData.getTime(), dayData.getDay(), dayData.getTimeWeight(), dayData.getCourseTitle());
+                                DayData toSave = new DayData(dayData.getCourseCode(), dayData.getTeachersInitial(), classHelper.getSection(), classHelper.getLevel(), classHelper.getTerm(), dayData.getRoomNo(), dayData.getTime(), dayData.getDay(), dayData.getTimeWeight(), dayData.getCourseTitle(), dayData.isMuted());
                                 prefManager.saveModifiedData(toSave, PrefManager.SAVE_DATA_TAG, false);
                                 Snackbar.make(DayDataDetailActivity.this.getWindow().getDecorView().findViewById(android.R.id.content), toSave.getCourseCode() + " saved!", Snackbar.LENGTH_SHORT).show();
                             }
