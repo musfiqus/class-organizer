@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.utils.AlarmHelper;
+import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 
 public class MuteActionReceiver extends BroadcastReceiver {
@@ -21,7 +22,12 @@ public class MuteActionReceiver extends BroadcastReceiver {
         boolean error = false;
         Bundle bundle = intent.getBundleExtra(AlarmHelper.TAG_ALARM_BUNDLE_DATA);
         if (bundle != null) {
-            DayData dayData = bundle.getParcelable(AlarmHelper.TAG_ALARM_DAYDATA_OBJECT);
+            DayData dayData = null;
+            try {
+                dayData = bundle.getParcelable(AlarmHelper.TAG_ALARM_DAYDATA_OBJECT);
+            } catch (IllegalStateException e) {
+                FileUtils.logAnError(context, TAG, "onReceive: "+e.toString());
+            }
             int index = bundle.getInt(AlarmHelper.TAG_ALARM_INDEX);
             if (dayData != null) {
                 PrefManager prefManager = new PrefManager(context);

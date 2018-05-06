@@ -203,7 +203,7 @@ public class DayData implements Serializable, Parcelable {
     @Override
     public int hashCode() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            return Objects.hash(courseCode, teachersInitial, section, level, term, roomNo, time, day, timeWeight, courseTitle);
+            return Objects.hash(courseCode, teachersInitial, section, level, term, roomNo, time, day, timeWeight, courseTitle, isMuted);
         } else {
             int result = 17;
             result = 31 * result + courseCode.hashCode();
@@ -216,6 +216,7 @@ public class DayData implements Serializable, Parcelable {
             result = 31 * result + day.hashCode();
             result = 31 * result + Double.valueOf(timeWeight).hashCode();
             result = 31 * result + courseTitle.hashCode();
+            result = 31 * result + Boolean.valueOf(isMuted).hashCode();
             return result;
         }
     }

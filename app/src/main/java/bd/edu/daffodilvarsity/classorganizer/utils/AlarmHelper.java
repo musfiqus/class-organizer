@@ -233,21 +233,20 @@ public class AlarmHelper {
     }
 
     private boolean isDateValidForAlarm(Date currentDate) {
+        if (!isWithinSemester(currentDate)) {
+            Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is outside of semester");
+            return false;
+        }
+        if (isWithinMid(currentDate)) {
+            Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is during mid");
+            return false;
+        }
+        if (isWithinVacation(currentDate)) {
+            Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is during mid");
+            return false;
+        }
+        Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is valid for alarm");
         return true;
-//        if (!isWithinSemester(currentDate)) {
-//            Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is outside of semester");
-//            return false;
-//        }
-//        if (isWithinMid(currentDate)) {
-//            Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is during mid");
-//            return false;
-//        }
-//        if (isWithinVacation(currentDate)) {
-//            Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is during mid");
-//            return false;
-//        }
-//        Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is valid for alarm");
-//        return true;
     }
 
     private boolean isWithinSemester(Date currentDate) {

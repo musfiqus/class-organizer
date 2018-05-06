@@ -127,6 +127,10 @@ public class RoutineLoader {
     }
 
     public ArrayList<DayData> loadPersonalDayData(ArrayList<DayData> loadedDayData) {
+        if (loadedDayData == null) {
+            FileUtils.logAnError(context, TAG, "Routine data null");
+            return null;
+        }
         if (loadedDayData.size() > 0) {
             //Checking for modified daydata
             ArrayList<DayData> addDayData = prefManager.getModifiedData(PrefManager.ADD_DATA_TAG);

@@ -152,8 +152,9 @@ public class DayDataDetailActivity extends ColorfulActivity {
                     int position = prefManager.getDayDataPosition(dayData);
                     //update current object
                     dayData.setMuted(!dayData.isMuted());
-                    updatedList.set(position, dayData);
-
+                    if (position != -1) {
+                        updatedList.set(position, dayData);
+                    }
                     //save
                     prefManager.saveDayData(updatedList);
                     prefManager.enableDataRefresh(true);

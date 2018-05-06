@@ -24,7 +24,7 @@ android {
         versionName '4.6'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 57
+        versionCode 58
     }
     signingConfigs {
         release {
@@ -100,7 +100,7 @@ dependencies {
 
     //    implementation "com.google.firebase:firebase-ads:$firebaseLibVersion"
     testImplementation 'junit:junit:4.12'
-    implementation('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.2@aar') {
         transitive = true;
     }
 

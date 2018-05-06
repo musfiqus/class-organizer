@@ -558,7 +558,16 @@ public class MasterDBOffline extends SQLiteAssetHelper {
 
     //Finds the list of column names of a table
     private String[] getColumnNames(final String TABLE_NAME) {
-        SQLiteDatabase db = getWritableDatabase();
+        SQLiteDatabase db;
+        try {
+            db = getWritableDatabase();
+        } catch (NullPointerException e) {
+            errorLog(e);
+            return null;
+        } catch (SQLiteAssetException e) {
+            errorLog(e);
+            return null;
+        }
         Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
         String[] columnNames = cursor.getColumnNames();
         cursor.close();
