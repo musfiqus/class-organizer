@@ -52,3 +52,8 @@
 -keep public class * extends java.lang.Exception
 -keep class com.crashlytics.** { *; }
 -dontwarn com.crashlytics.**
+
+# https://stackoverflow.com/questions/21342700/proguard-causing-runtimeexception-unmarshalling-unknown-type-code-in-parcelabl
+-keepclassmembers class * implements android.os.Parcelable {
+    static ** CREATOR;
+}

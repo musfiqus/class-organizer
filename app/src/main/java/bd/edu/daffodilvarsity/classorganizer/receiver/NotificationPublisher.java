@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.activity.DayDataDetailActivity;
@@ -41,6 +42,10 @@ public class NotificationPublisher extends BroadcastReceiver {
                 dayData = bundle.getParcelable(AlarmHelper.TAG_ALARM_DAYDATA_OBJECT);
             } catch (IllegalStateException e) {
                 FileUtils.logAnError(context, TAG, "onReceive: "+e.toString());
+                Toast.makeText(context, "Error! Couldn't show notification", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                FileUtils.logAnError(context, TAG, "onReceive: WTF? \n"+e.toString());
+                Toast.makeText(context, "Error! Couldn't show notification", Toast.LENGTH_SHORT).show();
             }
             int index = bundle.getInt(AlarmHelper.TAG_ALARM_INDEX);
             int dayOfWeek = bundle.getInt(AlarmHelper.TAG_ALARM_DAY);

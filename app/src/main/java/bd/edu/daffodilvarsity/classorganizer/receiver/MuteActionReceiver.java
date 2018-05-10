@@ -27,6 +27,11 @@ public class MuteActionReceiver extends BroadcastReceiver {
                 dayData = bundle.getParcelable(AlarmHelper.TAG_ALARM_DAYDATA_OBJECT);
             } catch (IllegalStateException e) {
                 FileUtils.logAnError(context, TAG, "onReceive: "+e.toString());
+                Toast.makeText(context, "Error! Couldn't mute notification", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                FileUtils.logAnError(context, TAG, "onReceive: "+e.toString());
+                Toast.makeText(context, "Error! Couldn't mute notification", Toast.LENGTH_SHORT).show();
+
             }
             int index = bundle.getInt(AlarmHelper.TAG_ALARM_INDEX);
             if (dayData != null) {
