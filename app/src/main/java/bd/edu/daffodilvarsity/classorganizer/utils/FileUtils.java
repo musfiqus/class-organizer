@@ -130,7 +130,7 @@ public final class FileUtils {
         }
     }
 
-    public static void logAnError(Context context, String tag, String message) {
+    public static void logAnError(Context context, String tag, String message, Exception exception) {
         PrefManager prefManager = new PrefManager(context);
         String errorDetails = null;
         //Get version
@@ -151,7 +151,11 @@ public final class FileUtils {
         } else {
             errorDetails += "Teacher's initial: "+prefManager.getTeacherInitial()+" Multi program: "+prefManager.isMultiProgram()+"\n";
         }
-        errorDetails += "Extra message: "+message+"\n";
+        errorDetails += "Message: "+message+"\n";
+        if (exception != null) {
+            errorDetails += "Stacktrace: \n"+exception.toString();
+        }
+
         Crashlytics.log(1, tag, errorDetails);
     }
 }

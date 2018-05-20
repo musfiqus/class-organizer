@@ -70,7 +70,7 @@ public class DataChecker {
         } else {
             ArrayList<String> initials = courseUtils.getTeachersInitials(campus, department, program);
             if (initials == null || initials.size() == 0) {
-                FileUtils.logAnError(context, TAG, "campusChecker: initials empty");
+                FileUtils.logAnError(context, TAG, "campusChecker: initials empty", null);
                 return INVALID_PROGRAM;
             }
             String initial = CourseUtils.getInstance(context).getTeachersInitials(campus, department, program).get(0);

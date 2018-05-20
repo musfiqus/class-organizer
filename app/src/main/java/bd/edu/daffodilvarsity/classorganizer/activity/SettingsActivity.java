@@ -154,6 +154,23 @@ public class SettingsActivity extends ColorfulActivity {
                 versionPreference.setSummary(packageInfo.versionName);
             }
 
+            //Displaying database version in routine section
+            ///////////////////////////////////////////////////////////////////////////////////////////
+            //* Google:
+            //* Stackoverflow: https://stackoverflow.com/a/11189583
+            ///////////////////////////////////////////////////////////////////////////////////////////
+            Preference dbVersion = findPreference("current_database_version_preference");
+            dbVersion.setSummary(Integer.toString(prefManager.getDatabaseVersion()));
+
+//            //Displaying current semester in routine section
+            Preference currentSemester = findPreference("current_semester_preference");
+            String semester = prefManager.getSemester();
+            if (semester != null) {
+                semester = semester.substring(0,1).toUpperCase()
+                        + semester.substring(1, semester.length()).toLowerCase();
+            }
+            currentSemester.setSummary(semester);
+
         }
 
         private void userSettings() {

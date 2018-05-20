@@ -128,7 +128,7 @@ public class RoutineLoader {
 
     public ArrayList<DayData> loadPersonalDayData(ArrayList<DayData> loadedDayData) {
         if (loadedDayData == null) {
-            FileUtils.logAnError(context, TAG, "Routine data null");
+            FileUtils.logAnError(context, TAG, "Routine data null", null);
             return null;
         }
         if (loadedDayData.size() > 0) {

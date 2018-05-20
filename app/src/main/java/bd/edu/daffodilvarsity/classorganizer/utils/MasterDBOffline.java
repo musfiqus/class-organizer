@@ -28,7 +28,7 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 
 public class MasterDBOffline extends SQLiteAssetHelper {
     private static final String TAG = "MasterDBOffline";
-    public static final int OFFLINE_DATABASE_VERSION = 25;
+    public static final int OFFLINE_DATABASE_VERSION = 27;
 
     //Increment the version to erase previous db
     private static final String COLUMN_COURSE_CODE = "course_code";
@@ -79,27 +79,25 @@ public class MasterDBOffline extends SQLiteAssetHelper {
             db = getWritableDatabase();
         } catch (Exception e) {
             result = false;
-            if (e instanceof NullPointerException) {
-                errorLog(e);
-            } else if (e instanceof SQLiteAssetException) {
-                errorLog(e);
-            } else {
-                errorLog(new Exception("Unknown error getting writable db"));
-                errorLog(e);
-            }
+            FileUtils.logAnError(mContext, TAG, "isDatabaseWritable: ", e);
         }
         return result;
     }
 
-    ArrayList<DayData> getDayData(ArrayList<String> courseCodes, String section, int level, int term, String dept, String campus, String program) {
-        SQLiteDatabase db;
+    public SQLiteDatabase getDatabase() {
+        SQLiteDatabase db = null;
         try {
             db = getWritableDatabase();
-        } catch (NullPointerException e) {
-            errorLog(e);
-            return null;
-        } catch (SQLiteAssetException e) {
-            errorLog(e);
+        } catch (Exception e) {
+            Log.e(TAG, "getDatabase: DERP", e);
+            FileUtils.logAnError(mContext, TAG, "getDatabase: ", e);
+        }
+        return db;
+    }
+
+    ArrayList<DayData> getDayData(ArrayList<String> courseCodes, String section, int level, int term, String dept, String campus, String program) {
+        SQLiteDatabase db = getDatabase();
+        if (db == null) {
             return null;
         }
         final String currentTable = "routine_"+campus.toLowerCase() + "_" + dept.toLowerCase() + "_" + program.toLowerCase();
@@ -132,14 +130,8 @@ public class MasterDBOffline extends SQLiteAssetHelper {
         ArrayList<DayData> list = new ArrayList<>();
         if (query != null) {
 
-            SQLiteDatabase db;
-            try {
-                db = getWritableDatabase();
-            } catch (NullPointerException e) {
-                errorLog(e);
-                return null;
-            } catch (SQLiteAssetException e) {
-                errorLog(e);
+            SQLiteDatabase db = getDatabase();
+            if (db == null) {
                 return null;
             }
             final String TABLE_NAME = "routine_"+campus.toLowerCase() + "_" + dept.toLowerCase() + "_" + program.toLowerCase();
@@ -176,14 +168,8 @@ public class MasterDBOffline extends SQLiteAssetHelper {
     }
 
     ArrayList<DayData> getFreeRoomsByTime(String campus, String dept, String program, String day, String timeWeight) {
-        SQLiteDatabase db;
-        try {
-            db = getWritableDatabase();
-        } catch (NullPointerException e) {
-            errorLog(e);
-            return null;
-        } catch (SQLiteAssetException e) {
-            errorLog(e);
+        SQLiteDatabase db = getDatabase();
+        if (db == null) {
             return null;
         }
         final String currentTable = "routine_"+campus.toLowerCase() + "_" + dept.toLowerCase() + "_" + program.toLowerCase();
@@ -208,14 +194,8 @@ public class MasterDBOffline extends SQLiteAssetHelper {
     }
 
     ArrayList<DayData> getFreeRoomsByRoom(String campus, String dept, String program, String room) {
-        SQLiteDatabase db;
-        try {
-            db = getWritableDatabase();
-        } catch (NullPointerException e) {
-            errorLog(e);
-            return null;
-        } catch (SQLiteAssetException e) {
-            errorLog(e);
+        SQLiteDatabase db = getDatabase();
+        if (db == null) {
             return null;
         }
         final String currentTable = "routine_"+campus.toLowerCase() + "_" + dept.toLowerCase() + "_" + program.toLowerCase();
@@ -251,14 +231,8 @@ public class MasterDBOffline extends SQLiteAssetHelper {
     }
 
     public String getCourseTitle(String courseCode, String campus, String dept, String program) {
-        SQLiteDatabase db;
-        try {
-            db = getWritableDatabase();
-        } catch (NullPointerException e) {
-            errorLog(e);
-            return null;
-        } catch (SQLiteAssetException e) {
-            errorLog(e);
+        SQLiteDatabase db = getDatabase();
+        if (db == null) {
             return null;
         }
         final String COLUMN_COURSE_CODE = "course_code";
@@ -284,14 +258,8 @@ public class MasterDBOffline extends SQLiteAssetHelper {
     }
 
     public String getTime(String timeData) {
-        SQLiteDatabase db;
-        try {
-            db = getWritableDatabase();
-        } catch (NullPointerException e) {
-            errorLog(e);
-            return null;
-        } catch (SQLiteAssetException e) {
-            errorLog(e);
+        SQLiteDatabase db = getDatabase();
+        if (db == null) {
             return null;
         }
         final String COLUMN_TIME_DATA = "time_data";
@@ -355,14 +323,8 @@ public class MasterDBOffline extends SQLiteAssetHelper {
 
     //Gets the total number of semester for the course. EG: for cse day it's 12. If it doesn't exist the value is 0
     public int getTotalSemester(String campus, String department, String program) {
-        SQLiteDatabase db;
-        try {
-            db = getWritableDatabase();
-        } catch (NullPointerException e) {
-            errorLog(e);
-            return 0;
-        } catch (SQLiteAssetException e) {
-            errorLog(e);
+        SQLiteDatabase db = getDatabase();
+        if (db == null) {
             return 0;
         }
         final String TABLE_NAME = "departments_"+campus;
@@ -388,11 +350,8 @@ public class MasterDBOffline extends SQLiteAssetHelper {
             String[] columnNames = getColumnNames(TABLE_NAME);
             int column = getColumnNumber(columnNames, "teachers_initial");
             ArrayList<String> initials = new ArrayList<>();
-            SQLiteDatabase db;
-            try {
-                db = getWritableDatabase();
-            } catch (NullPointerException e) {
-                errorLog(e);
+            SQLiteDatabase db = getDatabase();
+            if (db == null) {
                 return null;
             }
             Cursor cursor = db.query(TABLE_NAME, columnNames, null, null, null, null, null);
@@ -427,11 +386,8 @@ public class MasterDBOffline extends SQLiteAssetHelper {
             String[] columnNames = getColumnNames(TABLE_NAME);
             int column = getColumnNumber(columnNames, "room_no");
             ArrayList<String> rooms = new ArrayList<>();
-            SQLiteDatabase db;
-            try {
-                db = getWritableDatabase();
-            } catch (NullPointerException e) {
-                errorLog(e);
+            SQLiteDatabase db = getDatabase();
+            if (db == null) {
                 return null;
             }
             Cursor cursor = db.query(TABLE_NAME, columnNames, null, null, null, null, null);
@@ -464,11 +420,8 @@ public class MasterDBOffline extends SQLiteAssetHelper {
     public String getCurrentSemester(String campus, String department, String program) {
         final String TABLE_NAME = "current_semester";
         String[] columnNames = getColumnNames(TABLE_NAME);
-        SQLiteDatabase db;
-        try {
-            db = getWritableDatabase();
-        } catch (NullPointerException e) {
-            errorLog(e);
+        SQLiteDatabase db = getDatabase();
+        if (db == null) {
             return null;
         }
         Cursor cursor = db.query(TABLE_NAME, columnNames, null, null, null, null, null);
@@ -491,11 +444,8 @@ public class MasterDBOffline extends SQLiteAssetHelper {
     public int getSemesterCount(String campus, String department, String program) {
         final String TABLE_NAME = "current_semester";
         String[] columnNames = getColumnNames(TABLE_NAME);
-        SQLiteDatabase db;
-        try {
-            db = getWritableDatabase();
-        } catch (NullPointerException e) {
-            errorLog(e);
+        SQLiteDatabase db = getDatabase();
+        if (db == null) {
             return 0;
         }
         Cursor cursor = db.query(TABLE_NAME, columnNames, null, null, null, null, null);
@@ -530,7 +480,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
             try {
                 timeWeight = Double.parseDouble(weight);
             } catch (Exception e) {
-                errorLog(e);
+                FileUtils.logAnError(mContext, TAG, "getTimeWeightFromStart", e);
             }
         }
         return timeWeight;
@@ -538,11 +488,8 @@ public class MasterDBOffline extends SQLiteAssetHelper {
 
     //Checks if table exists in the db using table name
     public boolean doesTableExist(final String TABLE_NAME) {
-        SQLiteDatabase db;
-        try {
-            db = getWritableDatabase();
-        } catch (NullPointerException e) {
-            errorLog(e);
+        SQLiteDatabase db = getDatabase();
+        if (db == null) {
             return false;
         }
         boolean isTableExisting;
@@ -558,14 +505,8 @@ public class MasterDBOffline extends SQLiteAssetHelper {
 
     //Finds the list of column names of a table
     private String[] getColumnNames(final String TABLE_NAME) {
-        SQLiteDatabase db;
-        try {
-            db = getWritableDatabase();
-        } catch (NullPointerException e) {
-            errorLog(e);
-            return null;
-        } catch (SQLiteAssetException e) {
-            errorLog(e);
+        SQLiteDatabase db = getDatabase();
+        if (db == null) {
             return null;
         }
         Cursor cursor = db.query(TABLE_NAME, null, null, null, null, null, null);
@@ -587,14 +528,9 @@ public class MasterDBOffline extends SQLiteAssetHelper {
     //Get all the values of a particular column
     private ArrayList<String> getRowsByColumn(int column, final String TABLE_NAME, String[] columnNames) {
         ArrayList<String> rows = new ArrayList<>();
-        SQLiteDatabase db;
-        try {
-            db = getWritableDatabase();
-        } catch (NullPointerException e) {
-            errorLog(e);
-            return null;
-        } catch (SQLiteAssetException e) {
-            errorLog(e);
+        SQLiteDatabase db = getDatabase();
+        if (db == null) {
+            Log.e(TAG, "getRowsByColumn: db null");
             return null;
         }
         Cursor cursor = null;
@@ -723,14 +659,8 @@ public class MasterDBOffline extends SQLiteAssetHelper {
 
     //All methods below this are for DataChecker
     public boolean checkDepartment(String campus, String department) {
-        SQLiteDatabase db;
-        try {
-            db = getWritableDatabase();
-        } catch (NullPointerException e) {
-            errorLog(e);
-            return false;
-        } catch (SQLiteAssetException e) {
-            errorLog(e);
+        SQLiteDatabase db = getDatabase();
+        if (db == null) {
             return false;
         }
         final String TABLE_NAME = "departments_" + campus;
@@ -750,14 +680,8 @@ public class MasterDBOffline extends SQLiteAssetHelper {
     }
 
     public Date getDateFromSchedule(final String COLUMN_NAME, String currentSemester, String campus, String department, String program) {
-        SQLiteDatabase db;
-        try {
-            db = getWritableDatabase();
-        } catch (NullPointerException e) {
-            errorLog(e);
-            return null;
-        } catch (SQLiteAssetException e) {
-            errorLog(e);
+        SQLiteDatabase db = getDatabase();
+        if (db == null) {
             return null;
         }
         final String TABLE_NAME = "semester_schedules";
@@ -785,7 +709,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
             try {
                 date = format.parse(dateString);
             } catch (ParseException e) {
-                FileUtils.logAnError(mContext, TAG, "getDateFromSchedule: Invalid date. Error: "+e.toString());
+                FileUtils.logAnError(mContext, TAG, "getDateFromSchedule: Invalid date.", e);
             }
         }
         Log.e(TAG, "getDateFromSchedule: Date :"+date);
@@ -793,8 +717,4 @@ public class MasterDBOffline extends SQLiteAssetHelper {
         return date;
     }
 
-    protected void errorLog(Exception e) {
-        Log.e(TAG, e.toString());
-        Crashlytics.logException(e);
-    }
 }

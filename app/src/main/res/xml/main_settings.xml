@@ -29,6 +29,14 @@ xmlns:colorpicker="http://schemas.android.com/apk/res-auto">
             android:summary="Place holder"
             android:title="Display Ramadan Timetable"
             android:defaultValue="false" />
+        <Preference
+            android:key="current_semester_preference"
+            android:summary="Place holder summary"
+            android:title="Current Semester" />
+        <Preference
+            android:key="current_database_version_preference"
+            android:summary="Place holder summary"
+            android:title="Current Database Version" />
     </android.support.v7.preference.PreferenceCategory>
     <android.support.v7.preference.PreferenceCategory
         android:title="Notifications">
@@ -67,7 +75,7 @@ xmlns:colorpicker="http://schemas.android.com/apk/res-auto">
             android:summary="Mushfiqus Salehin">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="http://mushfiqussalehin.me" />
+                android:data="http://mushfiqussalehin.com" />
         </Preference>
         <Preference
             android:key="icon_preference"

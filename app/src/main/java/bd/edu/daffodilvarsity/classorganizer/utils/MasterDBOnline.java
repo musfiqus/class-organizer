@@ -31,10 +31,4 @@ public class MasterDBOnline extends MasterDBOffline {
         mInstance = new MasterDBOnline(context.getApplicationContext());
         return mInstance;
     }
-
-    @Override
-    protected void errorLog(Exception e) {
-        Log.e(TAG, e.toString());
-        Crashlytics.logException(e);
-    }
 }
