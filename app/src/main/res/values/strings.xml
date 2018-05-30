@@ -132,7 +132,7 @@
     <string name="one_hour">1 hour</string>
     <string name="already_updated_text">You already have the latest routine! Press Next</string>
     <string name="downloading_update_text">Downloading updated routine</string>
-    <string name="no_internet_text">Unable to connect to Internet. Press Next</string>
+    <string name="update_check_error">Unable to check for update. Press Next</string>
     <string name="update_successful_text">Routine updated! Press Next</string>
     <string name="update_failed_text">Update failed! Press Next</string>
     <string name="skip">SKIP</string>
@@ -158,4 +158,6 @@
     <string name="notification_publisher_filter">bd.edu.daffodilvarsity.classorganizer.receiver.NOTIFICATION_PUBLISHER</string>
     <string name="muted_text">Muted</string>
     <string name="unmuted_Text">Unmuted</string>
+    <string name="update_error_toast">Unable check for updates.</string>
+    <string name="download_failed_welcome">Download failed. Press NEXT</string>
 </resources>

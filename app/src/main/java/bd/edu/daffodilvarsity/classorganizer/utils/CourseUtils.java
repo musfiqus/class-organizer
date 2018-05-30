@@ -35,20 +35,16 @@ public class CourseUtils {
     public static final int GET_END_TIME = 4;
 
     private Context mContext;
-    private boolean isUpdatedOnline;
 
 
     private static CourseUtils mInstance = null;
 
     private CourseUtils(Context context) {
         mContext = context.getApplicationContext();
-        PrefManager prefManager = new PrefManager(context);
-        isUpdatedOnline = prefManager.isUpdatedOnline();
     }
 
     public CourseUtils(Context context, boolean isUpdatedOnline) {
         this(context);
-        this.isUpdatedOnline = isUpdatedOnline;
     }
 
     public static CourseUtils getInstance(Context context) {
@@ -64,19 +60,11 @@ public class CourseUtils {
     }
 
     public boolean isDatabaseWritable() {
-        if (isUpdatedOnline) {
-            return MasterDBOnline.getInstance(mContext).isDatabaseWritable();
-        } else {
-            return MasterDBOffline.getInstance(mContext).isDatabaseWritable();
-        }
+        return MasterDBOffline.getInstance(mContext).isDatabaseWritable();
     }
 
     ArrayList<DayData> getDayData(ArrayList<String> courseCodes, String section, int level, int term, String dept, String campus, String program) {
-        if (isUpdatedOnline) {
-            return MasterDBOnline.getInstance(mContext).getDayData(courseCodes, section, level, term, dept, campus, program);
-        } else {
-            return MasterDBOffline.getInstance(mContext).getDayData(courseCodes, section, level, term, dept, campus, program);
-        }
+        return MasterDBOffline.getInstance(mContext).getDayData(courseCodes, section, level, term, dept, campus, program);
     }
 
     public ArrayList<DayData> getDayDataByQuery(String campus, String dept, String program, String query, String columnName) {
@@ -86,27 +74,15 @@ public class CourseUtils {
             ArrayList<DayData> day;
             ArrayList<DayData> eve;
             dayDataList.clear();
-            if (isUpdatedOnline) {
-                day = MasterDBOnline.getInstance(mContext).getDayDataByQuery(campus, dept,
+            day = MasterDBOffline.getInstance(mContext).getDayDataByQuery(campus, dept,
                         mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase(), query, columnName);
-                eve = MasterDBOnline.getInstance(mContext).getDayDataByQuery(campus, dept,
+            eve = MasterDBOffline.getInstance(mContext).getDayDataByQuery(campus, dept,
                         mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase(), query, columnName);
-            } else {
-                day = MasterDBOffline.getInstance(mContext).getDayDataByQuery(campus, dept,
-                        mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase(), query, columnName);
-                eve = MasterDBOffline.getInstance(mContext).getDayDataByQuery(campus, dept,
-                        mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase(), query, columnName);
-
-            }
             dayDataList.addAll(day);
             dayDataList.addAll(eve);
         } else {
             dayDataList.clear();
-            if (isUpdatedOnline) {
-                dayDataList = MasterDBOnline.getInstance(mContext).getDayDataByQuery(campus, dept, program, query, columnName);
-            } else {
-                dayDataList = MasterDBOffline.getInstance(mContext).getDayDataByQuery(campus, dept, program, query, columnName);
-            }
+            dayDataList = MasterDBOffline.getInstance(mContext).getDayDataByQuery(campus, dept, program, query, columnName);
         }
         return dayDataList;
 
@@ -119,17 +95,10 @@ public class CourseUtils {
             dayDataList.clear();
             ArrayList<DayData> day;
             ArrayList<DayData> eve;
-            if (isUpdatedOnline) {
-                day = MasterDBOnline.getInstance(mContext).getFreeRoomsByTime(campus, dept,
+            day = MasterDBOffline.getInstance(mContext).getFreeRoomsByTime(campus, dept,
                         mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase(), weekday, timeWeight);
-                eve = MasterDBOnline.getInstance(mContext).getFreeRoomsByTime(campus, dept,
+            eve = MasterDBOffline.getInstance(mContext).getFreeRoomsByTime(campus, dept,
                         mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase(), weekday, timeWeight);
-            } else {
-                day = MasterDBOffline.getInstance(mContext).getFreeRoomsByTime(campus, dept,
-                        mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase(), weekday, timeWeight);
-                eve = MasterDBOffline.getInstance(mContext).getFreeRoomsByTime(campus, dept,
-                        mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase(), weekday, timeWeight);
-            }
             if (day != null) {
                 dayDataList.addAll(day);
             }
@@ -138,11 +107,7 @@ public class CourseUtils {
             }
         } else {
             dayDataList.clear();
-            if (isUpdatedOnline) {
-                dayDataList = MasterDBOnline.getInstance(mContext).getFreeRoomsByTime(campus, dept, program, weekday, timeWeight);
-            } else {
-                dayDataList = MasterDBOffline.getInstance(mContext).getFreeRoomsByTime(campus, dept, program, weekday, timeWeight);
-            }
+            dayDataList = MasterDBOffline.getInstance(mContext).getFreeRoomsByTime(campus, dept, program, weekday, timeWeight);
         }
         return dayDataList;
     }
@@ -154,17 +119,10 @@ public class CourseUtils {
             dayDataList.clear();
             ArrayList<DayData> day;
             ArrayList<DayData> eve;
-            if (isUpdatedOnline) {
-                day = MasterDBOnline.getInstance(mContext).getFreeRoomsByRoom(campus, dept,
+            day = MasterDBOffline.getInstance(mContext).getFreeRoomsByRoom(campus, dept,
                         mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase(), room);
-                eve = MasterDBOnline.getInstance(mContext).getFreeRoomsByRoom(campus, dept,
+            eve = MasterDBOffline.getInstance(mContext).getFreeRoomsByRoom(campus, dept,
                         mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase(), room);
-            } else {
-                day = MasterDBOffline.getInstance(mContext).getFreeRoomsByRoom(campus, dept,
-                        mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase(), room);
-                eve = MasterDBOffline.getInstance(mContext).getFreeRoomsByRoom(campus, dept,
-                        mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase(), room);
-            }
             if (day != null) {
                 dayDataList.addAll(day);
             }
@@ -173,102 +131,59 @@ public class CourseUtils {
             }
         } else {
             dayDataList.clear();
-            if (isUpdatedOnline) {
-                dayDataList = MasterDBOnline.getInstance(mContext).getFreeRoomsByRoom(campus, dept, program, room);
-            } else {
-                dayDataList = MasterDBOffline.getInstance(mContext).getFreeRoomsByRoom(campus, dept, program, room);
-            }
+            dayDataList = MasterDBOffline.getInstance(mContext).getFreeRoomsByRoom(campus, dept, program, room);
+
         }
         return dayDataList;
     }
 
     public String getCourseTitle(String courseCode, String campus, String dept, String program) {
-        if (isUpdatedOnline) {
-            return MasterDBOnline.getInstance(mContext).getCourseTitle(courseCode, campus, dept, program);
-        } else {
-            return MasterDBOffline.getInstance(mContext).getCourseTitle(courseCode, campus, dept, program);
-        }
+        return MasterDBOffline.getInstance(mContext).getCourseTitle(courseCode, campus, dept, program);
     }
 
     public String getTime(String timeData) {
-        if (isUpdatedOnline) {
-            return MasterDBOnline.getInstance(mContext).getTime(timeData);
-        } else {
-            return MasterDBOffline.getInstance(mContext).getTime(timeData);
-        }
+        return MasterDBOffline.getInstance(mContext).getTime(timeData);
     }
 
     public ArrayList<String> getCourseCodes(int semester, String campus, String department, String program) {
-        if (isUpdatedOnline) {
-            return MasterDBOnline.getInstance(mContext).getCourseCodes(semester, campus, department, program);
-        } else {
-            return MasterDBOffline.getInstance(mContext).getCourseCodes(semester, campus, department, program);
-        }
+        return MasterDBOffline.getInstance(mContext).getCourseCodes(semester, campus, department, program);
     }
 
     public ArrayList<String> getSections(String campus, String department, String program) {
-        if (isUpdatedOnline) {
-            return MasterDBOnline.getInstance(mContext).getSections(campus, department, program);
-        } else {
-            return MasterDBOffline.getInstance(mContext).getSections(campus, department, program);
-        }
+        return MasterDBOffline.getInstance(mContext).getSections(campus, department, program);
     }
 
     //Method to retrieve spinner data
     public ArrayList<String> getSpinnerList(int code) {
-        if (isUpdatedOnline) {
-            return MasterDBOnline.getInstance(mContext).getSpinnerList(code);
-        } else {
-            return MasterDBOffline.getInstance(mContext).getSpinnerList(code);
-        }
+        return MasterDBOffline.getInstance(mContext).getSpinnerList(code);
     }
 
 
     //Gets the total number of semester for the course. EG: for cse day it's 12. If it doesn't exist the value is 0
     public int getTotalSemester(String campus, String department, String program) {
-        if (isUpdatedOnline) {
-            return MasterDBOnline.getInstance(mContext).getTotalSemester(campus,department,program);
-        } else {
-            return MasterDBOffline.getInstance(mContext).getTotalSemester(campus,department,program);
-        }
+        return MasterDBOffline.getInstance(mContext).getTotalSemester(campus,department,program);
     }
 
 
     //Gets the name of the current semester
     public String getCurrentSemester(String campus, String department, String program) {
-        if (isUpdatedOnline) {
-            return MasterDBOnline.getInstance(mContext).getCurrentSemester(campus,department,program);
-        } else {
-            return MasterDBOffline.getInstance(mContext).getCurrentSemester(campus,department,program);
-        }
+        return MasterDBOffline.getInstance(mContext).getCurrentSemester(campus,department,program);
     }
 
     //Gets the integer value of current semester of database
     //This value determines whether to update semester or not
     public int getSemesterCount(String campus, String department, String program) {
-        if (isUpdatedOnline) {
-            return MasterDBOnline.getInstance(mContext).getSemesterCount(campus,department,program);
-        } else {
-            return MasterDBOffline.getInstance(mContext).getSemesterCount(campus,department,program);
-        }
+        return MasterDBOffline.getInstance(mContext).getSemesterCount(campus,department,program);
     }
 
     //Get time weight from start time
     public double getTimeWeightFromStart(String startTime) {
-        if (isUpdatedOnline) {
-            return MasterDBOnline.getInstance(mContext).getTimeWeightFromStart(startTime);
-        } else {
-            return MasterDBOffline.getInstance(mContext).getTimeWeightFromStart(startTime);
-        }
+        return MasterDBOffline.getInstance(mContext).getTimeWeightFromStart(startTime);
     }
 
     //Checks if table exists in the db using table name
     public boolean doesTableExist(final String TABLE_NAME) {
-        if (isUpdatedOnline) {
-            return MasterDBOnline.getInstance(mContext).doesTableExist(TABLE_NAME);
-        } else {
-            return MasterDBOffline.getInstance(mContext).doesTableExist(TABLE_NAME);
-        }
+        return MasterDBOffline.getInstance(mContext).doesTableExist(TABLE_NAME);
     }
 
     public ArrayList<String> getTeachersInitials(String campus, String department, String program) {
@@ -278,13 +193,9 @@ public class CourseUtils {
             ArrayList<String> day;
             ArrayList<String> eve;
 
-            if (isUpdatedOnline) {
-                day = MasterDBOnline.getInstance(mContext).getTeachersInitials(campus, department, mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase());
-                eve = MasterDBOnline.getInstance(mContext).getTeachersInitials(campus, department, mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase());
-            } else {
-                day = MasterDBOffline.getInstance(mContext).getTeachersInitials(campus, department, mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase());
-                eve = MasterDBOffline.getInstance(mContext).getTeachersInitials(campus, department, mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase());
-            }
+            day = MasterDBOffline.getInstance(mContext).getTeachersInitials(campus, department, mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase());
+            eve = MasterDBOffline.getInstance(mContext).getTeachersInitials(campus, department, mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase());
+
             if (day != null) {
                 dataArrayList.addAll(day);
             }
@@ -301,36 +212,20 @@ public class CourseUtils {
             });
             return list;
         } else {
-            if (isUpdatedOnline) {
-                return MasterDBOnline.getInstance(mContext).getTeachersInitials(campus, department, program);
-            } else {
-                return MasterDBOffline.getInstance(mContext).getTeachersInitials(campus, department, program);
-            }
+            return MasterDBOffline.getInstance(mContext).getTeachersInitials(campus, department, program);
         }
     }
 
     public ArrayList<String> getRoomNo(String campus, String department, String program) {
-        if (isUpdatedOnline) {
-            return MasterDBOnline.getInstance(mContext).getRoomNo(campus, department, program);
-        } else {
-            return MasterDBOffline.getInstance(mContext).getRoomNo(campus, department, program);
-        }
+        return MasterDBOffline.getInstance(mContext).getRoomNo(campus, department, program);
     }
 
     //All methods below this are for DataChecker
     public boolean checkDepartment(String campus, String department) {
-        if (isUpdatedOnline) {
-            return MasterDBOnline.getInstance(mContext).checkDepartment(campus, department);
-        } else {
-            return MasterDBOffline.getInstance(mContext).checkDepartment(campus, department);
-        }
+        return MasterDBOffline.getInstance(mContext).checkDepartment(campus, department);
     }
     public Date getDateFromSchedule(final String COLUMN_NAME, String currentSemester, String campus, String department, String program) {
-        if (isUpdatedOnline) {
-            return MasterDBOnline.getInstance(mContext).getDateFromSchedule(COLUMN_NAME, currentSemester, campus, department, program);
-        } else {
-            return MasterDBOffline.getInstance(mContext).getDateFromSchedule(COLUMN_NAME, currentSemester, campus, department, program);
-        }
+        return MasterDBOffline.getInstance(mContext).getDateFromSchedule(COLUMN_NAME, currentSemester, campus, department, program);
     }
 
     public static DayData convertToDayData(byte[] dayByte) {

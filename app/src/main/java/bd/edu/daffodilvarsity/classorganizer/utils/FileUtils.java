@@ -3,17 +3,24 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.channels.FileChannel;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by Mushfiqus Salehin on 10/16/2017.
@@ -22,38 +29,10 @@ import java.nio.channels.FileChannel;
 public final class FileUtils {
     private static final String TAG = "FileUtils";
 
-    public static void dbDownloader(String dlURL, String filePath) throws Exception {
-        File downloadFile = new File(filePath);
-        if (downloadFile.exists()) {
-            downloadFile.delete();
-        }
-        downloadFile.createNewFile();
-        if (dlURL != null) {
-            URL downloadURL = new URL(dlURL);
-            HttpURLConnection conn = (HttpURLConnection) downloadURL
-                    .openConnection();
-            int responseCode = conn.getResponseCode();
-            if (responseCode != 200)
-                throw new Exception("Error in connection");
-            conn.connect();
-            InputStream is = conn.getInputStream();
-            FileOutputStream os = new FileOutputStream(downloadFile);
-            byte buffer[] = new byte[1024];
-            int byteCount;
-            while ((byteCount = is.read(buffer)) != -1) {
-                // Write data to file
-                os.write(buffer, 0, byteCount);
-            }
-            os.close();
-            is.close();
-        } else {
-            throw new Exception("Error parsing null URL");
-        }
-    }
-
     public static void copyFile(File sourceFile, File destFile) throws IOException {
         if (!destFile.exists()) {
-            destFile.createNewFile();
+            boolean result = destFile.createNewFile();
+            if (result) Log.d(TAG, "copyFile: New file created");
         }
         FileChannel source = null;
         FileChannel destination = null;
@@ -86,48 +65,146 @@ public final class FileUtils {
         }
     }
 
-    public static String generateMasterOnlineDbPath(Context context, int dbVersion) {
-        return context.getApplicationContext().getDatabasePath("masterdb_online_"+dbVersion+".db").getAbsolutePath();
-    }
-
-    public static String generateMasterOfflineDbPath(Context context, int dbVersion) {
-        return context.getApplicationContext().getDatabasePath("masterdb_offline_"+dbVersion+".db").getAbsolutePath();
-    }
-
-    public static String getOnlineDbName(int dbVersion) {
-        return "masterdb_online_"+dbVersion+".db";
-    }
-
-    public static String getOfflineDbName(int dbVersion) {
-        return "masterdb_offline_"+dbVersion+".db";
-    }
-
-    public static void deleteMasterDb(Context context, boolean isOnline, int dbVersion) {
-        Crashlytics.log("Deleting "+(isOnline ? "online ": "offline ")+" corrupt db version "+dbVersion);
-        if (isOnline) {
-            context.deleteDatabase(getOnlineDbName(dbVersion));
-        } else {
-            context.deleteDatabase(getOfflineDbName(dbVersion));
+    public static boolean backupDatabase(Context context, String dbName) {
+        File dbToBackup = context.getDatabasePath(dbName);
+        File dbBackup = new File(context.getDatabasePath(dbName).getAbsolutePath()+"_bkp");
+        File dbToBackupJournal = new File(context.getDatabasePath(dbName).getAbsolutePath()+"-journal");
+        File dbJournalBackup = new File(context.getDatabasePath(dbName).getAbsolutePath()+"-journal_bkp");
+        try {
+            copyFile(dbToBackup, dbBackup);
+        } catch (IOException e) {
+            Log.e(TAG, "backupDatabase: \n"+e.toString());
+            logAnError(context, TAG, "backupDatabase: ", e);
+            return false;
         }
-        if (isOnline) {
-            File deleteFile = new File(generateMasterOnlineDbPath(context, dbVersion));
-            if (deleteFile.exists()) {
-                File deleteJournal = new File(generateMasterOnlineDbPath(context, dbVersion)+"-journal");
-                if (deleteJournal.exists()) {
-                    deleteJournal.getAbsoluteFile().delete();
-                }
-                deleteFile.getAbsoluteFile().delete();
+        try {
+            copyFile(dbToBackupJournal, dbJournalBackup);
+        } catch (IOException e) {
+            Log.e(TAG, "backupDatabase: \n"+e.toString());
+            logAnError(context, TAG, "backupDatabase: ", e);
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean restoreDatabase(Context context, String dbName) {
+        File db = context.getDatabasePath(dbName);
+        File dbRestore = new File(context.getDatabasePath(dbName).getAbsolutePath()+"_bkp");
+        File dbJournal = new File(context.getDatabasePath(dbName).getAbsolutePath()+"-journal");
+        File dbJournalRestore = new File(context.getDatabasePath(dbName).getAbsolutePath()+"-journal_bkp");
+        try {
+            copyFile(dbRestore, db);
+        } catch (IOException e) {
+            Log.e(TAG, "backupDatabase: \n"+e.toString());
+            logAnError(context, TAG, "backupDatabase: ", e);
+            return false;
+        }
+        try {
+            copyFile(dbJournalRestore, dbJournal);
+        } catch (IOException e) {
+            Log.e(TAG, "backupDatabase: \n"+e.toString());
+            logAnError(context, TAG, "backupDatabase: ", e);
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean deleteDatabase(Context context, String dbName) {
+        boolean delete = true;
+        String journalName = dbName+"-journal";
+        context.deleteDatabase(dbName);
+        File dbFile = context.getDatabasePath(dbName);
+        File dbJournal = new File(context.getDatabasePath(journalName).getAbsolutePath());
+        if (dbFile.exists()) {
+            boolean dbDelete = dbFile.getAbsoluteFile().delete();
+            if (dbDelete) {
+                Log.d(TAG, "deleteDatabase: "+dbName+" deleted via file operation");
+            } else {
+                delete = false;
+                Log.e(TAG, "deleteDatabase: unable to delete "+dbName);
             }
         } else {
-            File deleteFile = new File(generateMasterOfflineDbPath(context, dbVersion));
-            if (deleteFile.exists()) {
-                File deleteJournal = new File(generateMasterOfflineDbPath(context, dbVersion)+"-journal");
-                if (deleteJournal.exists()) {
-                    deleteJournal.getAbsoluteFile().delete();
-                }
-                deleteFile.getAbsoluteFile().delete();
+            Log.d(TAG, "deleteDatabase: "+dbName+" deleted via db delete");
+        }
+
+        if (dbJournal.exists()) {
+            boolean dbDelete = dbFile.getAbsoluteFile().delete();
+            if (dbDelete) {
+                Log.d(TAG, "deleteDatabase: "+journalName+" deleted via file operation");
+            } else {
+                delete = false;
+                Log.e(TAG, "deleteDatabase: unable to delete "+journalName);
+            }
+        } else {
+            Log.d(TAG, "deleteDatabase: "+journalName+" deleted via db delete");
+        }
+        return delete;
+    }
+
+    public static boolean checkMD5(String md5, File updateFile) {
+        if (TextUtils.isEmpty(md5) || updateFile == null) {
+            Log.e(TAG, "MD5 string empty or updateFile null");
+            return false;
+        }
+
+        String calculatedDigest = calculateMD5(updateFile);
+        if (calculatedDigest == null) {
+            Log.e(TAG, "calculatedDigest null");
+            return false;
+        }
+
+        Log.v(TAG, "Calculated digest: " + calculatedDigest);
+        Log.v(TAG, "Provided digest: " + md5);
+
+        return calculatedDigest.equalsIgnoreCase(md5);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////
+    //* Google:
+    //* Stackoverflow: https://stackoverflow.com/a/14922433
+    ///////////////////////////////////////////////////////////////////////////////////////////
+
+    public static String calculateMD5(File updateFile) {
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            Log.e(TAG, "Exception while getting digest", e);
+            return null;
+        }
+
+        InputStream is;
+        try {
+            is = new FileInputStream(updateFile);
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "Exception while getting FileInputStream", e);
+            return null;
+        }
+
+        byte[] buffer = new byte[8192];
+        int read;
+        try {
+            while ((read = is.read(buffer)) > 0) {
+                digest.update(buffer, 0, read);
+            }
+            byte[] md5sum = digest.digest();
+            BigInteger bigInt = new BigInteger(1, md5sum);
+            String output = bigInt.toString(16);
+            // Fill to 32 chars
+            output = String.format("%32s", output).replace(' ', '0');
+            Log.i(TAG, "calculateMD5: Calculated digest for +"
+                    +Uri.fromFile(updateFile).getLastPathSegment()+" is :"+output);
+            return output;
+        } catch (IOException e) {
+            throw new RuntimeException("Unable to process file for MD5", e);
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                Log.e(TAG, "Exception on closing MD5 input stream", e);
             }
         }
+
     }
 
     public static void logAnError(Context context, String tag, String message, Exception exception) {
@@ -154,8 +231,10 @@ public final class FileUtils {
         errorDetails += "Message: "+message+"\n";
         if (exception != null) {
             errorDetails += "Stacktrace: \n"+exception.toString();
+            Crashlytics.log(1, tag, errorDetails);
+            Crashlytics.logException(exception);
+            return;
         }
-
         Crashlytics.log(1, tag, errorDetails);
     }
 }

@@ -83,4 +83,8 @@
         <item name="android:windowBackground">@drawable/background_splash</item>
     </style>
 
+    <style name="ProgressBar" parent="Widget.AppCompat.ProgressBar">
+        <item name="colorAccent">@color/md_white_1000</item>
+    </style>
+
 </resources>

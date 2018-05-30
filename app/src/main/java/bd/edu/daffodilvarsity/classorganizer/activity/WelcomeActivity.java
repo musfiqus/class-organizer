@@ -1,8 +1,12 @@
 package bd.edu.daffodilvarsity.classorganizer.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -10,10 +14,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -21,28 +25,22 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.github.ybq.android.spinkit.SpinKitView;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import org.polaric.colorful.ColorfulActivity;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketAddress;
-
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.adapter.WelcomeSlideAdapter;
+import bd.edu.daffodilvarsity.classorganizer.data.Download;
+import bd.edu.daffodilvarsity.classorganizer.service.UpdateService;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.DataChecker;
-import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
+import bd.edu.daffodilvarsity.classorganizer.utils.UpdateClient;
+import io.reactivex.disposables.Disposable;
 
 public class WelcomeActivity extends ColorfulActivity implements AdapterView.OnItemSelectedListener {
 
@@ -56,10 +54,11 @@ public class WelcomeActivity extends ColorfulActivity implements AdapterView.OnI
     private Button btnPrevious, btnNext;
     private boolean isUpdateSuccessful = true;
     private TextView checkText;
-    private SpinKitView spinKitView;
+    private ProgressBar progressBar;
+    private Disposable mDisposable;
     private ImageView cloud;
-    private boolean isUpdateAlreadyExecuted = false;
     private boolean hasSkipped = false;
+    public boolean isActivityRunning = false;
     //  viewpager change listener
     ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
 
@@ -82,10 +81,23 @@ public class WelcomeActivity extends ColorfulActivity implements AdapterView.OnI
     private PrefManager prefManager;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        isActivityRunning = true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isActivityRunning = false;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Checking for first time launch - before calling setContentView()
         prefManager = new PrefManager(this);
+        registerReceiver();
         if (!prefManager.isFirstTimeLaunch()) {
             launchHomeScreen();
             finish();
@@ -127,12 +139,7 @@ public class WelcomeActivity extends ColorfulActivity implements AdapterView.OnI
         onPageSelectedCustom(0);
 
         //disabling swipe
-        viewPager.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
+        viewPager.setOnTouchListener((v, event) -> true);
 
         btnPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,51 +155,48 @@ public class WelcomeActivity extends ColorfulActivity implements AdapterView.OnI
             }
         });
 
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        btnNext.setOnClickListener(v -> {
 
-                // checking for last page
-                // if last page home screen will be launched
-                int current = getItem(+1);
-                if (btnNext.getText().toString().equalsIgnoreCase(getResources().getString(R.string.skip))) {
-                    hasSkipped = true;
-                }
-                if (current == layouts.length - 1) {
-                    //class slide
-                    if (myViewPagerAdapter.getClassDataCode() > 0) {
-                        DataChecker.errorMessage(WelcomeActivity.this, myViewPagerAdapter.getClassDataCode(), null);
-                        showSnackBar(myViewPagerAdapter.getCampus(), myViewPagerAdapter.getDept(),
-                                myViewPagerAdapter.getProgram(), myViewPagerAdapter.getSection(),
-                                Integer.toString(myViewPagerAdapter.getLevel() + 1),
-                                Integer.toString(myViewPagerAdapter.getTerm() + 1));
-                        viewPager.setCurrentItem(current - 1);
-                    } else {
-                        viewPager.setCurrentItem(current);
-                    }
-                } else if (current == layouts.length - 2) {
-                    //campus slide
-                    String[] params = new String[]{myViewPagerAdapter.getCampus(), myViewPagerAdapter.getDept(), myViewPagerAdapter.getProgram()};
-                    if (myViewPagerAdapter.getCampusDataCode() > 0 ) {
-                        DataChecker.errorMessage(WelcomeActivity.this, myViewPagerAdapter.getCampusDataCode(), null);
-                        viewPager.setCurrentItem(current - 1);
-                    } else {
-                        new ClassSlidePreloadTask().execute(params);
-                    }
-
-
-                } else if (current == layouts.length - 3) {
-                    //user type slide
-                    viewPager.setCurrentItem(current);
-                } else if (current < layouts.length) {
-                    // move to next screen
-                    viewPager.setCurrentItem(current);
+            // checking for last page
+            // if last page home screen will be launched
+            int current = getItem(+1);
+            if (btnNext.getText().toString().equalsIgnoreCase(getResources().getString(R.string.skip))) {
+                hasSkipped = true;
+            }
+            if (current == layouts.length - 1) {
+                //class slide
+                if (myViewPagerAdapter.getClassDataCode() > 0) {
+                    DataChecker.errorMessage(WelcomeActivity.this, myViewPagerAdapter.getClassDataCode(), null);
+                    showSnackBar(myViewPagerAdapter.getCampus(), myViewPagerAdapter.getDept(),
+                            myViewPagerAdapter.getProgram(), myViewPagerAdapter.getSection(),
+                            Integer.toString(myViewPagerAdapter.getLevel() + 1),
+                            Integer.toString(myViewPagerAdapter.getTerm() + 1));
+                    viewPager.setCurrentItem(current - 1);
                 } else {
-                    prefManager.setSemesterCount(CourseUtils.getInstance(getApplicationContext()).getSemesterCount(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()));
-                    prefManager.saveSemester(CourseUtils.getInstance(getApplicationContext()).getCurrentSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()));
-                    myViewPagerAdapter.loadSemester();
-                    launchHomeScreen();
+                    viewPager.setCurrentItem(current);
                 }
+            } else if (current == layouts.length - 2) {
+                //campus slide
+                String[] params = new String[]{myViewPagerAdapter.getCampus(), myViewPagerAdapter.getDept(), myViewPagerAdapter.getProgram()};
+                if (myViewPagerAdapter.getCampusDataCode() > 0 ) {
+                    DataChecker.errorMessage(WelcomeActivity.this, myViewPagerAdapter.getCampusDataCode(), null);
+                    viewPager.setCurrentItem(current - 1);
+                } else {
+                    new ClassSlidePreloadTask().execute(params);
+                }
+
+
+            } else if (current == layouts.length - 3) {
+                //user type slide
+                viewPager.setCurrentItem(current);
+            } else if (current < layouts.length) {
+                // move to next screen
+                viewPager.setCurrentItem(current);
+            } else {
+                prefManager.setSemesterCount(CourseUtils.getInstance(getApplicationContext()).getSemesterCount(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()));
+                prefManager.saveSemester(CourseUtils.getInstance(getApplicationContext()).getCurrentSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()));
+                myViewPagerAdapter.loadSemester();
+                launchHomeScreen();
             }
         });
     }
@@ -240,27 +244,20 @@ public class WelcomeActivity extends ColorfulActivity implements AdapterView.OnI
             btnNext.setText(getString(R.string.start));
         } else if (position == 1) {
             btnNext.setText(R.string.skip);
-            if (spinKitView == null) {
-                spinKitView = (SpinKitView) findViewById(R.id.spin_kit);
-            }
             if (cloud == null) {
                 cloud = (ImageView) findViewById(R.id.cloud_icon);
             }
             if (checkText == null) {
                 checkText = (TextView) findViewById(R.id.check_Text);
             }
-            if (!isUpdateAlreadyExecuted) {
-                if (checkText != null) {
-                    checkText.setText(R.string.check_latest_routine_text);
+            if (progressBar == null) {
+                progressBar = findViewById(R.id.welcome_routine_update_progress);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    progressBar.setProgressTintList(ColorStateList.valueOf(Color.WHITE));
                 }
-                if (spinKitView != null) {
-                    spinKitView.setVisibility(View.VISIBLE);
-                }
-                if (cloud != null) {
-                    cloud.setImageResource(R.drawable.ic_cloud_download_white_48dp);
-                }
-                new StartUpdateTask().execute();
             }
+            checkForUpdate();
+
         } else {
             // still pages are left
             btnNext.setText(getString(R.string.next));
@@ -334,163 +331,6 @@ public class WelcomeActivity extends ColorfulActivity implements AdapterView.OnI
         }
     }
 
-    public void checkUpdate() {
-        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference(MainActivity.DATABASE_VERSION_TAG);
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                int newVersion = 0;
-                try {
-                    newVersion = dataSnapshot.getValue(Integer.class);
-                } catch (Exception ignored) {
-                    isUpdateSuccessful = false;
-                    return;
-                }
-                final int newDBVersion = newVersion;
-                if (prefManager.getMasterDBVersion() < newDBVersion) {
-                    DatabaseReference urlReference = firebaseDatabase.getReference(MainActivity.DATABASE_URL_TAG);
-                    urlReference.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            String dbURL = null;
-                            try {
-                                dbURL = dataSnapshot.getValue(String.class);
-                            } catch (Exception ignored) {
-                            }
-                            if (dbURL != null) {
-                                String[] arr = new String[]{dbURL, "" + newDBVersion};
-                                new DbDownloadTask().execute(arr);
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-                } else {
-                    spinKitView.setVisibility(View.GONE);
-                    isUpdateAlreadyExecuted = true;
-                    checkText.setText(R.string.already_updated_text);
-                    cloud.setImageResource(R.drawable.ic_cloud_done_white_48dp);
-                    btnNext.setText(R.string.next);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    private class StartUpdateTask extends AsyncTask<Void, Void, Void> {
-        private boolean isOnline;
-
-        // TCP/HTTP/DNS (depending on the port, 53=DNS, 80=HTTP, etc.)
-        public boolean isOnline() {
-            try {
-                int timeoutMs = 2000;
-                Socket sock = new Socket();
-                SocketAddress sockaddr = new InetSocketAddress("8.8.8.8", 53);
-
-                sock.connect(sockaddr, timeoutMs);
-                sock.close();
-
-                return true;
-            } catch (IOException e) {
-                return false;
-            }
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            isOnline = isOnline();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            if (isOnline) {
-                if (!isUpdateAlreadyExecuted) {
-                    checkUpdate();
-                }
-            } else {
-                if (!isUpdateAlreadyExecuted) {
-                    cloud.setImageResource(R.drawable.ic_cloud_download_white_48dp);
-                    checkText.setText(R.string.no_internet_text);
-                    spinKitView.setVisibility(View.GONE);
-                    btnNext.setText(R.string.next);
-                }
-
-            }
-        }
-    }
-
-    private class DbDownloadTask extends AsyncTask<String, Void, Void> {
-        private int newDBVersion;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            checkText.setText(R.string.downloading_update_text);
-
-        }
-
-        @Override
-        protected Void doInBackground(String... params) {
-            try {
-                String dlURL = params[0];
-                newDBVersion = Integer.parseInt(params[1]);
-                if (dlURL != null) {
-                    FileUtils.dbDownloader(dlURL, FileUtils.generateMasterOnlineDbPath(getApplicationContext(), newDBVersion));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                isUpdateSuccessful = false;
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            //If skip button wasn't pressed
-            if (!hasSkipped) {
-                spinKitView.setVisibility(View.GONE);
-                //Forcing db to update by increasing version
-                int prevDB = prefManager.getMasterDBVersion();
-                prefManager.setMasterDbVersion(newDBVersion);
-                prefManager.incrementDatabaseVersion();
-                CourseUtils courseUtils = new CourseUtils(getApplicationContext(), true);
-                if (!courseUtils.doesTableExist("departments_main")) {
-                    isUpdateSuccessful = false;
-                    prefManager.setMasterDbVersion(prevDB);
-                }
-                if (isUpdateSuccessful) {
-                    isUpdateAlreadyExecuted = true;
-                    checkText.setText(R.string.update_successful_text);
-                    cloud.setImageResource(R.drawable.ic_cloud_done_white_48dp);
-                    prefManager.setUpdatedOnline(true);
-                    prefManager.setMasterDbVersion(newDBVersion);
-                    //Delete previous db if available
-                    FileUtils.deleteMasterDb(getApplicationContext(), true, prefManager.getOnlineDbVersion());
-                    prefManager.saveOnlineDbVersion(newDBVersion);
-                } else {
-                    //Delete newly downloaded db
-                    FileUtils.deleteMasterDb(getApplicationContext(), true, newDBVersion);
-                    checkText.setText(R.string.update_failed_text);
-                }
-                btnNext.setText(R.string.next);
-            } else {
-                //Delete newly downloaded db
-                FileUtils.deleteMasterDb(getApplicationContext(), true, newDBVersion);
-            }
-        }
-    }
-
     private class ClassSlidePreloadTask extends AsyncTask<String, Void, Void> {
 
         private static final String TAG = "ClassSlidePreloadTask";
@@ -542,11 +382,92 @@ public class WelcomeActivity extends ColorfulActivity implements AdapterView.OnI
                 myViewPagerAdapter.getClassHelper().attachTeacherInitAdapter();
                 currentItem = layouts.length - 2;
             }
-            spinKitView.setVisibility(View.GONE);
             btnNext.setVisibility(View.VISIBLE);
             viewPager.setCurrentItem(currentItem);
             Long end = System.currentTimeMillis();
             Log.e(TAG, "Finished in "+(end-start)+" ms");
         }
+
+
+    }
+    public void setStatusText(String statusText) {
+        if (checkText != null && isActivityRunning) {
+            checkText.setText(statusText);
+        }
+    }
+
+    public void startDownload() {
+        setStatusText(getResources().getString(R.string.downloading_update_text));
+        setProgressBar(0);
+    }
+
+    public void setProgressBar(int progress) {
+        if (progressBar != null && isActivityRunning) {
+            if (progress > 0 && progress <= 100) {
+                if (progressBar.getVisibility() == View.GONE) {
+                    progressBar.setVisibility(View.VISIBLE);
+                }
+                progressBar.setIndeterminate(false);
+                progressBar.setProgress(progress);
+            } else if (progress == UpdateService.UPDATE_NORMAL || progress == UpdateService.UPDATE_SEMESTER) {
+                progressBar.setVisibility(View.GONE);
+                btnNext.setText(getString(R.string.next));
+            } else if (progress == UpdateService.UPDATE_VERIFYING) {
+                if (progressBar.getVisibility() == View.GONE) {
+                    progressBar.setVisibility(View.VISIBLE);
+                }
+                progressBar.setIndeterminate(true);
+            } else if (progress < 0){
+                progressBar.setVisibility(View.GONE);
+                btnNext.setText(getString(R.string.next));
+            } else {
+                progressBar.setIndeterminate(true);
+            }
+        }
+    }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if(intent.getAction() != null && intent.getAction().equals(UpdateService.PROGRESS_UPDATE)){
+
+                Download download = intent.getParcelableExtra(UpdateService.TAG_DOWNLOAD);
+
+                if(download.getProgress() == UpdateService.UPDATE_NORMAL || download.getProgress() == UpdateService.UPDATE_SEMESTER){
+                    //routine updated
+                    setProgressBar(UpdateService.UPDATE_NORMAL);
+                    setStatusText(getString(R.string.update_successful_text));
+                    if (cloud != null && isActivityRunning) cloud.setImageResource(R.drawable.ic_cloud_done_white_48dp);
+                } else if (download.getProgress() < 0) {
+                    setStatusText(getString(R.string.download_failed_welcome));
+                } else {
+                    setProgressBar(download.getProgress());
+                }
+            }
+        }
+    };
+
+    private void registerReceiver(){
+        LocalBroadcastManager bManager = LocalBroadcastManager.getInstance(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(UpdateService.PROGRESS_UPDATE);
+        bManager.registerReceiver(broadcastReceiver, intentFilter);
+    }
+
+    public void noUpdateAvailable() {
+        setStatusText(getString(R.string.already_updated_text));
+        setProgressBar(UpdateService.UPDATE_FAILED);
+    }
+
+    private void checkForUpdate() {
+        if (checkText != null) {
+            checkText.setText(R.string.check_latest_routine_text);
+        }
+        if (cloud != null) {
+            cloud.setImageResource(R.drawable.ic_cloud_download_white_48dp);
+        }
+        progressBar.setIndeterminate(true);
+        mDisposable = UpdateClient.getInstance(this).getUpdate();
     }
 }

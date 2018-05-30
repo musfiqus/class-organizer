@@ -17,8 +17,19 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:src="@drawable/ic_cloud_done_white_48dp"
-            android:layout_marginBottom="36dp"/>
+            android:layout_marginBottom="16dp"/>
 
+        <ProgressBar
+            android:id="@+id/welcome_routine_update_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:theme="@style/ProgressBar"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginLeft="32dp"
+            android:max="100"/>
 
         <TextView
             android:id="@+id/check_Text"
@@ -30,15 +41,6 @@
             android:textAlignment="center"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
-        <com.github.ybq.android.spinkit.SpinKitView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/spin_kit"
-            style="@style/SpinKitView.Small.ThreeBounce"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            app:SpinKit_Color="@color/md_white_1000" />
 
     </LinearLayout>
 </RelativeLayout>

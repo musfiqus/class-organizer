@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/library/Colorful.iml" filepath="$PROJECT_DIR$/library/Colorful.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SQLiteAssetHelper/library/SQLiteAssetHelper.iml" filepath="$PROJECT_DIR$/SQLiteAssetHelper/library/SQLiteAssetHelper.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/class-organizer.iml" filepath="$PROJECT_DIR$/class-organizer.iml" />
     </modules>

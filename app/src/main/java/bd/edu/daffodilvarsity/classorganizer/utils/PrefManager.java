@@ -61,7 +61,7 @@ public class PrefManager {
     private Context _context;
 
     public PrefManager(Context context) {
-        this._context = context;
+        this._context = context.getApplicationContext();
         pref = _context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = pref.edit();
     }
@@ -131,8 +131,13 @@ public class PrefManager {
         editor.putInt(SAVE_DATABASE_VERSION, prev).apply();
     }
 
+    public void setDatabaseVersion(int version) {
+        editor.remove(SAVE_DATABASE_VERSION).apply();
+        editor.putInt(SAVE_DATABASE_VERSION, version).apply();
+    }
+
     public int getDatabaseVersion() {
-        return pref.getInt(SAVE_DATABASE_VERSION, getMasterDBVersion());
+        return pref.getInt(SAVE_DATABASE_VERSION, 0);
     }
 
     public void setMultiProgram(boolean isMulti) {

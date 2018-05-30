@@ -201,7 +201,7 @@ public class RoutineLoader {
     }
 
     public boolean verifyUpdatedDb() {
-        CourseUtils dbChecker = new CourseUtils(context, true);
+        CourseUtils dbChecker = CourseUtils.getInstance(context);
         //First well check if the db is writable
         if (!dbChecker.isDatabaseWritable()) {
             return false;
@@ -239,19 +239,15 @@ public class RoutineLoader {
 
     //Checks if a new semester is available in db, if it's available it informs upgrade function
     // to process upgrade
-    private boolean isNewSemesterAvailable(boolean isUpdatedOnline) {
-        if (!new CourseUtils(context, isUpdatedOnline).doesTableExist("departments_"+prefManager.getCampus())) {
+    public boolean isNewSemesterAvailable() {
+        if (!CourseUtils.getInstance(context).doesTableExist("departments_"+prefManager.getCampus())) {
             return false;
         }
-        int maxSemester = new CourseUtils(context, isUpdatedOnline).getTotalSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
-        int currentSemester = RoutineLoader.getSemester(prefManager.getLevel(), prefManager.getTerm());
+        int maxSemester = CourseUtils.getInstance(context).getTotalSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
+        int currentSemester = getSemester(prefManager.getLevel(), prefManager.getTerm());
         if (prefManager.getSemesterCount() < CourseUtils.getInstance(context).getSemesterCount(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()) && currentSemester < maxSemester) {
             return true;
         }
         return false;
-    }
-
-    public boolean isNewSemesterAvailable() {
-        return isNewSemesterAvailable(prefManager.isUpdatedOnline());
     }
 }

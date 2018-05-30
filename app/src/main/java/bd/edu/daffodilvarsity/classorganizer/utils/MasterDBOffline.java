@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
@@ -20,6 +21,7 @@ import java.util.Locale;
 import java.util.Set;
 
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import es.dmoral.toasty.Toasty;
 
 /**
  * Created by Mushfiqus Salehin on 10/8/2017.
@@ -32,6 +34,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
 
     //Increment the version to erase previous db
     private static final String COLUMN_COURSE_CODE = "course_code";
+    public static final String DATABASE_NAME = "routine.db";
     public static final String COLUMN_TEACHERS_INITIAL = "teachers_initial";
     private static final String COLUMN_WEEK_DAYS = "week_days";
     private static final String COLUMN_ROOM_NO = "room_no";
@@ -48,14 +51,8 @@ public class MasterDBOffline extends SQLiteAssetHelper {
     private Context mContext;
     private static MasterDBOffline mInstance = null;
 
-    private MasterDBOffline(Context context) {
-        super(context, new PrefManager(context).getOfflineDbName(), null, new PrefManager(context).getDatabaseVersion());
-        setForcedUpgrade();
-        mContext = context.getApplicationContext();
-    }
-
-    public MasterDBOffline(Context context, String databaseName, int databaseVersion) {
-        super(context, databaseName, null, databaseVersion);
+    private MasterDBOffline(Context context, int databaseVersion, boolean isAlreadyUpdated) {
+        super(context, DATABASE_NAME, null, databaseVersion, isAlreadyUpdated);
         setForcedUpgrade();
         mContext = context.getApplicationContext();
     }
@@ -68,7 +65,24 @@ public class MasterDBOffline extends SQLiteAssetHelper {
         if (mInstance != null) {
             mInstance = null;
         }
-        mInstance = new MasterDBOffline(context.getApplicationContext());
+        boolean isOnlineUpdated = false;
+        int savedVersion = new PrefManager(context).getDatabaseVersion();
+        if (savedVersion > MasterDBOffline.OFFLINE_DATABASE_VERSION) {
+            //db is newer than the offline one, don't force upgrade
+            isOnlineUpdated = true;
+        }
+        if (savedVersion == 0) {
+            savedVersion = MasterDBOffline.OFFLINE_DATABASE_VERSION;
+        }
+        if (isOnlineUpdated) {
+            mInstance = new MasterDBOffline(context, savedVersion, true);
+            Log.d(TAG, "getInstance: Online");
+        } else {
+            mInstance = new MasterDBOffline(context, savedVersion, false);
+            Log.d(TAG, "getInstance: Offline");
+        }
+        Log.d(TAG, "getInstance: MD5 "+FileUtils.calculateMD5(context.getDatabasePath(DATABASE_NAME)));
+
         return mInstance;
     }
 
@@ -90,6 +104,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
             db = getWritableDatabase();
         } catch (Exception e) {
             Log.e(TAG, "getDatabase: DERP", e);
+            Toasty.error(mContext, "Unable to access database.", Toast.LENGTH_SHORT, true).show();
             FileUtils.logAnError(mContext, TAG, "getDatabase: ", e);
         }
         return db;
@@ -125,6 +140,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
         }
         return finalDayData;
     }
+
 
     ArrayList<DayData> getDayDataByQuery(String campus, String dept, String program, String query, String columnName) {
         ArrayList<DayData> list = new ArrayList<>();
@@ -446,6 +462,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
         String[] columnNames = getColumnNames(TABLE_NAME);
         SQLiteDatabase db = getDatabase();
         if (db == null) {
+            close();
             return 0;
         }
         Cursor cursor = db.query(TABLE_NAME, columnNames, null, null, null, null, null);
@@ -661,6 +678,7 @@ public class MasterDBOffline extends SQLiteAssetHelper {
     public boolean checkDepartment(String campus, String department) {
         SQLiteDatabase db = getDatabase();
         if (db == null) {
+            close();
             return false;
         }
         final String TABLE_NAME = "departments_" + campus;
@@ -713,7 +731,6 @@ public class MasterDBOffline extends SQLiteAssetHelper {
             }
         }
         Log.e(TAG, "getDateFromSchedule: Date :"+date);
-
         return date;
     }
 

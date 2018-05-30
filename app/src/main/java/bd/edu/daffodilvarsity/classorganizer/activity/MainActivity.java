@@ -1,7 +1,11 @@
 package bd.edu.daffodilvarsity.classorganizer.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -13,6 +17,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -23,18 +28,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
-
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import android.widget.Toast;
 
 import org.polaric.colorful.Colorful;
 
+import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -44,11 +43,15 @@ import java.util.Locale;
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.adapter.DayFragmentPagerAdapter;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.data.Download;
 import bd.edu.daffodilvarsity.classorganizer.service.NotificationRestartJobIntentService;
-import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
+import bd.edu.daffodilvarsity.classorganizer.service.UpdateService;
+import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOffline;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
-import bd.edu.daffodilvarsity.classorganizer.utils.UpdateTask;
+import bd.edu.daffodilvarsity.classorganizer.utils.UpdateClient;
+import es.dmoral.toasty.Toasty;
+import io.reactivex.disposables.Disposable;
 
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -61,19 +64,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private boolean alarmRecreated = false;
     private boolean isActivityRunning = false;
     private boolean updateDialogueBlocked = false;
-    private boolean isDownloadSuccessful;
     private DayFragmentPagerAdapter adapter;
+    private UpdateClient updateClient;
+    private Disposable mDisposable;
 //    private AdView adView;
-
-
-    //TODO Comment it out before publishing, only for testing purpose
-//    public static final String DATABASE_VERSION_TAG = "AlphaDatabaseVersion";
-//    public static final String DATABASE_URL_TAG = "AlphaURL";
-
-
-
-    public static final String DATABASE_VERSION_TAG = "MasterDatabaseVersion";
-    public static final String DATABASE_URL_TAG = "MasterURL";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +75,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         setContentView(R.layout.activity_main);
 
         prefManager = new PrefManager(this);
+        updateClient = UpdateClient.getInstance(this);
+        mDisposable = updateClient.getUpdate();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        try {
+            Log.d(TAG, "onCreate: Asset path"+getAssets().open("databases/routine.db"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         setSupportActionBar(toolbar);
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            getWindow().setEnterTransition(null);
@@ -128,13 +131,16 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
 
         //Aaannnd just before loading data we'll check for an online update
-        checkFirebase();
+
+        registerReceiver();
 
         //And load adz
 //        if (adView == null) {
 //            adView = (AdView) findViewById(R.id.adView);
 //        }
 //        adView.loadAd(new AdRequest.Builder().build());
+
+
 
     }
 
@@ -199,7 +205,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onStart() {
         super.onStart();
         if (!onCreate) {
-            updateData();
+            refreshData();
         }
         //won't run again on onResume
         onStart = true;
@@ -210,14 +216,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         super.onResume();
         isActivityRunning = true;
         if (!onStart) {
-            updateData();
+            refreshData();
         }
         if (prefManager.getReCreate()) {
-            updateData();
+            refreshData();
             prefManager.saveReCreate(false);
         }
         if (updateDialogueBlocked) {
-            checkFirebase();
             updateDialogueBlocked = false;
         }
         if (prefManager.showSnack()) {
@@ -235,6 +240,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     protected void onPause() {
         super.onPause();
         isActivityRunning = false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mDisposable != null && !mDisposable.isDisposed()) {
+            mDisposable.dispose();
+        }
     }
 
     public void loadData() {
@@ -287,18 +300,24 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
             Log.w(TAG, "DayFragmentPagerAdapter is null");
             loadData();
         }
-        if (prefManager.showSnack()) {
-            showSnackBar(this, prefManager.getSnackData());
-            prefManager.saveShowSnack(false);
-        }
+
     }
 
     private void refreshData() {
-        mDayData.clear();
-        mDayData = prefManager.getSavedDayData();
-        if (adapter != null) {
-            adapter.updateData(mDayData);
+        if (isActivityRunning) {
+            mDayData.clear();
+            mDayData = prefManager.getSavedDayData();
+            if (adapter != null) {
+                adapter.updateData(mDayData);
+                if (prefManager.showSnack()) {
+                    showSnackBar(this, prefManager.getSnackData());
+                    prefManager.saveShowSnack(false);
+                }
+            }
+        } else {
+            prefManager.enableDataRefresh(true);
         }
+
     }
 
     //Checking if activity is in state loss
@@ -311,91 +330,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     //Processes the update if the in app db is updated
     private void offlineUpdate() {
         //If there is a new routine, update
-        if (MasterDBOffline.OFFLINE_DATABASE_VERSION > prefManager.getOfflineDbVersion() && MasterDBOffline.OFFLINE_DATABASE_VERSION > prefManager.getOnlineDbVersion()) {
+        if (MasterDBOffline.OFFLINE_DATABASE_VERSION > prefManager.getDatabaseVersion()) {
             String[] params = new String[]{"offline", ""+MasterDBOffline.OFFLINE_DATABASE_VERSION};
-            new UpdateTask(this, getApplicationContext()).execute(params);
+            new UpdateTask(this).execute(params);
         }
-    }
-
-    //Checks if a new version of db is available via the db version stored in cloud
-    private void checkFirebase() {
-        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference databaseReference = firebaseDatabase.getReference(DATABASE_VERSION_TAG);
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                int newVersion = 0;
-                try {
-                    newVersion = dataSnapshot.getValue(Integer.class);
-                } catch (Exception ignored) {
-                }
-                final int newDBVersion = newVersion;
-                if (prefManager.getMasterDBVersion() < newDBVersion) {
-                    DatabaseReference urlReference = firebaseDatabase.getReference(DATABASE_URL_TAG);
-                    urlReference.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            String dbURL = null;
-                            try {
-                                dbURL = dataSnapshot.getValue(String.class);
-                            } catch (Exception ignored){}
-                            final String dbDlURL = dbURL;
-                            if (dbDlURL != null) {
-                                if (isActivityRunning) {
-                                    if (newDBVersion > prefManager.getMasterDBVersion() && newDBVersion != prefManager.getSuppressedMasterDbVersion()) {
-                                        MaterialDialog.Builder builder = new MaterialDialog.Builder(MainActivity.this)
-                                                .title("Update Available!")
-                                                .positiveText("YES")
-                                                .negativeText("NO")
-                                                .content("A new routine update is available. Do you want to download it now?")
-                                                .checkBoxPrompt("Don't remind again me for this update", false, new CompoundButton.OnCheckedChangeListener() {
-                                                    @Override
-                                                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                                        if (isChecked) {
-                                                            prefManager.setSuppressedMasterDbVersion(newDBVersion);
-                                                        } else {
-                                                            prefManager.setSuppressedMasterDbVersion(0);
-                                                        }
-                                                    }
-                                                })
-                                                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                                    @Override
-                                                    public void onClick(@NonNull MaterialDialog materialDialog, @NonNull DialogAction dialogAction) {
-                                                        startDBUpdate(newDBVersion, dbDlURL);
-                                                    }
-                                                });
-                                        MaterialDialog dialog = builder.build();
-                                        if (!dialog.isShowing()) {
-                                            dialog.show();
-                                        }
-                                    }
-                                } else {
-                                    updateDialogueBlocked = true;
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    //This method starts the online db downloading process
-    private void startDBUpdate(int newVersion, final String dbURL) {
-        if (isActivityRunning) {
-            showSnackBar(MainActivity.this, "Updating routine");
-        }
-        new DbDownloadTask().execute(dbURL, String.valueOf(newVersion));
     }
 
     //This function provides the skeleton of the suggestion email
@@ -424,42 +362,120 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         return isActivityRunning;
     }
 
-    private class DbDownloadTask extends AsyncTask<String, Void, Void> {
-        private int newDBVersion;
 
+    private void registerReceiver(){
+
+        LocalBroadcastManager bManager = LocalBroadcastManager.getInstance(this);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(UpdateService.PROGRESS_UPDATE);
+        bManager.registerReceiver(broadcastReceiver, intentFilter);
+
+    }
+
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            isDownloadSuccessful = true;
+        public void onReceive(Context context, Intent intent) {
+
+            if(intent.getAction() != null && intent.getAction().equals(UpdateService.PROGRESS_UPDATE)){
+
+                Download download = intent.getParcelableExtra(UpdateService.TAG_DOWNLOAD);
+
+                if(download.getProgress() == 200){
+                    //Normal routine updated
+                    refreshData();
+                    if (isActivityRunning) {
+                        showSnackBar(MainActivity.this, "Routine updated");
+                    } else {
+                        Toasty.success(getApplicationContext(), "Routine updated", Toast.LENGTH_SHORT, true).show();
+                    }
+                } else if (download.getProgress() == 300) {
+                    //semester updated
+                    if (isActivityRunning) {
+                        showUpgradeDialogue();
+                    } else {
+                        Toasty.success(getApplicationContext(), "The routine was updated as per " +
+                                CourseUtils.getInstance(getApplicationContext()).getCurrentSemester(prefManager.getCampus()
+                                        , prefManager.getDept(), prefManager.getProgram()) + " semester."
+                                , Toast.LENGTH_SHORT, true).show();
+                    }
+                }
+            }
+        }
+    };
+
+    public void showUpgradeDialogue() {
+        PrefManager prefManager = new PrefManager(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("New Semester!");
+        builder.setMessage("The routine was updated as per " + CourseUtils.getInstance(this).getCurrentSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()) + " semester.\n" +
+                "Note: Your level and term will automatically get updated based on current selection and your modifications will be reset.");
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            refreshData();
+            dialog.dismiss();
+        });
+
+        AlertDialog dialog = builder.create();
+        if (!dialog.isShowing()) {
+            dialog.show();
+        }
+    }
+
+    private static class UpdateTask extends AsyncTask<String, Void, String> {
+
+        private static final String TAG = "UpdateTask";
+
+        private WeakReference<MainActivity> activityReference;
+        private boolean isSuccessful = false;
+        private boolean isUpgrade = false;
+
+
+        UpdateTask(MainActivity activity) {
+            activityReference = new WeakReference<>(activity);
         }
 
+
         @Override
-        protected Void doInBackground(String... params) {
-            try {
-                String dlURL = params[0];
-                newDBVersion = Integer.parseInt(params[1]);
-                if (dlURL != null) {
-                    FileUtils.dbDownloader(dlURL, FileUtils.generateMasterOnlineDbPath(getApplicationContext(), newDBVersion));
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                isDownloadSuccessful = false;
-            }
+        protected String doInBackground(String... params) {
+            //params: online/offline, db version
+            //Simple update function loads new routine if db version changes
+            isUpgrade = UpdateService.isNewSemesterAvailable(activityReference.get());
+            isSuccessful = UpdateService.loadRoutineFromDB(activityReference.get(), isUpgrade);
             return null;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            if (isDownloadSuccessful) {
-                String[] params = new String[]{"online", ""+newDBVersion};
-                new UpdateTask(MainActivity.this, getApplicationContext()).execute(params);
-            } else {
-                //Delete downloaded db
-                FileUtils.deleteMasterDb(getApplicationContext(), true, newDBVersion);
-                showSnackBar(MainActivity.this, "Download failed");
+        protected void onPostExecute(String result) {
+
+            final MainActivity activity = activityReference.get();
+            if (activity != null && activity.isActivityRunning()) {
+                if (isSuccessful) {
+                    PrefManager prefManager = new PrefManager(activity);
+                    CourseUtils courseUtils = CourseUtils.getInstance(activity);
+                    prefManager.saveSemester(courseUtils.getCurrentSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()));
+                    prefManager.setSemesterCount(courseUtils.getSemesterCount(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()));
+                    if (isUpgrade) prefManager.resetModification(true, true, true, true);
+                    if (isUpgrade) {
+                        activity.showUpgradeDialogue();
+                    } else {
+                        activity.updateData();
+                        activity.showSnackBar(activity, "Routine updated");
+                    }
+
+                } else {
+                    if (activity.isActivityRunning()) {
+                        activity.showSnackBar(activity, "Error loading updated routine!");
+                    }
+                }
+            } else if (activity != null && !activity.isActivityRunning()) {
+                PrefManager prefManager = new PrefManager(activity.getApplicationContext());
+                if (isSuccessful) {
+                    prefManager.saveShowSnack(true);
+                    prefManager.saveSnackData("Routine updated");
+                } else {
+                    prefManager.saveShowSnack(true);
+                    prefManager.saveSnackData( "Error loading updated routine!");
+                }
             }
         }
     }
-
 }
