@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
@@ -30,7 +31,7 @@ import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 
 public class NotificationPublisher extends BroadcastReceiver {
     private static final String TAG = "NotificationPublisher";
-    private static String CHANNEL_ID = "notification_channel_01";
+    private static String CLASSES_CHANNEL_ID = "notification_channel_01";
     public static String TAG_NOTIFICATION_DATA = "NotificationData";
 
     @Override
@@ -71,14 +72,13 @@ public class NotificationPublisher extends BroadcastReceiver {
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context, index, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CLASSES_CHANNEL_ID)
                 .setContentTitle("You have " + article(dayData.getCourseCode().substring(0, 1)) + " " + dayData.getCourseCode() + " class soon")
                 .setContentText("Today's class is at "
                         + (isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(dayData.getTime(),
                         dayData.getTimeWeight()).substring(0, 8) : dayData.getTime()).substring(0, 8)
                         + " in room " + dayData.getRoomNo())
                 .setTicker("You have a class soon!")
-                .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND)
                 .setSmallIcon(getNotificationIcon())
@@ -98,7 +98,7 @@ public class NotificationPublisher extends BroadcastReceiver {
 
             //Create notification channel if OREO
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationChannel channel = new NotificationChannel(CHANNEL_ID, context.getResources().getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_HIGH);
+                NotificationChannel channel = new NotificationChannel(CLASSES_CHANNEL_ID, context.getResources().getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_HIGH);
                 notificationManager.createNotificationChannel(channel);
             }
 
@@ -106,6 +106,7 @@ public class NotificationPublisher extends BroadcastReceiver {
         }
     }
 
+    @NonNull
     private NotificationCompat.Action getMuteAction(DayData dayData, Context context, int index) {
         Log.d(TAG, "getMuteAction: Mute created");
         Intent muteIntent = new Intent(context, MuteActionReceiver.class);
@@ -121,11 +122,12 @@ public class NotificationPublisher extends BroadcastReceiver {
         return new NotificationCompat.Action.Builder(0, context.getString(R.string.mute_action), mutePendingIntent).build();
     }
 
-    private int getNotificationIcon() {
+    public static int getNotificationIcon() {
         boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
         return useWhiteIcon ? R.drawable.icon_silhouette : R.mipmap.ic_launcher;
     }
 
+    @NonNull
     private String article(String firstChar) {
         if (firstChar.equalsIgnoreCase("a") || firstChar.equalsIgnoreCase("e") || firstChar.equalsIgnoreCase("i") || firstChar.equalsIgnoreCase("o") || firstChar.equalsIgnoreCase("u")) {
             return "an";

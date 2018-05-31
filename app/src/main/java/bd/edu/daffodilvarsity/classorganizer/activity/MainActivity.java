@@ -30,6 +30,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import org.polaric.colorful.Colorful;
 
 import java.io.IOException;
@@ -44,12 +46,13 @@ import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.adapter.DayFragmentPagerAdapter;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.data.Download;
+import bd.edu.daffodilvarsity.classorganizer.data.UpdateResponse;
 import bd.edu.daffodilvarsity.classorganizer.service.NotificationRestartJobIntentService;
 import bd.edu.daffodilvarsity.classorganizer.service.UpdateService;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOffline;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
-import bd.edu.daffodilvarsity.classorganizer.utils.UpdateClient;
+import bd.edu.daffodilvarsity.classorganizer.utils.UpdateGetter;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.disposables.Disposable;
 
@@ -65,7 +68,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private boolean isActivityRunning = false;
     private boolean updateDialogueBlocked = false;
     private DayFragmentPagerAdapter adapter;
-    private UpdateClient updateClient;
+    private UpdateGetter updateGetter;
     private Disposable mDisposable;
 //    private AdView adView;
 
@@ -75,9 +78,18 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         setContentView(R.layout.activity_main);
 
         prefManager = new PrefManager(this);
-        updateClient = UpdateClient.getInstance(this);
-        mDisposable = updateClient.getUpdate();
+        updateGetter = UpdateGetter.getInstance(this);
+        UpdateResponse updateResponse = getIntent().getParcelableExtra(UpdateService.TAG_UPDATE_RESPONSE);
+        if (updateResponse != null) {
+            //Activity was started from update notification, handle updateresponse
+            updateGetter.initUpdate(updateResponse);
+            Log.d(TAG, "onCreate: Activity started from update notification");
+        } else {
+            mDisposable = updateGetter.getUpdate();
+        }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        String token = FirebaseInstanceId.getInstance().getToken();
+        Log.d(TAG, "onCreate: token: "+token);
 
         try {
             Log.d(TAG, "onCreate: Asset path"+getAssets().open("databases/routine.db"));
@@ -453,6 +465,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     CourseUtils courseUtils = CourseUtils.getInstance(activity);
                     prefManager.saveSemester(courseUtils.getCurrentSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()));
                     prefManager.setSemesterCount(courseUtils.getSemesterCount(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()));
+                    prefManager.setDatabaseVersion(MasterDBOffline.OFFLINE_DATABASE_VERSION);
                     if (isUpgrade) prefManager.resetModification(true, true, true, true);
                     if (isUpgrade) {
                         activity.showUpgradeDialogue();

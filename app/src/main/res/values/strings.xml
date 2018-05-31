@@ -160,4 +160,7 @@
     <string name="unmuted_Text">Unmuted</string>
     <string name="update_error_toast">Unable check for updates.</string>
     <string name="download_failed_welcome">Download failed. Press NEXT</string>
+    <string name="push_notification_channel_id">notification_channel_03</string>
+    <string name="routine_update_ticker">New routine available!</string>
+    <string name="update_action">UPDATE</string>
 </resources>

@@ -94,6 +94,7 @@ dependencies {
 
     //Do not update that shitty firebase
     implementation "com.google.firebase:firebase-core:$firebaseLibVersion"
+    implementation "com.google.firebase:firebase-messaging:$firebaseLibVersion"
 
     //Firebase admob
 

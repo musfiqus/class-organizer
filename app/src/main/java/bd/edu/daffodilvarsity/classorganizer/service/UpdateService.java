@@ -15,7 +15,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -26,7 +25,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
-import bd.edu.daffodilvarsity.classorganizer.activity.DayDataDetailActivity;
 import bd.edu.daffodilvarsity.classorganizer.activity.MainActivity;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.data.Download;
@@ -37,6 +35,7 @@ import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOffline;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.RoutineLoader;
+import bd.edu.daffodilvarsity.classorganizer.utils.UpdateNotificationHelper;
 import es.dmoral.toasty.Toasty;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -58,7 +57,7 @@ public class UpdateService extends IntentService {
 
     public static final String TAG_UPDATE_RESPONSE = "UpdateResponse";
     public static final String TAG_DOWNLOAD = "Download";
-    private static final String CHANNEL_ID = "notification_channel_02";
+
     public static final String PROGRESS_UPDATE = "ProgressUpdate";
 
     private NotificationCompat.Builder notificationBuilder;
@@ -74,7 +73,12 @@ public class UpdateService extends IntentService {
             mUpdateResponse = intent.getParcelableExtra(TAG_UPDATE_RESPONSE);
             notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-            notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
+            //Cancel update notification if there is one
+            if (notificationManager != null) {
+                notificationManager.cancel(UpdateNotificationHelper.UPDATE_NOTIFICATION_REQUEST_CODE);
+            }
+
+            notificationBuilder = new NotificationCompat.Builder(this, UpdateNotificationHelper.UPDATE_CHANNEL_ID)
                     .setSmallIcon(R.drawable.ic_download_24dp)
                     .setContentTitle("Routine Update")
                     .setContentText("Downloading update")
@@ -158,7 +162,7 @@ public class UpdateService extends IntentService {
 
             //Create notification channel if OREO
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Update", NotificationManager.IMPORTANCE_LOW);
+                NotificationChannel channel = new NotificationChannel(UpdateNotificationHelper.UPDATE_CHANNEL_ID, "Update", NotificationManager.IMPORTANCE_LOW);
                 notificationManager.createNotificationChannel(channel);
             }
 

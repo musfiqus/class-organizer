@@ -14,6 +14,7 @@ import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.utils.AlarmHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
+import es.dmoral.toasty.Toasty;
 
 public class MuteActionReceiver extends BroadcastReceiver {
     private static final String TAG = "MuteActionReceiver";
@@ -27,10 +28,10 @@ public class MuteActionReceiver extends BroadcastReceiver {
                 dayData = bundle.getParcelable(AlarmHelper.TAG_ALARM_DAYDATA_OBJECT);
             } catch (IllegalStateException e) {
                 FileUtils.logAnError(context, TAG, "onReceive: ", e);
-                Toast.makeText(context, "Error! Couldn't mute notification", Toast.LENGTH_SHORT).show();
+                Toasty.error(context, "Error! Couldn't mute notification", Toast.LENGTH_SHORT, true).show();
             } catch (Exception e) {
                 FileUtils.logAnError(context, TAG, "onReceive: ", e);
-                Toast.makeText(context, "Error! Couldn't mute notification", Toast.LENGTH_SHORT).show();
+                Toasty.error(context, "Error! Couldn't mute notification", Toast.LENGTH_SHORT, true).show();
 
             }
             int index = bundle.getInt(AlarmHelper.TAG_ALARM_INDEX);
@@ -42,7 +43,7 @@ public class MuteActionReceiver extends BroadcastReceiver {
                     newList.get(position).setMuted(true);
                     prefManager.saveDayData(newList);
                     Log.d(TAG, "onReceive: Notifications muted for "+dayData.getCourseCode());
-                    Toast.makeText(context, "Notifications muted for "+dayData.getCourseCode(), Toast.LENGTH_SHORT).show();
+                    Toasty.error(context, "Notifications muted for "+dayData.getCourseCode(), Toast.LENGTH_SHORT, true).show();
                 } else {
                     error = true;
                 }
@@ -58,7 +59,7 @@ public class MuteActionReceiver extends BroadcastReceiver {
             error = true;
         }
         if (error) {
-            Toast.makeText(context, "Unable to mute notifications", Toast.LENGTH_SHORT).show();
+            Toasty.error(context, "Unable to mute notifications", Toast.LENGTH_SHORT, true).show();
         }
     }
 }

@@ -1,10 +1,13 @@
 package bd.edu.daffodilvarsity.classorganizer;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
 
 import org.polaric.colorful.Colorful;
 
@@ -32,6 +35,8 @@ public class ClassOrganizer extends Application {
 
         Colorful.init(this);
         FirebaseApp.initializeApp(this);
+        FirebaseMessaging.getInstance().subscribeToTopic("update");
+        if (BuildConfig.DEBUG) FirebaseMessaging.getInstance().subscribeToTopic("debug");
 //        MobileAds.initialize(this, getResources().getString(R.string.admob_app_id));
     }
 }

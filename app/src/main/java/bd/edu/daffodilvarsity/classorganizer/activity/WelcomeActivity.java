@@ -39,7 +39,7 @@ import bd.edu.daffodilvarsity.classorganizer.service.UpdateService;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.DataChecker;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
-import bd.edu.daffodilvarsity.classorganizer.utils.UpdateClient;
+import bd.edu.daffodilvarsity.classorganizer.utils.UpdateGetter;
 import io.reactivex.disposables.Disposable;
 
 public class WelcomeActivity extends ColorfulActivity implements AdapterView.OnItemSelectedListener {
@@ -468,6 +468,6 @@ public class WelcomeActivity extends ColorfulActivity implements AdapterView.OnI
             cloud.setImageResource(R.drawable.ic_cloud_download_white_48dp);
         }
         progressBar.setIndeterminate(true);
-        mDisposable = UpdateClient.getInstance(this).getUpdate();
+        mDisposable = UpdateGetter.getInstance(this).getUpdate();
     }
 }

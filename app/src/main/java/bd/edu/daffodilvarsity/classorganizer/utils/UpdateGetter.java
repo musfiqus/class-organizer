@@ -1,7 +1,14 @@
 package bd.edu.daffodilvarsity.classorganizer.utils;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,7 +21,10 @@ import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.activity.MainActivity;
 import bd.edu.daffodilvarsity.classorganizer.activity.SettingsActivity;
 import bd.edu.daffodilvarsity.classorganizer.activity.WelcomeActivity;
+import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.data.UpdateResponse;
+import bd.edu.daffodilvarsity.classorganizer.receiver.MuteActionReceiver;
+import bd.edu.daffodilvarsity.classorganizer.receiver.NotificationPublisher;
 import bd.edu.daffodilvarsity.classorganizer.service.UpdateService;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -25,23 +35,32 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class UpdateClient {
+public class UpdateGetter {
+
     private static final int CONTEXT_MAIN = 0;
     private static final int CONTEXT_SETTINGS = 1;
     private static final int CONTEXT_WELCOME = 2;
     private static final int CONTEXT_OTHER = 3;
-    private static final String TAG = "UpdateClient";
-    private static String BASE_URL = "https://rawgit.com/musfiqus/musfiqus.github.io/master/routinedb/";
-    private static UpdateClient instance;
-    private ClassOrganizerApi updateService;
+
+    private static final String TAG = "UpdateGetter";
+    private static String BASE_URL = "https://raw.githubusercontent.com/musfiqus/musfiqus.github.io/master/routinedb/";
+
+    private static UpdateGetter instance;
     private Context mContext;
+
+    private ClassOrganizerApi updateService;
     private PrefManager prefManager;
     private int whichContext = -1;
+
+    private String mNotificationTitle;
+    private String mNotificationMessage;
+
     private WeakReference<MainActivity> mainActivityWeakReference;
     private WeakReference<SettingsActivity> settingsActivityWeakReference;
     private WeakReference<WelcomeActivity> welcomeActivityWeakReference;
 
-    private UpdateClient(Context context) {
+
+    private UpdateGetter(Context context) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(10, TimeUnit.SECONDS)
@@ -57,19 +76,19 @@ public class UpdateClient {
         this.mContext = context.getApplicationContext();
         prefManager = new PrefManager(mContext);
         if (context instanceof MainActivity) {
-            Log.d(TAG, "UpdateClient: Main");
+            Log.d(TAG, "UpdateGetter: Main");
             mainActivityWeakReference = new WeakReference<>((MainActivity) context);
             whichContext = CONTEXT_MAIN;
         } else if (context instanceof SettingsActivity) {
             settingsActivityWeakReference = new WeakReference<>((SettingsActivity) context);
-            Log.d(TAG, "UpdateClient: Settings");
+            Log.d(TAG, "UpdateGetter: Settings");
             whichContext = CONTEXT_SETTINGS;
         } else if (context instanceof WelcomeActivity) {
             welcomeActivityWeakReference = new WeakReference<>((WelcomeActivity) context);
             whichContext = CONTEXT_WELCOME;
-            Log.d(TAG, "UpdateClient: Welcome");
+            Log.d(TAG, "UpdateGetter: Welcome");
         } else {
-            Log.e(TAG, "UpdateClient: Nothing");
+            Log.e(TAG, "UpdateGetter: Nothing");
             mainActivityWeakReference = null;
             settingsActivityWeakReference = null;
             welcomeActivityWeakReference = null;
@@ -78,9 +97,9 @@ public class UpdateClient {
 
     }
 
-    public static UpdateClient getInstance(Context context) {
+    public static UpdateGetter getInstance(Context context) {
         if (instance == null) {
-            instance = new UpdateClient(context);
+            instance = new UpdateGetter(context);
         }
         Log.d(TAG, "getInstance: ");
         return instance;
@@ -108,7 +127,7 @@ public class UpdateClient {
                 });
     }
 
-    private void initUpdate(UpdateResponse updateResponse) {
+    public void initUpdate(UpdateResponse updateResponse) {
         Log.d(TAG, "initUpdate: Update initiated");
         if (updateResponse != null) {
             if (updateResponse.getVersion() > prefManager.getDatabaseVersion()
@@ -163,19 +182,20 @@ public class UpdateClient {
     }
 
     private void showUpdatePrompt(UpdateResponse updateResponse) {
-        Log.d(TAG, "showUpdatePrompt: Showing update promt");
+        Log.d(TAG, "showUpdatePrompt: Showing update prompt");
+        UpdateNotificationHelper notificationHelper = new UpdateNotificationHelper(mContext, updateResponse);
         switch (whichContext) {
             case CONTEXT_MAIN:
                 showUpdateDialogue(updateResponse); //MainActivity
                 break;
             case CONTEXT_SETTINGS:
-                showUpdateNotification(); //SettingsActivity
+                notificationHelper.showUpdateNotification(mNotificationTitle, mNotificationMessage); //SettingsActivity
                 break;
             case CONTEXT_WELCOME:
                 startUpdateForWelcomeActivity(updateResponse);
                 break;
             case CONTEXT_OTHER:
-                showUpdateNotification();
+                notificationHelper.showUpdateNotification(mNotificationTitle, mNotificationMessage);
                 break;
             default:
                 Toasty.error(mContext, "How did this happen?", Toast.LENGTH_SHORT, true).show();
@@ -185,9 +205,7 @@ public class UpdateClient {
     private void startUpdateForSettingActivity() {
     }
 
-    private void showUpdateNotification() {
 
-    }
 
     private void showUpdateDialogue(UpdateResponse updateResponse) {
         MainActivity activity = mainActivityWeakReference.get();
@@ -215,6 +233,8 @@ public class UpdateClient {
 
     }
 
+
+
     private void startUpdateForMainActivity(UpdateResponse updateResponse) {
         Intent intent = new Intent(mContext, UpdateService.class);
         intent.putExtra(UpdateService.TAG_UPDATE_RESPONSE, updateResponse);
@@ -231,5 +251,13 @@ public class UpdateClient {
         intent.putExtra(UpdateService.TAG_UPDATE_RESPONSE, updateResponse);
         Log.d(TAG, "startUpdateForWelcomeActivity: YOO");
         mContext.startService(intent);
+    }
+
+    public void setNotificationTitle(String notificationTitle) {
+        this.mNotificationTitle = notificationTitle;
+    }
+
+    public void setNotificationMessage(String notificationMessage) {
+        this.mNotificationMessage = notificationMessage;
     }
 }
