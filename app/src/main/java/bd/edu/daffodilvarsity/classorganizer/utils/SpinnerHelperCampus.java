@@ -82,7 +82,6 @@ public class SpinnerHelperCampus implements AdapterView.OnItemSelectedListener {
         deptLabel.setTextColor(ContextCompat.getColor(context, android.R.color.black));
         programLabel.setTextColor(ContextCompat.getColor(context, android.R.color.black));
         if (!isStudent && multiProgramCheck != null) {
-            Log.e(TAG, "setupCampusLabelBlack: Noice");
             ///////////////////////////////////////////////////////////////////////////////////////////
             //* Google: change checkbox theme programmatically
             //* Stackoverflow: https://stackoverflow.com/a/40212769
@@ -104,11 +103,6 @@ public class SpinnerHelperCampus implements AdapterView.OnItemSelectedListener {
                 multiProgramCheck.setSupportButtonTintList(colorStateList);
             }
             multiProgramCheck.setTextColor(ContextCompat.getColor(context, android.R.color.black));
-        } else {
-            if (multiProgramCheck == null) {
-                Log.e(TAG, "setupCampusLabelBlack: NELZ");
-            }
-
         }
     }
 
@@ -272,7 +266,6 @@ public class SpinnerHelperCampus implements AdapterView.OnItemSelectedListener {
             prefManager.saveProgram(program);
         }
         campusDataCode = new DataChecker(context).campusChecker(campus, dept, program, isStudent);
-        Log.e(TAG, "CampusCode: " + campusDataCode);
     }
 
     @Override

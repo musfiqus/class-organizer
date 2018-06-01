@@ -219,7 +219,7 @@ public final class FileUtils {
             appVersionName = "App version not found";
         }
         errorDetails = "App version: "+appVersionName+"\n";
-        errorDetails += "Database version: "+prefManager.getMasterDBVersion()+"\n";
+        errorDetails += "Database version: "+prefManager.getDatabaseVersion()+"\n";
         errorDetails += "Campus: "+prefManager.getCampus()+" Department: "+prefManager.getDept()+" Program: "+prefManager.getProgram()+"\n";
         if (prefManager.isUserStudent()) {
             errorDetails += "Level: "+prefManager.getLevel()+1+" Term: "+prefManager.getTerm()+1+" Section: "+prefManager.getSection()+"\n";
