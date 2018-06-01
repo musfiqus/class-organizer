@@ -39,9 +39,7 @@ public class PrefManager {
     private static final String PREF_SUPPRESSED_MASTER_DB_VERSION = "Suppressed_MasterDB_Version";
     private static final String HAS_CAMPUS_SETTINGS_CHANGED = "HasCampusChanged";
     private static final String IS_CAMPUS_CHANGE_ALERT_DISABLED = "IsCampusChangeAlertDisabled";
-    private static final String IS_ROUTINE_UPDATED_ONLINE = "IsRoutineUpdatedOnline";
     private static final String PREF_REMINDER_TIME_DELAY = "ReminderTimeDelayInMinutes";
-    private static final String SAVE_MASTERDB_VERSION = "MasterDB_Version";
     private static final String SAVE_DATABASE_VERSION = "Incremental_Database_Version";
     private static final String PREF_MULTI_PROGRAM = "Teacher_Multi_Program";
     private static final String PREF_SEMESTER_COUNT = "Current_Semester_Count";
@@ -284,16 +282,6 @@ public class PrefManager {
     public void setIsCampusChangeAlertDisabled(boolean value) {
         editor.remove(IS_CAMPUS_CHANGE_ALERT_DISABLED).apply();
         editor.putBoolean(IS_CAMPUS_CHANGE_ALERT_DISABLED, value).apply();
-    }
-
-    public void setMasterDbVersion(int version) {
-        editor.remove(SAVE_MASTERDB_VERSION).apply();
-        editor.putInt(SAVE_MASTERDB_VERSION, version).apply();
-    }
-
-    public int getMasterDBVersion() {
-        int savedDBVer = pref.getInt(SAVE_MASTERDB_VERSION, RoutineDB.OFFLINE_DATABASE_VERSION);
-        return (savedDBVer > RoutineDB.OFFLINE_DATABASE_VERSION) ? savedDBVer: RoutineDB.OFFLINE_DATABASE_VERSION;
     }
 
     public boolean isCampusChangeAlertDisabled() {

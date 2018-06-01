@@ -29,7 +29,7 @@ import es.dmoral.toasty.Toasty;
 
 public class RoutineDB extends SQLiteAssetHelper {
     private static final String TAG = "RoutineDB";
-    public static final int OFFLINE_DATABASE_VERSION = 27;
+    public static final int OFFLINE_DATABASE_VERSION = 22;
 
     //Increment the version to erase previous db
     private static final String COLUMN_COURSE_CODE = "course_code";
@@ -75,12 +75,11 @@ public class RoutineDB extends SQLiteAssetHelper {
         }
         if (isOnlineUpdated) {
             mInstance = new RoutineDB(context, savedVersion, true);
-            Log.d(TAG, "getInstance: Online");
+            Log.d(TAG, "getInstance: Online: "+savedVersion);
         } else {
             mInstance = new RoutineDB(context, savedVersion, false);
-            Log.d(TAG, "getInstance: Offline");
+            Log.d(TAG, "getInstance: Offline: "+savedVersion);
         }
-        Log.d(TAG, "getInstance: MD5 "+FileUtils.calculateMD5(context.getDatabasePath(DATABASE_NAME)));
 
         return mInstance;
     }
@@ -102,7 +101,7 @@ public class RoutineDB extends SQLiteAssetHelper {
         try {
             db = getWritableDatabase();
         } catch (Exception e) {
-            Log.e(TAG, "getDatabase: DERP", e);
+            Log.e(TAG, "getDatabase: DERP DB", e);
             Toasty.error(mContext, "Unable to access database.", Toast.LENGTH_SHORT, true).show();
             FileUtils.logAnError(mContext, TAG, "getDatabase: ", e);
         }
@@ -546,7 +545,6 @@ public class RoutineDB extends SQLiteAssetHelper {
         ArrayList<String> rows = new ArrayList<>();
         SQLiteDatabase db = getDatabase();
         if (db == null) {
-            Log.e(TAG, "getRowsByColumn: db null");
             return null;
         }
         Cursor cursor = null;
@@ -591,17 +589,14 @@ public class RoutineDB extends SQLiteAssetHelper {
             }
         }
         String course = rawCode.substring(beginIndex, i);
-        Log.e(TAG, "getCourseCode: Course"+ course+" i: "+i);
         brake = false;
         beginIndex = i;
-        Log.e(TAG, rawCode);
         while (!brake) {
             if (rawCode.length() == i) {
                 break;
             }
             if (rawCode.length() != i+1 && rawCode.substring(i, i+1).equalsIgnoreCase("L")) {
                 i++;
-                Log.e(TAG, "getCourseCode: i 2nd: "+i );
                 continue;
             }
             try {
@@ -644,7 +639,6 @@ public class RoutineDB extends SQLiteAssetHelper {
         String course = rawCode.substring(beginIndex, i);
         brake = false;
         beginIndex = i;
-        Log.e(TAG, rawCode);
         while (!brake) {
             if (rawCode.substring(i, i+1).equalsIgnoreCase("L") && rawCode.length() != i+1) {
                 i++;
@@ -707,13 +701,11 @@ public class RoutineDB extends SQLiteAssetHelper {
         final String COLUMN_DEPARTMENT = "department";
         final String COLUMN_PROGRAM = "program";
         String[] columnNames = getColumnNames(TABLE_NAME);
-        Log.e(TAG, "getDateFromSchedule: campus dept prog"+campus+department+program+currentSemester );
         final String SELECTION = COLUMN_SEMESTER + " =? AND "+COLUMN_CAMPUS + " =? AND " + COLUMN_DEPARTMENT + " =? AND "+COLUMN_PROGRAM+" =?";
         Cursor cursor = db.query(TABLE_NAME, columnNames, SELECTION,
                 new String[]{ currentSemester.toLowerCase(), campus.toLowerCase(), department.toLowerCase(), program.toLowerCase()}, null, null, null, null);
         int column = cursor.getColumnIndex(COLUMN_NAME);
         String dateString = null;
-        Log.e(TAG, "getDateFromSchedule: cursor "+cursor.getCount() );
         if (cursor.moveToFirst()) {
             do {
                 dateString = cursor.getString(column);
@@ -729,7 +721,6 @@ public class RoutineDB extends SQLiteAssetHelper {
                 FileUtils.logAnError(mContext, TAG, "getDateFromSchedule: Invalid date.", e);
             }
         }
-        Log.e(TAG, "getDateFromSchedule: Date :"+date);
         return date;
     }
 
