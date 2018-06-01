@@ -32,7 +32,7 @@ import bd.edu.daffodilvarsity.classorganizer.data.UpdateResponse;
 import bd.edu.daffodilvarsity.classorganizer.utils.ClassOrganizerApi;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
-import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOffline;
+import bd.edu.daffodilvarsity.classorganizer.utils.RoutineDB;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.RoutineLoader;
 import bd.edu.daffodilvarsity.classorganizer.utils.UpdateNotificationHelper;
@@ -311,14 +311,14 @@ public class UpdateService extends IntentService {
 
     private boolean replaceDBandVerify(File downloadedDB) {
         //Backup old db
-        boolean isBKP = FileUtils.backupDatabase(getApplicationContext(), MasterDBOffline.DATABASE_NAME);
+        boolean isBKP = FileUtils.backupDatabase(getApplicationContext(), RoutineDB.DATABASE_NAME);
         if (!isBKP) {
             FileUtils.deleteDatabase(getApplicationContext(), Uri.fromFile(downloadedDB).getLastPathSegment());
             Toasty.error(getApplicationContext(), "Unable to backup old database.", Toast.LENGTH_SHORT, true).show();
             return false;
         }
-        deleteDatabase(MasterDBOffline.DATABASE_NAME);
-        File oldDb = getDatabasePath(MasterDBOffline.DATABASE_NAME);
+        deleteDatabase(RoutineDB.DATABASE_NAME);
+        File oldDb = getDatabasePath(RoutineDB.DATABASE_NAME);
         try {
             FileUtils.copyFile(downloadedDB, oldDb);
         } catch (IOException e) {

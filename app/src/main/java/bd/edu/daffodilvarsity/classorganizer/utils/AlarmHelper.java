@@ -254,12 +254,12 @@ public class AlarmHelper {
         Date classStart = CourseUtils
                 .getInstance(context)
                 .getDateFromSchedule(
-                        MasterDBOffline.COLUMN_SCHEDULES_CLASS_START, prefManager.getSemester(),
+                        RoutineDB.COLUMN_SCHEDULES_CLASS_START, prefManager.getSemester(),
                         prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
         Date classEnd = CourseUtils
                 .getInstance(context)
                 .getDateFromSchedule(
-                        MasterDBOffline.COLUMN_SCHEDULES_CLASS_END, prefManager.getSemester(),
+                        RoutineDB.COLUMN_SCHEDULES_CLASS_END, prefManager.getSemester(),
                         prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
         if (classStart != null && classEnd != null) {
             if (!(currentDate.before(classStart) || currentDate.after(classEnd))) {
@@ -275,12 +275,12 @@ public class AlarmHelper {
         Date midStart = CourseUtils
                 .getInstance(context)
                 .getDateFromSchedule(
-                        MasterDBOffline.COLUMN_SCHEDULES_MID_START, prefManager.getSemester(),
+                        RoutineDB.COLUMN_SCHEDULES_MID_START, prefManager.getSemester(),
                         prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
         Date midEnd = CourseUtils
                 .getInstance(context)
                 .getDateFromSchedule(
-                        MasterDBOffline.COLUMN_SCHEDULES_MID_END, prefManager.getSemester(),
+                        RoutineDB.COLUMN_SCHEDULES_MID_END, prefManager.getSemester(),
                         prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
         if (midStart != null && midEnd != null) {
             if (!(currentDate.before(midStart) || currentDate.after(midEnd))) {
@@ -296,23 +296,23 @@ public class AlarmHelper {
         Date oneStart = CourseUtils
                 .getInstance(context)
                 .getDateFromSchedule(
-                        MasterDBOffline.COLUMN_SCHEDULES_VACATION_ONE_START, prefManager.getSemester(),
+                        RoutineDB.COLUMN_SCHEDULES_VACATION_ONE_START, prefManager.getSemester(),
                         prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
         Date oneEnd = CourseUtils
                 .getInstance(context)
                 .getDateFromSchedule(
-                        MasterDBOffline.COLUMN_SCHEDULES_VACATION_ONE_END, prefManager.getSemester(),
+                        RoutineDB.COLUMN_SCHEDULES_VACATION_ONE_END, prefManager.getSemester(),
                         prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
 
         Date twoStart = CourseUtils
                 .getInstance(context)
                 .getDateFromSchedule(
-                        MasterDBOffline.COLUMN_SCHEDULES_VACATION_TWO_START, prefManager.getSemester(),
+                        RoutineDB.COLUMN_SCHEDULES_VACATION_TWO_START, prefManager.getSemester(),
                         prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
         Date twoEnd = CourseUtils
                 .getInstance(context)
                 .getDateFromSchedule(
-                        MasterDBOffline.COLUMN_SCHEDULES_VACATION_TWO_END, prefManager.getSemester(),
+                        RoutineDB.COLUMN_SCHEDULES_VACATION_TWO_END, prefManager.getSemester(),
                         prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
         if (oneStart != null && oneEnd != null) {
             if (!(currentDate.before(oneStart) || currentDate.after(oneEnd))) {

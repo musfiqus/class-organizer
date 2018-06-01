@@ -116,7 +116,7 @@ public class RoutineLoader {
         } else {
             //User is a teacher
             CourseUtils courseUtils = CourseUtils.getInstance(context);
-            ArrayList<DayData> dayData = courseUtils.getDayDataByQuery(campus, dept, program, teachersInitial, MasterDBOffline.COLUMN_TEACHERS_INITIAL);
+            ArrayList<DayData> dayData = courseUtils.getDayDataByQuery(campus, dept, program, teachersInitial, RoutineDB.COLUMN_TEACHERS_INITIAL);
             if (!loadPersonal) {
                 return dayData;
             } else {
@@ -229,7 +229,7 @@ public class RoutineLoader {
             }
             return true;
         } else {
-            ArrayList<DayData> vanillaRoutine = dbChecker.getDayDataByQuery(campus, dept, program, teachersInitial, MasterDBOffline.COLUMN_TEACHERS_INITIAL);
+            ArrayList<DayData> vanillaRoutine = dbChecker.getDayDataByQuery(campus, dept, program, teachersInitial, RoutineDB.COLUMN_TEACHERS_INITIAL);
             if (vanillaRoutine.size() == 0) {
                 return false;
             }

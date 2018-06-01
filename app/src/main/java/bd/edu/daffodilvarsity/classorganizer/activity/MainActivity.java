@@ -50,7 +50,7 @@ import bd.edu.daffodilvarsity.classorganizer.data.UpdateResponse;
 import bd.edu.daffodilvarsity.classorganizer.service.NotificationRestartJobIntentService;
 import bd.edu.daffodilvarsity.classorganizer.service.UpdateService;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
-import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOffline;
+import bd.edu.daffodilvarsity.classorganizer.utils.RoutineDB;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.UpdateGetter;
 import es.dmoral.toasty.Toasty;
@@ -342,8 +342,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     //Processes the update if the in app db is updated
     private void offlineUpdate() {
         //If there is a new routine, update
-        if (MasterDBOffline.OFFLINE_DATABASE_VERSION > prefManager.getDatabaseVersion()) {
-            String[] params = new String[]{"offline", ""+MasterDBOffline.OFFLINE_DATABASE_VERSION};
+        if (RoutineDB.OFFLINE_DATABASE_VERSION > prefManager.getDatabaseVersion()) {
+            String[] params = new String[]{"offline", ""+ RoutineDB.OFFLINE_DATABASE_VERSION};
             new UpdateTask(this).execute(params);
         }
     }
@@ -465,7 +465,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     CourseUtils courseUtils = CourseUtils.getInstance(activity);
                     prefManager.saveSemester(courseUtils.getCurrentSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()));
                     prefManager.setSemesterCount(courseUtils.getSemesterCount(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()));
-                    prefManager.setDatabaseVersion(MasterDBOffline.OFFLINE_DATABASE_VERSION);
+                    prefManager.setDatabaseVersion(RoutineDB.OFFLINE_DATABASE_VERSION);
                     if (isUpgrade) prefManager.resetModification(true, true, true, true);
                     if (isUpgrade) {
                         activity.showUpgradeDialogue();

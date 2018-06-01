@@ -58,11 +58,11 @@ public class CourseUtils {
     }
 
     public boolean isDatabaseWritable() {
-        return MasterDBOffline.getInstance(mContext).isDatabaseWritable();
+        return RoutineDB.getInstance(mContext).isDatabaseWritable();
     }
 
     ArrayList<DayData> getDayData(ArrayList<String> courseCodes, String section, int level, int term, String dept, String campus, String program) {
-        return MasterDBOffline.getInstance(mContext).getDayData(courseCodes, section, level, term, dept, campus, program);
+        return RoutineDB.getInstance(mContext).getDayData(courseCodes, section, level, term, dept, campus, program);
     }
 
     public ArrayList<DayData> getDayDataByQuery(String campus, String dept, String program, String query, String columnName) {
@@ -72,15 +72,15 @@ public class CourseUtils {
             ArrayList<DayData> day;
             ArrayList<DayData> eve;
             dayDataList.clear();
-            day = MasterDBOffline.getInstance(mContext).getDayDataByQuery(campus, dept,
+            day = RoutineDB.getInstance(mContext).getDayDataByQuery(campus, dept,
                         mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase(), query, columnName);
-            eve = MasterDBOffline.getInstance(mContext).getDayDataByQuery(campus, dept,
+            eve = RoutineDB.getInstance(mContext).getDayDataByQuery(campus, dept,
                         mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase(), query, columnName);
             dayDataList.addAll(day);
             dayDataList.addAll(eve);
         } else {
             dayDataList.clear();
-            dayDataList = MasterDBOffline.getInstance(mContext).getDayDataByQuery(campus, dept, program, query, columnName);
+            dayDataList = RoutineDB.getInstance(mContext).getDayDataByQuery(campus, dept, program, query, columnName);
         }
         return dayDataList;
 
@@ -93,9 +93,9 @@ public class CourseUtils {
             dayDataList.clear();
             ArrayList<DayData> day;
             ArrayList<DayData> eve;
-            day = MasterDBOffline.getInstance(mContext).getFreeRoomsByTime(campus, dept,
+            day = RoutineDB.getInstance(mContext).getFreeRoomsByTime(campus, dept,
                         mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase(), weekday, timeWeight);
-            eve = MasterDBOffline.getInstance(mContext).getFreeRoomsByTime(campus, dept,
+            eve = RoutineDB.getInstance(mContext).getFreeRoomsByTime(campus, dept,
                         mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase(), weekday, timeWeight);
             if (day != null) {
                 dayDataList.addAll(day);
@@ -105,7 +105,7 @@ public class CourseUtils {
             }
         } else {
             dayDataList.clear();
-            dayDataList = MasterDBOffline.getInstance(mContext).getFreeRoomsByTime(campus, dept, program, weekday, timeWeight);
+            dayDataList = RoutineDB.getInstance(mContext).getFreeRoomsByTime(campus, dept, program, weekday, timeWeight);
         }
         return dayDataList;
     }
@@ -117,9 +117,9 @@ public class CourseUtils {
             dayDataList.clear();
             ArrayList<DayData> day;
             ArrayList<DayData> eve;
-            day = MasterDBOffline.getInstance(mContext).getFreeRoomsByRoom(campus, dept,
+            day = RoutineDB.getInstance(mContext).getFreeRoomsByRoom(campus, dept,
                         mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase(), room);
-            eve = MasterDBOffline.getInstance(mContext).getFreeRoomsByRoom(campus, dept,
+            eve = RoutineDB.getInstance(mContext).getFreeRoomsByRoom(campus, dept,
                         mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase(), room);
             if (day != null) {
                 dayDataList.addAll(day);
@@ -129,59 +129,59 @@ public class CourseUtils {
             }
         } else {
             dayDataList.clear();
-            dayDataList = MasterDBOffline.getInstance(mContext).getFreeRoomsByRoom(campus, dept, program, room);
+            dayDataList = RoutineDB.getInstance(mContext).getFreeRoomsByRoom(campus, dept, program, room);
 
         }
         return dayDataList;
     }
 
     public String getCourseTitle(String courseCode, String campus, String dept, String program) {
-        return MasterDBOffline.getInstance(mContext).getCourseTitle(courseCode, campus, dept, program);
+        return RoutineDB.getInstance(mContext).getCourseTitle(courseCode, campus, dept, program);
     }
 
     public String getTime(String timeData) {
-        return MasterDBOffline.getInstance(mContext).getTime(timeData);
+        return RoutineDB.getInstance(mContext).getTime(timeData);
     }
 
     public ArrayList<String> getCourseCodes(int semester, String campus, String department, String program) {
-        return MasterDBOffline.getInstance(mContext).getCourseCodes(semester, campus, department, program);
+        return RoutineDB.getInstance(mContext).getCourseCodes(semester, campus, department, program);
     }
 
     public ArrayList<String> getSections(String campus, String department, String program) {
-        return MasterDBOffline.getInstance(mContext).getSections(campus, department, program);
+        return RoutineDB.getInstance(mContext).getSections(campus, department, program);
     }
 
     //Method to retrieve spinner data
     public ArrayList<String> getSpinnerList(int code) {
-        return MasterDBOffline.getInstance(mContext).getSpinnerList(code);
+        return RoutineDB.getInstance(mContext).getSpinnerList(code);
     }
 
 
     //Gets the total number of semester for the course. EG: for cse day it's 12. If it doesn't exist the value is 0
     public int getTotalSemester(String campus, String department, String program) {
-        return MasterDBOffline.getInstance(mContext).getTotalSemester(campus,department,program);
+        return RoutineDB.getInstance(mContext).getTotalSemester(campus,department,program);
     }
 
 
     //Gets the name of the current semester
     public String getCurrentSemester(String campus, String department, String program) {
-        return MasterDBOffline.getInstance(mContext).getCurrentSemester(campus,department,program);
+        return RoutineDB.getInstance(mContext).getCurrentSemester(campus,department,program);
     }
 
     //Gets the integer value of current semester of database
     //This value determines whether to update semester or not
     public int getSemesterCount(String campus, String department, String program) {
-        return MasterDBOffline.getInstance(mContext).getSemesterCount(campus,department,program);
+        return RoutineDB.getInstance(mContext).getSemesterCount(campus,department,program);
     }
 
     //Get time weight from start time
     public double getTimeWeightFromStart(String startTime) {
-        return MasterDBOffline.getInstance(mContext).getTimeWeightFromStart(startTime);
+        return RoutineDB.getInstance(mContext).getTimeWeightFromStart(startTime);
     }
 
     //Checks if table exists in the db using table name
     public boolean doesTableExist(final String TABLE_NAME) {
-        return MasterDBOffline.getInstance(mContext).doesTableExist(TABLE_NAME);
+        return RoutineDB.getInstance(mContext).doesTableExist(TABLE_NAME);
     }
 
     public ArrayList<String> getTeachersInitials(String campus, String department, String program) {
@@ -191,8 +191,8 @@ public class CourseUtils {
             ArrayList<String> day;
             ArrayList<String> eve;
 
-            day = MasterDBOffline.getInstance(mContext).getTeachersInitials(campus, department, mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase());
-            eve = MasterDBOffline.getInstance(mContext).getTeachersInitials(campus, department, mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase());
+            day = RoutineDB.getInstance(mContext).getTeachersInitials(campus, department, mContext.getResources().getStringArray(R.array.programs)[0].toLowerCase());
+            eve = RoutineDB.getInstance(mContext).getTeachersInitials(campus, department, mContext.getResources().getStringArray(R.array.programs)[1].toLowerCase());
 
             if (day != null) {
                 dataArrayList.addAll(day);
@@ -210,20 +210,20 @@ public class CourseUtils {
             });
             return list;
         } else {
-            return MasterDBOffline.getInstance(mContext).getTeachersInitials(campus, department, program);
+            return RoutineDB.getInstance(mContext).getTeachersInitials(campus, department, program);
         }
     }
 
     public ArrayList<String> getRoomNo(String campus, String department, String program) {
-        return MasterDBOffline.getInstance(mContext).getRoomNo(campus, department, program);
+        return RoutineDB.getInstance(mContext).getRoomNo(campus, department, program);
     }
 
     //All methods below this are for DataChecker
     public boolean checkDepartment(String campus, String department) {
-        return MasterDBOffline.getInstance(mContext).checkDepartment(campus, department);
+        return RoutineDB.getInstance(mContext).checkDepartment(campus, department);
     }
     public Date getDateFromSchedule(final String COLUMN_NAME, String currentSemester, String campus, String department, String program) {
-        return MasterDBOffline.getInstance(mContext).getDateFromSchedule(COLUMN_NAME, currentSemester, campus, department, program);
+        return RoutineDB.getInstance(mContext).getDateFromSchedule(COLUMN_NAME, currentSemester, campus, department, program);
     }
 
     public static DayData convertToDayData(byte[] dayByte) {

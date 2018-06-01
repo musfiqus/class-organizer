@@ -25,7 +25,7 @@ import bd.edu.daffodilvarsity.classorganizer.activity.DayDataDetailActivity;
 import bd.edu.daffodilvarsity.classorganizer.adapter.DayDataAdapter;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
-import bd.edu.daffodilvarsity.classorganizer.utils.MasterDBOffline;
+import bd.edu.daffodilvarsity.classorganizer.utils.RoutineDB;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 
 /**
@@ -129,7 +129,7 @@ public class SearchFragmentTeacher extends Fragment implements DayDataAdapter.Da
             CourseUtils courseUtils = CourseUtils.getInstance(mOptionContainer.getContext());
             PrefManager prefManager = new PrefManager(mOptionContainer.getContext());
             String initial = mSearchTeacherSpinner.getSelectedItem().toString();
-            ArrayList<DayData> result = courseUtils.getDayDataByQuery(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram(), initial, MasterDBOffline.COLUMN_TEACHERS_INITIAL);
+            ArrayList<DayData> result = courseUtils.getDayDataByQuery(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram(), initial, RoutineDB.COLUMN_TEACHERS_INITIAL);
             if (result.size() == 0) {
                 noResult(true);
                 Log.e(TAG, "ZERO");

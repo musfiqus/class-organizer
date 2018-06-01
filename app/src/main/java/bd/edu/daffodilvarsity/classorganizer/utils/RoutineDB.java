@@ -27,8 +27,8 @@ import es.dmoral.toasty.Toasty;
  * musfiqus@gmail.com
  */
 
-public class MasterDBOffline extends SQLiteAssetHelper {
-    private static final String TAG = "MasterDBOffline";
+public class RoutineDB extends SQLiteAssetHelper {
+    private static final String TAG = "RoutineDB";
     public static final int OFFLINE_DATABASE_VERSION = 27;
 
     //Increment the version to erase previous db
@@ -48,15 +48,15 @@ public class MasterDBOffline extends SQLiteAssetHelper {
     public static final String COLUMN_SCHEDULES_VACATION_TWO_END = "vacation_two_end";
     private ArrayList<DayData> finalDayData = new ArrayList<>();
     private Context mContext;
-    private static MasterDBOffline mInstance = null;
+    private static RoutineDB mInstance = null;
 
-    private MasterDBOffline(Context context, int databaseVersion, boolean isAlreadyUpdated) {
+    private RoutineDB(Context context, int databaseVersion, boolean isAlreadyUpdated) {
         super(context, DATABASE_NAME, null, databaseVersion, isAlreadyUpdated);
         setForcedUpgrade();
         mContext = context.getApplicationContext();
     }
 
-    public static MasterDBOffline getInstance(Context context) {
+    public static RoutineDB getInstance(Context context) {
 
         // Use the application context, which will ensure that you
         // don't accidentally leak an Activity's context.
@@ -66,18 +66,18 @@ public class MasterDBOffline extends SQLiteAssetHelper {
         }
         boolean isOnlineUpdated = false;
         int savedVersion = new PrefManager(context).getDatabaseVersion();
-        if (savedVersion > MasterDBOffline.OFFLINE_DATABASE_VERSION) {
+        if (savedVersion > RoutineDB.OFFLINE_DATABASE_VERSION) {
             //db is newer than the offline one, don't force upgrade
             isOnlineUpdated = true;
         }
         if (savedVersion == 0) {
-            savedVersion = MasterDBOffline.OFFLINE_DATABASE_VERSION;
+            savedVersion = RoutineDB.OFFLINE_DATABASE_VERSION;
         }
         if (isOnlineUpdated) {
-            mInstance = new MasterDBOffline(context, savedVersion, true);
+            mInstance = new RoutineDB(context, savedVersion, true);
             Log.d(TAG, "getInstance: Online");
         } else {
-            mInstance = new MasterDBOffline(context, savedVersion, false);
+            mInstance = new RoutineDB(context, savedVersion, false);
             Log.d(TAG, "getInstance: Offline");
         }
         Log.d(TAG, "getInstance: MD5 "+FileUtils.calculateMD5(context.getDatabasePath(DATABASE_NAME)));

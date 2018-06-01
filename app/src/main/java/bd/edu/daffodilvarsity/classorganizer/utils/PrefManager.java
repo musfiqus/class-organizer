@@ -104,7 +104,7 @@ public class PrefManager {
     }
 
     public int getDatabaseVersion() {
-        return pref.getInt(SAVE_DATABASE_VERSION, MasterDBOffline.OFFLINE_DATABASE_VERSION);
+        return pref.getInt(SAVE_DATABASE_VERSION, RoutineDB.OFFLINE_DATABASE_VERSION);
     }
 
     public void setMultiProgram(boolean isMulti) {
@@ -292,8 +292,8 @@ public class PrefManager {
     }
 
     public int getMasterDBVersion() {
-        int savedDBVer = pref.getInt(SAVE_MASTERDB_VERSION, MasterDBOffline.OFFLINE_DATABASE_VERSION);
-        return (savedDBVer > MasterDBOffline.OFFLINE_DATABASE_VERSION) ? savedDBVer: MasterDBOffline.OFFLINE_DATABASE_VERSION;
+        int savedDBVer = pref.getInt(SAVE_MASTERDB_VERSION, RoutineDB.OFFLINE_DATABASE_VERSION);
+        return (savedDBVer > RoutineDB.OFFLINE_DATABASE_VERSION) ? savedDBVer: RoutineDB.OFFLINE_DATABASE_VERSION;
     }
 
     public boolean isCampusChangeAlertDisabled() {
