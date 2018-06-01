@@ -52,12 +52,10 @@ public class WelcomeActivity extends ColorfulActivity implements AdapterView.OnI
     private TextView[] dots;
     private int[] layouts;
     private Button btnPrevious, btnNext;
-    private boolean isUpdateSuccessful = true;
     private TextView checkText;
     private ProgressBar progressBar;
     private Disposable mDisposable;
     private ImageView cloud;
-    private boolean hasSkipped = false;
     public boolean isActivityRunning = false;
     //  viewpager change listener
     ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -161,7 +159,6 @@ public class WelcomeActivity extends ColorfulActivity implements AdapterView.OnI
             // if last page home screen will be launched
             int current = getItem(+1);
             if (btnNext.getText().toString().equalsIgnoreCase(getResources().getString(R.string.skip))) {
-                hasSkipped = true;
             }
             if (current == layouts.length - 1) {
                 //class slide
@@ -317,7 +314,7 @@ public class WelcomeActivity extends ColorfulActivity implements AdapterView.OnI
         message += "\nProgram: " + program.substring(0, 1).toUpperCase() + program.substring(1, program.length()).toLowerCase();
         message += "\nSection: " + section + "\nLevel: " + level + "\nTerm: " + term;
         message += "\nApp version: " + appVersion;
-        message += "\nDB version: " + prefManager.getMasterDBVersion();
+        message += "\nDB version: " + prefManager.getDatabaseVersion();
         message += "\n";
         message += "\n*** Important: Insert your class routine for quicker response ***";
         String subject = getString(R.string.suggestion_email_subject);

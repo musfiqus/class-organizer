@@ -53,6 +53,8 @@ public class UpdateService extends IntentService {
     public static final int UPDATE_VERIFYING = 201;
     public static final int UPDATE_FAILED = -1;
 
+    public static final int UPDATE_SERVICE_NOTIFICATION_CODE = 69096;
+
     private static final String TAG = "UpdateService";
 
     public static final String TAG_UPDATE_RESPONSE = "UpdateResponse";
@@ -77,18 +79,44 @@ public class UpdateService extends IntentService {
             if (notificationManager != null) {
                 notificationManager.cancel(UpdateNotificationHelper.UPDATE_NOTIFICATION_REQUEST_CODE);
             }
+            PrefManager prefManager = new PrefManager(getApplicationContext());
+            if (mUpdateResponse.getVersion() <= prefManager.getDatabaseVersion()) {
+                //abort while there is still time
+                alreadyUpdatedNotification();
+                //send intent to activity
+                //200 = normal update
+                //300 = semester update
+                Download download = new Download();
+                download.setProgress(UPDATE_NORMAL);
+                sendIntent(download);
+                Toasty.info(getApplicationContext(), "Already on the latest version!", Toast.LENGTH_SHORT, true).show();
+            } else {
+                notificationBuilder = new NotificationCompat.Builder(this, UpdateNotificationHelper.UPDATE_CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_download_24dp)
+                        .setContentTitle("Routine Update")
+                        .setContentText("Downloading update")
+                        .setPriority(Notification.PRIORITY_MAX)
+                        .setAutoCancel(true);
+                notificationHandler(notificationBuilder.build());
+                Gson gson = new Gson();
+                Log.d(TAG, "onHandleIntent: "+gson.toJson(mUpdateResponse));
+                initDownload(mUpdateResponse.getUrl(), mUpdateResponse.getFilename(), mUpdateResponse.getSize());
+            }
 
-            notificationBuilder = new NotificationCompat.Builder(this, UpdateNotificationHelper.UPDATE_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_download_24dp)
-                    .setContentTitle("Routine Update")
-                    .setContentText("Downloading update")
-                    .setPriority(Notification.PRIORITY_MAX)
-                    .setAutoCancel(true);
-            notificationHandler(notificationBuilder.build());
-            Gson gson = new Gson();
-            Log.d(TAG, "onHandleIntent: "+gson.toJson(mUpdateResponse));
-            initDownload(mUpdateResponse.getUrl(), mUpdateResponse.getFilename(), mUpdateResponse.getSize());
+
         }
+    }
+
+    private void alreadyUpdatedNotification() {
+        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        notificationManager.cancel(UPDATE_SERVICE_NOTIFICATION_CODE);
+        notificationBuilder.setProgress(0, 0, false);
+        notificationBuilder.setContentText("Already on the latest version!");
+        notificationBuilder.setSmallIcon(R.drawable.ic_download_done_24dp);
+        notificationBuilder.setContentIntent(pendingIntent);
+        notificationBuilder.setAutoCancel(true);
+        notificationManager.notify(UPDATE_SERVICE_NOTIFICATION_CODE, notificationBuilder.build());
     }
 
     private void initDownload(@Url String url, String fileName, long fileSize) {
@@ -166,7 +194,7 @@ public class UpdateService extends IntentService {
                 notificationManager.createNotificationChannel(channel);
             }
 
-            notificationManager.notify(0, notification);
+            notificationManager.notify(UPDATE_SERVICE_NOTIFICATION_CODE, notification);
         }
     }
 
@@ -255,10 +283,10 @@ public class UpdateService extends IntentService {
     }
 
     private void verify(File downloadedDB) {
-        notificationManager.cancel(0);
+        notificationManager.cancel(UPDATE_SERVICE_NOTIFICATION_CODE);
         notificationBuilder.setProgress(0, 0, true);
         notificationBuilder.setContentText("Verifying file");
-        notificationManager.notify(0, notificationBuilder.build());
+        notificationManager.notify(UPDATE_SERVICE_NOTIFICATION_CODE, notificationBuilder.build());
         Download download = new Download();
         download.setProgress(UPDATE_VERIFYING);
         sendIntent(download);
@@ -335,25 +363,25 @@ public class UpdateService extends IntentService {
     private void successNotification() {
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        notificationManager.cancel(0);
+        notificationManager.cancel(UPDATE_SERVICE_NOTIFICATION_CODE);
         notificationBuilder.setProgress(0, 0, false);
         notificationBuilder.setContentText("Update successful");
         notificationBuilder.setSmallIcon(R.drawable.ic_download_done_24dp);
         notificationBuilder.setContentIntent(pendingIntent);
         notificationBuilder.setAutoCancel(true);
-        notificationManager.notify(0, notificationBuilder.build());
+        notificationManager.notify(UPDATE_SERVICE_NOTIFICATION_CODE, notificationBuilder.build());
     }
 
     private void failureNotification() {
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        notificationManager.cancel(0);
+        notificationManager.cancel(UPDATE_SERVICE_NOTIFICATION_CODE);
         notificationBuilder.setProgress(0, 0, false);
         notificationBuilder.setContentText("Download failed");
         notificationBuilder.setSmallIcon(R.drawable.ic_download_failed_24dp);
         notificationBuilder.setContentIntent(pendingIntent);
         notificationBuilder.setAutoCancel(true);
-        notificationManager.notify(0, notificationBuilder.build());
+        notificationManager.notify(UPDATE_SERVICE_NOTIFICATION_CODE, notificationBuilder.build());
     }
 
     private void onDownloadFailure() {
@@ -401,7 +429,7 @@ public class UpdateService extends IntentService {
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        notificationManager.cancel(0);
+        notificationManager.cancel(UPDATE_SERVICE_NOTIFICATION_CODE);
     }
 
 }

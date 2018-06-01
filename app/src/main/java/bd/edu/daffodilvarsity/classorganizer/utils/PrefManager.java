@@ -43,8 +43,6 @@ public class PrefManager {
     private static final String PREF_REMINDER_TIME_DELAY = "ReminderTimeDelayInMinutes";
     private static final String SAVE_MASTERDB_VERSION = "MasterDB_Version";
     private static final String SAVE_DATABASE_VERSION = "Incremental_Database_Version";
-    private static final String SAVE_ONLINEDB_VERSION = "Online_Database_Version";
-    private static final String SAVE_OFFLINEDB_VERSION = "Offline_Database_Version";
     private static final String PREF_MULTI_PROGRAM = "Teacher_Multi_Program";
     private static final String PREF_SEMESTER_COUNT = "Current_Semester_Count";
     private static final String PREF_USER_TYPE = "Current_User_Type";
@@ -90,31 +88,7 @@ public class PrefManager {
         }
     }
 
-    public void saveOnlineDbVersion(int dbVersion) {
-        editor.remove(SAVE_ONLINEDB_VERSION).apply();
-        editor.putInt(SAVE_ONLINEDB_VERSION, dbVersion).apply();
-    }
 
-    public int getOnlineDbVersion() {
-        return pref.getInt(SAVE_ONLINEDB_VERSION, 1);
-    }
-
-    public void saveOfflineDbVersion(int dbVersion) {
-        editor.remove(SAVE_OFFLINEDB_VERSION).apply();
-        editor.putInt(SAVE_OFFLINEDB_VERSION, dbVersion).apply();
-    }
-
-    public int getOfflineDbVersion() {
-        return pref.getInt(SAVE_OFFLINEDB_VERSION, MasterDBOffline.OFFLINE_DATABASE_VERSION-1);
-    }
-
-    public final String getOnlineDbName() {
-        return "masterdb_online_"+getMasterDBVersion()+".db";
-    }
-
-    public final String getOfflineDbName() {
-        return "masterdb_offline_"+MasterDBOffline.OFFLINE_DATABASE_VERSION+".db";
-    }
 
     public ArrayList<DayData> getSavedDayData() {
         Gson gson = new Gson();
@@ -124,20 +98,13 @@ public class PrefManager {
         return gson.fromJson(json, type);
     }
 
-    public void incrementDatabaseVersion() {
-        int prev = pref.getInt(SAVE_DATABASE_VERSION, getMasterDBVersion());
-        prev++;
-        editor.remove(SAVE_DATABASE_VERSION).apply();
-        editor.putInt(SAVE_DATABASE_VERSION, prev).apply();
-    }
-
     public void setDatabaseVersion(int version) {
         editor.remove(SAVE_DATABASE_VERSION).apply();
         editor.putInt(SAVE_DATABASE_VERSION, version).apply();
     }
 
     public int getDatabaseVersion() {
-        return pref.getInt(SAVE_DATABASE_VERSION, 0);
+        return pref.getInt(SAVE_DATABASE_VERSION, MasterDBOffline.OFFLINE_DATABASE_VERSION);
     }
 
     public void setMultiProgram(boolean isMulti) {
@@ -408,10 +375,7 @@ public class PrefManager {
         return false;
     }
 
-    public void setUpdatedOnline(boolean value) {
-        editor.remove(IS_ROUTINE_UPDATED_ONLINE).apply();
-        editor.putBoolean(IS_ROUTINE_UPDATED_ONLINE, value).apply();
-    }
+
 
     public void setSuppressedMasterDbVersion(int dbVersion) {
         editor.remove(PREF_SUPPRESSED_MASTER_DB_VERSION).apply();
@@ -420,10 +384,6 @@ public class PrefManager {
 
     public int getSuppressedMasterDbVersion() {
         return pref.getInt(PREF_SUPPRESSED_MASTER_DB_VERSION, 0);
-    }
-
-    public boolean isUpdatedOnline() {
-        return pref.getBoolean(IS_ROUTINE_UPDATED_ONLINE, false);
     }
 
     public boolean isFirstTimeLaunch() {

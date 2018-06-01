@@ -3,7 +3,6 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatCheckBox;
@@ -39,10 +38,10 @@ public class SpinnerHelperCampus implements AdapterView.OnItemSelectedListener {
     private ArrayAdapter<String> campusAdapter;
 
     private Spinner deptSpinner;
-    ArrayAdapter<String> deptAdapter;
+    private ArrayAdapter<String> deptAdapter;
 
     private Spinner programSpinner;
-    ArrayAdapter<CharSequence> programAdapter;
+    private ArrayAdapter<CharSequence> programAdapter;
 
     private AppCompatCheckBox multiProgramCheck;
 
@@ -157,14 +156,20 @@ public class SpinnerHelperCampus implements AdapterView.OnItemSelectedListener {
     }
 
     public void setupCampusAdapters() {
-        ArrayAdapter<String> campusAdapter = new ArrayAdapter<>(context, spinnerRowResource, CourseUtils.getInstance(context).getSpinnerList(CourseUtils.GET_CAMPUS));
-        ArrayAdapter<String> deptAdapter = new ArrayAdapter<>(context, spinnerRowResource, CourseUtils.getInstance(context).getSpinnerList(CourseUtils.GET_DEPARTMENT));
+        ArrayList<String> campuses = CourseUtils.getInstance(context).getSpinnerList(CourseUtils.GET_CAMPUS);
+        ArrayList<String> departments = CourseUtils.getInstance(context).getSpinnerList(CourseUtils.GET_DEPARTMENT);
+        if (campuses != null) {
+            ArrayAdapter<String> campusAdapter = new ArrayAdapter<>(context, spinnerRowResource, campuses);
+            campusSpinner.setAdapter(campusAdapter);
+            campusSpinner.setOnItemSelectedListener(this);
+        }
+        if (departments != null) {
+            ArrayAdapter<String> deptAdapter = new ArrayAdapter<>(context, spinnerRowResource, departments);
+            deptSpinner.setAdapter(deptAdapter);
+            deptSpinner.setOnItemSelectedListener(this);
+        }
         ArrayAdapter<CharSequence> programAdapter = ArrayAdapter.createFromResource(context, R.array.programs, spinnerRowResource);
-        campusSpinner.setAdapter(campusAdapter);
-        deptSpinner.setAdapter(deptAdapter);
         programSpinner.setAdapter(programAdapter);
-        campusSpinner.setOnItemSelectedListener(this);
-        deptSpinner.setOnItemSelectedListener(this);
         programSpinner.setOnItemSelectedListener(this);
     }
 

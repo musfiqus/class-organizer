@@ -1,7 +1,6 @@
 package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -14,7 +13,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.IllegalFormatCodePointException;
 import java.util.Set;
 
 import bd.edu.daffodilvarsity.classorganizer.R;

@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
 import java.text.DateFormat;

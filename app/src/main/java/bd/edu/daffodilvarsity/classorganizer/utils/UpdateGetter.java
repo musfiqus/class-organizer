@@ -1,14 +1,7 @@
 package bd.edu.daffodilvarsity.classorganizer.utils;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
-import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -21,10 +14,7 @@ import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.activity.MainActivity;
 import bd.edu.daffodilvarsity.classorganizer.activity.SettingsActivity;
 import bd.edu.daffodilvarsity.classorganizer.activity.WelcomeActivity;
-import bd.edu.daffodilvarsity.classorganizer.data.DayData;
 import bd.edu.daffodilvarsity.classorganizer.data.UpdateResponse;
-import bd.edu.daffodilvarsity.classorganizer.receiver.MuteActionReceiver;
-import bd.edu.daffodilvarsity.classorganizer.receiver.NotificationPublisher;
 import bd.edu.daffodilvarsity.classorganizer.service.UpdateService;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.android.schedulers.AndroidSchedulers;
