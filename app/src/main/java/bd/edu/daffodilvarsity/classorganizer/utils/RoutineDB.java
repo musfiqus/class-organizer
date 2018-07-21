@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;
 
@@ -20,7 +19,6 @@ import java.util.Locale;
 import java.util.Set;
 
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
-import es.dmoral.toasty.Toasty;
 
 /**
  * Created by Mushfiqus Salehin on 10/8/2017.
@@ -29,7 +27,7 @@ import es.dmoral.toasty.Toasty;
 
 public class RoutineDB extends SQLiteAssetHelper {
     private static final String TAG = "RoutineDB";
-    public static final int OFFLINE_DATABASE_VERSION = 22;
+    public static final int OFFLINE_DATABASE_VERSION = 32;
 
     //Increment the version to erase previous db
     private static final String COLUMN_COURSE_CODE = "course_code";
@@ -102,7 +100,6 @@ public class RoutineDB extends SQLiteAssetHelper {
             db = getWritableDatabase();
         } catch (Exception e) {
             Log.e(TAG, "getDatabase: DERP DB", e);
-            Toasty.error(mContext, "Unable to access database.", Toast.LENGTH_SHORT, true).show();
             FileUtils.logAnError(mContext, TAG, "getDatabase: ", e);
         }
         return db;

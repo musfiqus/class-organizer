@@ -8,11 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import es.dmoral.toasty.Toasty;
 
 /**
  * Created by Mushfiqus Salehin on 5/20/2017.
@@ -31,7 +33,8 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
     private int holderType;
     public static final int HOLDER_ROUTINE = 0;
     public static final int HOLDER_ROOM = 1;
-    public static final int HOLDER_TEACHER = 2;
+    public static final int HOLDER_SEARCH_TEACHER = 2;
+    public static final int HOLDER_ROUTINE_TEACHER = 3;
 
     public DayDataAdapter(ArrayList<DayData> dayDataArrayList, Context context, int itemResource, int holderType, DayListItemClickListener onItemClickListener) {
         this.dayDataArrayList = dayDataArrayList;
@@ -186,7 +189,7 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
                     this.timeTextView.setText(this.dayData.getTime());
                 }
                 statusLabel.setText(R.string.status);
-            } else if (holderType == HOLDER_TEACHER){
+            } else if (holderType == HOLDER_SEARCH_TEACHER){
                 statusLabel.setText(R.string.day);
                 this.dayData = dayData;
                 this.courseCodeTextView.setText(this.dayData.getCourseCode());
@@ -199,6 +202,20 @@ public class DayDataAdapter extends RecyclerView.Adapter<DayDataAdapter.DayDataH
                 } else {
                     this.timeTextView.setText(this.dayData.getTime());
                 }
+            } else if (holderType == HOLDER_ROUTINE_TEACHER) {
+                this.dayData = dayData;
+                this.courseCodeTextView.setText(this.dayData.getCourseCode());
+                this.teachersInitialTextView.setText(this.dayData.getSection());
+                this.roomNoTextView.setText(this.dayData.getRoomNo());
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+                boolean isRamadan = preferences.getBoolean("ramadan_preference", false);
+                if (isRamadan) {
+                    this.timeTextView.setText(convertToRamadanTime(this.dayData.getTime(), this.dayData.getTimeWeight()));
+                } else {
+                    this.timeTextView.setText(this.dayData.getTime());
+                }
+            } else {
+                Toasty.error(context, "You've reached the impossible dear Gandalf!", Toast.LENGTH_SHORT, true).show();
             }
 
 

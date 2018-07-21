@@ -51,7 +51,7 @@ public class UpdateNotificationHelper {
                 .setTicker(mContext.getString(R.string.routine_update_ticker))
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND)
-                .setSmallIcon(NotificationPublisher.getNotificationIcon())
+                .setSmallIcon(R.drawable.icon_silhouette)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .addAction(getUpdateAction());

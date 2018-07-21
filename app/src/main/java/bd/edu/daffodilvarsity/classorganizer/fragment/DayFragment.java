@@ -43,7 +43,7 @@ public class DayFragment extends Fragment implements DayDataAdapter.DayListItemC
         recyclerView.setLayoutManager(layoutManager);
         assert courseData != null;
         adapter = new DayDataAdapter(courseData, getContext(), R.layout.list_item,
-                prefManager.isUserStudent() ? DayDataAdapter.HOLDER_ROUTINE: DayDataAdapter.HOLDER_TEACHER,
+                prefManager.isUserStudent() ? DayDataAdapter.HOLDER_ROUTINE: DayDataAdapter.HOLDER_ROUTINE_TEACHER,
                 this);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);

@@ -81,7 +81,7 @@ public class NotificationPublisher extends BroadcastReceiver {
                 .setTicker("You have a class soon!")
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND)
-                .setSmallIcon(getNotificationIcon())
+                .setSmallIcon(R.drawable.icon_silhouette)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .addAction(getMuteAction(dayData, context, index));
@@ -120,11 +120,6 @@ public class NotificationPublisher extends BroadcastReceiver {
 
         PendingIntent mutePendingIntent = PendingIntent.getBroadcast(context, index, muteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         return new NotificationCompat.Action.Builder(0, context.getString(R.string.mute_action), mutePendingIntent).build();
-    }
-
-    public static int getNotificationIcon() {
-        boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
-        return useWhiteIcon ? R.drawable.icon_silhouette : R.mipmap.ic_launcher;
     }
 
     @NonNull
