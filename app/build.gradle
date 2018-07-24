@@ -21,10 +21,10 @@ android {
         applicationId "bd.edu.daffodilvarsity.classorganizer"
         minSdkVersion 16
         targetSdkVersion 27
-        versionName '4.7.5'
+        versionName '4.7.6'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 69
+        versionCode 70
     }
     signingConfigs {
         release {
@@ -90,7 +90,7 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:core:0.9.4.5'
 
     //GSON for saving objects
-    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.google.code.gson:gson:2.8.5'
 
     //Do not update that shitty firebase
     implementation "com.google.firebase:firebase-core:$firebaseLibVersion"

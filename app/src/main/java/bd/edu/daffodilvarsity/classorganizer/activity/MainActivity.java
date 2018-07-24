@@ -31,10 +31,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -56,8 +54,8 @@ import bd.edu.daffodilvarsity.classorganizer.data.UpdateResponse;
 import bd.edu.daffodilvarsity.classorganizer.service.NotificationRestartJobIntentService;
 import bd.edu.daffodilvarsity.classorganizer.service.UpdateService;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
-import bd.edu.daffodilvarsity.classorganizer.utils.RoutineDB;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
+import bd.edu.daffodilvarsity.classorganizer.utils.RoutineDB;
 import bd.edu.daffodilvarsity.classorganizer.utils.UpdateGetter;
 import es.dmoral.toasty.Toasty;
 import io.reactivex.disposables.Disposable;
