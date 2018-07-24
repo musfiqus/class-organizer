@@ -40,6 +40,7 @@ import bd.edu.daffodilvarsity.classorganizer.utils.RoutineLoader;
 import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelperCampus;
 import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelperClass;
 import bd.edu.daffodilvarsity.classorganizer.utils.SpinnerHelperUser;
+import es.dmoral.toasty.Toasty;
 
 public class SettingsActivity extends ColorfulActivity {
 

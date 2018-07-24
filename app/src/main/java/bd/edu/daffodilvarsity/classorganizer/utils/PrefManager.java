@@ -46,6 +46,7 @@ public class PrefManager {
     private static final String PREF_USER_TYPE = "Current_User_Type";
     private static final String PREF_TEACHER_INITIAL = "User_Teacher_Initial";
     private static final String PREF_REFRESH_DATA = "Refresh_View_Data";
+    private static final String PREF_EXPIRED_PROMOTION = "expired_promotion";
     public static final String SAVE_DATA_TAG = "save";
     public static final String ADD_DATA_TAG = "add";
     public static final String EDIT_DATA_TAG = "edit";
@@ -133,6 +134,14 @@ public class PrefManager {
         editor.putString(PREF_TEACHER_INITIAL, initial).apply();
     }
 
+    public void setExpiredPromotion(String promotion) {
+        editor.remove(PREF_EXPIRED_PROMOTION).apply();
+        editor.putString(PREF_EXPIRED_PROMOTION, promotion).apply();
+    }
+
+    public String getExpiredPromotion() {
+        return pref.getString(PREF_EXPIRED_PROMOTION, "");
+    }
 
     public void saveTerm(int term) {
         editor.remove(SAVE_TERM).apply();

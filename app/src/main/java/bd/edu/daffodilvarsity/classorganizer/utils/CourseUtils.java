@@ -58,14 +58,20 @@ public class CourseUtils {
     }
 
     public boolean isDatabaseWritable() {
-        return RoutineDB.getInstance(mContext).isDatabaseWritable();
+        return !isRoutineDbNull() && RoutineDB.getInstance(mContext).isDatabaseWritable();
     }
 
     ArrayList<DayData> getDayData(ArrayList<String> courseCodes, String section, int level, int term, String dept, String campus, String program) {
+        if (isRoutineDbNull()) {
+            return null;
+        }
         return RoutineDB.getInstance(mContext).getDayData(courseCodes, section, level, term, dept, campus, program);
     }
 
     public ArrayList<DayData> getDayDataByQuery(String campus, String dept, String program, String query, String columnName) {
+        if (isRoutineDbNull()) {
+            return null;
+        }
         PrefManager prefManager = new PrefManager(mContext);
         ArrayList<DayData> dayDataList = new ArrayList<>();
         if (!prefManager.isUserStudent() && prefManager.isMultiProgram()) {
@@ -87,6 +93,9 @@ public class CourseUtils {
     }
 
     public ArrayList<DayData> getFreeRoomsByTime(String campus, String dept, String program, String weekday, String timeWeight) {
+        if (isRoutineDbNull()) {
+            return null;
+        }
         PrefManager prefManager = new PrefManager(mContext);
         ArrayList<DayData> dayDataList = new ArrayList<>();
         if (!prefManager.isUserStudent() && prefManager.isMultiProgram()) {
@@ -111,6 +120,9 @@ public class CourseUtils {
     }
 
     public ArrayList<DayData> getFreeRoomsByRoom(String campus, String dept, String program, String room) {
+        if (isRoutineDbNull()) {
+            return null;
+        }
         PrefManager prefManager = new PrefManager(mContext);
         ArrayList<DayData> dayDataList = new ArrayList<>();
         if (!prefManager.isUserStudent() && prefManager.isMultiProgram()) {
@@ -136,55 +148,85 @@ public class CourseUtils {
     }
 
     public String getCourseTitle(String courseCode, String campus, String dept, String program) {
+        if (isRoutineDbNull()) {
+            return null;
+        }
         return RoutineDB.getInstance(mContext).getCourseTitle(courseCode, campus, dept, program);
     }
 
     public String getTime(String timeData) {
+        if (isRoutineDbNull()) {
+            return null;
+        }
         return RoutineDB.getInstance(mContext).getTime(timeData);
     }
 
     public ArrayList<String> getCourseCodes(int semester, String campus, String department, String program) {
+        if (isRoutineDbNull()) {
+            return null;
+        }
         return RoutineDB.getInstance(mContext).getCourseCodes(semester, campus, department, program);
     }
 
     public ArrayList<String> getSections(String campus, String department, String program) {
+        if (isRoutineDbNull()) {
+            return null;
+        }
         return RoutineDB.getInstance(mContext).getSections(campus, department, program);
     }
 
     //Method to retrieve spinner data
     public ArrayList<String> getSpinnerList(int code) {
+        if (isRoutineDbNull()) {
+            return null;
+        }
         return RoutineDB.getInstance(mContext).getSpinnerList(code);
     }
 
 
     //Gets the total number of semester for the course. EG: for cse day it's 12. If it doesn't exist the value is 0
     public int getTotalSemester(String campus, String department, String program) {
+        if (isRoutineDbNull()) {
+            return 0;
+        }
         return RoutineDB.getInstance(mContext).getTotalSemester(campus,department,program);
     }
 
 
     //Gets the name of the current semester
     public String getCurrentSemester(String campus, String department, String program) {
+        if (isRoutineDbNull()) {
+            return null;
+        }
         return RoutineDB.getInstance(mContext).getCurrentSemester(campus,department,program);
     }
 
     //Gets the integer value of current semester of database
     //This value determines whether to update semester or not
     public int getSemesterCount(String campus, String department, String program) {
+        if (isRoutineDbNull()) {
+            return 0;
+        }
         return RoutineDB.getInstance(mContext).getSemesterCount(campus,department,program);
     }
 
     //Get time weight from start time
     public double getTimeWeightFromStart(String startTime) {
+        if (isRoutineDbNull()) {
+            return 0f;
+        }
         return RoutineDB.getInstance(mContext).getTimeWeightFromStart(startTime);
     }
 
     //Checks if table exists in the db using table name
     public boolean doesTableExist(final String TABLE_NAME) {
-        return RoutineDB.getInstance(mContext).doesTableExist(TABLE_NAME);
+        return !isRoutineDbNull() && RoutineDB.getInstance(mContext).doesTableExist(TABLE_NAME);
     }
 
     public ArrayList<String> getTeachersInitials(String campus, String department, String program) {
+        if (isRoutineDbNull()) {
+            return null;
+        }
         PrefManager prefManager = new PrefManager(mContext);
         if (!prefManager.isUserStudent() && prefManager.isMultiProgram()) {
             Set<String> dataArrayList = new HashSet<>();
@@ -266,5 +308,9 @@ public class CourseUtils {
             }
         }
         return data;
+    }
+
+    private boolean isRoutineDbNull() {
+        return RoutineDB.getInstance(mContext) == null;
     }
 }

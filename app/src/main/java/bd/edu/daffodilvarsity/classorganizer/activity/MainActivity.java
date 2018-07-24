@@ -7,10 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -28,8 +31,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.polaric.colorful.Colorful;
@@ -59,6 +65,8 @@ import io.reactivex.disposables.Disposable;
 public class MainActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "MainActivity";
+
+    private static final String CURRENT_PROMOTION = "Facebook_Page";
     
     private PrefManager prefManager;
     private ArrayList<DayData> mDayData;
@@ -151,7 +159,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 //            adView = (AdView) findViewById(R.id.adView);
 //        }
 //        adView.loadAd(new AdRequest.Builder().build());
-
+        showOneTimePromotionalDialog();
 
 
     }
@@ -489,6 +497,51 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                     prefManager.saveSnackData( "Error loading updated routine!");
                 }
             }
+        }
+    }
+
+    private void showOneTimePromotionalDialog() {
+        if (CURRENT_PROMOTION.equalsIgnoreCase(prefManager.getExpiredPromotion())) {
+            return;
+        }
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .title("Connect with us on Facebook!")
+                .content("Did you know Class Organizer is now on Facebook?\n " +
+                        "Like Class Organizer's Facebook page to get all the latest news and updates.")
+                .positiveText("Visit Facebook")
+                .negativeText("Cancel")
+                .onPositive((dialog1, which) -> {
+                    startActivity(getOpenFacebookIntent(this));
+                    prefManager.setExpiredPromotion(CURRENT_PROMOTION);
+                    dialog1.dismiss();
+                })
+                .onNegative((dialog12, which) -> dialog12.dismiss())
+                .checkBoxPrompt("Don't remind me again", false, (buttonView, isChecked) -> {
+                    if (isChecked) {
+                        prefManager.setExpiredPromotion(CURRENT_PROMOTION);
+                    }
+                })
+                .build();
+        Handler handler = new Handler();
+        handler.postDelayed(() -> {
+            if (!dialog.isShowing() && isActivityRunning()) {
+                dialog.show();
+            }
+        }, 1500);
+
+
+    }
+    public static Intent getOpenFacebookIntent(Context context) {
+        try {
+            ApplicationInfo ai = context.getPackageManager().getApplicationInfo("com.facebook.katana",0);
+            if (ai.enabled) {
+                return new Intent(Intent.ACTION_VIEW, Uri.parse("fb://page/385913368514734"));
+            } else {
+                return new Intent(Intent.ACTION_VIEW,Uri.parse("https://www.facebook.com/classorganizerdiu"));
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return new Intent(Intent.ACTION_VIEW,Uri.parse("https://www.facebook.com/classorganizerdiu"));
         }
     }
 }

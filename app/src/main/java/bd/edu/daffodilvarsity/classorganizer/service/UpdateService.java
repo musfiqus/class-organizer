@@ -108,15 +108,17 @@ public class UpdateService extends IntentService {
     }
 
     private void alreadyUpdatedNotification() {
-        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        notificationManager.cancel(UPDATE_SERVICE_NOTIFICATION_CODE);
-        notificationBuilder.setProgress(0, 0, false);
-        notificationBuilder.setContentText("Already on the latest version!");
-        notificationBuilder.setSmallIcon(R.drawable.ic_download_done_24dp);
-        notificationBuilder.setContentIntent(pendingIntent);
-        notificationBuilder.setAutoCancel(true);
-        notificationManager.notify(UPDATE_SERVICE_NOTIFICATION_CODE, notificationBuilder.build());
+        if (notificationBuilder != null && notificationManager != null) {
+            Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            notificationManager.cancel(UPDATE_SERVICE_NOTIFICATION_CODE);
+            notificationBuilder.setProgress(0, 0, false);
+            notificationBuilder.setContentText("Already on the latest version!");
+            notificationBuilder.setSmallIcon(R.drawable.ic_download_done_24dp);
+            notificationBuilder.setContentIntent(pendingIntent);
+            notificationBuilder.setAutoCancel(true);
+            notificationManager.notify(UPDATE_SERVICE_NOTIFICATION_CODE, notificationBuilder.build());
+        }
     }
 
     private void initDownload(@Url String url, String fileName, long fileSize) {
@@ -178,11 +180,12 @@ public class UpdateService extends IntentService {
 
     private void sendNotification(Download download) {
         Log.e(TAG, "sendNotification: Progress: " + download.getProgress());
-
-        sendIntent(download);
-        notificationBuilder.setProgress(100, download.getProgress(), false);
-        notificationBuilder.setContentText(String.format("Downloaded (%d/%d) KB", download.getCurrentFileSize(), download.getTotalFileSize()));
-        notificationHandler(notificationBuilder.build());
+        if (notificationBuilder != null) {
+            sendIntent(download);
+            notificationBuilder.setProgress(100, download.getProgress(), false);
+            notificationBuilder.setContentText(String.format("Downloaded (%d/%d) KB", download.getCurrentFileSize(), download.getTotalFileSize()));
+            notificationHandler(notificationBuilder.build());
+        }
     }
 
     private void notificationHandler(Notification notification) {
@@ -283,10 +286,13 @@ public class UpdateService extends IntentService {
     }
 
     private void verify(File downloadedDB) {
-        notificationManager.cancel(UPDATE_SERVICE_NOTIFICATION_CODE);
-        notificationBuilder.setProgress(0, 0, true);
-        notificationBuilder.setContentText("Verifying file");
-        notificationManager.notify(UPDATE_SERVICE_NOTIFICATION_CODE, notificationBuilder.build());
+        if (notificationManager != null && notificationBuilder != null) {
+            notificationManager.cancel(UPDATE_SERVICE_NOTIFICATION_CODE);
+            notificationBuilder.setProgress(0, 0, true);
+            notificationBuilder.setContentText("Verifying file");
+            notificationManager.notify(UPDATE_SERVICE_NOTIFICATION_CODE, notificationBuilder.build());
+        }
+
         Download download = new Download();
         download.setProgress(UPDATE_VERIFYING);
         sendIntent(download);
@@ -366,22 +372,25 @@ public class UpdateService extends IntentService {
         notificationManager.cancel(UPDATE_SERVICE_NOTIFICATION_CODE);
         notificationBuilder.setProgress(0, 0, false);
         notificationBuilder.setContentText("Update successful");
-        notificationBuilder.setSmallIcon(R.drawable.ic_download_done_24dp);
+
         notificationBuilder.setContentIntent(pendingIntent);
         notificationBuilder.setAutoCancel(true);
         notificationManager.notify(UPDATE_SERVICE_NOTIFICATION_CODE, notificationBuilder.build());
+        notificationBuilder.setSmallIcon(R.drawable.ic_download_done_24dp);
     }
 
     private void failureNotification() {
         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        notificationManager.cancel(UPDATE_SERVICE_NOTIFICATION_CODE);
-        notificationBuilder.setProgress(0, 0, false);
-        notificationBuilder.setContentText("Download failed");
-        notificationBuilder.setSmallIcon(R.drawable.ic_download_failed_24dp);
-        notificationBuilder.setContentIntent(pendingIntent);
-        notificationBuilder.setAutoCancel(true);
-        notificationManager.notify(UPDATE_SERVICE_NOTIFICATION_CODE, notificationBuilder.build());
+        if (notificationBuilder != null && notificationManager != null) {
+            notificationManager.cancel(UPDATE_SERVICE_NOTIFICATION_CODE);
+            notificationBuilder.setProgress(0, 0, false);
+            notificationBuilder.setContentText("Download failed");
+            notificationBuilder.setContentIntent(pendingIntent);
+            notificationBuilder.setAutoCancel(true);
+            notificationBuilder.setSmallIcon(R.drawable.ic_download_failed_24dp);
+        }
+
     }
 
     private void onDownloadFailure() {
@@ -429,7 +438,9 @@ public class UpdateService extends IntentService {
 
     @Override
     public void onTaskRemoved(Intent rootIntent) {
-        notificationManager.cancel(UPDATE_SERVICE_NOTIFICATION_CODE);
+        if (notificationManager != null) {
+            notificationManager.cancel(UPDATE_SERVICE_NOTIFICATION_CODE);
+        }
     }
 
 }
