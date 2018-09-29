@@ -1,13 +1,28 @@
 package bd.edu.daffodilvarsity.classorganizer.utils;
 
+import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 
-import java.util.ArrayList;
+import com.google.gson.Gson;
 
-import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
+
+import bd.edu.daffodilvarsity.classorganizer.R;
+import bd.edu.daffodilvarsity.classorganizer.data.ClassOrganizerDatabase;
+import bd.edu.daffodilvarsity.classorganizer.model.DayData;
+import bd.edu.daffodilvarsity.classorganizer.model.Routine;
 
 /**
  * Created by Mushfiqus Salehin on 4/1/2017.
@@ -74,7 +89,7 @@ public class RoutineLoader {
     }
 
     public static int[] getLevelTerm(int semester) {
-        int level = 0, term = 0;
+        int level, term;
         if (semester <= 3) {
             level = 0;
             term = semester - 1;
@@ -97,15 +112,25 @@ public class RoutineLoader {
 
     public ArrayList<DayData> loadRoutine(boolean loadPersonal) {
         if (prefManager.isUserStudent()) {
-            //User is a student
-            //Generating course codes from generated semester
-            ArrayList<String> courseCodes = courseCodeGenerator(getSemester());
-            ArrayList<DayData> vanillaRoutine;
-            //Initializing DB Helper
 
-            CourseUtils courseUtils = CourseUtils.getInstance(context);
-            vanillaRoutine = courseUtils.getDayData(courseCodes, section, level, term, dept, campus, program);
-            if (vanillaRoutine == null || vanillaRoutine.size() == 0) {
+//            //User is a student
+//            //Generating course codes from generated semester
+//            ArrayList<String> courseCodes = courseCodeGenerator(getSemester());
+//            ArrayList<DayData> vanillaRoutine;
+//            //Initializing DB Helper
+//
+//            CourseUtils courseUtils = CourseUtils.getInstance(context);
+//            vanillaRoutine = courseUtils.getDayData(courseCodes, section, level, term, dept, campus, program);
+
+            ArrayList<DayData> vanillaRoutine = new ArrayList<>();
+            List<Routine> routines = getRoutine(prefManager.isUserStudent());
+            if (routines != null && routines.size() > 0) {
+                for (Routine routine : routines) {
+                    vanillaRoutine.add(new DayData(routine.getCourseCode(), routine.getTeachersInitial(), routine.getSection(), routine.getLevel(), routine.getTerm(), routine.getRoomNo(), routine.getTime(), routine.getDay(), Double.valueOf(routine.getTimeWeight()), routine.getCourseTitle(), false));
+                }
+            }
+
+            if (vanillaRoutine.size() == 0) {
                 Log.e(TAG, "DAPUQ?");
             }
             if (!loadPersonal) {
@@ -115,12 +140,17 @@ public class RoutineLoader {
             }
         } else {
             //User is a teacher
-            CourseUtils courseUtils = CourseUtils.getInstance(context);
-            ArrayList<DayData> dayData = courseUtils.getDayDataByQuery(campus, dept, program, teachersInitial, RoutineDB.COLUMN_TEACHERS_INITIAL);
+            ArrayList<DayData> vanillaRoutine = new ArrayList<>();
+            List<Routine> routines = getRoutine(prefManager.isUserStudent());
+            if (routines != null && routines.size() > 0) {
+                for (Routine routine : routines) {
+                    vanillaRoutine.add(new DayData(routine.getCourseCode(), routine.getTeachersInitial(), routine.getSection(), routine.getLevel(), routine.getTerm(), routine.getRoomNo(), routine.getTime(), routine.getDay(), Double.valueOf(routine.getTimeWeight()), routine.getCourseTitle(), false));
+                }
+            }
             if (!loadPersonal) {
-                return dayData;
+                return vanillaRoutine;
             } else {
-                return loadPersonalDayData(dayData);
+                return loadPersonalDayData(vanillaRoutine);
             }
         }
 
@@ -249,5 +279,14 @@ public class RoutineLoader {
             return true;
         }
         return false;
+    }
+
+    private List<Routine> getRoutine(boolean isStudent) {
+        ClassOrganizerDatabase database = ClassOrganizerDatabase.getInstance();
+        if (isStudent) {
+            return database.routineAccess().getRoutineStudent(campus, dept, program, level, term, section);
+        } else {
+            return database.routineAccess().getRoutineTeacher(campus, dept, teachersInitial);
+        }
     }
 }

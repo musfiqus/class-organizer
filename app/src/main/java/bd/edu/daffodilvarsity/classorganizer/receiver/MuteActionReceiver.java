@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.model.DayData;
 import bd.edu.daffodilvarsity.classorganizer.utils.AlarmHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
@@ -25,7 +25,7 @@ public class MuteActionReceiver extends BroadcastReceiver {
         if (bundle != null) {
             DayData dayData = null;
             try {
-                dayData = bundle.getParcelable(AlarmHelper.TAG_ALARM_DAYDATA_OBJECT);
+                dayData = bundle.getParcelable(AlarmHelper.TAG_ALARM_ROUTINE_OBJECT);
             } catch (IllegalStateException e) {
                 FileUtils.logAnError(context, TAG, "onReceive: ", e);
                 Toasty.error(context, "Error! Couldn't mute notification", Toast.LENGTH_SHORT, true).show();

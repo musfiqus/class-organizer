@@ -4,39 +4,14 @@ xmlns:colorpicker="http://schemas.android.com/apk/res-auto">
     <android.support.v7.preference.PreferenceCategory
         android:title="Routine">
         <Preference
-            android:key="user_preference"
-            android:summary="Place holder summary"
-            android:title="Choose User Type" />
-        <Preference
-            android:key="dept_preference"
-            android:summary="Place holder summary"
-            android:title="Choose Your Department" />
-        <Preference
             android:key="routine_preference"
             android:summary="Place holder summary"
-            android:title="Choose Your Routine" />
-        <Preference
-            android:key="reset_preference"
-            android:summary="Clears saved, added, edited, deleted classes"
-            android:title="Reset Your Modifications" />
-        <SwitchPreferenceCompat
-            android:key="limit_preference"
-            android:summary="Place holder"
-            android:title="Limit Modified Classes"
-            android:defaultValue="true" />
-        <SwitchPreferenceCompat
-            android:key="ramadan_preference"
-            android:summary="Place holder"
-            android:title="Display Ramadan Timetable"
-            android:defaultValue="false" />
+            android:title="Change Your Routine" />
         <Preference
             android:key="current_semester_preference"
             android:summary="Place holder summary"
             android:title="Current Semester" />
-        <Preference
-            android:key="current_database_version_preference"
-            android:summary="Place holder summary"
-            android:title="Current Database Version" />
+
     </android.support.v7.preference.PreferenceCategory>
     <android.support.v7.preference.PreferenceCategory
         android:title="Notifications">
@@ -48,27 +23,17 @@ xmlns:colorpicker="http://schemas.android.com/apk/res-auto">
         <Preference
             android:key="notification_delay_preference"
             android:summary="Place holder"
-            android:enabled="false"
             android:title="Choose Time for Notifications" />
-    </android.support.v7.preference.PreferenceCategory>
-    <android.support.v7.preference.PreferenceCategory
-        android:title="Appearance">
-        <org.polaric.colorful.ColorPickerPreference
-            android:title="Choose Primary Color"
-            android:summary="Changes background, course code header etc. color"
-            colorpicker:primary_color="true"
-            android:key="primary"/>
-        <org.polaric.colorful.ColorPickerPreference
-            android:title="Choose Accent"
-            android:summary="Changes tab indicator color, text input's title color"
-            colorpicker:accent_color="true"
-            android:key="accent"/>
     </android.support.v7.preference.PreferenceCategory>
     <android.support.v7.preference.PreferenceCategory android:title="About">
         <Preference
             android:key="version_preference"
             android:summary="X"
             android:title="Current Version" />
+        <Preference
+            android:key="current_database_version_preference"
+            android:summary="Place holder summary"
+            android:title="Current Database Version" />
         <Preference
             android:key="developer_preference"
             android:title="Developed by"

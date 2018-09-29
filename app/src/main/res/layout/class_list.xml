@@ -11,4 +11,6 @@
     android:drawSelectorOnTop="true"
     android:orientation="vertical"
     android:paddingBottom="64dp"
+    android:paddingRight="8dp"
+    android:paddingLeft="8dp"
     android:clipToPadding="false"/>

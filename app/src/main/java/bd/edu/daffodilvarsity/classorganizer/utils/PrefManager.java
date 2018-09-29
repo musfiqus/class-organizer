@@ -10,7 +10,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
-import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.model.DayData;
 
 /**
  * Created by Mushfiqus Salehin on 3/25/2017.
@@ -72,17 +72,12 @@ public class PrefManager {
             //Restarting alarms every time the data is changed
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(_context);
             boolean hasNotification = preferences.getBoolean("notification_preference", true);
-            AlarmHelper alarmHelper = new AlarmHelper(_context);
-            if (hasNotification) {
-                alarmHelper.cancelAll();
-            }
             editor.remove(PREF_DAYDATA).apply();
             Gson gson = new Gson();
             String json = gson.toJson(daydata);
             editor.putString(PREF_DAYDATA, json).apply();
 
             if (hasNotification) {
-                alarmHelper.startAll();
             }
         }
     }

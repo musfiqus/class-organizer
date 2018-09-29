@@ -2,11 +2,11 @@ package bd.edu.daffodilvarsity.classorganizer.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,17 +15,16 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import org.polaric.colorful.Colorful;
-import org.polaric.colorful.ColorfulActivity;
 
 import java.util.ArrayList;
 
-import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.model.DayData;
+import bd.edu.daffodilvarsity.classorganizer.ui.detail.RoutineDetailActivity;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.R;
 
-public class EditActivity extends ColorfulActivity {
+public class EditActivity extends AppCompatActivity {
 
     private PrefManager prefManager;
     private TextView courseCodeText;
@@ -66,10 +65,6 @@ public class EditActivity extends ColorfulActivity {
 
         //Setting course current daydatas
         setupCurrentDay();
-        // Making navigation bar colored
-        if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setNavigationBarColor(getResources().getColor(Colorful.getThemeDelegate().getPrimaryColor().getColorRes()));
-        }
     }
 
     private void setupCurrentDay() {
@@ -169,7 +164,7 @@ public class EditActivity extends ColorfulActivity {
             prefManager.saveReCreate(true);
             showSnackBar(this, "Saved");
         } else if (item.getItemId() == android.R.id.home) {
-            Intent intent = new Intent(this, DayDataDetailActivity.class);
+            Intent intent = new Intent(this, RoutineDetailActivity.class);
             intent.putExtra("DayDataDetails", (Parcelable) editedDay);
             startActivity(intent);
             finish();

@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp"
+    android:layout_margin="8dp"
+    android:id="@+id/item_class_holder"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/item_class_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:fontFamily="@font/poppins"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
+            android:textColor="@color/text_color_dark"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Artificial Intelligence Lab" />
+
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/item_class_time_holder"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="12dp"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/item_class_title">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:orientation="horizontal"
+                android:background="@drawable/ic_code_bg"
+                app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <TextView
+                    android:id="@+id/item_class_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:textColor="@color/text_color_light"
+                    android:textSize="16sp"
+                    tools:text="CSE321" />
+            </LinearLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:background="?colorAccent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/item_class_guideline"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/routine_detail_time_icon"
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginRight="4dp"
+                    android:layout_marginBottom="8dp"
+                    android:tint="?attr/colorPrimary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/routine_detail_time"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_clock_time"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/routine_detail_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:gravity="center_vertical|end"
+                    android:includeFontPadding="false"
+                    android:maxWidth="155dp"
+                    android:textAlignment="viewEnd"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="16sp"
+                    app:autoSizeMaxTextSize="16sp"
+                    app:autoSizeMinTextSize="14sp"
+                    app:autoSizeStepGranularity="1sp"
+                    app:autoSizeTextType="uniform"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="02.30 PM - 04.00 pM" />
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.Guideline
+                android:id="@+id/item_class_guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.45" />
+        </android.support.constraint.ConstraintLayout>
+
+
+        <TextView
+            android:id="@+id/item_class_teacher_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:text="Teacher"
+            android:textColor="@color/text_color_light"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/item_class_time_holder" />
+
+        <TextView
+            android:id="@+id/item_class_teacher"
+            android:layout_width="wrap_content"
+            android:layout_height="22dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:textSize="16sp"
+            android:textColor="@color/text_color_dark"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/item_class_teacher_title"
+            tools:text="SRH" />
+
+        <TextView
+            android:id="@+id/item_class_room_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:text="Room"
+            android:textColor="@color/text_color_light"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/item_class_time_holder" />
+
+        <TextView
+            android:id="@+id/item_class_room"
+            android:layout_width="wrap_content"
+            android:layout_height="19dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:textSize="16sp"
+            android:textColor="@color/text_color_dark"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/item_class_room_title"
+            tools:text="102 CSE" />
+
+        <android.support.design.button.MaterialButton
+            android:id="@+id/item_class_details_button"
+            style="@style/AppTheme.NoBullshitTextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:text="Details"
+            android:textColor="?attr/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/item_class_teacher" />
+
+        <FrameLayout
+            android:id="@+id/item_class_notification_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:background="?selectableItemBackgroundBorderless"
+            app:layout_constraintBottom_toBottomOf="@+id/item_class_details_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/item_class_details_button">
+            <ImageView
+                android:id="@+id/item_class_mute_yes"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:tint="@color/text_color_dark"
+                app:srcCompat="@drawable/ic_outline_notifications_off"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/item_class_mute_no"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:tint="@color/text_color_dark"
+                app:srcCompat="@drawable/ic_outline_notifications"
+                tools:ignore="ContentDescription" />
+
+
+
+        </FrameLayout>
+
+        <!--<FrameLayout-->
+            <!--android:id="@+id/item_class_notification_button_container"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginEnd="8dp"-->
+            <!--android:layout_marginRight="8dp"-->
+            <!--android:padding="8dp"-->
+            <!--app:layout_constraintBottom_toBottomOf="@+id/item_class_details_button"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintTop_toTopOf="@+id/item_class_details_button">-->
+
+            <!--<ImageView-->
+                <!--android:id="@+id/item_class_notification_button"-->
+                <!--android:layout_width="20dp"-->
+                <!--android:layout_height="20dp"-->
+                <!--app:srcCompat="@drawable/ic_outline_notifications"-->
+                <!--tools:ignore="ContentDescription" />-->
+        <!--</FrameLayout>-->
+
+
+
+        <!--<ImageView-->
+        <!--android:id="@+id/item_class_notification_icon"-->
+        <!--android:layout_width="20dp"-->
+        <!--android:layout_height="20dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:layout_marginRight="8dp"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="parent"-->
+        <!--tools:ignore="ContentDescription"-->
+        <!--app:srcCompat="@drawable/ic_alarm" />-->
+
+    </android.support.constraint.ConstraintLayout>
+
+
+</android.support.design.card.MaterialCardView>

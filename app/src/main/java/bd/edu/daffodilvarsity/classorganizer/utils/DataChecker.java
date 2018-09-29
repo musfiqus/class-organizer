@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.model.DayData;
 
 /**
  * Created by Mushfiqus Salehin on 6/11/2017.

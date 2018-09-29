@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="bd.edu.daffodilvarsity.classorganizer">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -15,21 +16,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".activity.MainActivity"
-            android:hardwareAccelerated="true"
-            android:label="@string/main_title"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".activity.WelcomeActivity"
-            android:theme="@style/SplashTheme">
+            android:name=".ui.main.MainActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -43,17 +35,17 @@
             android:name=".activity.AddActivity"
             android:label="@string/add_title" />
         <activity
-            android:name=".activity.SettingsActivity"
+            android:name=".ui.settings.SettingsActivity"
             android:label="@string/settings_title"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.DayDataDetailActivity"
+            android:name=".ui.detail.RoutineDetailActivity"
             android:label="@string/app_name"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName=".ui.main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="bd.edu.daffodilvarsity.classorganizer.activity.MainActivity" />
+                android:value="bd.edu.daffodilvarsity.classorganizer.ui.main.MainActivity" />
         </activity>
 
         <service
@@ -82,19 +74,18 @@
         </receiver>
 
         <activity
-            android:name=".activity.SearchRefinedActivity"
+            android:name=".ui.search.SearchRefinedActivity"
             android:label="Search"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activity.BaseActivity" />
+        <activity android:name=".ui.base.BaseDrawerActivity" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="97134746f7e815b6aad25190b01c4712d2c523ec" />
 
-        <service
-            android:name=".service.UserInstanceIdService">
+        <service android:name=".service.UserInstanceIdService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <service
@@ -102,25 +93,35 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
-             See README(https://goo.gl/l4GJaQ) for more. -->
+        <!--
+             Set custom default icon. This is used when no icon is set for incoming notification messages.
+             See README(https://goo.gl/l4GJaQ) for more.
+        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/icon_silhouette" />
 
-        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
-     notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <!--
+     Set color used with incoming notification messages. This is used when no color is set for the incoming
+     notification message. See README(https://goo.gl/6BKBk7) for more.
+        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/md_white_1000" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
-            android:value="@string/push_notification_channel_id"/>
+            android:value="@string/push_notification_channel_id" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
+        <activity
+            android:name=".ui.setup.SetupActivity"
+            android:theme="@style/AppTheme.Intro" />
     </application>
 
 </manifest>

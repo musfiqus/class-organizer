@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:Campus="http://schemas.android.com/tools">
     <string name="app_name">Class Organizer</string>
     <string name="main_title">Classes</string>
     <string name="edit_title">Edit class</string>
@@ -37,9 +37,9 @@
     <string name="slide_3_desc">Let\'s get started with our day!</string>
 
     <!-- Spinner label -->
-    <string name="level_title">Select your level</string>
-    <string name="term_title">and current term</string>
-    <string name="section_title">Select your section</string>
+    <string name="level_title">Select Level</string>
+    <string name="term_title">Term</string>
+    <string name="section_title">Section</string>
     <string name="program_title">Select your program</string>
     <string name="drawer_app_title">Class Organizer</string>
     <string name="drawer_dev_email">musfiqus@gmail.com</string>
@@ -75,7 +75,7 @@
 
     <!--Preference -->
 
-    <string name="time_delay_summary">"Currently you're receiving reminders %1$s before the class"</string>
+    <string name="time_delay_summary">"Currently you're receiving reminders &lt;b>%1$s&lt;/b> before the class"</string>
     <string name="notification_enabled_summary">Class notifications are currently enabled</string>
     <string name="notification_disabled_summary">Class notifications are currently disabled</string>
     <string name="ramadan_enabled_summary">Ramadan timetable is enabled</string>
@@ -89,8 +89,6 @@
     <string name="empty_search_hint">You can search by course code or course name or teacher\'s initial or room no</string>
     <string name="not_found_search_hint">No classes found</string>
     <string name="not_found_search_hint_room">No rooms found</string>
-    <string name="select_your_campus">Select your campus</string>
-    <string name="select_your_department">Select your department</string>
     <string name="course_title">Course title</string>
     <string name="abc_course">ABC COURSE</string>
     <string name="teacher_s_initial">Teacher\'s initial</string>
@@ -130,6 +128,7 @@
     <string name="saved_nonexc">Saved</string>
     <string name="reset">RESET</string>
     <string name="one_hour">1 hour</string>
+    <string name="two_hours">2 hours</string>
     <string name="already_updated_text">You already have the latest routine! Press Next</string>
     <string name="downloading_update_text">Downloading updated routine</string>
     <string name="update_check_error">Unable to check for update. Press Next</string>
@@ -151,7 +150,6 @@
     <string name="available">Available</string>
     <string name="status">Status</string>
     <string name="silhouette">Silhouette</string>
-    <string name="section">Section</string>
     <string name="day">Day</string>
     <string name="mute_action">MUTE</string>
     <string name="mute_action_filter">bd.edu.daffodilvarsity.classorganizer.receiver.MUTE_ACTION</string>
@@ -163,4 +161,59 @@
     <string name="push_notification_channel_id">notification_channel_03</string>
     <string name="routine_update_ticker">New routine available!</string>
     <string name="update_action">UPDATE</string>
+    <string name="update_error">Unable to check for update!</string>
+    <string name="checking_update">Checking for updates</string>
+    <string name="download_update">Downloading update</string>
+    <string name="routine_updated">Routine successfully updated</string>
+    <string name="already_updated">You already have the latest routines</string>
+    <string name="teacher">Teacher</string>
+    <string name="student">Student</string>
+    <string name="user_not_selected">Select a profile to continue</string>
+    <string name="campus_picker_rationale">Select your campus from choices available below.\nDaffodil International University currently has three campuses. Dhanmondi (Main), Ashulia (Permanent) and Uttara.</string>
+    <string name="campuses">Campuses</string>
+    <string name="no_campus">No campus selected</string>
+    <string name="select_campus_to_continue">Select a campus to continue</string>
+    <string name="select_your_level_amp_term"><![CDATA[Select your level & term]]></string>
+    <string name="select_level_term"><![CDATA[Select level & term]]></string>
+    <string name="level_term_not_selected">No level or term selected</string>
+    <string name="initial_not_selected">No initials selected</string>
+    <string name="term_rationale">Select your term, also known as semester per year, below.</string>
+    <string name="term">Term</string>
+    <string name="level_rationale">Select your level, also known as academic year, below.</string>
+    <string name="level">Level</string>
+    <string name="select_teacher_initial">Select your teacher\'s initial</string>
+    <string name="select_initial">Select initial</string>
+    <string name="select_campus">Select campus</string>
+    <string name="select_your_campus">Select your campus</string>
+    <string name="initials_error">Unable to find any initials</string>
+    <string name="selected_initial">Selected initial: %1$s</string>
+    <string name="selected_level_term">Level: %1$d, Term: %2$d</string>
+    <string name="select_department">Select department</string>
+    <string name="no_department_selected">No department selected</string>
+    <string name="campus_error">Error loading campuses</string>
+    <string name="program_rationale">Select your program. DIU currently has both Day and Evening programs</string>
+    <string name="program">Program</string>
+    <string name="select_your_department">Select your department</string>
+    <string name="no_program_selected">No program selected</string>
+    <string name="department_rationale">Select your department. For example: CSE</string>
+    <string name="program_error">Unable to find programs!</string>
+    <string name="selected_department">Department: %1$s</string>
+    <string name="selected_program">Program: %1$s</string>
+    <string name="press_to_get_started">Press ✓ to get started</string>
+    <string name="validating_setup">Validating setup…</string>
+    <string name="section_rationale">Select the section you\'re in. Should be a no brainer right?</string>
+    <string name="section">Section</string>
+    <string name="sections_Error">Unable to find any sections</string>
+    <string name="no_section_selected">No section selected</string>
+    <string name="select_section">Select section</string>
+    <string name="select_your_section">Select your section</string>
+    <string name="selected_section">Section: %1$s</string>
+    <string name="no_initials_selected">No initials selected</string>
+    <string name="invalid_selection">Invalid selection. Check your selections.</string>
+    <string name="initial_rationale">Select your teacher\'s initial by selecting from the dropdown menu below.</string>
+
+    <string name="routine_summary_student">Campus: &lt;b>%1$s&lt;/b>&lt;br>Department: &lt;b>%2$s&lt;/b>&lt;br>Program: &lt;b>%3$s&lt;/b>&lt;br>Level: &lt;b>%4$d&lt;/b>&lt;br>Term: &lt;b>%5$d&lt;/b>&lt;br>Section: &lt;b>%6$s&lt;/b></string>
+    <string name="routine_summary_teacher">Campus: &lt;b>%1$s&lt;/b>&lt;br>Department: &lt;b>%2$s&lt;/b>&lt;br>Initial: &lt;b>%3$s&lt;/b></string>
+    <string name="semester_error">Unable to find semester</string>
+    <string name="delay_minutes">%1$d minutes</string>
 </resources>

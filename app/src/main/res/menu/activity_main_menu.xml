@@ -11,5 +11,5 @@
         android:id="@+id/add_button"
         android:icon="@drawable/ic_add_white_24dp"
         android:title="@string/add"
-        app:showAsAction="always" />
+        app:showAsAction="collapseActionView" />
 </menu>

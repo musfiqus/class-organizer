@@ -18,7 +18,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.model.DayData;
 
 /**
  * Created by Mushfiqus Salehin on 10/8/2017.
@@ -720,5 +720,7 @@ public class RoutineDB extends SQLiteAssetHelper {
         }
         return date;
     }
+
+
 
 }

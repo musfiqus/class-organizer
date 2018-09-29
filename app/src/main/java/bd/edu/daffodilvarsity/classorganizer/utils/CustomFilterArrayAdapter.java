@@ -19,6 +19,7 @@ public class CustomFilterArrayAdapter extends ArrayAdapter implements Filterable
     List<String> originalCodes;
     StringFilter filter;
 
+    @SuppressWarnings("unchecked")
     public CustomFilterArrayAdapter(Context context, int resource, List<String> keys) {
         super(context, resource, keys);
         allCodes = keys;

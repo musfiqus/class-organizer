@@ -7,18 +7,29 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.math.BigInteger;
 import java.nio.channels.FileChannel;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import bd.edu.daffodilvarsity.classorganizer.ClassOrganizer;
+import bd.edu.daffodilvarsity.classorganizer.R;
+import bd.edu.daffodilvarsity.classorganizer.model.Database;
 
 /**
  * Created by Mushfiqus Salehin on 10/16/2017.
@@ -227,12 +238,41 @@ public final class FileUtils {
             errorDetails += "Teacher's initial: "+prefManager.getTeacherInitial()+" Multi program: "+prefManager.isMultiProgram()+"\n";
         }
         errorDetails += "Message: "+message+"\n";
-        if (exception != null) {
-            errorDetails += "Stacktrace: \n"+exception.toString();
-            Crashlytics.log(1, tag, errorDetails);
-            Crashlytics.logException(exception);
-            return;
-        }
-        Crashlytics.log(1, tag, errorDetails);
+//        if (exception != null) {
+//            errorDetails += "Stacktrace: \n"+exception.toString();
+//            Crashlytics.log(1, tag, errorDetails);
+//            Crashlytics.logException(exception);
+//            return;
+//        }
+//        Crashlytics.log(1, tag, errorDetails);
     }
+
+    public static Database readOfflineDatabase() {
+        InputStream is = ClassOrganizer.getInstance().getResources().openRawResource(R.raw.routine);
+        Writer writer = new StringWriter();
+        char[] buffer = new char[1024];
+        try {
+            Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            int n;
+            while ((n = reader.read(buffer)) != -1) {
+                writer.write(buffer, 0, n);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        String jsonString = writer.toString();
+        Gson gson = new Gson();
+        return gson.fromJson(jsonString, new TypeToken<Database>(){}.getType());
+    }
+
+
 }

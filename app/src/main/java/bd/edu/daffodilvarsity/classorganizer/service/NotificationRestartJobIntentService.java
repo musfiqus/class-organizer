@@ -20,8 +20,7 @@ public class NotificationRestartJobIntentService extends JobIntentService {
 
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
-        AlarmHelper alarmHelper = new AlarmHelper(getApplicationContext());
-        alarmHelper.cancelAll();
-        alarmHelper.startAll();
+//        AlarmHelper alarmHelper = new AlarmHelper(getApplicationContext());
+//        alarmHelper.cancelAll();
     }
 }

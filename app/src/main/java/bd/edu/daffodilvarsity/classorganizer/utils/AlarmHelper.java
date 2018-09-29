@@ -4,19 +4,22 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
-import bd.edu.daffodilvarsity.classorganizer.adapter.DayDataAdapter;
-import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.ClassOrganizer;
+import bd.edu.daffodilvarsity.classorganizer.data.Repository;
+import bd.edu.daffodilvarsity.classorganizer.model.Routine;
+import bd.edu.daffodilvarsity.classorganizer.model.Semester;
 import bd.edu.daffodilvarsity.classorganizer.receiver.NotificationPublisher;
+import io.reactivex.Completable;
+import io.reactivex.Single;
 
 /**
  * Created by Mushfiqus Salehin on 6/6/2017.
@@ -24,35 +27,34 @@ import bd.edu.daffodilvarsity.classorganizer.receiver.NotificationPublisher;
  */
 
 public class AlarmHelper {
-    private Context context;
-    private PrefManager prefManager;
+    private Repository repository;
 
-    public static String TAG_ALARM_DAYDATA_OBJECT = "DayData_Object";
+    public static String TAG_ALARM_ROUTINE_OBJECT = "routine_object";
     public static String TAG_ALARM_INDEX = "index";
     public static String TAG_ALARM_DAY = "day";
     public static String TAG_ALARM_HOUR = "hour";
-    public static String TAG_ALARM_TIME_BEFORE = "timeBefore";
+    public static String TAG_ALARM_TIME_BEFORE = "time_before";
     public static String TAG_ALARM_BUNDLE_DATA = "bundled_data";
 
     private static final String TAG = "AlarmHelper";
 
-    public AlarmHelper(Context context) {
-        this.context = context;
-        this.prefManager = new PrefManager(context);
+    public AlarmHelper() {
+
+        this.repository = Repository.getInstance();
     }
 
-    public void startAll() {
-        ArrayList<DayData> data = prefManager.getSavedDayData();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean isRamadanTime = preferences.getBoolean("ramadan_preference", false);
-        if (data != null) {
-            for (int i = 0; i < data.size(); i++) {
-                if (data.get(i) != null && !data.get(i).isMuted()) {
-                    if (data.get(i).getDay() != null && data.get(i).getTime() != null) {
-                        int dayOfWeek = calculateDay(data.get(i).getDay());
-                        int time[] = calculateTime(isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(data.get(i).getTime(), data.get(i).getTimeWeight()): data.get(i).getTime());
+    private void startAll(RoutineSemesterModel routineSemesterModel) {
+        List<Routine> routines = routineSemesterModel.routines;
+        Semester semester = routineSemesterModel.semester;
+        boolean isRamadanTime = PreferenceGetter.isRamadanEnabled();
+        if (routines != null) {
+            for (int i = 0; i < routines.size(); i++) {
+                if (routines.get(i) != null && !routines.get(i).isMuted()) {
+                    if (routines.get(i).getDay() != null && routines.get(i).getTime() != null) {
+                        int dayOfWeek = calculateDay(routines.get(i).getDay());
+                        int time[] = calculateTime(isRamadanTime ?  routines.get(i).getAltTimeWeight(): routines.get(i).getTimeWeight());
                         if (dayOfWeek != -1) {
-                            scheduleAlarm(dayOfWeek, i, time[0], time[1], data.get(i));
+                            scheduleAlarm(dayOfWeek, i, time[0], time[1], routines.get(i), semester);
                         }
                     }
                 }
@@ -60,18 +62,16 @@ public class AlarmHelper {
         }
     }
 
-    public void cancelAll() {
-        ArrayList<DayData> data = prefManager.getSavedDayData();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        boolean isRamadanTime = preferences.getBoolean("ramadan_preference", false);
-        if (data != null) {
-            for (int i = 0; i < data.size(); i++) {
-                if (data.get(i) != null) {
-                    if (data.get(i).getDay() != null && data.get(i).getTime() != null) {
-                        int dayOfWeek = calculateDay(data.get(i).getDay());
-                        int time[] = calculateTime(isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(data.get(i).getTime(), data.get(i).getTimeWeight()): data.get(i).getTime());
+    private void cancelAll(List<Routine> routines) {
+        boolean isRamadanTime = PreferenceGetter.isRamadanEnabled();
+        if (routines != null) {
+            for (int i = 0; i < routines.size(); i++) {
+                if (routines.get(i) != null) {
+                    if (routines.get(i).getDay() != null && routines.get(i).getTime() != null) {
+                        int dayOfWeek = calculateDay(routines.get(i).getDay());
+                        int time[] = calculateTime(isRamadanTime ? routines.get(i).getAltTimeWeight(): routines.get(i).getTimeWeight());
                         if (dayOfWeek != -1) {
-                            cancelAlarm(dayOfWeek, i, time[0], time[1], data.get(i));
+                            cancelAlarm(dayOfWeek, i, time[0], time[1], routines.get(i));
                         }
                     }
                 }
@@ -80,21 +80,23 @@ public class AlarmHelper {
         }
     }
 
-    public void forceRestart(boolean isRamadanTime) {
-        ArrayList<DayData> data = prefManager.getSavedDayData();
-        if (data != null) {
-            for (int i = 0; i < data.size(); i++) {
-                int dayOfWeek = calculateDay(data.get(i).getDay());
-                int time[] = calculateTime(isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(data.get(i).getTime(), data.get(i).getTimeWeight()): data.get(i).getTime());
-                if (dayOfWeek != -1) {
-                    cancelAlarm(dayOfWeek, i, time[0], time[1], data.get(i));
-                    scheduleAlarm(dayOfWeek, i, time[0], time[1], data.get(i));
-                }
-            }
-        }
+    public Completable startAllAlarms() {
+        return getRoutineSemesterCombined()
+                .flatMapCompletable(routineSemesterModel -> Completable.fromAction(() -> startAll(routineSemesterModel)));
     }
 
-    public void cancelAlarm(int dayOfWeek, int index, int hour, int timeBefore, DayData dayData) {
+    public Completable cancelAllAlarms() {
+        return repository
+                .getSavedRoutine()
+                .flatMapCompletable(routines -> Completable.fromAction(() -> cancelAll(routines)));
+    }
+
+    public Completable restartAlarms() {
+        return Completable
+                .merge(Arrays.asList(cancelAllAlarms(), startAllAlarms()));
+    }
+
+    private void cancelAlarm(int dayOfWeek, int index, int hour, int timeBefore, Routine routine) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
         calendar.set(Calendar.HOUR_OF_DAY, hour);
@@ -104,24 +106,24 @@ public class AlarmHelper {
         if (calendar.getTimeInMillis() <= System.currentTimeMillis()) {
             calendar.add(Calendar.DAY_OF_YEAR, 7);
         }
-        Intent dayDataIntent = new Intent(context, NotificationPublisher.class);
+        Intent dayDataIntent = new Intent(ClassOrganizer.getInstance(), NotificationPublisher.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelable(TAG_ALARM_DAYDATA_OBJECT, dayData);
+        bundle.putParcelable(TAG_ALARM_ROUTINE_OBJECT, routine);
         bundle.putInt(TAG_ALARM_INDEX, index);
         bundle.putInt(TAG_ALARM_DAY, dayOfWeek);
         bundle.putInt(TAG_ALARM_HOUR, hour);
         bundle.putInt(TAG_ALARM_TIME_BEFORE, timeBefore);
         dayDataIntent.putExtra(TAG_ALARM_BUNDLE_DATA, bundle);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, index, dayDataIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(ClassOrganizer.getInstance(), index, dayDataIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) ClassOrganizer.getInstance().getSystemService(Context.ALARM_SERVICE);
         if (alarmManager != null) {
             alarmManager.cancel(pendingIntent);
         }
     }
 
-    public void scheduleAlarm(int dayOfWeek, int index, int hour, int timeBefore, DayData dayData) {
-        if (!dayData.isMuted()) {
+    public void scheduleAlarm(int dayOfWeek, int index, int hour, int timeBefore, Routine routine, Semester semester) {
+        if (!routine.isMuted()) {
             Calendar calendar = Calendar.getInstance();
             calendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
             calendar.set(Calendar.HOUR_OF_DAY, hour);
@@ -132,19 +134,20 @@ public class AlarmHelper {
                 calendar.add(Calendar.DAY_OF_YEAR, 7);
             }
             Date date = calendar.getTime();
-            if (isDateValidForAlarm(date)) {
+
+            if (isDateValidForAlarm(date, semester)) {
                 Log.d(TAG, "scheduleAlarm: Date: "+ date);
-                Intent dayDataIntent = new Intent(context, NotificationPublisher.class);
+                Intent routineIntent = new Intent(ClassOrganizer.getInstance(), NotificationPublisher.class);
                 Bundle bundle = new Bundle();
-                bundle.putParcelable(AlarmHelper.TAG_ALARM_DAYDATA_OBJECT, dayData);
+                bundle.putParcelable(AlarmHelper.TAG_ALARM_ROUTINE_OBJECT, routine);
                 bundle.putInt(AlarmHelper.TAG_ALARM_INDEX, index);
                 bundle.putInt(AlarmHelper.TAG_ALARM_DAY, dayOfWeek);
                 bundle.putInt(AlarmHelper.TAG_ALARM_HOUR, hour);
                 bundle.putInt(AlarmHelper.TAG_ALARM_TIME_BEFORE, timeBefore);
-                dayDataIntent.putExtra(AlarmHelper.TAG_ALARM_BUNDLE_DATA, bundle);
+                routineIntent.putExtra(AlarmHelper.TAG_ALARM_BUNDLE_DATA, bundle);
 
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(context, index, dayDataIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(ClassOrganizer.getInstance(), index, routineIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                AlarmManager alarmManager = (AlarmManager) ClassOrganizer.getInstance().getSystemService(Context.ALARM_SERVICE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                     if (alarmManager != null) {
                         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
@@ -183,65 +186,35 @@ public class AlarmHelper {
         return -1;
     }
 
-    private int[] calculateTime(String time) {
+    private int[] calculateTime(String timeWeight) {
         int[] calculatedTime = new int[2];
-        int hour, minute;
-        minute = calculateMinute(time);
-        hour = calculateHour(time);
-
-
-        int delay = prefManager.getReminderDelay();
-        calculatedTime[0] = hour;
-        calculatedTime[1] = minute + (60 - delay);
+        try {
+            String[] times = timeWeight.split("\\.");
+            calculatedTime[0] = Integer.valueOf(times[0]);
+            calculatedTime[1] = Integer.valueOf(times[1]) - PreferenceGetter.getNotificationDelay();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
         return calculatedTime;
 
     }
 
-    private int calculateMinute(String time) {
-        int minute = 0;
-        try {
-            minute = Integer.parseInt(time.substring(3, 5));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return minute;
-    }
 
 
-    private int calculateHour(String time) {
-        int hour = 0;
-        try {
-            hour = Integer.parseInt(time.substring(0, 2));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
-        if (time.substring(6, 8).equalsIgnoreCase("pm")) {
-            if (hour != 12) {
-                hour += 12;
-            }
-        } else {
-            if (hour == 12) {
-                hour = 0;
-            }
-        }
-        if (hour == 0) {
-            return 23;
-        } else {
-            return hour - 1;
-        }
-    }
 
-    private boolean isDateValidForAlarm(Date currentDate) {
-        if (!isWithinSemester(currentDate)) {
+    private boolean isDateValidForAlarm(Date currentDate, Semester semester) {
+        if (!isWithinSemester(currentDate, semester)) {
             Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is outside of semester");
             return false;
         }
-        if (isWithinMid(currentDate)) {
+        if (isWithinMid(currentDate, semester)) {
             Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is during mid");
             return false;
         }
-        if (isWithinVacation(currentDate)) {
+        if (isWithinVacation(currentDate, semester)) {
             Log.d(TAG, "isDateValidForAlarm: Date: "+currentDate+" is during mid");
             return false;
         }
@@ -249,84 +222,62 @@ public class AlarmHelper {
         return true;
     }
 
-    private boolean isWithinSemester(Date currentDate) {
+    private boolean isWithinSemester(Date currentDate, Semester semester) {
         boolean result = false;
-        Date classStart = CourseUtils
-                .getInstance(context)
-                .getDateFromSchedule(
-                        RoutineDB.COLUMN_SCHEDULES_CLASS_START, prefManager.getSemester(),
-                        prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
-        Date classEnd = CourseUtils
-                .getInstance(context)
-                .getDateFromSchedule(
-                        RoutineDB.COLUMN_SCHEDULES_CLASS_END, prefManager.getSemester(),
-                        prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
-        if (classStart != null && classEnd != null) {
-            if (!(currentDate.before(classStart) || currentDate.after(classEnd))) {
-                //if the date is not before the current date and not after the end date then we're ok
-                result = true;
-            }
+        Date classStart = new Date(semester.getClassStart());
+        Date classEnd = new Date(semester.getClassEnd());
+        if (!(currentDate.before(classStart) || currentDate.after(classEnd))) {
+            //if the date is not before the current date and not after the end date then we're ok
+            result = true;
         }
         return result;
     }
 
-    private boolean isWithinMid(Date currentDate) {
+    private boolean isWithinMid(Date currentDate, Semester semester) {
         boolean result = false;
-        Date midStart = CourseUtils
-                .getInstance(context)
-                .getDateFromSchedule(
-                        RoutineDB.COLUMN_SCHEDULES_MID_START, prefManager.getSemester(),
-                        prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
-        Date midEnd = CourseUtils
-                .getInstance(context)
-                .getDateFromSchedule(
-                        RoutineDB.COLUMN_SCHEDULES_MID_END, prefManager.getSemester(),
-                        prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
-        if (midStart != null && midEnd != null) {
-            if (!(currentDate.before(midStart) || currentDate.after(midEnd))) {
-                //if the date is not before the current date and not after the end date then we're ok
-                result = true;
-            }
+        Date midStart = new Date(semester.getMidStart());
+        Date midEnd = new Date(semester.getMidEnd());
+        if (!(currentDate.before(midStart) || currentDate.after(midEnd))) {
+            //if the date is not before the current date and not after the end date then we're ok
+            result = true;
         }
         return result;
     }
 
-    private boolean isWithinVacation(Date currentDate) {
+    private boolean isWithinVacation(Date currentDate, Semester semester) {
         boolean result = false;
-        Date oneStart = CourseUtils
-                .getInstance(context)
-                .getDateFromSchedule(
-                        RoutineDB.COLUMN_SCHEDULES_VACATION_ONE_START, prefManager.getSemester(),
-                        prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
-        Date oneEnd = CourseUtils
-                .getInstance(context)
-                .getDateFromSchedule(
-                        RoutineDB.COLUMN_SCHEDULES_VACATION_ONE_END, prefManager.getSemester(),
-                        prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
+        Date oneStart = new Date(semester.getVacationOneStart());
+        Date oneEnd = new Date(semester.getVacationOneEnd());
 
-        Date twoStart = CourseUtils
-                .getInstance(context)
-                .getDateFromSchedule(
-                        RoutineDB.COLUMN_SCHEDULES_VACATION_TWO_START, prefManager.getSemester(),
-                        prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
-        Date twoEnd = CourseUtils
-                .getInstance(context)
-                .getDateFromSchedule(
-                        RoutineDB.COLUMN_SCHEDULES_VACATION_TWO_END, prefManager.getSemester(),
-                        prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram());
-        if (oneStart != null && oneEnd != null) {
-            if (!(currentDate.before(oneStart) || currentDate.after(oneEnd))) {
-                //if the date is not before the current date and not after the end date then we're ok
-                result = true;
-            }
+        Date twoStart = new Date(semester.getVacationTwoStart());
+        Date twoEnd = new Date(semester.getVacationTwoEnd());
+        if (!(currentDate.before(oneStart) || currentDate.after(oneEnd))) {
+            //if the date is not before the current date and not after the end date then we're ok
+            result = true;
         }
-        if (twoStart != null && twoEnd != null) {
-            if (!(currentDate.before(twoStart) || currentDate.after(twoEnd))) {
-                //if the date is not before the current date and not after the end date then we're ok
-                result = true;
-            }
+        if (!(currentDate.before(twoStart) || currentDate.after(twoEnd))) {
+            //if the date is not before the current date and not after the end date then we're ok
+            result = true;
         }
         return result;
+    }
+
+    private Single<RoutineSemesterModel> getRoutineSemesterCombined() {
+        return Single.zip(
+                repository.getSavedRoutine(),
+                repository.getSemesterFromDb(),
+                RoutineSemesterModel::new
+        );
+    }
+
+    class RoutineSemesterModel {
+        List<Routine> routines;
+        Semester semester;
+
+        RoutineSemesterModel(List<Routine> routines, Semester semester) {
+            this.routines = routines;
+            this.semester = semester;
+        }
     }
 
 

@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
-import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.model.DayData;
 
 /**
  * Created by Mushfiqus Salehin on 5/25/2017.

@@ -1,8 +1,8 @@
 package bd.edu.daffodilvarsity.classorganizer.activity;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -10,17 +10,14 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import org.polaric.colorful.Colorful;
-import org.polaric.colorful.ColorfulActivity;
-
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
-import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.model.DayData;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 
-public class AddActivity extends ColorfulActivity {
+public class AddActivity extends AppCompatActivity {
 
     private PrefManager prefManager;
     private EditText courseCode;
@@ -48,10 +45,6 @@ public class AddActivity extends ColorfulActivity {
 
         setupCurrentView();
 
-        // Making navigation bar colored
-        if (Build.VERSION.SDK_INT >= 21) {
-            getWindow().setNavigationBarColor(getResources().getColor(Colorful.getThemeDelegate().getPrimaryColor().getColorRes()));
-        }
     }
 
     private void setupCurrentView() {

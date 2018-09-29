@@ -1,14 +1,10 @@
 package bd.edu.daffodilvarsity.classorganizer.receiver;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
@@ -17,9 +13,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
-import bd.edu.daffodilvarsity.classorganizer.activity.DayDataDetailActivity;
-import bd.edu.daffodilvarsity.classorganizer.adapter.DayDataAdapter;
-import bd.edu.daffodilvarsity.classorganizer.data.DayData;
+import bd.edu.daffodilvarsity.classorganizer.model.DayData;
+import bd.edu.daffodilvarsity.classorganizer.ui.detail.RoutineDetailActivity;
 import bd.edu.daffodilvarsity.classorganizer.utils.AlarmHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
@@ -40,7 +35,7 @@ public class NotificationPublisher extends BroadcastReceiver {
         if (bundle != null) {
             DayData dayData = null;
             try {
-                dayData = bundle.getParcelable(AlarmHelper.TAG_ALARM_DAYDATA_OBJECT);
+                dayData = bundle.getParcelable(AlarmHelper.TAG_ALARM_ROUTINE_OBJECT);
             } catch (IllegalStateException e) {
                 FileUtils.logAnError(context, TAG, "onReceive: ", e);
                 Toast.makeText(context, "Error! Couldn't show notification", Toast.LENGTH_SHORT).show();
@@ -54,8 +49,8 @@ public class NotificationPublisher extends BroadcastReceiver {
             int timeBefore = bundle.getInt(AlarmHelper.TAG_ALARM_TIME_BEFORE);
             if (dayData != null) {
                 showNotification(index, context, dayData);
-                AlarmHelper alarmHelper = new AlarmHelper(context);
-                alarmHelper.scheduleAlarm(dayOfWeek, index, hour, timeBefore, dayData);
+//                AlarmHelper alarmHelper = new AlarmHelper(context);
+//                alarmHelper.scheduleAlarm(dayOfWeek, index, hour, timeBefore, dayData);
             }
         }
     }
@@ -64,7 +59,7 @@ public class NotificationPublisher extends BroadcastReceiver {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         boolean isRamadanTime = preferences.getBoolean("ramadan_preference", false);
 
-        Intent notificationIntent = new Intent(context, DayDataDetailActivity.class);
+        Intent notificationIntent = new Intent(context, RoutineDetailActivity.class);
         notificationIntent.setAction(context.getString(R.string.notification_publisher_filter));
         Bundle bundle = new Bundle();
         bundle.putByteArray(TAG_NOTIFICATION_DATA, CourseUtils.convertToByteArray(dayData));
@@ -72,38 +67,38 @@ public class NotificationPublisher extends BroadcastReceiver {
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context, index, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CLASSES_CHANNEL_ID)
-                .setContentTitle("You have " + article(dayData.getCourseCode().substring(0, 1)) + " " + dayData.getCourseCode() + " class soon")
-                .setContentText("Today's class is at "
-                        + (isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(dayData.getTime(),
-                        dayData.getTimeWeight()).substring(0, 8) : dayData.getTime()).substring(0, 8)
-                        + " in room " + dayData.getRoomNo())
-                .setTicker("You have a class soon!")
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND)
-                .setSmallIcon(R.drawable.icon_silhouette)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .addAction(getMuteAction(dayData, context, index));
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CLASSES_CHANNEL_ID)
+//                .setContentTitle("You have " + article(dayData.getCourseCode().substring(0, 1)) + " " + dayData.getCourseCode() + " class soon")
+//                .setContentText("Today's class is at "
+//                        + (isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(dayData.getTime(),
+//                        dayData.getTimeWeight()).substring(0, 8) : dayData.getTime()).substring(0, 8)
+//                        + " in room " + dayData.getRoomNo())
+//                .setTicker("You have a class soon!")
+//                .setPriority(NotificationCompat.PRIORITY_MAX)
+//                .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND)
+//                .setSmallIcon(R.drawable.icon_silhouette)
+//                .setContentIntent(pendingIntent)
+//                .setAutoCancel(true)
+//                .addAction(getMuteAction(dayData, context, index));
 
-        Notification notification = new NotificationCompat.InboxStyle(builder)
-                .addLine("Time: " + (isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(dayData.getTime(), dayData.getTimeWeight()).substring(0, 8) : dayData.getTime()).substring(0, 8))
-                .addLine("Room: " + dayData.getRoomNo())
-                .setSummaryText(dayData.getCourseTitle())
-                .setBigContentTitle("Details of Today's Class")
-                .build();
+//        Notification notification = new NotificationCompat.InboxStyle(builder)
+//                .addLine("Time: " + (isRamadanTime ? DayDataAdapter.DayDataHolder.convertToRamadanTime(dayData.getTime(), dayData.getTimeWeight()).substring(0, 8) : dayData.getTime()).substring(0, 8))
+//                .addLine("Room: " + dayData.getRoomNo())
+//                .setSummaryText(dayData.getCourseTitle())
+//                .setBigContentTitle("Details of Today's Class")
+//                .build();
 
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        if (notificationManager != null) {
-
-            //Create notification channel if OREO
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                NotificationChannel channel = new NotificationChannel(CLASSES_CHANNEL_ID, context.getResources().getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_HIGH);
-                notificationManager.createNotificationChannel(channel);
-            }
-
-            notificationManager.notify(index, notification);
-        }
+//        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+//        if (notificationManager != null) {
+//
+//            //Create notification channel if OREO
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                NotificationChannel channel = new NotificationChannel(CLASSES_CHANNEL_ID, context.getResources().getString(R.string.notification_channel_name), NotificationManager.IMPORTANCE_HIGH);
+//                notificationManager.createNotificationChannel(channel);
+//            }
+//
+//            notificationManager.notify(index, notification);
+//        }
     }
 
     @NonNull
@@ -113,7 +108,7 @@ public class NotificationPublisher extends BroadcastReceiver {
         muteIntent.setAction(context.getString(R.string.mute_action_filter));
 
         Bundle bundle = new Bundle();
-        bundle.putParcelable(AlarmHelper.TAG_ALARM_DAYDATA_OBJECT, dayData);
+        bundle.putParcelable(AlarmHelper.TAG_ALARM_ROUTINE_OBJECT, dayData);
         bundle.putInt(AlarmHelper.TAG_ALARM_INDEX, index);
 
         muteIntent.putExtra(AlarmHelper.TAG_ALARM_BUNDLE_DATA, bundle);

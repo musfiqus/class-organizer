@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lsrb_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="8dp"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="8dp"
+        android:text="Select day"
+        android:textSize="16sp"
+        android:textColor="@color/text_color_light" />
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/lsfr_day_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="8dp"
+        android:text="@string/time"
+        android:textSize="16sp"
+        android:textColor="@color/text_color_light" />
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/lsfr_time_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
+    <android.support.design.button.MaterialButton
+        android:id="@+id/lsfr_search_button"
+        style="@style/Widget.MaterialComponents.Button.Icon"
+        android:layout_margin="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/search"
+        app:cornerRadius="4dp"
+        app:icon="@drawable/ic_search_white_24dp"
+        app:iconSize="18dp"/>
+
+
+</LinearLayout>

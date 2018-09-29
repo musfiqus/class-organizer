@@ -4,12 +4,13 @@
 
     <item
         android:id="@+id/splash_color"
-        android:drawable="@color/colorPrimary"/>
+        android:drawable="@color/splashColor"/>
 
     <item>
         <bitmap
             android:id="@+id/splash_icon"
             android:gravity="center"
+            android:tint="@color/text_color_dark"
             android:src="@drawable/ic_welcome_image"/>
     </item>
 

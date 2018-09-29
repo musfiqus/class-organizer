@@ -4,60 +4,71 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="bd.edu.daffodilvarsity.classorganizer.fragment.SearchFragmentRoutine">
+    tools:context="bd.edu.daffodilvarsity.classorganizer.ui.search.SearchRefinedActivity">
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.v7.widget.CardView
-                android:id="@+id/search_options_container"
+            <android.support.design.card.MaterialCardView
+                android:id="@+id/search_fragment_options_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                tools:layout_height="200dp" />
+                android:layout_margin="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_height="200dp" >
 
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/search_fab"
+                <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+                    style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
+                    android:id="@+id/search_fragment_progress"
+                    android:layout_width="match_parent"
+                    android:layout_height="4dp"
+                    android:indeterminate="true"
+                    android:layout_gravity="bottom"
+                    app:mpb_progressStyle="horizontal"
+                    app:mpb_useIntrinsicPadding="false" />
+            </android.support.design.card.MaterialCardView>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/search_fragment_result_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/search_fragment_options_card"
+                />
+
+            <TextView
+                android:id="@+id/search_fragment_no_result_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@id/result_segment_holder"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_margin="@dimen/fab_margin"
-                app:srcCompat="@drawable/ic_search_white_24dp"
-                app:fabSize="mini"/>
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="120dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.503"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/search_fragment_options_card"
+                android:textColor="@color/text_color_dark"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                android:textSize="18sp"
+                tools:text="No routines found! ¯\\_(ツ)_\/¯" />
 
-            <LinearLayout
-                android:id="@+id/result_segment_holder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/search_options_container"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/result_layout_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:text="Results"
-                    android:textSize="20sp" />
-
-                <android.support.v7.widget.CardView
-                    android:id="@+id/search_results_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    tools:layout_height="200dp" />
-
-            </LinearLayout>
-
-        </RelativeLayout>
+        </android.support.constraint.ConstraintLayout>
     </android.support.v4.widget.NestedScrollView>
 
 </android.support.design.widget.CoordinatorLayout>

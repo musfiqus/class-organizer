@@ -25,11 +25,11 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
-import bd.edu.daffodilvarsity.classorganizer.activity.MainActivity;
-import bd.edu.daffodilvarsity.classorganizer.data.DayData;
-import bd.edu.daffodilvarsity.classorganizer.data.Download;
-import bd.edu.daffodilvarsity.classorganizer.data.UpdateResponse;
-import bd.edu.daffodilvarsity.classorganizer.utils.ClassOrganizerApi;
+import bd.edu.daffodilvarsity.classorganizer.ui.main.MainActivity;
+import bd.edu.daffodilvarsity.classorganizer.model.DayData;
+import bd.edu.daffodilvarsity.classorganizer.model.Download;
+import bd.edu.daffodilvarsity.classorganizer.model.UpdateResponse;
+import bd.edu.daffodilvarsity.classorganizer.data.ClassOrganizerApi;
 import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.RoutineDB;
@@ -273,7 +273,7 @@ public class UpdateService extends IntentService {
             if ((fallback == null || fallback.size() == 0)) {
                 //Fallback failed
                 hasLoaded = false;
-                Toasty.error(context, "Unable to load new routine. Falling back to old routine.", Toast.LENGTH_SHORT, true).show();
+//                Toasty.error(context, "Unable to load new routine. Falling back to old routine.", Toast.LENGTH_SHORT, true).show();
             } else {
                 //save fallback
                 prefManager.saveDayData(fallback);

@@ -1,24 +1,71 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="actionBarStyle">@style/RoutineAppBarStyle</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="colorControlNormal">@color/text_color_dark</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="md_medium_font">Poppins-Medium.ttf</item>
+        <item name="md_regular_font">Poppins-Regular.ttf</item>
+
         <!-- specify enter and exit transitions -->
+    </style>
+
+    <style name="AppTheme.SplashTheme" parent="AppTheme.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:windowBackground">@drawable/background_splash</item>
+    </style>
+
+    <style name="AppTheme.Intro" parent="Theme.Intro">
+        <item name="colorPrimary">@color/text_color_light</item>
+        <item name="colorPrimaryDark">@color/text_color_dark</item>
+        <item name="colorAccent">@color/text_color_dark</item>
+
+
+        <item name="android:textColorPrimary">@color/text_color_dark</item>
+        <item name="dialogCornerRadius">@dimen/dialog_corner_radius</item>
+
+    </style>
+
+    <style name="AppTheme.NoBullshitIconButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="rippleColor">@color/text_color_dark</item>
+        <item name="android:textColor">@color/text_color_dark</item>
+    </style>
+
+    <style name="AppTheme.NoBullshitTextButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">
+        <item name="android:minHeight">0dp</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="rippleColor">@color/colorAccent</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+    <style name="AppTheme.LightDialog" parent="Base.Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="dialogCornerRadius">8dp</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <!--<item name="colorControlNormal">@color/text_color_light</item>-->
+    </style>
+
+    <style name="AppTheme.OutlineTextBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="colorControlActivated">@color/text_color_dark</item>
+        <item name="colorControlNormal">@color/text_color_light</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:fontFamily">@font/poppins</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
     <!-- App bar style -->
     <style name="RoutineAppBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <!-- Remove the shadow below the app bar -->
@@ -26,18 +73,20 @@
     </style>
 
     <!-- Style for a tab that displays weekdays name -->
-    <style name="DayTab" parent="Widget.Design.TabLayout">
-        <item name="tabBackground">?attr/colorPrimary</item>
-        <item name="android:background">?attr/colorPrimary</item>
-        <item name="tabIndicatorColor">?attr/colorAccent</item>
-        <item name="tabSelectedTextColor">@android:color/white</item>
-        <item name="tabTextAppearance">@style/CategoryTabTextAppearance</item>
+    <style name="AppTheme.Tab" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabSelectedTextColor">?colorAccent</item>
+        <item name="tabIndicatorColor">?colorAccent</item>
+        <item name="tabTextAppearance">@style/AppTheme.TabTextAppearance</item>
     </style>
 
-    <!-- Text appearance style for a tab -->
-    <style name="CategoryTabTextAppearance" parent="TextAppearance.Design.Tab">
-        <item name="android:textColor">#BDBDBD</item>
+    <style name="AppTheme.TabTextAppearance" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="fontFamily">@font/poppins</item>
+        <item name="android:textAllCaps">true</item>
     </style>
+
+
+
+
 
     <!--//Edit text color in modify activity-->
     <style name="Theme.edit.darkback" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -47,10 +96,7 @@
     </style>
 
     <style name="SpinnerStyle">
-        <item name="android:layout_width">112dp</item>
-        <item name="android:layout_height">42dp</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:background">@color/md_grey_300</item>
+        <item name="android:gravity">center</item>
     </style>
 
     <style name="SpinnerTitle">
@@ -79,12 +125,11 @@
         <item name="android:textColor">@android:color/white</item> <!-- checkbox text color -->
     </style>
 
-    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">@drawable/background_splash</item>
-    </style>
+
 
     <style name="ProgressBar" parent="Widget.AppCompat.ProgressBar">
         <item name="colorAccent">@color/md_white_1000</item>
     </style>
+
 
 </resources>

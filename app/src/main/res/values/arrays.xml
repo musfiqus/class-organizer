@@ -15,7 +15,7 @@
         <item>Thursday</item>
         <item>Friday</item>
     </string-array>
-    <string-array name="cse_main_day_level_array">
+    <string-array name="level_array">
         <item>Level 1</item>
         <item>Level 2</item>
         <item>Level 3</item>
@@ -37,6 +37,7 @@
         <item>30 minutes</item>
         <item>45 minutes</item>
         <item>1 hour</item>
+        <item>2 hours</item>
     </string-array>
 
     <!-- Universal -->
@@ -52,7 +53,7 @@
     </string-array>
 
     <string-array name="search_page_titles">
-        <item>Your routine</item>
+        <item>Browse routine</item>
         <item>Empty rooms</item>
         <item>Teachers</item>
     </string-array>

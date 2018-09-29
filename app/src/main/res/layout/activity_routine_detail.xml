@@ -1,0 +1,221 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="?colorPrimary"
+    tools:context="bd.edu.daffodilvarsity.classorganizer.ui.detail.RoutineDetailActivity"
+    tools:ignore="MergeRootFrame">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/routine_detail_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                >
+                <TextView
+                    android:id="@+id/routine_detail_toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Details"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:textColor="@color/text_color_dark" />
+            </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/routine_detail_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:orientation="vertical">
+            <android.support.design.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/routine_detail_course_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                        android:textColor="@color/text_color_dark"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:text="@string/abc_course" />
+
+                    <TextView
+                        android:id="@+id/routine_detail_initial"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        android:textColor="?colorAccent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/routine_detail_course_title"
+                        tools:text="@string/tm" />
+
+                    <ImageView
+                        android:id="@+id/routine_detail_time_icon"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:tint="?attr/colorAccent"
+                        app:layout_constraintBottom_toBottomOf="@+id/routine_detail_initial"
+                        app:layout_constraintEnd_toStartOf="@+id/routine_detail_time"
+                        app:layout_constraintTop_toTopOf="@+id/routine_detail_initial"
+                        app:srcCompat="@drawable/ic_clock_time"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:id="@+id/routine_detail_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+
+                        android:layout_marginBottom="8dp"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                        android:textColor="?attr/colorAccent"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/routine_detail_time_icon"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/routine_detail_time_icon"
+                        app:layout_constraintVertical_bias="0.304"
+                        tools:text="08.30 AM - 10.00 AM" />
+
+                    <View
+                        android:id="@+id/routine_detail_separator"
+                        android:layout_width="match_parent"
+                        android:layout_height="2dp"
+                        android:layout_marginTop="4dp"
+                        android:background="?colorAccent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/routine_detail_time" />
+
+
+                </android.support.constraint.ConstraintLayout>
+            </android.support.design.card.MaterialCardView>
+
+
+
+
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="4dp"
+                android:text="@string/section"
+                android:textColor="@color/text_color_light"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/routine_detail_section"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAllCaps="true"
+                android:textSize="16sp"
+                android:textColor="@color/text_color_dark"
+                tools:text="B" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/room_no"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp"
+                android:textColor="@color/text_color_light" />
+
+            <TextView
+                android:id="@+id/routine_detail_room_no"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="@string/_101_dt5"
+                android:textColor="@color/text_color_dark"
+                android:textAllCaps="true"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/weekday"
+                android:textColor="@color/text_color_light"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/routine_detail_weekday"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="@string/sunday"
+                android:textColor="@color/text_color_dark"
+                android:textSize="16sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/time"
+                android:textColor="@color/text_color_light"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="4dp" />
+
+
+
+            <RelativeLayout
+                android:id="@+id/routine_detail_mute_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="48dp"
+                android:layout_marginTop="8dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:focusableInTouchMode="false">
+
+                <ImageView
+                    android:id="@+id/routine_detail_mute_no"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:srcCompat="@drawable/ic_outline_notifications"
+                    tools:ignore="ContentDescription" />
+
+                <ImageView
+                    android:id="@+id/routine_detail_mute_yes"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    app:srcCompat="@drawable/ic_outline_notifications_off"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/routine_detail_mute_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/routine_detail_mute_yes"
+                    android:textSize="16sp"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/text_color_dark"
+                    tools:text="Unmuted" />
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

@@ -8,7 +8,7 @@ import com.google.gson.Gson;
 
 import java.util.Map;
 
-import bd.edu.daffodilvarsity.classorganizer.data.UpdateResponse;
+import bd.edu.daffodilvarsity.classorganizer.model.UpdateResponse;
 import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.UpdateNotificationHelper;
 
