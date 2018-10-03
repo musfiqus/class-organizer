@@ -38,186 +38,7 @@ import bd.edu.daffodilvarsity.classorganizer.model.Database;
 public final class FileUtils {
     private static final String TAG = "FileUtils";
 
-    public static void copyFile(File sourceFile, File destFile) throws IOException {
-        if (!destFile.exists()) {
-            boolean result = destFile.createNewFile();
-            if (result) Log.d(TAG, "copyFile: New file created");
-        }
-        FileChannel source = null;
-        FileChannel destination = null;
-        FileInputStream is = null;
-        FileOutputStream os = null;
-        try {
-            is = new FileInputStream(sourceFile);
-            os = new FileOutputStream(destFile);
-            source = is.getChannel();
-            destination = os.getChannel();
-
-            long count = 0;
-            long size = source.size();
-            while ((count += destination.transferFrom(source, count, size - count)) < size)
-                ;
-        } catch (Exception ex) {
-        } finally {
-            if (source != null) {
-                source.close();
-            }
-            if (is != null) {
-                is.close();
-            }
-            if (destination != null) {
-                destination.close();
-            }
-            if (os != null) {
-                os.close();
-            }
-        }
-    }
-
-    public static boolean backupDatabase(Context context, String dbName) {
-        File dbToBackup = context.getDatabasePath(dbName);
-        File dbBackup = new File(context.getDatabasePath(dbName).getAbsolutePath()+"_bkp");
-        File dbToBackupJournal = new File(context.getDatabasePath(dbName).getAbsolutePath()+"-journal");
-        File dbJournalBackup = new File(context.getDatabasePath(dbName).getAbsolutePath()+"-journal_bkp");
-        try {
-            copyFile(dbToBackup, dbBackup);
-        } catch (IOException e) {
-            Log.e(TAG, "backupDatabase: \n"+e.toString());
-            logAnError(context, TAG, "backupDatabase: ", e);
-            return false;
-        }
-        try {
-            copyFile(dbToBackupJournal, dbJournalBackup);
-        } catch (IOException e) {
-            Log.e(TAG, "backupDatabase: \n"+e.toString());
-            logAnError(context, TAG, "backupDatabase: ", e);
-            return false;
-        }
-        return true;
-    }
-
-    public static boolean restoreDatabase(Context context, String dbName) {
-        File db = context.getDatabasePath(dbName);
-        File dbRestore = new File(context.getDatabasePath(dbName).getAbsolutePath()+"_bkp");
-        File dbJournal = new File(context.getDatabasePath(dbName).getAbsolutePath()+"-journal");
-        File dbJournalRestore = new File(context.getDatabasePath(dbName).getAbsolutePath()+"-journal_bkp");
-        try {
-            copyFile(dbRestore, db);
-        } catch (IOException e) {
-            Log.e(TAG, "backupDatabase: \n"+e.toString());
-            logAnError(context, TAG, "backupDatabase: ", e);
-            return false;
-        }
-        try {
-            copyFile(dbJournalRestore, dbJournal);
-        } catch (IOException e) {
-            Log.e(TAG, "backupDatabase: \n"+e.toString());
-            logAnError(context, TAG, "backupDatabase: ", e);
-            return false;
-        }
-        return true;
-    }
-
-    public static boolean deleteDatabase(Context context, String dbName) {
-        boolean delete = true;
-        String journalName = dbName+"-journal";
-        context.deleteDatabase(dbName);
-        File dbFile = context.getDatabasePath(dbName);
-        File dbJournal = new File(context.getDatabasePath(journalName).getAbsolutePath());
-        if (dbFile.exists()) {
-            boolean dbDelete = dbFile.getAbsoluteFile().delete();
-            if (dbDelete) {
-                Log.d(TAG, "deleteDatabase: "+dbName+" deleted via file operation");
-            } else {
-                delete = false;
-                Log.e(TAG, "deleteDatabase: unable to delete "+dbName);
-            }
-        } else {
-            Log.d(TAG, "deleteDatabase: "+dbName+" deleted via db delete");
-        }
-
-        if (dbJournal.exists()) {
-            boolean dbDelete = dbFile.getAbsoluteFile().delete();
-            if (dbDelete) {
-                Log.d(TAG, "deleteDatabase: "+journalName+" deleted via file operation");
-            } else {
-                delete = false;
-                Log.e(TAG, "deleteDatabase: unable to delete "+journalName);
-            }
-        } else {
-            Log.d(TAG, "deleteDatabase: "+journalName+" deleted via db delete");
-        }
-        return delete;
-    }
-
-    public static boolean checkMD5(String md5, File updateFile) {
-        if (TextUtils.isEmpty(md5) || updateFile == null) {
-            Log.e(TAG, "MD5 string empty or updateFile null");
-            return false;
-        }
-
-        String calculatedDigest = calculateMD5(updateFile);
-        if (calculatedDigest == null) {
-            Log.e(TAG, "calculatedDigest null");
-            return false;
-        }
-
-        Log.v(TAG, "Calculated digest: " + calculatedDigest);
-        Log.v(TAG, "Provided digest: " + md5);
-
-        return calculatedDigest.equalsIgnoreCase(md5);
-    }
-
-    ///////////////////////////////////////////////////////////////////////////////////////////
-    //* Google:
-    //* Stackoverflow: https://stackoverflow.com/a/14922433
-    ///////////////////////////////////////////////////////////////////////////////////////////
-
-    public static String calculateMD5(File updateFile) {
-        MessageDigest digest;
-        try {
-            digest = MessageDigest.getInstance("MD5");
-        } catch (NoSuchAlgorithmException e) {
-            Log.e(TAG, "Exception while getting digest", e);
-            return null;
-        }
-
-        InputStream is;
-        try {
-            is = new FileInputStream(updateFile);
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "Exception while getting FileInputStream", e);
-            return null;
-        }
-
-        byte[] buffer = new byte[8192];
-        int read;
-        try {
-            while ((read = is.read(buffer)) > 0) {
-                digest.update(buffer, 0, read);
-            }
-            byte[] md5sum = digest.digest();
-            BigInteger bigInt = new BigInteger(1, md5sum);
-            String output = bigInt.toString(16);
-            // Fill to 32 chars
-            output = String.format("%32s", output).replace(' ', '0');
-            Log.i(TAG, "calculateMD5: Calculated digest for +"
-                    +Uri.fromFile(updateFile).getLastPathSegment()+" is :"+output);
-            return output;
-        } catch (IOException e) {
-            throw new RuntimeException("Unable to process file for MD5", e);
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                Log.e(TAG, "Exception on closing MD5 input stream", e);
-            }
-        }
-
-    }
-
     public static void logAnError(Context context, String tag, String message, Exception exception) {
-        PrefManager prefManager = new PrefManager(context);
         String errorDetails = null;
         //Get version
         String appVersionName;
@@ -230,12 +51,12 @@ public final class FileUtils {
             appVersionName = "App version not found";
         }
         errorDetails = "App version: "+appVersionName+"\n";
-        errorDetails += "Database version: "+prefManager.getDatabaseVersion()+"\n";
-        errorDetails += "Campus: "+prefManager.getCampus()+" Department: "+prefManager.getDept()+" Program: "+prefManager.getProgram()+"\n";
-        if (prefManager.isUserStudent()) {
-            errorDetails += "Level: "+prefManager.getLevel()+1+" Term: "+prefManager.getTerm()+1+" Section: "+prefManager.getSection()+"\n";
+        errorDetails += "Database version: "+PreferenceGetter.getDatabaseVersion()+"\n";
+        errorDetails += "Campus: "+PreferenceGetter.getCampus()+" Department: "+PreferenceGetter.getDepartment()+" Program: "+PreferenceGetter.getProgram()+"\n";
+        if (PreferenceGetter.isStudent()) {
+            errorDetails += "Level: "+PreferenceGetter.getLevel()+1+" Term: "+PreferenceGetter.getTerm()+1+" Section: "+PreferenceGetter.getSection()+"\n";
         } else {
-            errorDetails += "Teacher's initial: "+prefManager.getTeacherInitial()+" Multi program: "+prefManager.isMultiProgram()+"\n";
+            errorDetails += "Teacher's initial: "+PreferenceGetter.getInitial()+"\n";
         }
         errorDetails += "Message: "+message+"\n";
 //        if (exception != null) {

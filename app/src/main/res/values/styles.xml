@@ -55,6 +55,11 @@
     <style name="AppTheme.OutlineTextBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="colorControlActivated">@color/text_color_dark</item>
         <item name="colorControlNormal">@color/text_color_light</item>
+        <item name="boxCornerRadiusBottomEnd">100dp</item>
+        <item name="boxCornerRadiusBottomStart">100dp</item>
+        <item name="boxCornerRadiusTopEnd">100dp</item>
+        <item name="boxCornerRadiusTopStart">100dp</item>
+        <item name="boxBackgroundColor">@color/md_grey_100</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">

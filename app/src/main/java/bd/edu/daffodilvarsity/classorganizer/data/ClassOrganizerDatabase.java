@@ -1,28 +1,35 @@
 package bd.edu.daffodilvarsity.classorganizer.data;
 
+import android.annotation.SuppressLint;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import bd.edu.daffodilvarsity.classorganizer.ClassOrganizer;
+import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.model.Routine;
 import bd.edu.daffodilvarsity.classorganizer.model.Semester;
 import bd.edu.daffodilvarsity.classorganizer.ui.setup.SetupViewModel;
 import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.InputHelper;
-import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.PreferenceGetter;
 
 @Database(entities = {Routine.class, Semester.class}, version = ClassOrganizerDatabase.DATABASE_VERSION, exportSchema = false)
 public abstract class ClassOrganizerDatabase extends RoomDatabase {
+    private static final String TAG = "ClassOrganizerDatabase";
 
-    public static final int DATABASE_VERSION  = 1;
+    public static final int DATABASE_VERSION = 1;
 
     public abstract RoutineDao routineAccess();
+
     public abstract SemesterDao semesterAccess();
 
     private static ClassOrganizerDatabase sInstance;
@@ -41,30 +48,6 @@ public abstract class ClassOrganizerDatabase extends RoomDatabase {
             sInstance.generateInitialData();
         }
         return sInstance;
-    }
-
-    boolean upgrade(bd.edu.daffodilvarsity.classorganizer.model.Database database) {
-        //check version
-        if (PreferenceGetter.getDatabaseVersion() >= database.getDatabaseVersion()) {
-            return false;
-        }
-        List<Routine> modifiedRoutineOriginal = PreferenceGetter.getModifiedRoutineOriginal();
-        //fetch modified routines
-        List<Routine> modifiedRoutines = fetchModifiedRoutines(modifiedRoutineOriginal);
-        //clean previous records
-        routineAccess().nukeRoutines();
-        semesterAccess().nukeSemesters();
-        //insert routine
-        populateData(database);
-        //upgrade modifications
-        upgradeModifications(modifiedRoutineOriginal, modifiedRoutines);
-        //delete deleted ones
-        List<Routine> deleted = PreferenceGetter.getDeletedRoutine();
-        for (Routine routine: deleted) {
-            deleteRoutineModified(routine);
-        }
-        return true;
-
     }
 
     private void populateData(bd.edu.daffodilvarsity.classorganizer.model.Database database) {
@@ -152,10 +135,29 @@ public abstract class ClassOrganizerDatabase extends RoomDatabase {
             routines = routineAccess().getRoutineTeacher(PreferenceGetter.getCampus(), PreferenceGetter.getDepartment(), PreferenceGetter.getInitial());
         }
         List<Routine> savedRoutine = PreferenceGetter.getSavedRoutine();
-        if (savedRoutine != null) {
-            routines.addAll(savedRoutine);
+        List<Routine> modifiedRoutine = PreferenceGetter.getModifiedRoutineList();
+        List<Routine> cleanRoutine = removeModified(routines);
+        cleanRoutine.addAll(savedRoutine);
+        cleanRoutine.addAll(modifiedRoutine);
+        return cleanRoutine;
+    }
+
+    private List<Routine> removeModified(List<Routine> routines) {
+        List<Routine> deleted = PreferenceGetter.getDeletedRoutine();
+        Map<Long, Routine> modified = PreferenceGetter.getModifiedRoutine();
+        for (int i = 0; i < routines.size(); i++) {
+            if (deleted.contains(routines.get(i))) {
+                routines.remove(i);
+                i--;
+                continue;
+            }
+            if (modified.get(routines.get(i).getId()) != null) {
+                routines.remove(i);
+                i--;
+            }
         }
         return routines;
+
     }
 
     List<Routine> getRoutineByInitial(String initial) {
@@ -190,64 +192,153 @@ public abstract class ClassOrganizerDatabase extends RoomDatabase {
         }
     }
 
-    long getId(Routine routine) {
-        return routineAccess().getId(routine.getCampus(), routine.getDepartment(), routine.getProgram(), routine.getCourseCode(), routine.getCourseTitle(), routine.getTeachersInitial(), routine.getSection(), routine.getLevel(), routine.getTerm(), routine.getRoomNo(), routine.getTime(), routine.getDay(), routine.getTimeWeight(), routine.getAltTime(), routine.getAltTimeWeight());
+    boolean upgrade(bd.edu.daffodilvarsity.classorganizer.model.Database database) {
+        //check version
+        if (PreferenceGetter.getDatabaseVersion() >= database.getDatabaseVersion()) {
+            return false;
+        }
+        //clean previous records
+        routineAccess().nukeRoutines();
+        semesterAccess().nukeSemesters();
+        //insert routine
+        populateData(database);
+        //upgrade modifications
+        upgradeModifications();
+        return true;
+
     }
 
-    void modifyRoutine(Routine routine) {
-        List<Routine> originalMods = PreferenceGetter.getModifiedRoutineOriginal();
-        int index = -1;
-        for (int i = 0; i < originalMods.size(); i++) {
-            if (originalMods.get(i).getId() == routine.getId()) {
-                index = i;
-            }
+    private long getId(Routine routine) {
+        List<Routine> routineList = routineAccess().searchRoutine(routine.getCampus(), routine.getDepartment(), routine.getProgram(), routine.getTeachersInitial(), routine.getLevel(), routine.getTerm(), routine.getSection());
+        int index = routineList.indexOf(routine);
+        if (index > -1) {
+            return routineList.get(index).getId();
         }
-        if (index < 0) {
-            Routine originalRoutine = routineAccess().getRoutineById(routine.getId());
-            originalMods.add(originalRoutine);
-            PreferenceGetter.setModifiedRoutineOriginal(originalMods);
-        }
-        routineAccess().updateRoutine(routine);
+        return -1;
     }
 
-    private void upgradeModifications(List<Routine> modifiedOriginals, List<Routine> modified) {
-        for (int i = 0; i < modifiedOriginals.size(); i++) {
-            long newId = getId(modifiedOriginals.get(i));
-            if (newId != 0) {
+    @SuppressLint("UseSparseArrays")
+    private void upgradeModifications() {
+        Map<Long, Routine> modifiedOriginals = PreferenceGetter.getModifiedRoutineOriginal();
+        Map<Long, Routine> modifiedRoutines = PreferenceGetter.getModifiedRoutine();
+        List<Routine> saved = PreferenceGetter.getSavedRoutine();
+
+        Map<Long, Routine> newModifiedOriginals = new HashMap<>();
+        Map<Long, Routine> newModifiedRoutines = new HashMap<>();
+        List<Long> keys = new ArrayList<>(modifiedOriginals.keySet());
+
+        for (int i = 0; i < keys.size(); i++) {
+            Routine original = modifiedOriginals.get(keys.get(i));
+            Routine modified = modifiedRoutines.get(keys.get(i));
+            long newId = getId(original);
+            if (newId != -1) {
                 try {
-                    modified.get(i).setId(newId);
-                    routineAccess().updateRoutine(modified.get(i));
-                } catch (IndexOutOfBoundsException e) {
-                    modifiedOriginals.remove(i);
-                    i--;
+                    original.setId(newId);
+                    modified.setId(newId);
+                    newModifiedOriginals.put(newId, original);
+                    newModifiedRoutines.put(newId, modified);
+                } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
-                modifiedOriginals.get(i).setId(newId);
             } else {
-                try {
-                    modified.get(i).setId(0);
-                    long insertId = routineAccess().insertRoutine(modified.get(i));
-                    Routine insertedRoutine = routineAccess().getRoutineById(insertId);
-                    modifiedOriginals.set(i, insertedRoutine);
-                } catch (IndexOutOfBoundsException e) {
-                    modifiedOriginals.remove(i);
-                    i--;
-                    e.printStackTrace();
-                }
+                saved.add(modified);
             }
         }
-        PreferenceGetter.setModifiedRoutineOriginal(modifiedOriginals);
-    }
 
-    private List<Routine> fetchModifiedRoutines(List<Routine> modifiedRoutineOriginal) {
-        List<Routine> modified = new ArrayList<>();
-        for (Routine routine : modifiedRoutineOriginal) {
-            modified.add(routineAccess().getRoutineById(routine.getId()));
+        List<Routine> deleted = PreferenceGetter.getDeletedRoutine();
+        for (int i = 0; i < deleted.size(); i++) {
+            long id = getId(deleted.get(i));
+            if (id != -1) {
+                deleted.get(i).setId(id);
+            } else {
+                deleted.remove(i);
+                i--;
+            }
         }
-        return modified;
+        PreferenceGetter.setDeletedRoutine(deleted);
+        PreferenceGetter.setModifiedRoutine(newModifiedRoutines);
+        PreferenceGetter.setModifiedRoutineOriginal(newModifiedOriginals);
+        PreferenceGetter.setSavedRoutine(saved);
     }
 
-    void deleteRoutineModified(Routine routine) {
-        routineAccess().deleteModified(routine.getCampus(), routine.getDepartment(), routine.getProgram(), routine.getCourseCode(), routine.getCourseTitle(), routine.getTeachersInitial(), routine.getSection(), routine.getLevel(), routine.getTerm(), routine.getRoomNo(), routine.getTime(), routine.getDay(), routine.getTimeWeight(), routine.getAltTime(), routine.getAltTimeWeight());
+    void mutifyRoutine(Routine originalRoutine) {
+        Log.e(TAG, "mutifyRoutine: OriginaL "+originalRoutine.isMuted() );
+        modifyRoutine(originalRoutine, mutify(originalRoutine));
+    }
+
+    private Routine mutify(Routine original) {
+        Routine routine = new Routine();
+        routine.setId(original.getId());
+        routine.setCampus(original.getCampus());
+        routine.setDepartment(original.getDepartment());
+        routine.setProgram(original.getProgram());
+        routine.setCourseCode(original.getCourseCode());
+        routine.setCourseTitle(original.getCourseTitle());
+        routine.setTeachersInitial(original.getTeachersInitial());
+        routine.setSection(original.getSection());
+        routine.setLevel(original.getLevel());
+        routine.setTerm(original.getTerm());
+        routine.setRoomNo(original.getRoomNo());
+        routine.setTime(original.getTime());
+        routine.setDay(original.getDay());
+        routine.setTimeWeight(original.getTimeWeight());
+        routine.setAltTime(original.getAltTime());
+        routine.setAltTimeWeight(original.getAltTimeWeight());
+        routine.setMuted(!original.isMuted());
+        return routine;
+    }
+
+    void modifyRoutine(@NonNull Routine originalRoutine, @NonNull Routine modifiedRoutine) {
+        if (originalRoutine.equals(modifiedRoutine)) {
+            if (originalRoutine.isMuted() == modifiedRoutine.isMuted()) {
+                return;
+            }
+        }
+        List<Routine> savedRoutines = PreferenceGetter.getSavedRoutine();
+        if (savedRoutines.contains(originalRoutine)) {
+            int index = savedRoutines.indexOf(originalRoutine);
+            savedRoutines.set(index, modifiedRoutine);
+            PreferenceGetter.setSavedRoutine(savedRoutines);
+            return;
+        }
+        Map<Long, Routine> modifiedRoutines = PreferenceGetter.getModifiedRoutine();
+        Map<Long, Routine> originalMods = PreferenceGetter.getModifiedRoutineOriginal();
+        Routine storedOriginal = originalMods.get(originalRoutine.getId());
+        if (storedOriginal == null) {
+            modifiedRoutines.put(originalRoutine.getId(), modifiedRoutine);
+            originalMods.put(originalRoutine.getId(), originalRoutine);
+        } else {
+            modifiedRoutines.put(originalRoutine.getId(), modifiedRoutine);
+        }
+        PreferenceGetter.setModifiedRoutine(modifiedRoutines);
+        PreferenceGetter.setModifiedRoutineOriginal(originalMods);
+    }
+
+    void deleteRoutine(Routine routine) {
+        List<Routine> saved = PreferenceGetter.getSavedRoutine();
+        if (saved.contains(routine)) {
+            saved.remove(routine);
+            PreferenceGetter.setSavedRoutine(saved);
+            return;
+        }
+        deleteModifiedRoutine(routine);
+        List<Routine> deleted = PreferenceGetter.getDeletedRoutine();
+        deleted.add(routine);
+        PreferenceGetter.setDeletedRoutine(deleted);
+    }
+
+    private void deleteModifiedRoutine(Routine routine) {
+        Map<Long, Routine> original = PreferenceGetter.getModifiedRoutineOriginal();
+        Map<Long, Routine> modified = PreferenceGetter.getModifiedRoutine();
+        for (Map.Entry<Long, Routine> entry : modified.entrySet()) {
+            if (routine.equals(entry.getValue())) {
+                long id = entry.getKey();
+                original.remove(id);
+                modified.remove(id);
+                break;
+            }
+        }
+        PreferenceGetter.setModifiedRoutine(modified);
+        PreferenceGetter.setModifiedRoutineOriginal(original);
     }
 }

@@ -87,6 +87,26 @@ public class Routine implements Parcelable {
     public Routine() {
     }
 
+    public Routine(long id, String campus, String department, String program, String courseCode, String courseTitle, String teachersInitial, String section, int level, int term, String roomNo, String time, String day, String timeWeight, String altTime, String altTimeWeight, boolean isMuted) {
+        this.id = id;
+        this.campus = campus;
+        this.department = department;
+        this.program = program;
+        this.courseCode = courseCode;
+        this.courseTitle = courseTitle;
+        this.teachersInitial = teachersInitial;
+        this.section = section;
+        this.level = level;
+        this.term = term;
+        this.roomNo = roomNo;
+        this.time = time;
+        this.day = day;
+        this.timeWeight = timeWeight;
+        this.altTime = altTime;
+        this.altTimeWeight = altTimeWeight;
+        this.isMuted = isMuted;
+    }
+
     public long getId() {
         return id;
     }

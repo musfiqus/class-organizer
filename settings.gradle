@@ -1,3 +1,1 @@
-include ':app', ':Colorful', ':SQLiteAssetHelper'
-project(':Colorful').projectDir = new File('colorful')
-project(':SQLiteAssetHelper').projectDir = new File('SQLiteAssetHelper/library')
+include ':app'

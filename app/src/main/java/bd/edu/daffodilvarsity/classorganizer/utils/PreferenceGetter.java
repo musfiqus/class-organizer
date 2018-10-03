@@ -1,14 +1,18 @@
 package bd.edu.daffodilvarsity.classorganizer.utils;
 
 
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.util.LongSparseArray;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import bd.edu.daffodilvarsity.classorganizer.data.ClassOrganizerDatabase;
@@ -31,6 +35,7 @@ public class PreferenceGetter {
     private static final String PREF_TERM = "user_term";
     private static final String PREF_SECTION = "user_section";
     private static final String PREF_SAVED_ROUTINE = "user_saved_routine";
+    private static final String PREF_MODIFIED_ROUTINE = "user_modified_routine";
     private static final String PREF_MODIFIED_ROUTINE_ORIGINAL = "user_modified_routine_original";
     private static final String PREF_DELETED_ROUTINE = "user_deleted_routine";
     private static final String PREF_NOTIFICATION_DELAY = "user_notification_delay";
@@ -125,9 +130,13 @@ public class PreferenceGetter {
     @NonNull
     public static List<Routine> getSavedRoutine() {
         String jsonString = PreferenceHelper.getString(PREF_SAVED_ROUTINE);
+
         Gson gson = new Gson();
-        return new ArrayList<>(Objects.requireNonNull(gson.fromJson(jsonString, new TypeToken<List<Routine>>() {
-        }.getType())));
+        List<Routine> routineList = gson.fromJson(jsonString, new TypeToken<List<Routine>>(){}.getType());
+        if (routineList == null){
+            routineList = new ArrayList<>();
+        }
+        return routineList;
     }
 
     public static void setSavedRoutine(List<Routine> routines) {
@@ -136,14 +145,48 @@ public class PreferenceGetter {
     }
 
     @NonNull
-    public static List<Routine> getModifiedRoutineOriginal() {
-        String jsonString = PreferenceHelper.getString(PREF_MODIFIED_ROUTINE_ORIGINAL);
+    public static List<Routine> getModifiedRoutineList() {
+        String jsonString = PreferenceHelper.getString(PREF_MODIFIED_ROUTINE);
         Gson gson = new Gson();
-        return new ArrayList<>(Objects.requireNonNull(gson.fromJson(jsonString, new TypeToken<List<Routine>>() {
-        }.getType())));
+        Map<Long, Routine> routineMap = gson.fromJson(jsonString, new TypeToken<Map<Long, Routine>>(){}.getType());
+        List<Routine> routineList = new ArrayList<>();
+        if (routineMap != null) {
+            routineList.addAll(routineMap.values());
+        }
+        return routineList;
     }
 
-    public static void setModifiedRoutineOriginal(List<Routine> routines) {
+    @SuppressLint("UseSparseArrays")
+    public static Map<Long, Routine> getModifiedRoutine() {
+        String jsonString = PreferenceHelper.getString(PREF_MODIFIED_ROUTINE);
+        Gson gson = new Gson();
+        Map<Long, Routine> routineList = gson.fromJson(jsonString, new TypeToken<Map<Long, Routine>>(){}.getType());
+        if (routineList == null){
+            routineList = new HashMap<>();
+        }
+        return routineList;
+    }
+
+
+    public static void setModifiedRoutine(Map<Long, Routine> routines) {
+        Gson gson = new Gson();
+        PreferenceHelper.set(PREF_MODIFIED_ROUTINE, null);
+        PreferenceHelper.set(PREF_MODIFIED_ROUTINE, gson.toJson(routines));
+    }
+
+    @SuppressLint("UseSparseArrays")
+    @NonNull
+    public static Map<Long, Routine> getModifiedRoutineOriginal() {
+        String jsonString = PreferenceHelper.getString(PREF_MODIFIED_ROUTINE_ORIGINAL);
+        Gson gson = new Gson();
+        Map<Long, Routine> routineList = gson.fromJson(jsonString, new TypeToken<Map<Long, Routine>>(){}.getType());
+        if (routineList == null){
+            routineList = new HashMap<>();
+        }
+        return routineList;
+    }
+
+    public static void setModifiedRoutineOriginal(Map<Long, Routine> routines) {
         Gson gson = new Gson();
         PreferenceHelper.set(PREF_MODIFIED_ROUTINE_ORIGINAL, gson.toJson(routines));
     }
@@ -152,8 +195,11 @@ public class PreferenceGetter {
     public static List<Routine> getDeletedRoutine() {
         String jsonString = PreferenceHelper.getString(PREF_DELETED_ROUTINE);
         Gson gson = new Gson();
-        return new ArrayList<>(Objects.requireNonNull(gson.fromJson(jsonString, new TypeToken<List<Routine>>() {
-        }.getType())));
+        List<Routine> routineList = gson.fromJson(jsonString, new TypeToken<List<Routine>>(){}.getType());
+        if (routineList == null){
+            routineList = new ArrayList<>();
+        }
+        return routineList;
     }
 
     public static void setDeletedRoutine(List<Routine> routines) {

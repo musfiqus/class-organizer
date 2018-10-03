@@ -12,9 +12,9 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
+import bd.edu.daffodilvarsity.classorganizer.service.UpdateService;
 import bd.edu.daffodilvarsity.classorganizer.ui.main.MainActivity;
 import bd.edu.daffodilvarsity.classorganizer.model.UpdateResponse;
-import bd.edu.daffodilvarsity.classorganizer.service.UpdateService;
 
 public class UpdateNotificationHelper {
     private static final String TAG = "UpdateNotificationHelpe";

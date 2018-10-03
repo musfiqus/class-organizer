@@ -51,7 +51,7 @@
     <color name="text_color_light">@color/md_grey_600</color>
 
     <!--//outlined text box outline color-->
-    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/text_color_dark</color>
+    <color name="mtrl_textinput_default_box_stroke_color" tools:override="true">@color/colorPrimary</color>
 
     <!--color splash-->
     <color name="splashColor">@color/colorPrimary</color>

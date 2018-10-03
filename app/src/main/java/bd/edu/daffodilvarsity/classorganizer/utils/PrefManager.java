@@ -97,9 +97,9 @@ public class PrefManager {
         editor.putInt(SAVE_DATABASE_VERSION, version).apply();
     }
 
-    public int getDatabaseVersion() {
-        return pref.getInt(SAVE_DATABASE_VERSION, RoutineDB.OFFLINE_DATABASE_VERSION);
-    }
+//    public int getDatabaseVersion() {
+//        return pref.getInt(SAVE_DATABASE_VERSION, RoutineDB.OFFLINE_DATABASE_VERSION);
+//    }
 
     public void setMultiProgram(boolean isMulti) {
         editor.remove(PREF_MULTI_PROGRAM).apply();
@@ -347,9 +347,9 @@ public class PrefManager {
         if (delete) {
             saveModifiedData(null, DELETE_DATA_TAG, true);
         }
-        RoutineLoader routineLoader = new RoutineLoader(getLevel(), getTerm(), getSection(), _context, getDept(), getCampus(), getProgram());
-        ArrayList<DayData> loadedData = routineLoader.loadRoutine(true);
-        saveDayData(loadedData);
+//        RoutineLoader routineLoader = new RoutineLoader(getLevel(), getTerm(), getSection(), _context, getDept(), getCampus(), getProgram());
+//        ArrayList<DayData> loadedData = routineLoader.loadRoutine(true);
+//        saveDayData(loadedData);
     }
 
     public boolean isDuplicate(ArrayList<DayData> list, DayData object) {

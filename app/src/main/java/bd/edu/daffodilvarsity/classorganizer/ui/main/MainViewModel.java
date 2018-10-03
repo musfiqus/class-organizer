@@ -54,7 +54,7 @@ public class MainViewModel extends ViewModel {
         return routineListListener;
     }
 
-    MutableLiveData<Boolean> getClassProgressListener() {
+    public MutableLiveData<Boolean> getClassProgressListener() {
         if (classProgressListener == null) {
             classProgressListener = new MutableLiveData<>();
         }
@@ -91,7 +91,6 @@ public class MainViewModel extends ViewModel {
 
 
     private Map<String, ArrayList<Routine>> getSortedRoutine(List<Routine> routines) {
-        Log.e(TAG, "getSortedRoutine: routine sort size: "+routines.size() );
         ArrayList<Routine> satDayData = new ArrayList<>();
         ArrayList<Routine> sunDayData = new ArrayList<>();
         ArrayList<Routine> monDayData = new ArrayList<>();
@@ -138,9 +137,9 @@ public class MainViewModel extends ViewModel {
         return arrayListMap;
     }
 
-    void modifyRoutine(Routine routine) {
+    void deleteRoutine(Routine routine) {
         mRepository
-                .modifyRoutine(routine)
+                .deleteRoutine(routine)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {
@@ -153,17 +152,44 @@ public class MainViewModel extends ViewModel {
                     @Override
                     public void onComplete() {
                         getClassProgressListener().postValue(false);
-                        if (routine.isMuted()) {
-                            Toasty.success(ClassOrganizer.getInstance(), routine.getCourseCode()+" has been muted", Toast.LENGTH_SHORT, true).show();
+                        Toasty.info(ClassOrganizer.getInstance(), routine.getCourseCode()+" has been deleted", Toast.LENGTH_SHORT, false).show();
+                        loadRoutine();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getClassProgressListener().postValue(false);
+                        Toasty.error(ClassOrganizer.getInstance(), "Failed to delete "+routine.getCourseCode(), Toast.LENGTH_SHORT, true).show();
+                    }
+                });
+    }
+
+    void modifyRoutine(Routine originalRoutine) {
+        mRepository
+                .mutifyRoutine(originalRoutine)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        addDisposable(d);
+                        getClassProgressListener().postValue(true);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        getClassProgressListener().postValue(false);
+                        if (originalRoutine.isMuted()) {
+                            Toasty.info(ClassOrganizer.getInstance(), originalRoutine.getCourseCode()+" has been muted", Toast.LENGTH_SHORT, false).show();
                         } else {
-                            Toasty.success(ClassOrganizer.getInstance(), routine.getCourseCode()+" has been unmuted", Toast.LENGTH_SHORT, true).show();
+                            Toasty.info(ClassOrganizer.getInstance(), originalRoutine.getCourseCode()+" has been unmuted", Toast.LENGTH_SHORT, false).show();
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         getClassProgressListener().postValue(false);
-                        Toasty.error(ClassOrganizer.getInstance(), "Failed to mute "+routine.getCourseCode(), Toast.LENGTH_SHORT, true).show();
+                        Toasty.error(ClassOrganizer.getInstance(), "Failed to mute "+originalRoutine.getCourseCode(), Toast.LENGTH_SHORT, true).show();
                     }
                 });
     }

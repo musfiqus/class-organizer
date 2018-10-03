@@ -2,13 +2,9 @@ package bd.edu.daffodilvarsity.classorganizer.ui.main;
 
 import android.animation.Animator;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,7 +24,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,14 +35,12 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
-import bd.edu.daffodilvarsity.classorganizer.activity.AddActivity;
+import bd.edu.daffodilvarsity.classorganizer.ui.modify.ModifyActivity;
 import bd.edu.daffodilvarsity.classorganizer.ui.search.SearchRefinedActivity;
 import bd.edu.daffodilvarsity.classorganizer.service.NotificationRestartJobIntentService;
 import bd.edu.daffodilvarsity.classorganizer.ui.base.BaseDrawerActivity;
 import bd.edu.daffodilvarsity.classorganizer.ui.settings.SettingsActivity;
 import bd.edu.daffodilvarsity.classorganizer.ui.setup.SetupActivity;
-import bd.edu.daffodilvarsity.classorganizer.utils.CourseUtils;
-import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.PreferenceGetter;
 import bd.edu.daffodilvarsity.classorganizer.utils.ViewUtils;
 import butterknife.BindView;
@@ -58,7 +51,7 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
     private static final String TAG = "MainActivity";
 
     private static final int REQUEST_CODE_INTRO = 6060;
-    private static final int REQUEST_CODE_REFRESHABLE_ACTIVITY = 4208;
+    public static final int REQUEST_CODE_REFRESHABLE_ACTIVITY = 4208;
 
     private static final String CURRENT_PROMOTION = "Facebook_Page";
 
@@ -178,8 +171,8 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.add_button) {
-            Intent intent = new Intent(this, AddActivity.class);
-            startActivity(intent);
+            Intent intent = new Intent(this, ModifyActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_REFRESHABLE_ACTIVITY);
         } else if (item.getItemId() == R.id.search_button_main) {
             Intent intent = new Intent(this, SearchRefinedActivity.class);
             startActivityForResult(intent, REQUEST_CODE_REFRESHABLE_ACTIVITY);
@@ -243,7 +236,10 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
                 finish();
             }
         } if (requestCode == REQUEST_CODE_REFRESHABLE_ACTIVITY) {
-            mViewModel.loadRoutine();
+            if (resultCode == RESULT_OK) {
+                mViewModel.loadRoutine();
+            }
+
         }
     }
 
@@ -322,22 +318,6 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
         return isActivityRunning;
     }
 
-    public void showUpgradeDialogue() {
-        PrefManager prefManager = new PrefManager(this);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("New Semester!");
-        builder.setMessage("The routine was updated as per " + CourseUtils.getInstance(this).getCurrentSemester(prefManager.getCampus(), prefManager.getDept(), prefManager.getProgram()) + " semester.\n" +
-                "Note: Your level and term will automatically get updated based on current selection and your modifications will be reset.");
-        builder.setPositiveButton("OK", (dialog, which) -> {
-
-            dialog.dismiss();
-        });
-
-        AlertDialog dialog = builder.create();
-        if (!dialog.isShowing()) {
-            dialog.show();
-        }
-    }
 
     private void showOneTimePromotionalDialog() {
 //        if (CURRENT_PROMOTION.equalsIgnoreCase(prefManager.getExpiredPromotion())) {

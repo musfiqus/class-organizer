@@ -18,8 +18,4 @@ public interface ClassOrganizerApi {
     @Headers("Content-Type: application/json")
     @GET("routine.json")
     Single<Database> getRoutine();
-
-    @Streaming
-    @GET
-    Call<ResponseBody> downloadFile(@Url String fileUrl);
 }

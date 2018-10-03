@@ -1,9 +1,9 @@
 <resources xmlns:Campus="http://schemas.android.com/tools">
     <string name="app_name">Class Organizer</string>
     <string name="main_title">Classes</string>
-    <string name="edit_title">Edit class</string>
+    <string name="edit_title">Edit</string>
     <string name="settings_title">Settings</string>
-    <string name="add_title">Add class</string>
+    <string name="add_title">Add</string>
 
     <string name="auth_email">musfiqus@gmail.com</string>
 
@@ -99,7 +99,7 @@
     <string name="_101_dt5">101 DT5</string>
     <string name="time">Time</string>
     <string name="_10_00_am_11_30_am">10.00 AM - 11.30 AM</string>
-    <string name="room">ROOM</string>
+    <string name="room">Room</string>
     <string name="communicate">Communicate</string>
     <string name="search">Search</string>
     <string name="add">Add</string>
@@ -216,4 +216,7 @@
     <string name="routine_summary_teacher">Campus: &lt;b>%1$s&lt;/b>&lt;br>Department: &lt;b>%2$s&lt;/b>&lt;br>Initial: &lt;b>%3$s&lt;/b></string>
     <string name="semester_error">Unable to find semester</string>
     <string name="delay_minutes">%1$d minutes</string>
+    <string name="details">Details</string>
+    <string name="class_list_error">Unable to load class times</string>
+    <string name="field_empty_error">Field can\'t be empty!</string>
 </resources>

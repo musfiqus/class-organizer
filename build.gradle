@@ -9,8 +9,8 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0'
-        classpath 'com.google.gms:google-services:4.0.1'
+        classpath 'com.android.tools.build:gradle:3.3.0-alpha12'
+        classpath 'com.google.gms:google-services:4.0.0'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -19,7 +19,6 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        maven { url "https://maven.google.com" }
         maven { url "https://jitpack.io" }
         google()
         flatDir {
@@ -36,6 +35,6 @@ ext {
     buildToolsVersion = '28.0.3'
     targetSdkVersion = compileSdkVersion
     minSdkVersion = 14
-    supportLibVersion = '28.0.0-rc02'
-    firebaseLibVersion = '12.0.1'
+    supportLibVersion = '28.0.0'
+    firebaseLibVersion = '16.0.1'
 }

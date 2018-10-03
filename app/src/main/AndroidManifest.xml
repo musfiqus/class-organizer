@@ -29,7 +29,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.EditActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".ui.modify.ModifyActivity"
             android:label="@string/edit_title" />
         <activity
             android:name=".activity.AddActivity"
@@ -83,11 +84,7 @@
             android:name="io.fabric.ApiKey"
             android:value="97134746f7e815b6aad25190b01c4712d2c523ec" />
 
-        <service android:name=".service.UserInstanceIdService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
+
         <service
             android:name=".service.PushNotificationService"
             android:enabled="true"

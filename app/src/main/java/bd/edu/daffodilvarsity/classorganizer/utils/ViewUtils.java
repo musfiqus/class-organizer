@@ -5,12 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.support.design.circularreveal.CircularRevealCompat;
 import android.support.design.circularreveal.CircularRevealWidget;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.CircularProgressDrawable;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
@@ -126,5 +128,16 @@ public class ViewUtils {
             e.printStackTrace();
             return new Intent(Intent.ACTION_VIEW,Uri.parse("https://www.facebook.com/classorganizerdiu"));
         }
+    }
+
+    public static int fetchAccentColor(Context context) {
+        TypedValue typedValue = new TypedValue();
+
+        TypedArray a = context.obtainStyledAttributes(typedValue.data, new int[] { R.attr.colorAccent });
+        int color = a.getColor(0, 0);
+
+        a.recycle();
+
+        return color;
     }
 }

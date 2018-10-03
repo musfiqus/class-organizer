@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?colorPrimary"
+    android:fitsSystemWindows="true"
+    tools:context="bd.edu.daffodilvarsity.classorganizer.ui.modify.ModifyActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="bd.edu.daffodilvarsity.classorganizer.ui.ShadowScrollBehavior"
+        app:elevation="0dp">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/ea_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize">
+                    <TextView
+                        android:id="@+id/ea_toolbar_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                        android:textColor="@color/text_color_dark" />
+            </android.support.v7.widget.Toolbar>
+            <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+                style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
+                android:id="@+id/ea_progress"
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_gravity="bottom"
+                android:visibility="invisible"
+                android:indeterminate="true"
+                app:mpb_progressStyle="horizontal"
+                app:mpb_useIntrinsicPadding="false"/>
+        </FrameLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:orientation="vertical">
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.15" />
+
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ea_course_title_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:hint="@string/course_title_hint"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <bd.edu.daffodilvarsity.classorganizer.ui.TextInputAutoCompleteTextView
+                    android:id="@+id/ea_course_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ea_course_code_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:hint="@string/course_code"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline"
+                app:layout_constraintTop_toBottomOf="@+id/ea_course_title_layout">
+
+                <bd.edu.daffodilvarsity.classorganizer.ui.TextInputAutoCompleteTextView
+                    android:id="@+id/ea_course_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ea_course_teacher_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:hint="@string/teacher_initial_hint"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline"
+                app:layout_constraintTop_toBottomOf="@+id/ea_course_code_layout">
+
+                <bd.edu.daffodilvarsity.classorganizer.ui.TextInputAutoCompleteTextView
+                    android:id="@+id/ea_course_teacher"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ea_room_no_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:hint="@string/room_no_hint"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline"
+                app:layout_constraintTop_toBottomOf="@+id/ea_course_teacher_layout">
+
+                <bd.edu.daffodilvarsity.classorganizer.ui.TextInputAutoCompleteTextView
+                    android:id="@+id/ea_room_no"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ea_section_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:hint="@string/section"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline"
+                app:layout_constraintTop_toBottomOf="@+id/ea_room_no_layout">
+
+                <bd.edu.daffodilvarsity.classorganizer.ui.TextInputAutoCompleteTextView
+                    android:id="@+id/ea_section"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                android:id="@+id/ea_time_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/time"
+                android:textAppearance="@style/TextAppearance.Design.Hint"
+                android:textColor="@color/md_grey_500"
+                app:layout_constraintStart_toStartOf="@+id/ea_section_layout"
+                app:layout_constraintTop_toBottomOf="@+id/ea_section_layout" />
+
+            <bd.edu.daffodilvarsity.classorganizer.ui.SpinnerWithListener
+                android:id="@+id/ea_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                app:layout_constraintStart_toStartOf="@+id/guideline"
+                app:layout_constraintTop_toBottomOf="@+id/ea_time_title">
+
+            </bd.edu.daffodilvarsity.classorganizer.ui.SpinnerWithListener>
+
+            <TextView
+                android:id="@+id/ea_day_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/day"
+                android:textAppearance="@style/TextAppearance.Design.Hint"
+                android:textColor="@color/md_grey_500"
+                app:layout_constraintStart_toStartOf="@+id/ea_time"
+                app:layout_constraintTop_toBottomOf="@+id/ea_time" />
+
+            <bd.edu.daffodilvarsity.classorganizer.ui.SpinnerWithListener
+                android:id="@+id/ea_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="64dp"
+                android:gravity="start"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline"
+                app:layout_constraintTop_toBottomOf="@+id/ea_day_title">
+
+            </bd.edu.daffodilvarsity.classorganizer.ui.SpinnerWithListener>
+
+            <ImageView
+                android:id="@+id/ea_section_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/ea_section_layout"
+                app:layout_constraintEnd_toStartOf="@+id/ea_section_layout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/ea_section_layout"
+                app:srcCompat="@drawable/ic_section"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/ea_course_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/ea_course_title_layout"
+                app:layout_constraintEnd_toStartOf="@+id/guideline"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/ea_course_title_layout"
+                app:srcCompat="@drawable/ic_course"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/ea_teacher_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/ea_course_teacher_layout"
+                app:layout_constraintEnd_toStartOf="@+id/guideline"
+                app:layout_constraintHorizontal_bias="0.421"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/ea_course_teacher_layout"
+                app:srcCompat="@drawable/ic_teacher_24dp"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/ea_time_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:layout_constraintBottom_toBottomOf="@+id/ea_time"
+                app:layout_constraintEnd_toStartOf="@+id/guideline"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/ea_time"
+                app:srcCompat="@drawable/ic_clock_time"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/ea_day_icon"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:layout_constraintBottom_toBottomOf="@+id/ea_day"
+                app:layout_constraintEnd_toStartOf="@+id/guideline"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/ea_day"
+                app:srcCompat="@drawable/ic_calendar_24dp"
+                tools:ignore="ContentDescription" />
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.CoordinatorLayout>

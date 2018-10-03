@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="@string/search"
-        app:cornerRadius="4dp"
+        app:cornerRadius="100dp"
         app:icon="@drawable/ic_search_white_24dp"
         app:iconSize="18dp"/>
 

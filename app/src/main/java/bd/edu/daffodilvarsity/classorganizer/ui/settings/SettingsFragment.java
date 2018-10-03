@@ -25,7 +25,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private String currentRoutine;
 
     //Getting prefmanager to get existing data
-    PrefManager prefManager;
     private PreferenceManager preferenceManager;
     private SettingsViewModel mViewModel;
 
@@ -133,7 +132,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             if (isNotificationEnabled) {
                 mViewModel.restartAlarms();
             }
-            prefManager.saveReCreate(true);
             return true;
         });
     }

@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="8dp"
-    app:cardElevation="2dp"
     android:layout_margin="8dp"
     android:id="@+id/item_class_holder"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:focusable="true"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -27,7 +30,6 @@
             android:textColor="@color/text_color_dark"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Artificial Intelligence Lab" />
@@ -39,20 +41,19 @@
             android:layout_height="32dp"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="12dp"
-
+            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_class_title">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="32dp"
-                android:orientation="horizontal"
                 android:background="@drawable/ic_code_bg"
+                android:orientation="horizontal"
                 app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
-                app:layout_constraintStart_toStartOf="parent">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/item_class_code"
@@ -91,7 +92,7 @@
 
                 <TextView
                     android:id="@+id/routine_detail_time"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="16dp"
@@ -129,7 +130,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
-            android:text="Teacher"
+            android:text="@string/teacher"
             android:textColor="@color/text_color_light"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_class_time_holder" />
@@ -153,7 +154,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
-            android:text="Room"
+            android:text="@string/room"
             android:textColor="@color/text_color_light"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_class_time_holder" />
@@ -177,7 +178,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:text="Details"
+            android:text="@string/details"
             android:textColor="?attr/colorAccent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -187,13 +188,14 @@
             android:id="@+id/item_class_notification_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:background="?selectableItemBackgroundBorderless"
-            app:layout_constraintBottom_toBottomOf="@+id/item_class_details_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/item_class_details_button">
+            android:padding="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/item_class_more_button"
+            app:layout_constraintEnd_toStartOf="@+id/item_class_more_button"
+            app:layout_constraintTop_toTopOf="@+id/item_class_more_button">
+
             <ImageView
                 android:id="@+id/item_class_mute_yes"
                 android:layout_width="20dp"
@@ -211,43 +213,39 @@
                 tools:ignore="ContentDescription" />
 
 
+        </FrameLayout>
+        <FrameLayout
+            android:id="@+id/item_class_more_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:background="?selectableItemBackgroundBorderless"
+            app:layout_constraintBottom_toBottomOf="@+id/item_class_details_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/item_class_details_button"
+            tools:ignore="RtlSymmetry">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:srcCompat="@drawable/ic_more_black_24dp"
+                tools:ignore="ContentDescription" />
 
         </FrameLayout>
 
-        <!--<FrameLayout-->
-            <!--android:id="@+id/item_class_notification_button_container"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginEnd="8dp"-->
-            <!--android:layout_marginRight="8dp"-->
-            <!--android:padding="8dp"-->
-            <!--app:layout_constraintBottom_toBottomOf="@+id/item_class_details_button"-->
-            <!--app:layout_constraintEnd_toEndOf="parent"-->
-            <!--app:layout_constraintTop_toTopOf="@+id/item_class_details_button">-->
-
-            <!--<ImageView-->
-                <!--android:id="@+id/item_class_notification_button"-->
-                <!--android:layout_width="20dp"-->
-                <!--android:layout_height="20dp"-->
-                <!--app:srcCompat="@drawable/ic_outline_notifications"-->
-                <!--tools:ignore="ContentDescription" />-->
-        <!--</FrameLayout>-->
-
-
-
-        <!--<ImageView-->
-        <!--android:id="@+id/item_class_notification_icon"-->
-        <!--android:layout_width="20dp"-->
-        <!--android:layout_height="20dp"-->
-        <!--android:layout_marginTop="8dp"-->
-        <!--android:layout_marginEnd="8dp"-->
-        <!--android:layout_marginRight="8dp"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent"-->
-        <!--tools:ignore="ContentDescription"-->
-        <!--app:srcCompat="@drawable/ic_alarm" />-->
-
     </android.support.constraint.ConstraintLayout>
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+        style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
+        android:id="@+id/item_class_progress"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_gravity="bottom"
+        android:visibility="invisible"
+        android:indeterminate="true"
+        app:mpb_progressStyle="horizontal"
+        app:mpb_useIntrinsicPadding="false"/>
 
 
 </android.support.design.card.MaterialCardView>

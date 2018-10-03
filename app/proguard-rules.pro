@@ -98,6 +98,3 @@
 -keepclassmembers  class **$** extends com.chad.library.adapter.base.BaseViewHolder {
      <init>(...);
 }
-
-#aesthetic
--keep class android.support.design.widget.** { *; }

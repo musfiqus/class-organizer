@@ -1,6 +1,7 @@
 package bd.edu.daffodilvarsity.classorganizer.data;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -123,7 +124,51 @@ public class Repository {
         return Single.fromCallable(() -> getDatabase().getSemester());
     }
 
-    public Completable modifyRoutine(Routine routine) {
-        return Completable.fromAction(() -> getDatabase().modifyRoutine(routine));
+    public Completable modifyRoutine(Routine originalRoutine, Routine modifiedRoutine) {
+        return Completable.fromAction(() -> getDatabase().modifyRoutine(originalRoutine, modifiedRoutine));
+    }
+
+    public Completable addRoutine(Routine routine) {
+        return Completable.fromAction(() -> saveRoutine(routine));
+    }
+
+    public Single<List<String>> getSections() {
+        return Single.fromCallable(() -> getDatabase().routineAccess().getSections(PreferenceGetter.getCampus(), PreferenceGetter.getDepartment()));
+    }
+
+    public Single<List<String>> getCourseCodes() {
+        return Single.fromCallable(() -> getDatabase().routineAccess().getCourseCodes(PreferenceGetter.getCampus(), PreferenceGetter.getDepartment()));
+    }
+
+    public Single<List<String>> getCourseTitles() {
+        return Single.fromCallable(() -> getDatabase().routineAccess().getCourseTitles(PreferenceGetter.getCampus(), PreferenceGetter.getDepartment()));
+    }
+
+    public Single<List<String>> getRooms() {
+        return Single.fromCallable(() -> getDatabase().routineAccess().getRooms(PreferenceGetter.getCampus(), PreferenceGetter.getDepartment()));
+    }
+
+    public Single<RoutineDao.TimePOJO> getTImePOJO(String time, boolean isRamadanEnabled) {
+        if (isRamadanEnabled) {
+            return Single.fromCallable(() -> getDatabase().routineAccess().getTimeByAltTime(time));
+        } else {
+            return Single.fromCallable(() -> getDatabase().routineAccess().getTimeByTime(time));
+        }
+    }
+
+    public Completable mutifyRoutine(Routine routine) {
+        return Completable.fromAction(() -> getDatabase().mutifyRoutine(routine));
+    }
+
+    public Completable deleteRoutine(Routine routine) {
+        return Completable.fromAction(() -> getDatabase().deleteRoutine(routine));
+    }
+
+    private void saveRoutine(Routine routine) {
+        List<Routine> savedRoutines = PreferenceGetter.getSavedRoutine();
+        if (!savedRoutines.contains(routine)) {
+            savedRoutines.add(routine);
+        }
+        PreferenceGetter.setSavedRoutine(savedRoutines);
     }
 }
