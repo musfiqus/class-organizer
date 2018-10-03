@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v14.preference.PreferenceFragment;
 import android.support.v4.text.HtmlCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
@@ -20,7 +22,7 @@ import bd.edu.daffodilvarsity.classorganizer.utils.PreferenceGetter;
 
 import static android.app.Activity.RESULT_OK;
 
-public class SettingsFragment extends PreferenceFragmentCompat {
+public class SettingsFragment extends PreferenceFragment {
     private static final int SETUP_REQUEST_CODE = 6969;
     private String currentRoutine;
 
@@ -31,7 +33,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.main_settings);
-        mViewModel = ViewModelProviders.of(getActivity()).get(SettingsViewModel.class);
+        mViewModel = ViewModelProviders.of((AppCompatActivity)getActivity()).get(SettingsViewModel.class);
         preferenceManager = getPreferenceManager();
 
         setupRoutinePreference();
@@ -70,7 +72,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     private void setupSemesterPreference() {
         final Preference semesterPreference = findPreference("current_semester_preference");
-        mViewModel.getSemesterNameListener().observe(getActivity(), s -> {
+        mViewModel.getSemesterNameListener().observe((AppCompatActivity)getActivity(), s -> {
             if (s != null) {
                 semesterPreference.setSummary(s);
             }
@@ -79,7 +81,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     private void setupRoutinePreference() {
         final Preference routinePreference = findPreference("routine_preference");
-        mViewModel.getRoutineChangeListener().observe(getActivity(), s -> {
+        mViewModel.getRoutineChangeListener().observe((AppCompatActivity)getActivity(), s -> {
             if (s != null) {
                 routinePreference.setSummary(HtmlCompat.fromHtml(s, HtmlCompat.FROM_HTML_MODE_COMPACT));
                 if (currentRoutine != null && getActivity() != null){
@@ -90,7 +92,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         });
 
         routinePreference.setOnPreferenceClickListener(preference -> {
-            startActivityForResult(new Intent(getContext(), SetupActivity.class), SETUP_REQUEST_CODE);
+            startActivityForResult(new Intent(getActivity(), SetupActivity.class), SETUP_REQUEST_CODE);
             return true;
         });
     }
