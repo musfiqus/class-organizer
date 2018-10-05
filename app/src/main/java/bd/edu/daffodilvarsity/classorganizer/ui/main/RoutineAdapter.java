@@ -14,11 +14,14 @@ import java.util.List;
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.model.Routine;
 import bd.edu.daffodilvarsity.classorganizer.utils.InputHelper;
+import bd.edu.daffodilvarsity.classorganizer.utils.PreferenceGetter;
 import bd.edu.daffodilvarsity.classorganizer.utils.ViewUtils;
 
 public class RoutineAdapter extends BaseQuickAdapter<Routine, BaseViewHolder> {
+    private boolean isStudent;
     public RoutineAdapter(@Nullable List<Routine> data) {
         super(R.layout.item_class, data);
+        isStudent = PreferenceGetter.isStudent();
     }
 
 
@@ -33,7 +36,13 @@ public class RoutineAdapter extends BaseQuickAdapter<Routine, BaseViewHolder> {
         helper.setText(R.id.item_class_code, InputHelper.toNA(item.getCourseCode()));
         helper.setText(R.id.item_class_title, InputHelper.toNA(item.getCourseTitle()));
         helper.setText(R.id.item_class_time, item.getTime());
-        helper.setText(R.id.item_class_teacher, InputHelper.toNA(item.getTeachersInitial()));
+        if (isStudent) {
+            helper.setText(R.id.item_class_teacher, InputHelper.toNA(item.getTeachersInitial()));
+        } else {
+            helper.setText(R.id.item_class_teacher_title, R.string.section);
+            helper.setText(R.id.item_class_teacher, InputHelper.toNA(item.getSection()));
+        }
+
         helper.setText(R.id.item_class_room, item.getRoomNo());
         if (helper.getAdapterPosition() == 0) {
             MaterialCardView cardView = (MaterialCardView) helper.itemView;
@@ -48,4 +57,6 @@ public class RoutineAdapter extends BaseQuickAdapter<Routine, BaseViewHolder> {
                 .addOnClickListener(R.id.item_class_more_button);
 
     }
+
+
 }

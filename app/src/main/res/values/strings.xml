@@ -11,8 +11,6 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <!--Sensitive-->
-    <string name="legacy_semester">Summer - 2017</string>
 
     <!-- Day titles -->
     <string name="saturday">Saturday</string>
@@ -22,19 +20,9 @@
     <string name="wednesday">Wednesday</string>
     <string name="thursday">Thursday</string>
     <string name="friday">Friday</string>
-    <string name="title_activity_menu">MenuActivity</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-    <string name="title_activity_main2">Main2Activity</string>
-    <string name="title_activity_welcome">Home Screen</string>
-    <string name="next">NEXT</string>
-    <string name="previous">PREVIOUS</string>
-    <string name="start">GET STARTED</string>
     <string name="slide_1_title">Welcome</string>
     <string name="slide_1_desc">Thank you for choosing the best app to organize your campus life!</string>
-    <string name="slide_3_title">Awesome</string>
-    <string name="slide_3_desc">Let\'s get started with our day!</string>
 
     <!-- Spinner label -->
     <string name="level_title">Select Level</string>
@@ -49,8 +37,6 @@
     <string name="choose_weekday_label">Choose Weekday</string>
     <string name="edit_room_no_label">Edit Room No</string>
     <string name="room_no_hint">Room No</string>
-    <string name="start_time_label">Starting Time</string>
-    <string name="end_time_label">Ending Time</string>
 
     <!-- Share Link -->
     <string name="share_title">Share link using</string>
@@ -60,8 +46,6 @@
     <string name="drawer_title_report">Report a problem</string>
     <string name="edit_popup">Edit</string>
     <string name="save_popup_title">Save</string>
-    <string name="title_daydata_list">DayDetails</string>
-    <string name="title_daydata_detail">DayData Detail</string>
     <string name="title_activity_search">SearchActivity</string>
     <string name="course_title_hint">Course Title</string>
     <string name="enter_course_title">Enter Course Title</string>
@@ -96,7 +80,6 @@
     <string name="weekday">Day</string>
     <string name="zenday">Zenday</string>
     <string name="room_no">Room No</string>
-    <string name="_101_dt5">101 DT5</string>
     <string name="time">Time</string>
     <string name="_10_00_am_11_30_am">10.00 AM - 11.30 AM</string>
     <string name="room">Room</string>
@@ -224,4 +207,9 @@
     <string name="no_free_rooms">No free rooms found! ¯\\_(ツ)_/¯</string>
     <string name="no_teachers_found">No teachers found! ¯\\_(ツ)_/¯</string>
     <string name="contribute">Contribute</string>
+    <string name="class_information">Class Information</string>
+    <string name="teacher_name">Teacher\'s name</string>
+    <string name="designation">Designation</string>
+    <string name="phone">Phone</string>
+    <string name="email">Email</string>
 </resources>

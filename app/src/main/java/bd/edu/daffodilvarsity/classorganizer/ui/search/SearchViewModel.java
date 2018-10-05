@@ -136,7 +136,6 @@ public class SearchViewModel extends ViewModel {
 
                     @Override
                     public void onSuccess(Teacher teacher) {
-                        Log.e(TAG, "onSuccess: weeew");
                         getTeacherInfoListener().postValue(teacher);
                         if (isRoutineSearchFinished) {
                             getProgressListener().postValue(false);
@@ -145,7 +144,6 @@ public class SearchViewModel extends ViewModel {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.e(TAG, "onError: ", e);
                         if (isRoutineSearchFinished) {
                             getProgressListener().postValue(false);
                         }

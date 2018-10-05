@@ -7,25 +7,39 @@
     android:background="?colorPrimary"
     tools:context="bd.edu.daffodilvarsity.classorganizer.ui.detail.RoutineDetailActivity"
     tools:ignore="MergeRootFrame">
-
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/settings_appbar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_shadow_behavior"
+        app:elevation="0dp">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
             <android.support.v7.widget.Toolbar
                 android:id="@+id/routine_detail_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                >
+                android:layout_height="?attr/actionBarSize">
                 <TextView
                     android:id="@+id/routine_detail_toolbar_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Details"
+                    android:text="@string/class_information"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                     android:textColor="@color/text_color_dark" />
             </android.support.v7.widget.Toolbar>
+            <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+                style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
+                android:id="@+id/routine_detail_progress"
+                android:layout_width="match_parent"
+                android:layout_height="4dp"
+                android:layout_gravity="bottom"
+                android:visibility="invisible"
+                android:indeterminate="true"
+                app:mpb_progressStyle="horizontal"
+                app:mpb_useIntrinsicPadding="false"/>
+        </FrameLayout>
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
@@ -33,34 +47,40 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
             android:orientation="vertical">
             <android.support.design.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
                 <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
 
                     <TextView
                         android:id="@+id/routine_detail_course_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="16dp"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                         android:textColor="@color/text_color_dark"
                         app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
                         tools:text="@string/abc_course" />
 
                     <TextView
                         android:id="@+id/routine_detail_initial"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
                         android:layout_marginTop="4dp"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                         android:textColor="?colorAccent"
@@ -86,6 +106,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
 
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
                         android:layout_marginBottom="8dp"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
                         android:textColor="?attr/colorAccent"
@@ -100,118 +122,172 @@
                         android:id="@+id/routine_detail_separator"
                         android:layout_width="match_parent"
                         android:layout_height="2dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
                         android:layout_marginTop="4dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
                         android:background="?colorAccent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/routine_detail_time" />
 
+                    <TextView
+                        android:id="@+id/routine_detail_section_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/section"
+                        android:textColor="@color/text_color_light"
+                        android:textSize="14sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/routine_detail_separator" />
 
+                    <TextView
+                        android:id="@+id/routine_detail_section"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:textAllCaps="true"
+                        android:textColor="@color/text_color_dark"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/routine_detail_section_title"
+                        tools:text="B" />
+
+                    <TextView
+                        android:id="@+id/routine_detail_room_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/room"
+                        android:textColor="@color/text_color_light"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/routine_detail_section" />
+
+                    <TextView
+                        android:id="@+id/routine_detail_room_no"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:textAllCaps="true"
+                        android:textColor="@color/text_color_dark"
+                        android:textSize="16sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/routine_detail_room_title"
+                        tools:text="802 CSE" />
+
+                    <TextView
+                        android:id="@+id/routine_detail_weekday_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/weekday"
+                        android:textColor="@color/text_color_light"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/routine_detail_room_no" />
+
+                    <TextView
+                        android:id="@+id/routine_detail_weekday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:textColor="@color/text_color_dark"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/routine_detail_weekday_title"
+                        app:layout_constraintTop_toBottomOf="@+id/routine_detail_weekday_title"
+                        tools:text="@string/sunday" />
+
+                    <TextView
+                        android:id="@+id/routine_detail_teacher_name_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:text="@string/teacher_name"
+                        android:textColor="@color/text_color_light"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/routine_detail_separator" />
+
+                    <TextView
+                        android:id="@+id/routine_detail_teacher_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:textColor="@color/text_color_dark"
+                        android:textSize="16sp"
+                        android:textIsSelectable="true"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/routine_detail_teacher_name_title"
+                        tools:text="Mr. Shah Md Tanvir Siddiquee" />
+
+                    <TextView
+                        android:id="@+id/routine_detail_teacher_designation_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:text="@string/designation"
+                        android:textColor="@color/text_color_light"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/routine_detail_teacher_name" />
+
+                    <TextView
+                        android:id="@+id/routine_detail_teacher_designation"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:textColor="@color/text_color_dark"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/routine_detail_teacher_designation_title"
+                        tools:text="Senior Lecturer" />
+
+                    <TextView
+                        android:id="@+id/routine_detail_teacher_phone_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:text="@string/phone"
+                        android:textColor="@color/text_color_light"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/routine_detail_teacher_designation" />
+
+                    <TextView
+                        android:id="@+id/routine_detail_teacher_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginBottom="16dp"
+                        android:textColor="@color/text_color_dark"
+                        android:textSize="16sp"
+                        android:textIsSelectable="true"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/routine_detail_teacher_phone_title"
+                        tools:text="1712560297" />
                 </android.support.constraint.ConstraintLayout>
+
             </android.support.design.card.MaterialCardView>
-
-
-
-
-
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="4dp"
-                android:text="@string/section"
-                android:textColor="@color/text_color_light"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/routine_detail_section"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAllCaps="true"
-                android:textSize="16sp"
-                android:textColor="@color/text_color_dark"
-                tools:text="B" />
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/room_no"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="4dp"
-                android:textColor="@color/text_color_light" />
-
-            <TextView
-                android:id="@+id/routine_detail_room_no"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="@string/_101_dt5"
-                android:textColor="@color/text_color_dark"
-                android:textAllCaps="true"
-                android:textSize="16sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/weekday"
-                android:textColor="@color/text_color_light"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="4dp" />
-
-            <TextView
-                android:id="@+id/routine_detail_weekday"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:text="@string/sunday"
-                android:textColor="@color/text_color_dark"
-                android:textSize="16sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/time"
-                android:textColor="@color/text_color_light"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="4dp" />
-
-
-
-            <RelativeLayout
-                android:id="@+id/routine_detail_mute_container"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="48dp"
-                android:layout_marginTop="8dp"
-                android:background="?selectableItemBackgroundBorderless"
-                android:focusableInTouchMode="false">
-
-                <ImageView
-                    android:id="@+id/routine_detail_mute_no"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    app:srcCompat="@drawable/ic_outline_notifications"
-                    tools:ignore="ContentDescription" />
-
-                <ImageView
-                    android:id="@+id/routine_detail_mute_yes"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    app:srcCompat="@drawable/ic_outline_notifications_off"
-                    tools:ignore="ContentDescription" />
-
-                <TextView
-                    android:id="@+id/routine_detail_mute_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/routine_detail_mute_yes"
-                    android:textSize="16sp"
-                    android:layout_marginTop="4dp"
-                    android:textColor="@color/text_color_dark"
-                    tools:text="Unmuted" />
-            </RelativeLayout>
-
 
         </LinearLayout>
 

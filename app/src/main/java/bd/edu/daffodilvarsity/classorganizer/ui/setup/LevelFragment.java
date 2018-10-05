@@ -104,7 +104,7 @@ public class LevelFragment extends Fragment {
 
                     });
                 } else {
-                    mHeader.setText(R.string.select_teacher_initial);
+                    mHeader.setText(R.string.select_your_initial);
                     mSelectLevel.setText(R.string.select_initial);
                     mLevelTermText.setText(R.string.initial_not_selected);
                     mSelectLevel.setOnClickListener(v -> {

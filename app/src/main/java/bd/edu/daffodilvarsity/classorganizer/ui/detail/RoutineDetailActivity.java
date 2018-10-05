@@ -1,25 +1,28 @@
 package bd.edu.daffodilvarsity.classorganizer.ui.detail;
 
-import android.content.Intent;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
+import bd.edu.daffodilvarsity.classorganizer.model.Resource;
 import bd.edu.daffodilvarsity.classorganizer.model.Routine;
+import bd.edu.daffodilvarsity.classorganizer.model.Teacher;
 import bd.edu.daffodilvarsity.classorganizer.ui.base.BaseActivity;
 import bd.edu.daffodilvarsity.classorganizer.ui.main.MainActivity;
 import bd.edu.daffodilvarsity.classorganizer.utils.InputHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.PreferenceGetter;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
  * An activity representing a single DayData detail screen. This
@@ -28,9 +31,8 @@ import butterknife.ButterKnife;
 // * in a {@link MainActivity}.
  */
 public class RoutineDetailActivity extends BaseActivity {
-    private Routine mRoutine;
-    private Bundle bundle;
-    private boolean fromNotification = false;
+
+    private RoutineDetailViewModel mViewModel;
 
     public static final String ROUTINE_DETAIL_TAG = "routine_details";
 
@@ -40,24 +42,23 @@ public class RoutineDetailActivity extends BaseActivity {
     @BindView(R.id.routine_detail_section) TextView mSection;
     @BindView(R.id.routine_detail_weekday) TextView mWeekday;
     @BindView(R.id.routine_detail_room_no) TextView mRoomNo;
-    @BindView(R.id.routine_detail_mute_yes) ImageView mMuteYes;
-    @BindView(R.id.routine_detail_mute_no) ImageView mMuteNo;
-    @BindView(R.id.routine_detail_mute_status) TextView mMuteText;
     @BindView(R.id.routine_detail_time) TextView mTime;
-    @BindView(R.id.routine_detail_mute_container) RelativeLayout mMuteContainer;
+    @BindView(R.id.routine_detail_toolbar) Toolbar mToolbar;
+    @BindView(R.id.routine_detail_progress) MaterialProgressBar mProgress;
+    @BindView(R.id.routine_detail_teacher_name_title) TextView mTeacherNameTitle;
+    @BindView(R.id.routine_detail_teacher_name) TextView mTeacherName;
+    @BindView(R.id.routine_detail_teacher_designation_title) TextView mTeacherDesignationTitle;
+    @BindView(R.id.routine_detail_teacher_designation) TextView mTeacherDesignation;
+    @BindView(R.id.routine_detail_teacher_phone_title) TextView mTeacherPhoneTitle;
+    @BindView(R.id.routine_detail_teacher_phone) TextView mTeacherPhone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Orientation change hack
-        bundle = savedInstanceState;
-
         setContentView(R.layout.activity_routine_detail);
         ButterKnife.bind(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.routine_detail_toolbar);
-        setSupportActionBar(toolbar);
-
-
+        mViewModel = ViewModelProviders.of(this).get(RoutineDetailViewModel.class);
+        setSupportActionBar(mToolbar);
         // Show the Up button in the action bar.
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -65,107 +66,84 @@ public class RoutineDetailActivity extends BaseActivity {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
             actionBar.setTitle("");
         }
-
         if (Build.VERSION.SDK_INT >= 23) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));//status bar or the time bar at the top
         }
-
-        // savedInstanceState is non-null when there is fragment state
-        // saved from previous configurations of this activity
-        // (e.g. when rotating the screen from portrait to landscape).
-        // In this case, the fragment will automatically be re-added
-        // to its container so we don't need to manually add it.
-        // For more information, see the Fragments API guide at:
-        //
-        // http://developer.android.com/guide/components/fragments.html
-        //
-
-        if (savedInstanceState == null) {
-            // Create the detail fragment and add it to the activity
-            // using a fragment transaction.
-            Bundle arguments = getIntent().getExtras();
-            if (arguments != null) {
-                mRoutine = arguments.getParcelable(ROUTINE_DETAIL_TAG);
-//                Bundle bundle = arguments.getBundle(AlarmHelper.TAG_ALARM_BUNDLE_DATA);
-//                if (bundle != null) {
-//                    byte[] byteDayData = bundle.getByteArray(NotificationPublisher.TAG_NOTIFICATION_DATA);
-//                    if (byteDayData != null) {
-//                        mRoutine = CourseUtils.convertToDayData(byteDayData);
-//                        fromNotification = true;
-//                    }
-//                }
+        if (getIntent().getExtras() != null) {
+            Routine routine = getIntent().getExtras().getParcelable(ROUTINE_DETAIL_TAG);
+            if (routine != null) {
+                mViewModel.getRoutineListener().postValue(routine);
             }
-
-            loadUi();
         }
+        loadUi();
+
     }
 
     private void loadUi() {
-        if (mRoutine != null) {
-            //set toolbar
-            mToolbarTitle.setText(InputHelper.isEmpty(mRoutine.getCourseCode()) ? "N/A": mRoutine.getCourseCode());
 
-            //set view
-            mCourseTitle.setText(InputHelper.isEmpty(mRoutine.getCourseCode()) ? "N/A": mRoutine.getCourseTitle());
-            mTeacherInitial.setText(mRoutine.getTeachersInitial());
-            mRoomNo.setText(mRoutine.getRoomNo());
-            mWeekday.setText(mRoutine.getDay());
-            mSection.setText(mRoutine.getSection());
-            mTime.setText(PreferenceGetter.isRamadanEnabled() ? mRoutine.getAltTime() : mRoutine.getTime());
-            //pre animate
-            animateMute(mMuteYes, mMuteNo, mRoutine.isMuted());
-            mMuteText.setText(mRoutine.isMuted() ? getResources().getString(R.string.muted_text):
-                    getResources().getString(R.string.unmuted_Text));
-
-            mMuteContainer.setOnClickListener(v -> {
-//                    PrefManager prefManager = new PrefManager(getApplicationContext());
-//                    ArrayList<DayData> updatedList = prefManager.getSavedDayData();
-//                    int position = prefManager.getDayDataPosition(mRoutine);
-//                    //update current object
-//                    mRoutine.setMuted(!mRoutine.isMuted());
-//                    if (position != -1) {
-//                        updatedList.set(position, mRoutine);
-//                    }
-//                    //save
-//                    prefManager.saveDayData(updatedList);
-//                    prefManager.enableDataRefresh(true);
-
-                animateMute(mMuteYes, mMuteNo, mRoutine.isMuted());
-                if (mRoutine.isMuted()) {
-                    mMuteText.setText(R.string.muted_text);
-                } else {
-                    mMuteText.setText(R.string.unmuted_Text);
+        mViewModel.getRoutineListener().observe(this, routine -> {
+            if (routine != null) {
+                //set view
+                mCourseTitle.setText(InputHelper.toNA(routine.getCourseTitle()));
+                mTeacherInitial.setText(InputHelper.toNA(routine.getTeachersInitial()));
+                mRoomNo.setText(InputHelper.toNA(routine.getRoomNo()));
+                mWeekday.setText(InputHelper.toNA(routine.getDay()));
+                mSection.setText(InputHelper.toNA(routine.getSection()));
+                mTime.setText(PreferenceGetter.isRamadanEnabled() ? routine.getAltTime() : routine.getTime());
+                mViewModel.loadTeachersDetails(routine.getTeachersInitial());
+            }
+        });
+        mViewModel.getTeacherInfoListener().observe(this, teacherResource -> {
+            if (teacherResource != null) {
+                switch (teacherResource.getStatus()) {
+                    case LOADING:
+                        mProgress.setIndeterminate(true);
+                        mProgress.setVisibility(View.VISIBLE);
+                        hideTeacherSection();
+                        break;
+                    case ERROR:
+                        mProgress.setVisibility(View.GONE);
+                        hideTeacherSection();
+                        break;
+                    case SUCCESSFUL:
+                        mProgress.setVisibility(View.GONE);
+                        showTeacherSection(teacherResource.getData());
+                        break;
                 }
-
-            });
-
-
-
-
-
-        }
+            } else {
+                hideTeacherSection();
+            }
+        });
     }
 
-    public void animateMute(View imageMuted, View imageUnmuted, boolean isMuted) {
-        imageMuted.setVisibility(View.VISIBLE);
-        imageUnmuted.setVisibility(View.VISIBLE);
-
-        imageUnmuted.animate().scaleX(isMuted ? 0 : 1).scaleY(isMuted ? 0 : 1).alpha(isMuted ? 0 : 1).start();
-        imageMuted.animate().scaleX(isMuted ? 1 : 0).scaleY(isMuted ? 1 : 0).alpha(isMuted ? 1 : 0).start();
+    private void hideTeacherSection() {
+        mTeacherDesignation.setVisibility(View.GONE);
+        mTeacherDesignationTitle.setVisibility(View.GONE);
+        mTeacherName.setVisibility(View.GONE);
+        mTeacherNameTitle.setVisibility(View.GONE);
+        mTeacherPhone.setVisibility(View.GONE);
+        mTeacherPhoneTitle.setVisibility(View.GONE);
     }
-
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        //Orientation change hack
-        if (mRoutine != null) {
-            outState.putCharSequence("AppBarTitle", mRoutine.getCourseCode());
+    private void showTeacherSection(Teacher teacher) {
+        mTeacherDesignation.setVisibility(View.VISIBLE);
+        mTeacherDesignationTitle.setVisibility(View.VISIBLE);
+        mTeacherName.setVisibility(View.VISIBLE);
+        mTeacherNameTitle.setVisibility(View.VISIBLE);
+        mTeacherPhone.setVisibility(View.VISIBLE);
+        mTeacherPhoneTitle.setVisibility(View.VISIBLE);
+        mTeacherName.setText(InputHelper.toNA(teacher.getName()));
+        mTeacherDesignation.setText(InputHelper.toNA(teacher.getDesignation()));
+        if (!InputHelper.isEmpty(teacher.getPhoneNo())) {
+            mTeacherPhone.setText(teacher.getPhoneNo());
+        } else if (!InputHelper.isEmpty(teacher.getRoomNo())) {
+            mTeacherPhoneTitle.setText(R.string.room);
+            mTeacherPhone.setText(teacher.getRoomNo());
         } else {
-            outState.putCharSequence("AppBarTitle", bundle.getCharSequence("AppBarTitle"));
+            mTeacherPhoneTitle.setText(getString(R.string.email));
+            mTeacherPhone.setText(InputHelper.toNA(teacher.getEmail()));
         }
-
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -177,12 +155,7 @@ public class RoutineDetailActivity extends BaseActivity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            if (fromNotification) {
-                startActivity(new Intent(this, MainActivity.class));
-                finish();
-            } else {
-                onBackPressed();
-            }
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
