@@ -12,7 +12,7 @@ import retrofit2.http.Url;
 
 public interface ClassOrganizerApi {
     @Headers("Content-Type: application/json")
-    @GET("update.json")
+    @GET("stable.json")
     Single<UpdateResponse> getUpdate();
 
     @Headers("Content-Type: application/json")

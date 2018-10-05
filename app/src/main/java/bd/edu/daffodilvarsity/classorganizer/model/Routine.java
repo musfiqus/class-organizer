@@ -3,6 +3,7 @@ package bd.edu.daffodilvarsity.classorganizer.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -87,6 +88,7 @@ public class Routine implements Parcelable {
     public Routine() {
     }
 
+    @Ignore
     public Routine(long id, String campus, String department, String program, String courseCode, String courseTitle, String teachersInitial, String section, int level, int term, String roomNo, String time, String day, String timeWeight, String altTime, String altTimeWeight, boolean isMuted) {
         this.id = id;
         this.campus = campus;

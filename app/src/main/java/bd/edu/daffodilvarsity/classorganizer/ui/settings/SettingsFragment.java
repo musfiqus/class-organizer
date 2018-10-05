@@ -22,7 +22,7 @@ import bd.edu.daffodilvarsity.classorganizer.utils.PreferenceGetter;
 
 import static android.app.Activity.RESULT_OK;
 
-public class SettingsFragment extends PreferenceFragment {
+public class SettingsFragment extends PreferenceFragmentCompat {
     private static final int SETUP_REQUEST_CODE = 6969;
     private String currentRoutine;
 
@@ -33,7 +33,7 @@ public class SettingsFragment extends PreferenceFragment {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.main_settings);
-        mViewModel = ViewModelProviders.of((AppCompatActivity)getActivity()).get(SettingsViewModel.class);
+        mViewModel = ViewModelProviders.of(getActivity()).get(SettingsViewModel.class);
         preferenceManager = getPreferenceManager();
 
         setupRoutinePreference();
@@ -72,7 +72,7 @@ public class SettingsFragment extends PreferenceFragment {
 
     private void setupSemesterPreference() {
         final Preference semesterPreference = findPreference("current_semester_preference");
-        mViewModel.getSemesterNameListener().observe((AppCompatActivity)getActivity(), s -> {
+        mViewModel.getSemesterNameListener().observe(getActivity(), s -> {
             if (s != null) {
                 semesterPreference.setSummary(s);
             }
@@ -81,7 +81,7 @@ public class SettingsFragment extends PreferenceFragment {
 
     private void setupRoutinePreference() {
         final Preference routinePreference = findPreference("routine_preference");
-        mViewModel.getRoutineChangeListener().observe((AppCompatActivity)getActivity(), s -> {
+        mViewModel.getRoutineChangeListener().observe(getActivity(), s -> {
             if (s != null) {
                 routinePreference.setSummary(HtmlCompat.fromHtml(s, HtmlCompat.FROM_HTML_MODE_COMPACT));
                 if (currentRoutine != null && getActivity() != null){

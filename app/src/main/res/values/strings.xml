@@ -220,4 +220,8 @@
     <string name="class_list_error">Unable to load class times</string>
     <string name="field_empty_error">Field can\'t be empty!</string>
     <string name="appbar_shadow_behavior">bd.edu.daffodilvarsity.classorganizer.ui.ShadowScrollBehavior</string>
+    <string name="no_routine_found">No routines found! ¯\\\\_(ツ)_\\/¯</string>
+    <string name="no_free_rooms">No free rooms found! ¯\\_(ツ)_/¯</string>
+    <string name="no_teachers_found">No teachers found! ¯\\_(ツ)_/¯</string>
+    <string name="contribute">Contribute</string>
 </resources>

@@ -1,14 +1,11 @@
 package bd.edu.daffodilvarsity.classorganizer.ui.setup;
 
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.CircularProgressDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,8 +16,6 @@ import com.heinrichreimersoftware.materialintro.app.SlideFragment;
 
 import bd.edu.daffodilvarsity.classorganizer.ClassOrganizer;
 import bd.edu.daffodilvarsity.classorganizer.R;
-import bd.edu.daffodilvarsity.classorganizer.model.Resource;
-import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.ViewUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,6 +61,7 @@ public class UpdateFragment extends SlideFragment {
                             case ERROR: {
                                 progressDrawable.stop();
                                 //SET ERROR
+                                mProgressView.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_close_black_24dp));
                                 mProgressText.setText(R.string.update_error);
                                 break;
                             }

@@ -1,8 +1,10 @@
 package bd.edu.daffodilvarsity.classorganizer.ui.search;
 
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,12 +23,18 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import bd.edu.daffodilvarsity.classorganizer.ClassOrganizer;
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.model.Resource;
+import bd.edu.daffodilvarsity.classorganizer.model.Routine;
+import bd.edu.daffodilvarsity.classorganizer.ui.detail.RoutineDetailActivity;
+import bd.edu.daffodilvarsity.classorganizer.ui.main.MainActivity;
+import bd.edu.daffodilvarsity.classorganizer.ui.modify.ModifyActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
@@ -86,7 +95,7 @@ public class SearchRoutineFragment extends Fragment {
         });
         RoutineOptionsViewHolder holder = new RoutineOptionsViewHolder(view);
         mAdapter = new SearchResultAdapter(new ArrayList<>(), SearchResultAdapter.RESULT_TYPE_SECTION_CLASS);
-        mResultView.setAdapter(mAdapter);
+        mAdapter.bindToRecyclerView(mResultView);
         mResultView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mViewModel.getRoutineListListener().observe(getActivity(), listResource -> {
             if (listResource != null) {
@@ -94,7 +103,7 @@ public class SearchRoutineFragment extends Fragment {
                     case ERROR:
                         mResultView.setVisibility(View.GONE);
                         mNoResultText.setVisibility(View.VISIBLE);
-                        mNoResultText.setText("No routines found! ¯\\\\_(ツ)_\\/¯");
+                        mNoResultText.setText(getString(R.string.no_routine_found));
                         break;
                     case LOADING:
                         mNoResultText.setVisibility(View.GONE);
@@ -106,6 +115,33 @@ public class SearchRoutineFragment extends Fragment {
                         mAdapter.replaceData(listResource.getData());
                         break;
                 }
+            }
+        });
+        mAdapter.setOnItemChildClickListener((adapter, view1, position) -> {
+            switch (view1.getId()) {
+                case R.id.item_class_more_button:
+                    //creating a popup menu
+                    PopupMenu popup = new PopupMenu(view1.getContext(), view1);
+                    //inflating menu from xml resource
+                    popup.inflate(R.menu.activity_search_menu);
+
+                    popup.setOnMenuItemClickListener(menuItem -> {
+                        switch (menuItem.getItemId()) {
+                            case R.id.search_save_menu:
+                                mViewModel.saveRoutine((Routine) adapter.getItem(position));
+                                getActivity().setResult(Activity.RESULT_OK);
+                                break;
+                        }
+                        return true;
+                    });
+                    //displaying the popup
+                    popup.show();
+                    break;
+                default:
+                    Intent intent = new Intent(getActivity(), RoutineDetailActivity.class);
+                    intent.putExtra(RoutineDetailActivity.ROUTINE_DETAIL_TAG, (Routine) adapter.getItem(position));
+                    startActivity(intent);
+                    break;
             }
         });
 

@@ -11,8 +11,10 @@ import java.util.concurrent.TimeUnit;
 import bd.edu.daffodilvarsity.classorganizer.model.Database;
 import bd.edu.daffodilvarsity.classorganizer.model.Routine;
 import bd.edu.daffodilvarsity.classorganizer.model.Semester;
+import bd.edu.daffodilvarsity.classorganizer.model.Teacher;
 import bd.edu.daffodilvarsity.classorganizer.model.UpdateResponse;
 import bd.edu.daffodilvarsity.classorganizer.ui.setup.SetupViewModel;
+import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.InputHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.PreferenceGetter;
 import io.reactivex.Completable;
@@ -162,6 +164,19 @@ public class Repository {
 
     public Completable deleteRoutine(Routine routine) {
         return Completable.fromAction(() -> getDatabase().deleteRoutine(routine));
+    }
+
+    public Single<Teacher> getTeacherDetails(String teachersInitial) {
+        return Single.fromCallable(() -> getDatabase().teacherAccess().getTeacher(teachersInitial));
+    }
+
+    public Single<Database> getDummyDb() {
+        return Single.fromCallable(this::dummyDb);
+    }
+    private Database dummyDb() {
+        Database database = new Database();
+        database.setDatabaseVersion(0);
+        return database;
     }
 
     private void saveRoutine(Routine routine) {

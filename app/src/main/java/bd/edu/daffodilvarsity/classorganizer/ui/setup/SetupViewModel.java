@@ -15,6 +15,7 @@ import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class SetupViewModel extends ViewModel {
@@ -247,9 +248,10 @@ public class SetupViewModel extends ViewModel {
                         updateListener.postValue(new Resource<>(Status.UPDATING, false, null));
                     }
                 })
-                .filter(updateResponse -> updateResponse.getVersion() > PreferenceGetter.getDatabaseVersion())
-                .map(updateResponse -> repository.getRoutineFromServer())
-                .flatMapSingle(
+                .map(updateResponse ->
+                        updateResponse.getVersion() > PreferenceGetter.getDatabaseVersion() ?
+                                repository.getRoutineFromServer() : repository.getDummyDb())
+                .flatMap(
                         updateResponse -> updateResponse.flatMap(
                                 database -> repository.upgradeDatabaseFromResponse(database)))
                 .subscribeOn(Schedulers.io())

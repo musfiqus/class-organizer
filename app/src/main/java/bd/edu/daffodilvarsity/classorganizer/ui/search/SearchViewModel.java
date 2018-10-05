@@ -2,14 +2,20 @@ package bd.edu.daffodilvarsity.classorganizer.ui.search;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.util.List;
 
+import bd.edu.daffodilvarsity.classorganizer.ClassOrganizer;
 import bd.edu.daffodilvarsity.classorganizer.data.Repository;
 import bd.edu.daffodilvarsity.classorganizer.model.Resource;
 import bd.edu.daffodilvarsity.classorganizer.model.Routine;
 import bd.edu.daffodilvarsity.classorganizer.model.Status;
+import bd.edu.daffodilvarsity.classorganizer.model.Teacher;
 import bd.edu.daffodilvarsity.classorganizer.utils.PreferenceGetter;
+import es.dmoral.toasty.Toasty;
+import io.reactivex.CompletableObserver;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -17,7 +23,9 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class SearchViewModel extends ViewModel {
+    private static final String TAG = "SearchViewModel";
     private CompositeDisposable mDisposable;
+    private boolean isRoutineSearchFinished;
 
     private MutableLiveData<Boolean> progressListener;
     private MutableLiveData<Resource<List<String>>> sectionListListener;
@@ -26,6 +34,7 @@ public class SearchViewModel extends ViewModel {
     private MutableLiveData<Resource<List<Routine>>> freeRoomListListener;
     private MutableLiveData<Resource<List<String>>> teachersInitialListListener;
     private MutableLiveData<Resource<List<Routine>>> classListByInitialListener;
+    private MutableLiveData<Teacher> mTeacherInfoListener;
     private Repository repository = Repository.getInstance();
 
     MutableLiveData<Boolean> getProgressListener() {
@@ -79,6 +88,13 @@ public class SearchViewModel extends ViewModel {
         return classListByInitialListener;
     }
 
+    MutableLiveData<Teacher> getTeacherInfoListener() {
+        if (mTeacherInfoListener == null) {
+            mTeacherInfoListener = new MutableLiveData<>();
+        }
+        return mTeacherInfoListener;
+    }
+
     void searchClassesByInitial(String initial) {
         repository
                 .searchRoutineByInitial(initial)
@@ -88,6 +104,7 @@ public class SearchViewModel extends ViewModel {
                     @Override
                     public void onSubscribe(Disposable d) {
                         addDisposable(d);
+                        isRoutineSearchFinished = false;
                         getProgressListener().postValue(true);
                         getClassListByInitialListener().postValue(new Resource<>(Status.LOADING, null, null));
                     }
@@ -96,12 +113,42 @@ public class SearchViewModel extends ViewModel {
                     public void onSuccess(List<Routine> routines) {
                         getProgressListener().postValue(false);
                         getClassListByInitialListener().postValue(new Resource<>(Status.SUCCESSFUL, routines, null));
+                        isRoutineSearchFinished = true;
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         getProgressListener().postValue(false);
                         getClassListByInitialListener().postValue(new Resource<>(Status.ERROR, null, e));
+                        isRoutineSearchFinished = true;
+                    }
+                });
+        repository
+                .getTeacherDetails(initial)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SingleObserver<Teacher>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        addDisposable(d);
+                        getProgressListener().postValue(true);
+                    }
+
+                    @Override
+                    public void onSuccess(Teacher teacher) {
+                        Log.e(TAG, "onSuccess: weeew");
+                        getTeacherInfoListener().postValue(teacher);
+                        if (isRoutineSearchFinished) {
+                            getProgressListener().postValue(false);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "onError: ", e);
+                        if (isRoutineSearchFinished) {
+                            getProgressListener().postValue(false);
+                        }
                     }
                 });
     }
@@ -238,6 +285,33 @@ public class SearchViewModel extends ViewModel {
                     public void onError(Throwable e) {
                         getProgressListener().postValue(false);
                         getFreeRoomListListener().postValue(new Resource<>(Status.ERROR, null, e));
+                    }
+                });
+    }
+
+    void saveRoutine(Routine routine) {
+        repository
+                .addRoutine(routine)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        addDisposable(d);
+                        getProgressListener().postValue(true);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        getProgressListener().postValue(false);
+                        Toasty.success(ClassOrganizer.getInstance(), "Saved "+routine.getCourseCode(), Toast.LENGTH_SHORT, true).show();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getProgressListener().postValue(false);
+                        Toasty.error(ClassOrganizer.getInstance(), "Failed to saved "+routine.getCourseCode(), Toast.LENGTH_SHORT, true).show();
+
                     }
                 });
     }

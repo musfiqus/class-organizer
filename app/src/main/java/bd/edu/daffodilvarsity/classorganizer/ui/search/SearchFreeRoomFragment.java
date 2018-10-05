@@ -81,7 +81,7 @@ public class SearchFreeRoomFragment extends Fragment {
             }
         });
         RoomOptionsViewHolder holder = new RoomOptionsViewHolder(view);
-        mAdapter = new SearchResultAdapter(new ArrayList<>(), SearchResultAdapter.RESULT_TYPE_SECTION_CLASS);
+        mAdapter = new SearchResultAdapter(new ArrayList<>(), SearchResultAdapter.RESULT_TYPE_FREE_CLASS);
         mResultView.setAdapter(mAdapter);
         mResultView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mViewModel.getFreeRoomListListener().observe(getActivity(), listResource -> {
@@ -90,7 +90,7 @@ public class SearchFreeRoomFragment extends Fragment {
                     case ERROR:
                         mResultView.setVisibility(View.GONE);
                         mNoResultText.setVisibility(View.VISIBLE);
-                        mNoResultText.setText("No free rooms found! ¯\\_(ツ)_/¯");
+                        mNoResultText.setText(getString(R.string.no_free_rooms));
                         break;
                     case LOADING:
                         mNoResultText.setVisibility(View.GONE);
@@ -104,7 +104,7 @@ public class SearchFreeRoomFragment extends Fragment {
                         } else {
                             mResultView.setVisibility(View.GONE);
                             mNoResultText.setVisibility(View.VISIBLE);
-                            mNoResultText.setText("No free rooms found! ¯\\_(ツ)_/¯");
+                            mNoResultText.setText(getText(R.string.no_free_rooms));
                         }
 
                         break;

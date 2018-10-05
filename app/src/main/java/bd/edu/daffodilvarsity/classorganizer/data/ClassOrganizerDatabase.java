@@ -12,17 +12,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import bd.edu.daffodilvarsity.classorganizer.ClassOrganizer;
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.model.Routine;
 import bd.edu.daffodilvarsity.classorganizer.model.Semester;
+import bd.edu.daffodilvarsity.classorganizer.model.Teacher;
 import bd.edu.daffodilvarsity.classorganizer.ui.setup.SetupViewModel;
 import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.InputHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.PreferenceGetter;
 
-@Database(entities = {Routine.class, Semester.class}, version = ClassOrganizerDatabase.DATABASE_VERSION, exportSchema = false)
+@Database(entities = {Routine.class, Semester.class, Teacher.class}, version = ClassOrganizerDatabase.DATABASE_VERSION, exportSchema = false)
 public abstract class ClassOrganizerDatabase extends RoomDatabase {
     private static final String TAG = "ClassOrganizerDatabase";
 
@@ -31,6 +33,8 @@ public abstract class ClassOrganizerDatabase extends RoomDatabase {
     public abstract RoutineDao routineAccess();
 
     public abstract SemesterDao semesterAccess();
+
+    public abstract TeacherDao teacherAccess();
 
     private static ClassOrganizerDatabase sInstance;
 
@@ -58,6 +62,10 @@ public abstract class ClassOrganizerDatabase extends RoomDatabase {
         //insert semesters
         if (database.getSemester() != null) {
             semesterAccess().insertSemesters(database.getSemester().toArray(new Semester[0]));
+        }
+        //insert teachers
+        if (database.getTeacher() != null) {
+            teacherAccess().insertTeachers(database.getTeacher().toArray(new Teacher[0]));
         }
         //set database version
         PreferenceGetter.setDatabaseVersion(database.getDatabaseVersion());
@@ -193,19 +201,24 @@ public abstract class ClassOrganizerDatabase extends RoomDatabase {
     }
 
     boolean upgrade(bd.edu.daffodilvarsity.classorganizer.model.Database database) {
-        //check version
-        if (PreferenceGetter.getDatabaseVersion() >= database.getDatabaseVersion()) {
+        try {
+            //check version
+            if (PreferenceGetter.getDatabaseVersion() >= database.getDatabaseVersion()) {
+                return false;
+            }
+            //clean previous records
+            routineAccess().nukeRoutines();
+            semesterAccess().nukeSemesters();
+            teacherAccess().nukeTeachers();
+            //insert routine
+            populateData(database);
+            //upgrade modifications
+            upgradeModifications();
+            return true;
+        } catch (NoSuchElementException e) {
+            e.printStackTrace();
             return false;
         }
-        //clean previous records
-        routineAccess().nukeRoutines();
-        semesterAccess().nukeSemesters();
-        //insert routine
-        populateData(database);
-        //upgrade modifications
-        upgradeModifications();
-        return true;
-
     }
 
     private long getId(Routine routine) {

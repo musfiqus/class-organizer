@@ -32,7 +32,7 @@ public class RoutineAdapter extends BaseQuickAdapter<Routine, BaseViewHolder> {
         }
         helper.setText(R.id.item_class_code, InputHelper.toNA(item.getCourseCode()));
         helper.setText(R.id.item_class_title, InputHelper.toNA(item.getCourseTitle()));
-        helper.setText(R.id.routine_detail_time, item.getTime());
+        helper.setText(R.id.item_class_time, item.getTime());
         helper.setText(R.id.item_class_teacher, InputHelper.toNA(item.getTeachersInitial()));
         helper.setText(R.id.item_class_room, item.getRoomNo());
         if (helper.getAdapterPosition() == 0) {

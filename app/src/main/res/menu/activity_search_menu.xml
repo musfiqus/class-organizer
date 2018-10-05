@@ -1,24 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/search_by_code"
-        android:title="@string/search_by_code"
-        android:checkable="true"
-        android:checked="true"
+    <item android:id="@+id/search_save_menu"
+        android:title="@string/save_popup_title"
         app:showAsAction="never"/>
-    <item android:id="@+id/search_by_title"
-        android:title="@string/search_by_title"
-        android:checkable="true"
-        android:checked="true"
-        app:showAsAction="never"/>
-    <item android:id="@+id/search_by_teacher"
-        android:title="@string/search_by_teacher"
-        android:checkable="true"
-        android:checked="true"
-        app:showAsAction="never"/>
-    <item android:id="@+id/search_by_room"
-        android:title="@string/search_by_room"
-        android:checkable="true"
-        android:checked="true"
-        app:showAsAction="never"/>
+
 </menu>
