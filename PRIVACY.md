@@ -1,6 +1,6 @@
 ### Class Organizer Privacy Statement
 
-### What information GitHub collects and why
+### What information Class Organizer collects and why
 
 #### Information from crash logs
 
