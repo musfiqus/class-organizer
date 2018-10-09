@@ -6,6 +6,7 @@ buildscript {
     }
 }
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 // Create a variable called keystorePropertiesFile, and initialize it to your
 // keystore.properties file, in the rootProject folder.
 def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -20,10 +21,10 @@ android {
         applicationId "bd.edu.daffodilvarsity.classorganizer"
         minSdkVersion 16
         targetSdkVersion 28
-        versionName '5.0'
+        versionName '5.0 beta 1'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 72
+        versionCode 73
     }
     signingConfigs {
         release {
@@ -126,6 +127,9 @@ dependencies {
     //BRVAH
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.42'
 
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
+        transitive = true;
+    }
 
 
     dependencies {

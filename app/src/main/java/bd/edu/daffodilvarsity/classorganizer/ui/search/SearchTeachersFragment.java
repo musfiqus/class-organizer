@@ -31,6 +31,7 @@ import bd.edu.daffodilvarsity.classorganizer.model.Teacher;
 import bd.edu.daffodilvarsity.classorganizer.ui.TextInputAutoCompleteTextView;
 import bd.edu.daffodilvarsity.classorganizer.ui.detail.RoutineDetailActivity;
 import bd.edu.daffodilvarsity.classorganizer.utils.CustomFilterArrayAdapter;
+import bd.edu.daffodilvarsity.classorganizer.utils.InputHelper;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
@@ -126,7 +127,7 @@ public class SearchTeachersFragment extends Fragment {
             }
         });
         mViewModel.getTeacherInfoListener().observe(getActivity(), teacher -> {
-            if (teacher != null) {
+            if (teacher != null && !InputHelper.isEmpty(teacher.getInitial()) && !InputHelper.isEmpty(teacher.getName())) {
                 mTeacherList.setVisibility(View.VISIBLE);
                 mTeacherList.setLayoutManager(new LinearLayoutManager(getActivity()));
                 List<Teacher> teachers = new ArrayList<>();

@@ -20,7 +20,9 @@ import java.util.concurrent.TimeUnit;
 
 import androidx.work.Constraints;
 import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.ExistingWorkPolicy;
 import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 import bd.edu.daffodilvarsity.classorganizer.ClassOrganizer;
@@ -30,6 +32,7 @@ import bd.edu.daffodilvarsity.classorganizer.model.Routine;
 import bd.edu.daffodilvarsity.classorganizer.model.Semester;
 import bd.edu.daffodilvarsity.classorganizer.model.Status;
 import bd.edu.daffodilvarsity.classorganizer.service.NotificationRestartJobIntentService;
+import bd.edu.daffodilvarsity.classorganizer.utils.OfflineUpdateWorker;
 import bd.edu.daffodilvarsity.classorganizer.utils.PreferenceGetter;
 import bd.edu.daffodilvarsity.classorganizer.utils.UpdatePollWorker;
 import es.dmoral.toasty.Toasty;
@@ -64,6 +67,7 @@ public class MainViewModel extends ViewModel {
 
     private static final String UPDATE_POLL_WORKER_TAG = "update_poll";
     private static final String UPDATE_CHECK_WORK = "check_teh_f_out";
+    private static final String OFFLINE_UPDATE_WORK = "update_teh_f_out";
 
     public MainViewModel() {
         mRepository = Repository.getInstance();
@@ -263,6 +267,10 @@ public class MainViewModel extends ViewModel {
                 .setConstraints(constraints)
                 .build();
         workManager.enqueueUniquePeriodicWork(UPDATE_CHECK_WORK, ExistingPeriodicWorkPolicy.REPLACE, periodicWorkRequest);
+        OneTimeWorkRequest oneTimeWorkRequest = new OneTimeWorkRequest.Builder(OfflineUpdateWorker.class)
+                .setInitialDelay(5, TimeUnit.SECONDS)
+                .build();
+        workManager.beginUniqueWork(OFFLINE_UPDATE_WORK, ExistingWorkPolicy.KEEP, oneTimeWorkRequest).enqueue();
     }
 
     private void checkForNewSemester() {
