@@ -55,6 +55,9 @@ android {
     dataBinding {
         enabled = true
     }
+    packagingOptions {
+        exclude 'META-INF/proguard/androidx-annotations.pro'
+    }
 }
 
 dependencies {
@@ -149,6 +152,15 @@ dependencies {
 
         // optional - ReactiveStreams support for LiveData
         implementation "android.arch.lifecycle:reactivestreams:$lifecycle_version"
+    }
+
+    dependencies {
+        def work_version = "1.0.0-alpha09"
+
+        implementation "android.arch.work:work-runtime:$work_version" // use -ktx for Kotlin
+
+        // optional - Firebase JobDispatcher support
+        implementation "android.arch.work:work-firebase:$work_version"
     }
 }
 

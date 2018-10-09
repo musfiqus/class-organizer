@@ -13,6 +13,8 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 import bd.edu.daffodilvarsity.classorganizer.model.Routine;
+import io.reactivex.Flowable;
+import io.reactivex.Observable;
 
 @Dao
 public interface RoutineDao {
@@ -105,6 +107,12 @@ public interface RoutineDao {
 
     @Query("SELECT DISTINCT time, time_weight, alt_time, alt_time_weight FROM routine WHERE alt_time LIKE :altTime")
     TimePOJO getTimeByAltTime(String altTime);
+
+    @Query("SELECT * FROM routine WHERE campus LIKE :campus AND department LIKE :department AND program LIKE :program AND level = :level AND term = :term AND section LIKE :section")
+    Flowable<List<Routine>> flowableRoutineStudent(String campus, String department, String program, int level, int term, String section);
+
+    @Query("SELECT * FROM routine WHERE campus LIKE :campus AND department LIKE :department AND teachers_initial LIKE :teachersInitial")
+    Flowable<List<Routine>> flowableRoutineTeacher(String campus, String department, String teachersInitial);
 
     class TimePOJO {
         @SerializedName("time")

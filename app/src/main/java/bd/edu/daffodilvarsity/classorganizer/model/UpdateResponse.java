@@ -2,6 +2,7 @@ package bd.edu.daffodilvarsity.classorganizer.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -93,4 +94,15 @@ public class UpdateResponse implements Parcelable {
             return new UpdateResponse[size];
         }
     };
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "UpdateResponse{" +
+                "datetime=" + datetime +
+                ", md5='" + md5 + '\'' +
+                ", size=" + size +
+                ", version=" + version +
+                '}';
+    }
 }

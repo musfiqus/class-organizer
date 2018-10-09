@@ -25,10 +25,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -38,12 +39,13 @@ import java.util.Locale;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.model.Routine;
+import bd.edu.daffodilvarsity.classorganizer.model.Semester;
 import bd.edu.daffodilvarsity.classorganizer.receiver.NotificationPublisher;
+import bd.edu.daffodilvarsity.classorganizer.service.NotificationRestartJobIntentService;
+import bd.edu.daffodilvarsity.classorganizer.ui.base.BaseDrawerActivity;
 import bd.edu.daffodilvarsity.classorganizer.ui.detail.RoutineDetailActivity;
 import bd.edu.daffodilvarsity.classorganizer.ui.modify.ModifyActivity;
 import bd.edu.daffodilvarsity.classorganizer.ui.search.SearchRefinedActivity;
-import bd.edu.daffodilvarsity.classorganizer.service.NotificationRestartJobIntentService;
-import bd.edu.daffodilvarsity.classorganizer.ui.base.BaseDrawerActivity;
 import bd.edu.daffodilvarsity.classorganizer.ui.settings.SettingsActivity;
 import bd.edu.daffodilvarsity.classorganizer.ui.setup.SetupActivity;
 import bd.edu.daffodilvarsity.classorganizer.utils.AlarmHelper;
@@ -62,7 +64,6 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
 
     private static final String CURRENT_PROMOTION = "Facebook_Page";
 
-    private boolean alarmRecreated = false;
     private boolean isActivityRunning = false;
     private boolean updateDialogueBlocked = false;
     private DayFragmentPagerAdapter adapter;
@@ -93,13 +94,10 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
         //check if from notification
         Bundle arguments = getIntent().getExtras();
         if (arguments != null) {
-            Log.e(TAG, "onCreate: HUH");
             Bundle bundle = arguments.getBundle(AlarmHelper.TAG_ALARM_BUNDLE_DATA);
             if (bundle != null) {
-                Log.e(TAG, "onCreate: HUH EH");
                 byte[] byteRoutine = bundle.getByteArray(NotificationPublisher.TAG_NOTIFICATION_DATA);
                 if (byteRoutine != null) {
-                    Log.e(TAG, "onCreate: HUH EH UH");
                     Routine routine = FileUtils.convertToRoutine(byteRoutine);
                     Intent intent = new Intent(this, RoutineDetailActivity.class);
                     intent.putExtra(RoutineDetailActivity.ROUTINE_DETAIL_TAG,(Parcelable) routine);
@@ -125,25 +123,14 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        loadData();
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        boolean hasNotification = preferences.getBoolean("notification_preference", true);
-        if (hasNotification) {
-            if (!alarmRecreated) {
-                NotificationRestartJobIntentService.enqueueWork(this, new Intent(this, NotificationRestartJobIntentService.class));
-            }
-        }
-
-
+        loadUi();
 
         //And load adz
 //        if (adView == null) {
 //            adView = (AdView) findViewById(R.id.adView);
 //        }
 //        adView.loadAd(new AdRequest.Builder().build());
-        showOneTimePromotionalDialog();
-
-
+//        showOneTimePromotionalDialog();
     }
 
     private void revealMainView() {
@@ -269,9 +256,11 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
         }
     }
 
-    public void loadData() {
+    public void loadUi() {
         //Load Data
         mViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        mViewModel.enqueueWorks();
+        mViewModel.receiveDbChanges();
         adapter = new DayFragmentPagerAdapter(this, getSupportFragmentManager(), new HashMap<>());
         mViewPager.setAdapter(adapter);
         mViewModel.getRoutineListListener().observe(this, listResource -> {
@@ -306,8 +295,32 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
                 }
             }
         });
+        mViewModel.getSemesterUpgradeDialogListener().observe(this, semester -> {
+            if (semester != null) {
+                showUpgradeDialog(semester);
+            }
+        });
     }
 
+    private void showUpgradeDialog(Semester semester) {
+        MaterialDialog dialog = new MaterialDialog.Builder(this)
+                .title(R.string.semester_upgrade_title)
+                .content(getString(R.string.upgrade_message_body, semester.getSemesterName()))
+                .positiveText(android.R.string.yes)
+                .negativeText(android.R.string.no)
+                .onPositive((dialog1, which) -> {
+                    PreferenceGetter.setSemesterId(semester.getSemesterID());
+                    Intent intent = new Intent(MainActivity.this, SetupActivity.class);
+                    startActivityForResult(intent, REQUEST_CODE_REFRESHABLE_ACTIVITY);
+                    dialog1.dismiss();
+                })
+                .onNegative((dialog12, which) -> {
+                    mViewModel.getSemesterUpgradeDialogListener().postValue(null);
+                    dialog12.dismiss();
+                })
+                .build();
+        dialog.show();
+    }
 
 
     //Checking if activity is in state loss

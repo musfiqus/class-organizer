@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import bd.edu.daffodilvarsity.classorganizer.ClassOrganizer;
 import bd.edu.daffodilvarsity.classorganizer.model.Database;
 import bd.edu.daffodilvarsity.classorganizer.model.Routine;
 import bd.edu.daffodilvarsity.classorganizer.model.Semester;
@@ -17,7 +18,9 @@ import bd.edu.daffodilvarsity.classorganizer.ui.setup.SetupViewModel;
 import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.InputHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.PreferenceGetter;
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -171,12 +174,23 @@ public class Repository {
     }
 
     public Single<Database> getDummyDb() {
-        return Single.fromCallable(this::dummyDb);
-    }
-    private Database dummyDb() {
         Database database = new Database();
         database.setDatabaseVersion(0);
-        return database;
+        return Single.just(database);
     }
+
+    private Flowable<ClassOrganizerDatabase> getDatabaseAsync() {
+        return Flowable.fromCallable(this::getDatabase);
+    }
+
+    public Flowable<List<Routine>> getRoutineChangeNotifier() {
+        return getDatabaseAsync()
+                .flatMap(classOrganizerDatabase -> PreferenceGetter.isStudent() ?
+                        classOrganizerDatabase.routineAccess().flowableRoutineStudent(PreferenceGetter.getCampus(), PreferenceGetter.getDepartment(), PreferenceGetter.getProgram(), PreferenceGetter.getLevel(), PreferenceGetter.getTerm(), PreferenceGetter.getSection()) :
+                        classOrganizerDatabase.routineAccess().flowableRoutineTeacher(PreferenceGetter.getCampus(), PreferenceGetter.getDepartment(), PreferenceGetter.getInitial()) );
+
+    }
+
+
 
 }
