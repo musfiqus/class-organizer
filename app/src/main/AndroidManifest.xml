@@ -33,9 +33,6 @@
             android:name=".ui.modify.ModifyActivity"
             android:label="@string/edit_title" />
         <activity
-            android:name=".activity.AddActivity"
-            android:label="@string/add_title" />
-        <activity
             android:name=".ui.settings.SettingsActivity"
             android:label="@string/settings_title"
             android:theme="@style/AppTheme.NoActionBar" />

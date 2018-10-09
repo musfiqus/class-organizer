@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +25,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,12 +37,17 @@ import java.util.HashMap;
 import java.util.Locale;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
+import bd.edu.daffodilvarsity.classorganizer.model.Routine;
+import bd.edu.daffodilvarsity.classorganizer.receiver.NotificationPublisher;
+import bd.edu.daffodilvarsity.classorganizer.ui.detail.RoutineDetailActivity;
 import bd.edu.daffodilvarsity.classorganizer.ui.modify.ModifyActivity;
 import bd.edu.daffodilvarsity.classorganizer.ui.search.SearchRefinedActivity;
 import bd.edu.daffodilvarsity.classorganizer.service.NotificationRestartJobIntentService;
 import bd.edu.daffodilvarsity.classorganizer.ui.base.BaseDrawerActivity;
 import bd.edu.daffodilvarsity.classorganizer.ui.settings.SettingsActivity;
 import bd.edu.daffodilvarsity.classorganizer.ui.setup.SetupActivity;
+import bd.edu.daffodilvarsity.classorganizer.utils.AlarmHelper;
+import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.PreferenceGetter;
 import bd.edu.daffodilvarsity.classorganizer.utils.ViewUtils;
 import butterknife.BindView;
@@ -82,6 +89,25 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
         if (Build.VERSION.SDK_INT >= 23) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));//status bar or the time bar at the top
         }
+
+        //check if from notification
+        Bundle arguments = getIntent().getExtras();
+        if (arguments != null) {
+            Log.e(TAG, "onCreate: HUH");
+            Bundle bundle = arguments.getBundle(AlarmHelper.TAG_ALARM_BUNDLE_DATA);
+            if (bundle != null) {
+                Log.e(TAG, "onCreate: HUH EH");
+                byte[] byteRoutine = bundle.getByteArray(NotificationPublisher.TAG_NOTIFICATION_DATA);
+                if (byteRoutine != null) {
+                    Log.e(TAG, "onCreate: HUH EH UH");
+                    Routine routine = FileUtils.convertToRoutine(byteRoutine);
+                    Intent intent = new Intent(this, RoutineDetailActivity.class);
+                    intent.putExtra(RoutineDetailActivity.ROUTINE_DETAIL_TAG,(Parcelable) routine);
+                    startActivity(intent);
+                }
+            }
+        }
+
         if (PreferenceGetter.isFirstTimeLaunch()) {
             startActivityForResult(new Intent(this, SetupActivity.class), REQUEST_CODE_INTRO);
         }

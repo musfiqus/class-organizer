@@ -16,7 +16,9 @@ import java.util.Map;
 import java.util.Objects;
 
 import bd.edu.daffodilvarsity.classorganizer.data.ClassOrganizerDatabase;
+import bd.edu.daffodilvarsity.classorganizer.data.Repository;
 import bd.edu.daffodilvarsity.classorganizer.model.Routine;
+import io.reactivex.Completable;
 
 public class PreferenceGetter {
     private static final String TAG = "PreferenceGetter";
@@ -41,6 +43,8 @@ public class PreferenceGetter {
     private static final String PREF_NOTIFICATION_DELAY = "user_notification_delay";
     private static final String PREF_SEMESTER_ID = "current_semester_id";
     private static final String PREF_RAMADAN = "ramadan_preference";
+    private static final String PREF_NOTIFICATION = "notification_preference";
+    public static final int SHIPPED_DATABASE_VERSION = 1;
 
 
     public static boolean isFirstTimeLaunch() {
@@ -233,6 +237,31 @@ public class PreferenceGetter {
 
     public static boolean isRamadanEnabled() {
         return PreferenceHelper.getBoolean(PREF_RAMADAN);
+    }
+
+    public static Completable addRoutine(Routine routine) {
+        return Completable.fromAction(() -> addRoutineSynchronous(routine));
+    }
+
+    private static void addRoutineSynchronous(Routine routine) {
+        List<Routine> savedRoutines = getSavedRoutine();
+        if (!savedRoutines.contains(routine)) {
+            int currentRows = ClassOrganizerDatabase.getInstance().routineAccess().getCount();
+            int newId = currentRows + savedRoutines.size() + 1;
+            routine.setId(newId);
+            savedRoutines.add(routine);
+        } else {
+            int index = savedRoutines.indexOf(routine);
+            Routine oldRoutine = savedRoutines.get(index);
+            routine.setId(oldRoutine.getId());
+            savedRoutines.set(index, routine);
+        }
+        setSavedRoutine(savedRoutines);
+    }
+
+    public static boolean isNotificationEnabled() {
+        Log.e(TAG, "isNotificationEnabled: "+ PreferenceHelper.getBoolean(PREF_NOTIFICATION));
+        return PreferenceHelper.getBoolean(PREF_NOTIFICATION);
     }
 
     public static void printPref() {

@@ -10,8 +10,10 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 @Entity(tableName = Routine.TABLE_NAME)
-public class Routine implements Parcelable {
+public class Routine implements Parcelable, Serializable {
 
     /** The name of the Routine table. */
     public static final String TABLE_NAME = "routine";

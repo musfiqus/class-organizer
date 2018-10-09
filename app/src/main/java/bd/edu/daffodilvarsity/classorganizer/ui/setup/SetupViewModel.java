@@ -7,10 +7,13 @@ import android.util.Log;
 import java.util.List;
 
 import bd.edu.daffodilvarsity.classorganizer.data.Repository;
+import bd.edu.daffodilvarsity.classorganizer.model.Database;
 import bd.edu.daffodilvarsity.classorganizer.model.Resource;
 import bd.edu.daffodilvarsity.classorganizer.model.Routine;
 import bd.edu.daffodilvarsity.classorganizer.model.Status;
+import bd.edu.daffodilvarsity.classorganizer.model.UpdateResponse;
 import bd.edu.daffodilvarsity.classorganizer.utils.PreferenceGetter;
+import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -248,12 +251,8 @@ public class SetupViewModel extends ViewModel {
                         updateListener.postValue(new Resource<>(Status.UPDATING, false, null));
                     }
                 })
-                .map(updateResponse ->
-                        updateResponse.getVersion() > PreferenceGetter.getDatabaseVersion() ?
-                                repository.getRoutineFromServer() : repository.getDummyDb())
-                .flatMap(
-                        updateResponse -> updateResponse.flatMap(
-                                database -> repository.upgradeDatabaseFromResponse(database)))
+                .flatMap(this::getDatabase)
+                .flatMap(database -> repository.upgradeDatabaseFromResponse(database))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<Boolean>() {
@@ -274,6 +273,14 @@ public class SetupViewModel extends ViewModel {
                         updateListener.postValue(new Resource<>(Status.ERROR, false, null));
                     }
                 });
+    }
+
+    private Single<Database> getDatabase(UpdateResponse updateResponse) {
+        if (updateResponse.getVersion() > PreferenceGetter.getDatabaseVersion()) {
+            return repository.getRoutineFromServer();
+        } else {
+            return repository.getDummyDb();
+        }
     }
 
     private void addDisposable(Disposable disposable) {

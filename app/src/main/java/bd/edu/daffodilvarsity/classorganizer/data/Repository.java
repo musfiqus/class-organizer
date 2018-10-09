@@ -131,7 +131,7 @@ public class Repository {
     }
 
     public Completable addRoutine(Routine routine) {
-        return Completable.fromAction(() -> saveRoutine(routine));
+        return PreferenceGetter.addRoutine(routine);
     }
 
     public Single<List<String>> getSections() {
@@ -179,11 +179,4 @@ public class Repository {
         return database;
     }
 
-    private void saveRoutine(Routine routine) {
-        List<Routine> savedRoutines = PreferenceGetter.getSavedRoutine();
-        if (!savedRoutines.contains(routine)) {
-            savedRoutines.add(routine);
-        }
-        PreferenceGetter.setSavedRoutine(savedRoutines);
-    }
 }

@@ -16,6 +16,7 @@ import java.util.List;
 import bd.edu.daffodilvarsity.classorganizer.ClassOrganizer;
 import bd.edu.daffodilvarsity.classorganizer.data.Repository;
 import bd.edu.daffodilvarsity.classorganizer.model.Routine;
+import bd.edu.daffodilvarsity.classorganizer.model.RoutineSemesterModel;
 import bd.edu.daffodilvarsity.classorganizer.model.Semester;
 import bd.edu.daffodilvarsity.classorganizer.receiver.NotificationPublisher;
 import io.reactivex.Completable;
@@ -30,6 +31,7 @@ public class AlarmHelper {
     private Repository repository;
 
     public static String TAG_ALARM_ROUTINE_OBJECT = "routine_object";
+    public static String TAG_ALARM_SEMESTER_OBJECT = "semester_object";
     public static String TAG_ALARM_INDEX = "index";
     public static String TAG_ALARM_DAY = "day";
     public static String TAG_ALARM_HOUR = "hour";
@@ -140,6 +142,7 @@ public class AlarmHelper {
                 Intent routineIntent = new Intent(ClassOrganizer.getInstance(), NotificationPublisher.class);
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AlarmHelper.TAG_ALARM_ROUTINE_OBJECT, routine);
+                bundle.putParcelable(TAG_ALARM_SEMESTER_OBJECT, semester);
                 bundle.putInt(AlarmHelper.TAG_ALARM_INDEX, index);
                 bundle.putInt(AlarmHelper.TAG_ALARM_DAY, dayOfWeek);
                 bundle.putInt(AlarmHelper.TAG_ALARM_HOUR, hour);
@@ -269,16 +272,5 @@ public class AlarmHelper {
                 RoutineSemesterModel::new
         );
     }
-
-    class RoutineSemesterModel {
-        List<Routine> routines;
-        Semester semester;
-
-        RoutineSemesterModel(List<Routine> routines, Semester semester) {
-            this.routines = routines;
-            this.semester = semester;
-        }
-    }
-
 
 }

@@ -5,21 +5,20 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
+import bd.edu.daffodilvarsity.classorganizer.BuildConfig;
 import bd.edu.daffodilvarsity.classorganizer.ClassOrganizer;
-import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.model.Routine;
 import bd.edu.daffodilvarsity.classorganizer.model.Semester;
 import bd.edu.daffodilvarsity.classorganizer.model.Teacher;
 import bd.edu.daffodilvarsity.classorganizer.ui.setup.SetupViewModel;
+import bd.edu.daffodilvarsity.classorganizer.utils.AlarmHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
 import bd.edu.daffodilvarsity.classorganizer.utils.InputHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.PreferenceGetter;
@@ -48,6 +47,7 @@ public abstract class ClassOrganizerDatabase extends RoomDatabase {
             sInstance = Room
                     .databaseBuilder(ClassOrganizer.getInstance(), ClassOrganizerDatabase.class, "routine_room_database.db")
                     .fallbackToDestructiveMigration()
+                    .setJournalMode(BuildConfig.DEBUG ? JournalMode.TRUNCATE : JournalMode.AUTOMATIC)
                     .build();
             sInstance.generateInitialData();
         }
@@ -185,7 +185,7 @@ public abstract class ClassOrganizerDatabase extends RoomDatabase {
 
     }
 
-    Semester getSemester() {
+    public Semester getSemester() {
         List<Semester> semesters = new ArrayList<>();
         if (PreferenceGetter.isStudent()) {
             semesters.addAll(semesterAccess().getSemesters(PreferenceGetter.getCampus(), PreferenceGetter.getDepartment(), PreferenceGetter.getProgram()));
@@ -201,24 +201,34 @@ public abstract class ClassOrganizerDatabase extends RoomDatabase {
     }
 
     boolean upgrade(bd.edu.daffodilvarsity.classorganizer.model.Database database) {
-        try {
-            //check version
-            if (PreferenceGetter.getDatabaseVersion() >= database.getDatabaseVersion()) {
-                return false;
-            }
-            //clean previous records
-            routineAccess().nukeRoutines();
-            semesterAccess().nukeSemesters();
-            teacherAccess().nukeTeachers();
-            //insert routine
-            populateData(database);
-            //upgrade modifications
-            upgradeModifications();
-            return true;
-        } catch (NoSuchElementException e) {
-            e.printStackTrace();
+        //check version
+        if (PreferenceGetter.getDatabaseVersion() >= database.getDatabaseVersion()) {
             return false;
         }
+        AlarmHelper alarmHelper = new AlarmHelper();
+        alarmHelper.cancelAllAlarms().blockingAwait();
+        int oldCount = routineAccess().getCount();
+        //clean previous records
+        routineAccess().nukeRoutines();
+        semesterAccess().nukeSemesters();
+        teacherAccess().nukeTeachers();
+        //insert routine
+        populateData(database);
+        //upgrade modifications
+        upgradeSavedRoutine(oldCount);
+        upgradeModifications();
+        alarmHelper.startAllAlarms().blockingAwait();
+        return true;
+    }
+
+    private void upgradeSavedRoutine(int oldCount) {
+        List<Routine> savedRoutine = PreferenceGetter.getSavedRoutine();
+        int newCount = routineAccess().getCount();
+        for (int i = 0; i < savedRoutine.size(); i++) {
+            int diff = ((int) savedRoutine.get(i).getId()) - oldCount;
+            savedRoutine.get(i).setId(diff + newCount);
+        }
+        PreferenceGetter.setSavedRoutine(savedRoutine);
     }
 
     private long getId(Routine routine) {
@@ -275,7 +285,6 @@ public abstract class ClassOrganizerDatabase extends RoomDatabase {
     }
 
     void mutifyRoutine(Routine originalRoutine) {
-        Log.e(TAG, "mutifyRoutine: OriginaL "+originalRoutine.isMuted() );
         modifyRoutine(originalRoutine, mutify(originalRoutine));
     }
 

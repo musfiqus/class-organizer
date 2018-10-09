@@ -4,6 +4,7 @@ package bd.edu.daffodilvarsity.classorganizer.ui.main;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -90,7 +91,7 @@ public class DayFragment extends Fragment {
                                 break;
                             case R.id.edit_class:
                                 Intent intent = new Intent(getActivity(), ModifyActivity.class);
-                                intent.putExtra(ModifyActivity.KEY_EDIT_OBJECT, (Routine) adapter.getItem(position));
+                                intent.putExtra(ModifyActivity.KEY_EDIT_OBJECT, (Parcelable) adapter.getItem(position));
                                 startActivityForResult(intent, MainActivity.REQUEST_CODE_REFRESHABLE_ACTIVITY);
                                 break;
                         }
@@ -101,7 +102,7 @@ public class DayFragment extends Fragment {
                     break;
                 default:
                     Intent intent = new Intent(getActivity(), RoutineDetailActivity.class);
-                    intent.putExtra(RoutineDetailActivity.ROUTINE_DETAIL_TAG, (Routine) adapter.getItem(position));
+                    intent.putExtra(RoutineDetailActivity.ROUTINE_DETAIL_TAG, (Parcelable) adapter.getItem(position));
                     startActivity(intent);
                     break;
             }

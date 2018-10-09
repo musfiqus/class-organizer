@@ -6,6 +6,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
@@ -159,7 +160,7 @@ public class SearchTeachersFragment extends Fragment {
                     break;
                 default:
                     Intent intent = new Intent(getActivity(), RoutineDetailActivity.class);
-                    intent.putExtra(RoutineDetailActivity.ROUTINE_DETAIL_TAG, (Routine) adapter.getItem(position));
+                    intent.putExtra(RoutineDetailActivity.ROUTINE_DETAIL_TAG, (Parcelable) adapter.getItem(position));
                     startActivity(intent);
                     break;
             }
