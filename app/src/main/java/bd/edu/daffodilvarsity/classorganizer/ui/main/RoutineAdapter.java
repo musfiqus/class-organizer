@@ -27,10 +27,13 @@ public class RoutineAdapter extends BaseQuickAdapter<Routine, BaseViewHolder> {
 
     @Override
     protected void convert(BaseViewHolder helper, Routine item) {
+        Guideline guideline = helper.getView(R.id.item_class_guideline);
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) guideline.getLayoutParams();
         if (ViewUtils.pxFromDp(1) <= 2f) {
-            Guideline guideline = helper.getView(R.id.item_class_guideline);
-            ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) guideline.getLayoutParams();
-            params.guidePercent = 0.3f; // 45% // range: 0 <-> 1
+            params.guidePercent = 0.3f; // 30% // range: 0 <-> 1
+            guideline.setLayoutParams(params);
+        } else if (ViewUtils.pxFromDp(1) <= 3f) {
+            params.guidePercent = 0.35f; // 35% // range: 0 <-> 1
             guideline.setLayoutParams(params);
         }
         helper.setText(R.id.item_class_code, InputHelper.toNA(item.getCourseCode()));

@@ -89,7 +89,7 @@
                     app:srcCompat="@drawable/ic_clock_time"
                     tools:ignore="ContentDescription" />
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/item_class_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -104,7 +104,7 @@
                     android:textColor="?attr/colorPrimary"
                     android:textSize="16sp"
                     app:autoSizeMaxTextSize="16sp"
-                    app:autoSizeMinTextSize="14sp"
+                    app:autoSizeMinTextSize="12sp"
                     app:autoSizeStepGranularity="1sp"
                     app:autoSizeTextType="uniform"
                     app:layout_constraintBottom_toBottomOf="parent"
