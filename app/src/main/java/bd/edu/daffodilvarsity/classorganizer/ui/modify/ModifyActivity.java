@@ -126,7 +126,9 @@ public class ModifyActivity extends AppCompatActivity {
                         mSectionInput.setAdapter(adapterModelResource.getData().sections);
                         mTimeInput.setAdapter(adapterModelResource.getData().times);
                         mTimeInput.setSelection(adapterModelResource.getData().timePosition, true);
-                        mDayInput.setAdapter(ArrayAdapter.createFromResource(this, R.array.weekdays, R.layout.spinner_row));
+                        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.weekdays, R.layout.spinner_row_zero);
+                        adapter.setDropDownViewResource(R.layout.spinner_row);
+                        mDayInput.setAdapter(adapter);
                         if (mViewModel.getEditDataListener().getValue() != null) {
                             Routine editableRoutine = mViewModel.getEditDataListener().getValue();
                             for (int i = 0; i < getResources().getStringArray(R.array.weekdays).length; i++) {

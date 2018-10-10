@@ -100,7 +100,8 @@ public class CampusFragment extends Fragment {
                                         }
                                         valuesToDisplay.add(s);
                                     }
-                                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_row, valuesToDisplay);
+                                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_row_zero, valuesToDisplay);
+                                    adapter.setDropDownViewResource(R.layout.spinner_row);
                                     mNumberPicker.setAdapter(adapter);
                                 }
                                 break;

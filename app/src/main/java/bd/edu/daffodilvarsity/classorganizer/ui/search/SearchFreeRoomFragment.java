@@ -13,13 +13,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import bd.edu.daffodilvarsity.classorganizer.ClassOrganizer;
 import bd.edu.daffodilvarsity.classorganizer.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -133,7 +131,7 @@ public class SearchFreeRoomFragment extends Fragment {
         }
 
         private void setupView() {
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.weekdays, R.layout.spinner_row);
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.weekdays, R.layout.spinner_row_zero);
             mDaySpinner.setAdapter(adapter);
             mViewModel.getTimeListListener().observe(getActivity(), listResource -> {
                 if (listResource != null) {
@@ -145,7 +143,7 @@ public class SearchFreeRoomFragment extends Fragment {
                             disableTimeSpinner();
                             break;
                         case SUCCESSFUL:
-                            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_row, listResource.getData());
+                            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_row_zero, listResource.getData());
                             enableTimeSpinner();
                             mTimeSpinner.setAdapter(arrayAdapter);
                             break;

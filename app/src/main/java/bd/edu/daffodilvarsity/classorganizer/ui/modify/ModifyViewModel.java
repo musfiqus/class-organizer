@@ -200,12 +200,13 @@ public class ModifyViewModel extends ViewModel {
         int timePosition;
 
         public AdapterModel(List<String> titles, List<String> codes, List<String> teachers, List<String> rooms, List<String> sections, List<String> times, String currentTime) {
-            this.titles = new CustomFilterArrayAdapter(ClassOrganizer.getInstance(), R.layout.spinner_row, titles);
-            this.codes = new CustomFilterArrayAdapter(ClassOrganizer.getInstance(), R.layout.spinner_row, codes);
-            this.teachers = new CustomFilterArrayAdapter(ClassOrganizer.getInstance(), R.layout.spinner_row, teachers);
-            this.rooms = new CustomFilterArrayAdapter(ClassOrganizer.getInstance(), R.layout.spinner_row, rooms);
-            this.sections = new CustomFilterArrayAdapter(ClassOrganizer.getInstance(), R.layout.spinner_row, sections);
-            this.times = new ArrayAdapter<>(ClassOrganizer.getInstance(), R.layout.spinner_row, times);
+            this.titles = new CustomFilterArrayAdapter(ClassOrganizer.getInstance(), R.layout.spinner_row_zero, titles);
+            this.codes = new CustomFilterArrayAdapter(ClassOrganizer.getInstance(), R.layout.spinner_row_zero, codes);
+            this.teachers = new CustomFilterArrayAdapter(ClassOrganizer.getInstance(), R.layout.spinner_row_zero, teachers);
+            this.rooms = new CustomFilterArrayAdapter(ClassOrganizer.getInstance(), R.layout.spinner_row_zero, rooms);
+            this.sections = new CustomFilterArrayAdapter(ClassOrganizer.getInstance(), R.layout.spinner_row_zero, sections);
+            this.times = new ArrayAdapter<>(ClassOrganizer.getInstance(), R.layout.spinner_row_zero, times);
+            this.times.setDropDownViewResource(R.layout.spinner_row);
             this.timePosition = calculateTimePosition(times, currentTime);
         }
 

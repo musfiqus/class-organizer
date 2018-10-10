@@ -1,10 +1,8 @@
 package bd.edu.daffodilvarsity.classorganizer.ui.setup;
 
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.button.MaterialButton;
 import android.support.v4.app.Fragment;
@@ -19,11 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
-import bd.edu.daffodilvarsity.classorganizer.model.Resource;
 import bd.edu.daffodilvarsity.classorganizer.utils.ViewUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -97,6 +92,7 @@ public class SectionFragment extends Fragment {
                                             errorView.setVisibility(View.INVISIBLE);
                                             progressView.setVisibility(View.INVISIBLE);
                                             ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_row, new ArrayList<>(listResource.getData()));
+                                            adapter.setDropDownViewResource(R.layout.spinner_row_big);
                                             mSectionPicker.setAdapter(adapter);
                                             break;
                                         case LOADING:

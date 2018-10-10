@@ -1,9 +1,7 @@
 package bd.edu.daffodilvarsity.classorganizer.ui.setup;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.button.MaterialButton;
 import android.support.v4.app.Fragment;
@@ -11,28 +9,19 @@ import android.support.v4.widget.CircularProgressDrawable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatSpinner;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import bd.edu.daffodilvarsity.classorganizer.ClassOrganizer;
 import bd.edu.daffodilvarsity.classorganizer.R;
-import bd.edu.daffodilvarsity.classorganizer.model.Resource;
-import bd.edu.daffodilvarsity.classorganizer.ui.TextInputAutoCompleteTextView;
-import bd.edu.daffodilvarsity.classorganizer.utils.CustomFilterArrayAdapter;
 import bd.edu.daffodilvarsity.classorganizer.utils.ViewUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dmoral.toasty.Toasty;
 
 
 public class LevelFragment extends Fragment {
@@ -97,8 +86,10 @@ public class LevelFragment extends Fragment {
                         dialog.show();
                         mLevelPicker = dialog.findViewById(R.id.lp_level_spinner);
                         mTermPicker = dialog.findViewById(R.id.lp_term_spinner);
-                        ArrayAdapter<CharSequence> levelAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.level_array, R.layout.spinner_row);
-                        ArrayAdapter<CharSequence> termAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.term_array, R.layout.spinner_row);
+                        ArrayAdapter<CharSequence> levelAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.level_array, R.layout.spinner_row_zero);
+                        ArrayAdapter<CharSequence> termAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.term_array, R.layout.spinner_row_zero);
+                        levelAdapter.setDropDownViewResource(R.layout.spinner_row);
+                        termAdapter.setDropDownViewResource(R.layout.spinner_row);
                         mLevelPicker.setAdapter(levelAdapter);
                         mTermPicker.setAdapter(termAdapter);
 
@@ -147,7 +138,7 @@ public class LevelFragment extends Fragment {
                                             holderView.setVisibility(View.VISIBLE);
                                             errorView.setVisibility(View.INVISIBLE);
                                             progressView.setVisibility(View.INVISIBLE);
-                                            ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_row, new ArrayList<>(listResource.getData()));
+                                            ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_row_zero, new ArrayList<>(listResource.getData()));
                                             mInitialPicker.setAdapter(adapter);
                                             break;
                                     }

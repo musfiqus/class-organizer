@@ -2,13 +2,11 @@ package bd.edu.daffodilvarsity.classorganizer.ui.search;
 
 
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatSpinner;
@@ -16,7 +14,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,18 +21,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import bd.edu.daffodilvarsity.classorganizer.ClassOrganizer;
 import bd.edu.daffodilvarsity.classorganizer.R;
-import bd.edu.daffodilvarsity.classorganizer.model.Resource;
 import bd.edu.daffodilvarsity.classorganizer.model.Routine;
 import bd.edu.daffodilvarsity.classorganizer.ui.detail.RoutineDetailActivity;
-import bd.edu.daffodilvarsity.classorganizer.ui.main.MainActivity;
-import bd.edu.daffodilvarsity.classorganizer.ui.modify.ModifyActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
@@ -169,8 +160,8 @@ public class SearchRoutineFragment extends Fragment {
         }
 
         private void setupView() {
-            ArrayAdapter<CharSequence> levelAdapter = ArrayAdapter.createFromResource(ClassOrganizer.getInstance(), R.array.level_array, R.layout.spinner_row);
-            ArrayAdapter<CharSequence> termAdapter = ArrayAdapter.createFromResource(ClassOrganizer.getInstance(), R.array.term_array, R.layout.spinner_row);
+            ArrayAdapter<CharSequence> levelAdapter = ArrayAdapter.createFromResource(ClassOrganizer.getInstance(), R.array.level_array, R.layout.spinner_row_zero);
+            ArrayAdapter<CharSequence> termAdapter = ArrayAdapter.createFromResource(ClassOrganizer.getInstance(), R.array.term_array, R.layout.spinner_row_zero);
             mLevelSpinner.setAdapter(levelAdapter);
             mTermSpinner.setAdapter(termAdapter);
             mLevelSpinner.setOnItemSelectedListener(this);
@@ -180,7 +171,7 @@ public class SearchRoutineFragment extends Fragment {
                     switch (listResource.getStatus()) {
                         case SUCCESSFUL:
                             enableSectionSpinner();
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(ClassOrganizer.getInstance(), R.layout.spinner_row, listResource.getData());
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(ClassOrganizer.getInstance(), R.layout.spinner_row_zero, listResource.getData());
                             mSectionSpinner.setAdapter(adapter);
                             break;
                         case LOADING:

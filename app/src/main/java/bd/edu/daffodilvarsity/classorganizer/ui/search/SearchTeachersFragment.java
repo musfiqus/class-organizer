@@ -2,13 +2,11 @@ package bd.edu.daffodilvarsity.classorganizer.ui.search;
 
 
 import android.app.Activity;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -19,7 +17,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -198,7 +195,7 @@ public class SearchTeachersFragment extends Fragment {
                             disableInitialLayout();
                             break;
                         case SUCCESSFUL:
-                            CustomFilterArrayAdapter arrayAdapter = new CustomFilterArrayAdapter(getActivity(), R.layout.spinner_row, listResource.getData());
+                            CustomFilterArrayAdapter arrayAdapter = new CustomFilterArrayAdapter(getActivity(), R.layout.spinner_row_zero, listResource.getData());
                             enableInitialLayout();
                             mInitialInput.setAdapter(arrayAdapter);
                             break;

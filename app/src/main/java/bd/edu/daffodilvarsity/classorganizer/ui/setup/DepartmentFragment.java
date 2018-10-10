@@ -1,10 +1,8 @@
 package bd.edu.daffodilvarsity.classorganizer.ui.setup;
 
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.button.MaterialButton;
 import android.support.v4.app.Fragment;
@@ -23,7 +21,6 @@ import bd.edu.daffodilvarsity.classorganizer.utils.InputHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.ViewUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import es.dmoral.toasty.Toasty;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -91,7 +88,8 @@ public class DepartmentFragment extends Fragment {
                                 holder.setVisibility(View.VISIBLE);
                                 error.setVisibility(View.INVISIBLE);
                                 progress.setVisibility(View.INVISIBLE);
-                                ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_row, ViewUtils.upperCaseList(listResource.getData()));
+                                ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_row_zero, ViewUtils.upperCaseList(listResource.getData()));
+                                adapter.setDropDownViewResource(R.layout.spinner_row);
                                 mDepartmentPicker.setAdapter(adapter);
                                 break;
                             case ERROR:
@@ -148,7 +146,7 @@ public class DepartmentFragment extends Fragment {
                                         holder.setVisibility(View.VISIBLE);
                                         error.setVisibility(View.INVISIBLE);
                                         progress.setVisibility(View.INVISIBLE);
-                                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_row, ViewUtils.capitalizeList(listResource.getData()));
+                                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_row_zero, ViewUtils.capitalizeList(listResource.getData()));
                                         mProgramPicker.setAdapter(adapter);
                                         break;
                                     case ERROR:
