@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v14.preference.PreferenceFragment;
 import android.support.v4.text.HtmlCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
@@ -17,7 +15,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.ui.setup.SetupActivity;
-import bd.edu.daffodilvarsity.classorganizer.utils.PrefManager;
 import bd.edu.daffodilvarsity.classorganizer.utils.PreferenceGetter;
 
 import static android.app.Activity.RESULT_OK;

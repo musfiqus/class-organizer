@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import bd.edu.daffodilvarsity.classorganizer.ClassOrganizer;

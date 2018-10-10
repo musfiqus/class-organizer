@@ -18,7 +18,6 @@ import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class SetupViewModel extends ViewModel {
@@ -306,7 +305,7 @@ public class SetupViewModel extends ViewModel {
         return userTypeListener;
     }
 
-    public MutableLiveData<Resource<List<String>>> getCampusListListener() {
+    MutableLiveData<Resource<List<String>>> getCampusListListener() {
         if (campusListListener == null) {
             campusListListener = new MutableLiveData<>();
             loadCampuses();
@@ -314,7 +313,7 @@ public class SetupViewModel extends ViewModel {
         return campusListListener;
     }
 
-    public MutableLiveData<String> getSelectedCampusListener() {
+    MutableLiveData<String> getSelectedCampusListener() {
         if (selectedCampusListener == null) {
             selectedCampusListener = new MutableLiveData<>();
         }
@@ -322,28 +321,28 @@ public class SetupViewModel extends ViewModel {
     }
 
 
-    public MutableLiveData<Integer> getSelectedLevelListener() {
+    MutableLiveData<Integer> getSelectedLevelListener() {
         if (selectedLevelListener == null) {
             selectedLevelListener = new MutableLiveData<>();
         }
         return selectedLevelListener;
     }
 
-    public MutableLiveData<Integer> getSelectedTermListener() {
+    MutableLiveData<Integer> getSelectedTermListener() {
         if (selectedTermListener == null) {
             selectedTermListener = new MutableLiveData<>();
         }
         return selectedTermListener;
     }
 
-    public MutableLiveData<String> getSelectedInitialListener() {
+    MutableLiveData<String> getSelectedInitialListener() {
         if (selectedInitialListener == null) {
             selectedInitialListener = new MutableLiveData<>();
         }
         return selectedInitialListener;
     }
 
-    public MutableLiveData<Resource<List<String>>> getTeachersInitialListener(String campus, String department) {
+    MutableLiveData<Resource<List<String>>> getTeachersInitialListener(String campus, String department) {
         if (teachersInitialListener == null) {
             teachersInitialListener = new MutableLiveData<>();
             loadInitials(campus, department);
@@ -351,21 +350,21 @@ public class SetupViewModel extends ViewModel {
         return teachersInitialListener;
     }
 
-    public MutableLiveData<String> getSelectedSectionListener() {
+    MutableLiveData<String> getSelectedSectionListener() {
         if (selectedSectionListener == null) {
             selectedSectionListener = new MutableLiveData<>();
         }
         return selectedSectionListener;
     }
 
-    public MutableLiveData<String> getSelectedDepartmentListener() {
+    MutableLiveData<String> getSelectedDepartmentListener() {
         if (selectedDepartmentListener == null) {
             selectedDepartmentListener = new MutableLiveData<>();
         }
         return selectedDepartmentListener;
     }
 
-    public MutableLiveData<String> getSelectedProgramListener() {
+    MutableLiveData<String> getSelectedProgramListener() {
         if (selectedProgramListener == null) {
             selectedProgramListener = new MutableLiveData<>();
 
@@ -373,7 +372,7 @@ public class SetupViewModel extends ViewModel {
         return selectedProgramListener;
     }
 
-    public MutableLiveData<Resource<List<String>>> getDepartmentListListener(String campus) {
+    MutableLiveData<Resource<List<String>>> getDepartmentListListener(String campus) {
         if (departmentListListener == null) {
             departmentListListener = new MutableLiveData<>();
         }
@@ -381,7 +380,7 @@ public class SetupViewModel extends ViewModel {
         return departmentListListener;
     }
 
-    public MutableLiveData<Resource<List<String>>> getProgramListListener(String campus, String department) {
+    MutableLiveData<Resource<List<String>>> getProgramListListener(String campus, String department) {
         if (programListListener == null) {
             programListListener = new MutableLiveData<>();
         }
@@ -389,7 +388,7 @@ public class SetupViewModel extends ViewModel {
         return programListListener;
     }
 
-    public MutableLiveData<Resource<List<String>>> getSectionListListener(String campus, String department, String program, int level, int term) {
+    MutableLiveData<Resource<List<String>>> getSectionListListener(String campus, String department, String program, int level, int term) {
         if (sectionListListener == null) {
             sectionListListener = new MutableLiveData<>();
         }
@@ -397,7 +396,7 @@ public class SetupViewModel extends ViewModel {
         return sectionListListener;
     }
 
-    public MutableLiveData<Resource<Boolean>> getValidationListener() {
+    MutableLiveData<Resource<Boolean>> getValidationListener() {
         if (validationListener == null) {
             validationListener = new MutableLiveData<>();
         }

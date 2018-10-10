@@ -4,7 +4,6 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.util.LongSparseArray;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -13,10 +12,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import bd.edu.daffodilvarsity.classorganizer.data.ClassOrganizerDatabase;
-import bd.edu.daffodilvarsity.classorganizer.data.Repository;
 import bd.edu.daffodilvarsity.classorganizer.model.Routine;
 import io.reactivex.Completable;
 

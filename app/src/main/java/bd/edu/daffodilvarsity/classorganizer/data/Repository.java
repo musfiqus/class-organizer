@@ -1,24 +1,17 @@
 package bd.edu.daffodilvarsity.classorganizer.data;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import bd.edu.daffodilvarsity.classorganizer.ClassOrganizer;
 import bd.edu.daffodilvarsity.classorganizer.model.Database;
 import bd.edu.daffodilvarsity.classorganizer.model.Routine;
 import bd.edu.daffodilvarsity.classorganizer.model.Semester;
 import bd.edu.daffodilvarsity.classorganizer.model.Teacher;
 import bd.edu.daffodilvarsity.classorganizer.model.UpdateResponse;
 import bd.edu.daffodilvarsity.classorganizer.ui.setup.SetupViewModel;
-import bd.edu.daffodilvarsity.classorganizer.utils.FileUtils;
-import bd.edu.daffodilvarsity.classorganizer.utils.InputHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.PreferenceGetter;
-import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;

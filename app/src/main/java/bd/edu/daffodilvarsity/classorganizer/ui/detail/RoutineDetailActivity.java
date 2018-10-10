@@ -1,10 +1,8 @@
 package bd.edu.daffodilvarsity.classorganizer.ui.detail;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -13,7 +11,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
-import bd.edu.daffodilvarsity.classorganizer.model.Resource;
 import bd.edu.daffodilvarsity.classorganizer.model.Routine;
 import bd.edu.daffodilvarsity.classorganizer.model.Teacher;
 import bd.edu.daffodilvarsity.classorganizer.ui.base.BaseActivity;
