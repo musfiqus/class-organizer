@@ -98,3 +98,15 @@
 -keepclassmembers  class **$** extends com.chad.library.adapter.base.BaseViewHolder {
      <init>(...);
 }
+
+#ViewModels
+-keep class android.arch.lifecycle.** {*;}
+-keep class * implements android.arch.lifecycle.GeneratedAdapter {<init>(...);}
+#-keepclassmembers,allowshrinking,allowobfuscation class * extends android.arch.lifecycle.ViewModel {
+#    <init>(...);
+#}
+#
+#-keepclassmembers,allowshrinking,allowobfuscation class * extends android.arch.lifecycle.AndroidViewModel {
+#    <init>(android.app.Application);
+#}
+

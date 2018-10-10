@@ -26,7 +26,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-class ModifyViewModel extends ViewModel {
+public class ModifyViewModel extends ViewModel {
     private static final String TAG = "ModifyViewModel";
     private CompositeDisposable mDisposable;
     private MutableLiveData<Routine> mEditDataListener;
@@ -34,6 +34,9 @@ class ModifyViewModel extends ViewModel {
     private Repository mRepository = Repository.getInstance();
     private MutableLiveData<Boolean> classProgressListener;
     private MutableLiveData<Boolean> mModificationListener;
+
+    public ModifyViewModel() {
+    }
 
     MutableLiveData<Routine> getEditDataListener() {
         if (mEditDataListener == null) {
@@ -187,7 +190,7 @@ class ModifyViewModel extends ViewModel {
         }
     }
 
-    class AdapterModel {
+    public class AdapterModel {
         CustomFilterArrayAdapter titles;
         CustomFilterArrayAdapter codes;
         CustomFilterArrayAdapter teachers;
@@ -196,7 +199,7 @@ class ModifyViewModel extends ViewModel {
         ArrayAdapter<String> times;
         int timePosition;
 
-        AdapterModel(List<String> titles, List<String> codes, List<String> teachers, List<String> rooms, List<String> sections, List<String> times, String currentTime) {
+        public AdapterModel(List<String> titles, List<String> codes, List<String> teachers, List<String> rooms, List<String> sections, List<String> times, String currentTime) {
             this.titles = new CustomFilterArrayAdapter(ClassOrganizer.getInstance(), R.layout.spinner_row, titles);
             this.codes = new CustomFilterArrayAdapter(ClassOrganizer.getInstance(), R.layout.spinner_row, codes);
             this.teachers = new CustomFilterArrayAdapter(ClassOrganizer.getInstance(), R.layout.spinner_row, teachers);

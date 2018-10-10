@@ -1,12 +1,10 @@
 package bd.edu.daffodilvarsity.classorganizer.ui.modify;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
@@ -87,7 +85,7 @@ public class ModifyActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= 23) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));//status bar or the time bar at the top
         }
-        mViewModel = ViewModelProviders.of(this).get(ModifyViewModel.class);
+        mViewModel = ViewModelProviders.of(ModifyActivity.this).get(ModifyViewModel.class);
         Routine editRoutine = getIntent().getParcelableExtra(KEY_EDIT_OBJECT);
         mViewModel.getEditDataListener().setValue(editRoutine);
         mViewModel.getEditDataListener().observe(this, routine -> {
