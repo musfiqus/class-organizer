@@ -46,9 +46,10 @@
             app:layout_constraintTop_toBottomOf="@+id/item_class_title">
 
             <LinearLayout
+                android:id="@+id/item_class_code_holder"
                 android:layout_width="0dp"
                 android:layout_height="32dp"
-                android:background="@drawable/ic_code_bg"
+                tools:background="@drawable/time_bg_layer"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
                 app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +65,20 @@
                     tools:text="CSE321" />
             </LinearLayout>
 
-            <android.support.constraint.ConstraintLayout
+            <ImageView
+                android:id="@+id/item_class_time_icon"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:tint="?attr/colorPrimary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_clock_time"
+                tools:ignore="ContentDescription" />
+
+            <LinearLayout
                 android:id="@+id/constraintLayout"
                 android:layout_width="0dp"
                 android:layout_height="32dp"
@@ -74,25 +88,12 @@
                 app:layout_constraintStart_toStartOf="@+id/item_class_guideline"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <ImageView
-                    android:id="@+id/item_class_time_icon"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="4dp"
-                    android:layout_marginRight="4dp"
-                    android:layout_marginBottom="8dp"
-                    android:tint="?attr/colorPrimary"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/item_class_time"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_clock_time"
-                    tools:ignore="ContentDescription" />
+
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/item_class_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="16dp"
                     android:layout_marginRight="16dp"
@@ -111,14 +112,15 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="02.30 PM - 04.00 pM" />
-            </android.support.constraint.ConstraintLayout>
+            </LinearLayout>
 
             <android.support.constraint.Guideline
                 android:id="@+id/item_class_guideline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.45" />
+                android:background="?colorAccent"
+                app:layout_constraintGuide_percent="0.55" />
         </android.support.constraint.ConstraintLayout>
 
 

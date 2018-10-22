@@ -1,10 +1,15 @@
 package bd.edu.daffodilvarsity.classorganizer.ui.main;
 
+import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Guideline;
 import android.support.design.card.MaterialCardView;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.RecyclerView;
+import android.widget.LinearLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -30,12 +35,13 @@ public class RoutineAdapter extends BaseQuickAdapter<Routine, BaseViewHolder> {
         Guideline guideline = helper.getView(R.id.item_class_guideline);
         ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) guideline.getLayoutParams();
         if (ViewUtils.pxFromDp(1) <= 2f) {
-            params.guidePercent = 0.3f; // 30% // range: 0 <-> 1
-            guideline.setLayoutParams(params);
-        } else if (ViewUtils.pxFromDp(1) <= 3f) {
-            params.guidePercent = 0.35f; // 35% // range: 0 <-> 1
+            params.guidePercent = 0.40f; // 45% // range: 0 <-> 1
             guideline.setLayoutParams(params);
         }
+        LinearLayout codeHolder = helper.getView(R.id.item_class_code_holder);
+        Drawable timeBg = AppCompatResources.getDrawable(helper.itemView.getContext(), R.drawable.time_bg_layer);
+        codeHolder.setBackground(timeBg);
+        ViewCompat.setBackgroundTintList(codeHolder, ColorStateList.valueOf(ViewUtils.fetchAccentColor(helper.itemView.getContext())));
         helper.setText(R.id.item_class_code, InputHelper.toNA(item.getCourseCode()));
         helper.setText(R.id.item_class_title, InputHelper.toNA(item.getCourseTitle()));
         helper.setText(R.id.item_class_time, item.getTime());

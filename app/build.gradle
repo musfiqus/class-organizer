@@ -56,9 +56,6 @@ android {
     dataBinding {
         enabled = true
     }
-    packagingOptions {
-        merge 'META-INF/proguard/androidx-annotations.pro'
-    }
 }
 
 dependencies {
@@ -153,7 +150,7 @@ dependencies {
     }
 
     dependencies {
-        def work_version = "1.0.0-alpha09"
+        def work_version = "1.0.0-alpha10"
 
         implementation "android.arch.work:work-runtime:$work_version" // use -ktx for Kotlin
 

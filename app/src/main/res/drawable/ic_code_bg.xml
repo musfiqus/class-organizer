@@ -1,5 +1,6 @@
 <vector android:height="32dp" android:viewportHeight="128"
-    android:viewportWidth="350" android:width="87dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    android:viewportWidth="350" android:width="87dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <path android:fillColor="?colorAccent" android:name="Rectangle 2" android:pathData="m425 -2h377v130h-377v-130z"/>
     <path android:fillColor="?colorAccent" android:name="Rectangle 8" android:pathData="m419.89 -117.99 143.12 75.63 -181.9 288.35 -143.12 -75.63 181.9 -288.35z"/>
     <path android:fillColor="?colorAccent" android:name="Rectangle 3" android:pathData="m389 64h2v10h-2v-10z"/>
