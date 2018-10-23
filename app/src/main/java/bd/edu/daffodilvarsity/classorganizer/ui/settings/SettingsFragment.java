@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.text.HtmlCompat;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
 import android.support.v7.preference.SwitchPreferenceCompat;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
@@ -40,6 +42,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         //Notifications
         notificationSettings();
 
+        //Reset
+        resetSettings();
+
 
 
         //Displaying app version in about section
@@ -65,6 +70,29 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
 
 
+    }
+
+    private void resetSettings() {
+        Preference resetPreference = findPreference("reset_routine_preference");
+        resetPreference.setOnPreferenceClickListener(preference -> {
+            MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+                    .title(R.string.reset_dialog_title)
+                    .content(R.string.reset_dialog_body)
+                    .positiveText(R.string.yes)
+                    .negativeText(R.string.no)
+                    .onPositive((dialog12, which) -> {
+                        PreferenceGetter.resetModifications();
+                        //refresh routine when user navigates back
+                        getActivity().setResult(RESULT_OK);
+                        dialog12.dismiss();
+                    })
+                    .onNegative((dialog1, which) -> dialog1.dismiss())
+                    .build();
+            if (!dialog.isShowing()) {
+                dialog.show();
+            }
+            return true;
+        });
     }
 
     private void setupSemesterPreference() {

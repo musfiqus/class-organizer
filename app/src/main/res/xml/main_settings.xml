@@ -11,6 +11,10 @@ xmlns:colorpicker="http://schemas.android.com/apk/res-auto">
             android:key="current_semester_preference"
             android:summary="Place holder summary"
             android:title="Current Semester" />
+        <Preference
+            android:key="reset_routine_preference"
+            android:summary="Reset all modifications included deleted, edited, added and saved routines."
+            android:title="Reset Routine" />
 
     </android.support.v7.preference.PreferenceCategory>
     <android.support.v7.preference.PreferenceCategory

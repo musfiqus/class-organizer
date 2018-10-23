@@ -215,4 +215,8 @@
     <string name="routine_notfication_title">%1$s class is starting soon</string>
     <string name="upgrade_message_body">Routine for the new %1$s semester is now available. Do you want to upgrade your routine?</string>
     <string name="semester_upgrade_title">Semester upgrade available!</string>
+    <string name="reset_dialog_body">By continuing all your modifications including saved, added, deleted and edited routines will be reset. Do you want to continue?</string>
+    <string name="reset_dialog_title">Reset Modifications</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

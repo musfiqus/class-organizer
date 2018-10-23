@@ -256,6 +256,13 @@ public class PreferenceGetter {
         setSavedRoutine(savedRoutines);
     }
 
+    public static void resetModifications() {
+        PreferenceHelper.set(PREF_SAVED_ROUTINE, null);
+        PreferenceHelper.set(PREF_MODIFIED_ROUTINE, null);
+        PreferenceHelper.set(PREF_MODIFIED_ROUTINE_ORIGINAL, null);
+        PreferenceHelper.set(PREF_DELETED_ROUTINE, null);
+    }
+
     public static boolean isNotificationEnabled() {
         Log.e(TAG, "isNotificationEnabled: "+ PreferenceHelper.getBoolean(PREF_NOTIFICATION));
         return PreferenceHelper.getBoolean(PREF_NOTIFICATION);
