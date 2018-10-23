@@ -172,6 +172,7 @@ public class SearchRoutineFragment extends Fragment {
                         case SUCCESSFUL:
                             enableSectionSpinner();
                             ArrayAdapter<String> adapter = new ArrayAdapter<>(ClassOrganizer.getInstance(), R.layout.spinner_row_zero, listResource.getData());
+                            adapter.setDropDownViewResource(R.layout.spinner_row_big);
                             mSectionSpinner.setAdapter(adapter);
                             break;
                         case LOADING:

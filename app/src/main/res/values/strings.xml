@@ -219,4 +219,6 @@
     <string name="reset_dialog_title">Reset Modifications</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="mute_error">Unable to mute notifications</string>
+    <string name="mute_success">Notifications muted for %1$s</string>
 </resources>
