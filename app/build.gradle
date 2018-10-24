@@ -24,7 +24,7 @@ android {
         versionName '5.0'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 77
+        versionCode 78
     }
     signingConfigs {
         release {

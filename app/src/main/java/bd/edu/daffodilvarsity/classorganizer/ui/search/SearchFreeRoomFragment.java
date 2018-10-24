@@ -152,7 +152,12 @@ public class SearchFreeRoomFragment extends Fragment {
             });
 
             mSearchButton.setOnClickListener(v ->
-                    mViewModel.searchFreeRooms(mTimeSpinner.getSelectedItem().toString(), mDaySpinner.getSelectedItem().toString()));
+                    {
+                        if (mTimeSpinner.getSelectedItem() != null && mDaySpinner.getSelectedItem() != null) {
+                            mViewModel.searchFreeRooms(mTimeSpinner.getSelectedItem().toString(), mDaySpinner.getSelectedItem().toString());
+                        }
+                    }
+            );
 
         }
 

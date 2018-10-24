@@ -185,11 +185,17 @@ public class SearchRoutineFragment extends Fragment {
                 }
             });
 
-            mSearchButton.setOnClickListener(v -> mViewModel.searchRoutines(
-                    mLevelSpinner.getSelectedItemPosition(),
-                    mTermSpinner.getSelectedItemPosition(),
-                    mSectionSpinner.getSelectedItem().toString()
-            ));
+            mSearchButton.setOnClickListener(v -> {
+                if (mLevelSpinner.getSelectedItem() != null &&
+                mTermSpinner.getSelectedItem() != null &&
+                mSectionSpinner.getSelectedItem() != null) {
+                    mViewModel.searchRoutines(
+                            mLevelSpinner.getSelectedItemPosition(),
+                            mTermSpinner.getSelectedItemPosition(),
+                            mSectionSpinner.getSelectedItem().toString()
+                    );
+                }
+            });
 
         }
 
