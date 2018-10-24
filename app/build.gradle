@@ -21,10 +21,10 @@ android {
         applicationId "bd.edu.daffodilvarsity.classorganizer"
         minSdkVersion 16
         targetSdkVersion 28
-        versionName '5.0 beta 3'
+        versionName '5.0'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        versionCode 76
+        versionCode 77
     }
     signingConfigs {
         release {
@@ -91,8 +91,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
 
     //Do not update that shitty firebase
-    implementation "com.google.firebase:firebase-core:16.0.3"
-    implementation "com.google.firebase:firebase-messaging:17.3.2"
+    implementation "com.google.firebase:firebase-core:16.0.4"
+    implementation "com.google.firebase:firebase-messaging:17.3.4"
 
     //Firebase admob
 

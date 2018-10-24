@@ -47,7 +47,7 @@ public class SettingsViewModel extends ViewModel {
     void refreshRoutineSettings() {
         String settings = PreferenceGetter.isStudent() ?
                 ClassOrganizer.getInstance().getString(R.string.routine_summary_student, InputHelper.capitalizeFirstLetter(PreferenceGetter.getCampus()), PreferenceGetter.getDepartment().toUpperCase(), InputHelper.capitalizeFirstLetter(PreferenceGetter.getProgram()), PreferenceGetter.getLevel()+1, PreferenceGetter.getTerm()+1, PreferenceGetter.getSection()) :
-                ClassOrganizer.getInstance().getString(R.string.routine_summary_teacher, InputHelper.capitalizeFirstLetter(PreferenceGetter.getCampus()), PreferenceGetter.getDepartment().toUpperCase(), PreferenceGetter.getInitial());
+                ClassOrganizer.getInstance().getString(R.string.routine_summary_teacher, InputHelper.capitalizeFirstLetter(PreferenceGetter.getCampus()), InputHelper.upperCase(PreferenceGetter.getDepartment()), PreferenceGetter.getInitial());
         if (lastSettings == null) {
             lastSettings = settings;
             routineChangeListener.postValue(lastSettings);

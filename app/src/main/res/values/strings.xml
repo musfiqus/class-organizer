@@ -221,4 +221,6 @@
     <string name="no">No</string>
     <string name="mute_error">Unable to mute notifications</string>
     <string name="mute_success">Notifications muted for %1$s</string>
+    <string name="no_routine_text">Looks pretty empty in here (ಥ﹏ಥ)  Why don\'t we check if all the choices are correct?</string>
+    <string name="enter_setup">Enter setup</string>
 </resources>

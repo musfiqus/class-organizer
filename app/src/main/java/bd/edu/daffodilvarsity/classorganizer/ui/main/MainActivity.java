@@ -12,6 +12,7 @@ import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.button.MaterialButton;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
@@ -76,6 +77,12 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
     AppBarLayout mAppbar;
     @BindView(R.id.viewpager)
     ViewPager mViewPager;
+    @BindView(R.id.main_no_result_holder)
+    ConstraintLayout mNoResultHolder;
+    @BindView(R.id.main_no_result_button)
+    MaterialButton mNoResultButton;
+    @BindView(R.id.main_tabs)
+    TabLayout mTabs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -260,6 +267,7 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
         mViewModel.receiveDbChanges();
         adapter = new DayFragmentPagerAdapter(this, getSupportFragmentManager(), new HashMap<>());
         mViewPager.setAdapter(adapter);
+        showNoResult();
         mViewModel.getRoutineListListener().observe(this, listResource -> {
             if (listResource != null) {
                 switch (listResource.getStatus()) {
@@ -272,6 +280,11 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
                         //Setting current date and tab
                         hideLoading();
                         adapter.updateData(listResource.getData());
+                        if (listResource.getData().size()  == 0) {
+                            showNoResult();
+                        } else {
+                            hideNoResult();
+                        }
                         Calendar calendar = Calendar.getInstance();
                         Date date = calendar.getTime();
                         String currentDay = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(date.getTime());
@@ -281,13 +294,12 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
                             }
                         }
                         // Find the tab layout that shows the tabs
-                        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
                         // Connect the tab layout with the view pager. This will
                         //   1. Update the tab layout when the view pager is swiped
                         //   2. Update the view pager when a tab is selected
                         //   3. Set the tab layout's tab names with the view pager's adapter's titles
                         //      by calling onPageTitle()
-                        tabLayout.setupWithViewPager(mViewPager);
+                        mTabs.setupWithViewPager(mViewPager);
 
                 }
             }
@@ -348,6 +360,22 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
             View rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
             Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT).show();
         }
+    }
+
+    private void showNoResult() {
+        mViewPager.setVisibility(View.INVISIBLE);
+        mTabs.setVisibility(View.GONE);
+        mNoResultHolder.setVisibility(View.VISIBLE);
+        mNoResultButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, SetupActivity.class);
+            startActivityForResult(intent, REQUEST_CODE_REFRESHABLE_ACTIVITY);
+        });
+    }
+
+    private void hideNoResult() {
+        mViewPager.setVisibility(View.VISIBLE);
+        mNoResultHolder.setVisibility(View.INVISIBLE);
+        mTabs.setVisibility(View.VISIBLE);
     }
 
     public boolean isActivityRunning() {

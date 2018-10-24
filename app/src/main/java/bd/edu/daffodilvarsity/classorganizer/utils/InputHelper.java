@@ -77,6 +77,13 @@ public class InputHelper {
         return id > Integer.MAX_VALUE ? (int) (id - Integer.MAX_VALUE) : (int) id;
     }
 
+    public static String upperCase(String s) {
+        if (isEmpty(s)) {
+            return s;
+        }
+        return s.toUpperCase();
+    }
+
     public static String capitalizeFirstLetter(String s) {
         if (isEmpty(s)) {
             return "";
