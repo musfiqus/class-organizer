@@ -1,10 +1,10 @@
 package bd.edu.daffodilvarsity.classorganizer.ui.setup;
 
 
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.design.chip.Chip;
-import android.support.v4.app.Fragment;
+import com.google.android.material.chip.Chip;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

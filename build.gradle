@@ -41,6 +41,6 @@ ext {
     buildToolsVersion = '28.0.3'
     targetSdkVersion = compileSdkVersion
     minSdkVersion = 14
-    supportLibVersion = '28.0.0'
+    supportLibVersion = '1.0.0'
     firebaseLibVersion = '16.0.1'
 }

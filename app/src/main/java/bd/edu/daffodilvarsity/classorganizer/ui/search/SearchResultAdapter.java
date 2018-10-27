@@ -2,14 +2,15 @@ package bd.edu.daffodilvarsity.classorganizer.ui.search;
 
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.Guideline;
-import android.support.design.button.MaterialButton;
-import android.support.design.card.MaterialCardView;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.content.res.AppCompatResources;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.Guideline;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
+import androidx.core.view.ViewCompat;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -55,7 +56,7 @@ public class SearchResultAdapter extends BaseQuickAdapter<Routine, BaseViewHolde
                 helper.setText(R.id.item_class_room_title, R.string.day);
                 helper.setText(R.id.item_class_room, item.getDay());
                 if (helper.getAdapterPosition() == 0) {
-                    MaterialCardView cardView = (MaterialCardView) helper.itemView;
+                    CardView cardView = (CardView) helper.itemView;
                     RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams)cardView.getLayoutParams();
                     layoutParams.setMargins(layoutParams.leftMargin, layoutParams.topMargin + (int)ViewUtils.pxFromDp(8), layoutParams.rightMargin, layoutParams.bottomMargin);
                     cardView.setLayoutParams(layoutParams);
@@ -75,7 +76,7 @@ public class SearchResultAdapter extends BaseQuickAdapter<Routine, BaseViewHolde
                 helper.getView(R.id.item_class_teacher_title).setVisibility(View.GONE);
                 helper.getView(R.id.item_class_room).setVisibility(View.GONE);
                 helper.getView(R.id.item_class_room_title).setVisibility(View.GONE);
-                MaterialCardView materialCardView = (MaterialCardView) helper.itemView;
+                CardView materialCardView = (CardView) helper.itemView;
                 materialCardView.setCardElevation(ViewUtils.pxFromDp(1));
                 break;
             case RESULT_TYPE_TEACHER_CLASS:
@@ -87,7 +88,7 @@ public class SearchResultAdapter extends BaseQuickAdapter<Routine, BaseViewHolde
                 helper.setText(R.id.item_class_room_title, R.string.day);
                 helper.setText(R.id.item_class_room, item.getDay());
                 if (helper.getAdapterPosition() == 0) {
-                    MaterialCardView cardView = (MaterialCardView) helper.itemView;
+                    CardView cardView = (CardView) helper.itemView;
                     RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams)cardView.getLayoutParams();
                     layoutParams.setMargins(layoutParams.leftMargin, layoutParams.topMargin + (int)ViewUtils.pxFromDp(8), layoutParams.rightMargin, layoutParams.bottomMargin);
                     cardView.setLayoutParams(layoutParams);

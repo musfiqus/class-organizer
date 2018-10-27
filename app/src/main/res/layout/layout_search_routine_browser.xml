@@ -16,7 +16,7 @@
         android:textSize="16sp"
         android:textColor="@color/text_color_light" />
 
-    <android.support.v7.widget.AppCompatSpinner
+    <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/lsrb_level_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
 
         android:textColor="@color/text_color_light" />
 
-    <android.support.v7.widget.AppCompatSpinner
+    <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/lsrb_term_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -48,13 +48,13 @@
 
         android:textColor="@color/text_color_light" />
 
-    <android.support.v7.widget.AppCompatSpinner
+    <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/lsrb_section_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
 
-    <android.support.design.button.MaterialButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/lsrb_search_button"
         style="@style/Widget.MaterialComponents.Button.Icon"
         android:layout_margin="8dp"

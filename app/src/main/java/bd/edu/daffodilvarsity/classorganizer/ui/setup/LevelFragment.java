@@ -1,13 +1,13 @@
 package bd.edu.daffodilvarsity.classorganizer.ui.setup;
 
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.button.MaterialButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.CircularProgressDrawable;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.AppCompatSpinner;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.button.MaterialButton;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatSpinner;
 
 import android.view.LayoutInflater;
 import android.view.View;

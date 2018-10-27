@@ -1,7 +1,7 @@
 package bd.edu.daffodilvarsity.classorganizer.utils;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -55,7 +55,7 @@ public class CustomFilterArrayAdapter extends ArrayAdapter implements Filterable
             final List<String> list = originalCodes;
 
             int count = list.size();
-            final ArrayList<String> nlist = new ArrayList<String>(count);
+            final ArrayList<String> nlist = new ArrayList<>(count);
             String filterableString ;
 
             for (int i = 0; i < count; i++) {

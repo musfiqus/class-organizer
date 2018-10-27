@@ -1,6 +1,7 @@
 package bd.edu.daffodilvarsity.classorganizer;
 
 import android.app.Application;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.core.CrashlyticsCore;
@@ -22,7 +23,7 @@ public class ClassOrganizer extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 //        //Disable crashlytics in debug builds
         CrashlyticsCore core = new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build();
         Fabric.with(this, new Crashlytics.Builder().core(core).build());

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 xmlns:colorpicker="http://schemas.android.com/apk/res-auto">
-    <android.support.v7.preference.PreferenceCategory
+    <androidx.preference.PreferenceCategory
         android:title="Routine">
         <Preference
             android:key="routine_preference"
@@ -16,8 +16,8 @@ xmlns:colorpicker="http://schemas.android.com/apk/res-auto">
             android:summary="Reset all modifications included deleted, edited, added and saved routines."
             android:title="Reset Routine" />
 
-    </android.support.v7.preference.PreferenceCategory>
-    <android.support.v7.preference.PreferenceCategory
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory
         android:title="Notifications">
         <SwitchPreferenceCompat
             android:key="notification_preference"
@@ -28,8 +28,8 @@ xmlns:colorpicker="http://schemas.android.com/apk/res-auto">
             android:key="notification_delay_preference"
             android:summary="Place holder"
             android:title="Choose Time for Notifications" />
-    </android.support.v7.preference.PreferenceCategory>
-    <android.support.v7.preference.PreferenceCategory android:title="About">
+    </androidx.preference.PreferenceCategory>
+    <androidx.preference.PreferenceCategory android:title="About">
         <Preference
             android:key="version_preference"
             android:summary="X"
@@ -51,5 +51,5 @@ xmlns:colorpicker="http://schemas.android.com/apk/res-auto">
             android:summary="Raisul Haque Rajon"
             android:title="Icon Design by" />
 
-    </android.support.v7.preference.PreferenceCategory>
-</android.support.v7.preference.PreferenceScreen>
+    </androidx.preference.PreferenceCategory>
+</androidx.preference.PreferenceScreen>

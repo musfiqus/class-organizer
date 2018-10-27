@@ -1,6 +1,6 @@
 package bd.edu.daffodilvarsity.classorganizer.data;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

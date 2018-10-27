@@ -2,10 +2,10 @@ package bd.edu.daffodilvarsity.classorganizer.ui.search;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.tabs.TabLayout;
+import androidx.core.content.ContextCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
@@ -17,7 +17,7 @@ public class  SearchRefinedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_refined);
 
-        android.support.v7.widget.Toolbar toolbar = findViewById(R.id.search_toolbar);
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.search_toolbar);
         if (toolbar != null) {
             toolbar.setTitle("");
             setSupportActionBar(toolbar);

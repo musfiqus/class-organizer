@@ -3,8 +3,8 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 
 import java.util.Map;

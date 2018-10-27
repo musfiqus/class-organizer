@@ -2,8 +2,8 @@ package bd.edu.daffodilvarsity.classorganizer.ui.search;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.Nullable;
-import android.support.design.button.MaterialButton;
+import androidx.annotation.Nullable;
+import com.google.android.material.button.MaterialButton;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;

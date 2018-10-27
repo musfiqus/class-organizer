@@ -40,15 +40,14 @@
         <item name="android:textColor">@color/text_color_dark</item>
     </style>
 
-    <style name="AppTheme.NoBullshitTextButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">
+    <style name="AppTheme.NoBullshitTextButton" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:minHeight">0dp</item>
         <item name="android:minWidth">0dp</item>
-        <item name="rippleColor">@color/colorAccent</item>
-        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColor">?colorAccent</item>
     </style>
     <style name="AppTheme.LightDialog" parent="Base.Theme.MaterialComponents.Light.Dialog.Alert">
         <item name="dialogCornerRadius">8dp</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">?colorAccent</item>
         <!--<item name="colorControlNormal">@color/text_color_light</item>-->
     </style>
 

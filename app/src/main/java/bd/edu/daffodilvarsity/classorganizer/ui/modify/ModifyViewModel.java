@@ -1,7 +1,7 @@
 package bd.edu.daffodilvarsity.classorganizer.ui.modify;
 
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -11,7 +11,7 @@
     app:cardCornerRadius="8dp"
     app:cardElevation="2dp">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -34,7 +34,7 @@
             tools:text="Artificial Intelligence Lab" />
 
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/item_class_time_holder"
             android:layout_width="match_parent"
             android:layout_height="32dp"
@@ -90,7 +90,7 @@
 
 
 
-                <android.support.v7.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/item_class_time"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -114,14 +114,14 @@
                     tools:text="02.30 PM - 04.00 pM" />
             </LinearLayout>
 
-            <android.support.constraint.Guideline
+            <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/item_class_guideline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="?colorAccent"
                 app:layout_constraintGuide_percent="0.55" />
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         <TextView
@@ -172,7 +172,7 @@
             app:layout_constraintTop_toBottomOf="@+id/item_class_room_title"
             tools:text="102 CSE" />
 
-        <android.support.design.button.MaterialButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/item_class_details_button"
             style="@style/AppTheme.NoBullshitTextButton"
             android:layout_width="wrap_content"
@@ -236,7 +236,7 @@
 
         </FrameLayout>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <me.zhanghai.android.materialprogressbar.MaterialProgressBar
         style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
         android:id="@+id/item_class_progress"
@@ -249,4 +249,4 @@
         app:mpb_useIntrinsicPadding="false"/>
 
 
-</android.support.design.card.MaterialCardView>
+</androidx.cardview.widget.CardView>

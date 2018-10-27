@@ -2,13 +2,14 @@ package bd.edu.daffodilvarsity.classorganizer.ui.main;
 
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.Guideline;
-import android.support.design.card.MaterialCardView;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.content.res.AppCompatResources;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.Guideline;
+import com.google.android.material.card.MaterialCardView;
+import androidx.core.view.ViewCompat;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.widget.LinearLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -54,7 +55,7 @@ public class RoutineAdapter extends BaseQuickAdapter<Routine, BaseViewHolder> {
 
         helper.setText(R.id.item_class_room, item.getRoomNo());
         if (helper.getAdapterPosition() == 0) {
-            MaterialCardView cardView = (MaterialCardView) helper.itemView;
+            CardView cardView = (CardView) helper.itemView;
             RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams)cardView.getLayoutParams();
             layoutParams.setMargins(layoutParams.leftMargin, (int)ViewUtils.pxFromDp(16), layoutParams.rightMargin, layoutParams.bottomMargin);
             cardView.setLayoutParams(layoutParams);

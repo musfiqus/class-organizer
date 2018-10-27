@@ -2,7 +2,7 @@ package bd.edu.daffodilvarsity.classorganizer.utils;
 
 
 import android.annotation.SuppressLint;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.google.gson.Gson;

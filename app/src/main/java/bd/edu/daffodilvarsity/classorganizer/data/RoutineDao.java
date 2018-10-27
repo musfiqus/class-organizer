@@ -1,10 +1,10 @@
 package bd.edu.daffodilvarsity.classorganizer.data;
 
-import android.arch.persistence.room.ColumnInfo;
-import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Insert;
-import android.arch.persistence.room.Query;
-import android.arch.persistence.room.Update;
+import androidx.room.ColumnInfo;
+import androidx.room.Dao;
+import androidx.room.Insert;
+import androidx.room.Query;
+import androidx.room.Update;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

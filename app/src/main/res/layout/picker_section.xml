@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/sp_view_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -34,7 +34,7 @@
             android:textColor="@color/text_color_light"
             app:layout_constraintTop_toBottomOf="@+id/sp_header" />
 
-        <android.support.v7.widget.AppCompatSpinner
+        <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/sp_picker"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
@@ -49,7 +49,7 @@
             app:layout_constraintTop_toBottomOf="@+id/sp_rationale" />
 
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
     <ImageView
         android:id="@+id/sp_progress"
         android:layout_width="match_parent"

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -67,7 +67,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/wf_progress_text"
         app:layout_constraintEnd_toStartOf="@+id/wf_progress_text"
         app:layout_constraintTop_toTopOf="@+id/wf_progress_text"
-        app:srcCompat="@drawable/ic_add_white_24dp"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -85,4 +84,4 @@
         app:layout_constraintTop_toBottomOf="@+id/textView"
         tools:text="Updating bla bla" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

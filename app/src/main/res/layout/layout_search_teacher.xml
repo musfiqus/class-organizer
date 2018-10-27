@@ -8,7 +8,7 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/lst_initial_layout"
         style="@style/AppTheme.OutlineTextBox"
         android:layout_width="match_parent"
@@ -27,9 +27,9 @@
             android:paddingBottom="8dp"
             android:layout_height="wrap_content" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.button.MaterialButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/lst_search_button"
         style="@style/Widget.MaterialComponents.Button.Icon"
         android:layout_margin="16dp"

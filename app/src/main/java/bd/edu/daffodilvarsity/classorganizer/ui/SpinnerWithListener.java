@@ -2,7 +2,7 @@ package bd.edu.daffodilvarsity.classorganizer.ui;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.v7.widget.AppCompatSpinner;
+import androidx.appcompat.widget.AppCompatSpinner;
 import android.util.AttributeSet;
 
 /*https://stackoverflow.com/questions/18447063/spinner-get-state-or-get-notified-when-opens*/
