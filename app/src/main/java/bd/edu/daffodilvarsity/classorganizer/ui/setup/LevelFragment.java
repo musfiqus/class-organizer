@@ -3,6 +3,9 @@ package bd.edu.daffodilvarsity.classorganizer.ui.setup;
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.google.android.material.button.MaterialButton;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
@@ -72,20 +75,21 @@ public class LevelFragment extends Fragment {
                     mSelectLevel.setText(R.string.select_level_term);
                     mLevelTermText.setText(R.string.level_term_not_selected);
                     mSelectLevel.setOnClickListener(v -> {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AppTheme_LightDialog);
-                        builder.setView(R.layout.picker_level);
-                        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                            if (mLevelPicker != null && mTermPicker != null) {
-                                int level = mLevelPicker.getSelectedItemPosition();
-                                int term = mTermPicker.getSelectedItemPosition();
-                                mViewModel.updateLevelTerm(level, term);
-                                mLevelTermText.setText(getString(R.string.selected_level_term, level+1, term+1));
-                            }
-                        });
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-                        mLevelPicker = dialog.findViewById(R.id.lp_level_spinner);
-                        mTermPicker = dialog.findViewById(R.id.lp_term_spinner);
+                        MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                                .customView(R.layout.picker_level, false)
+                                .positiveText(android.R.string.ok)
+                                .onPositive((dialog1, which) -> {
+                                    if (mLevelPicker != null && mTermPicker != null) {
+                                        int level = mLevelPicker.getSelectedItemPosition();
+                                        int term = mTermPicker.getSelectedItemPosition();
+                                        mViewModel.updateLevelTerm(level, term);
+                                        mLevelTermText.setText(getString(R.string.selected_level_term, level+1, term+1));
+                                    }
+                                })
+                                .build();
+                        materialDialog.show();
+                        mLevelPicker = materialDialog.getCustomView().findViewById(R.id.lp_level_spinner);
+                        mTermPicker = materialDialog.getCustomView().findViewById(R.id.lp_term_spinner);
                         ArrayAdapter<CharSequence> levelAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.level_array, R.layout.spinner_row_zero);
                         ArrayAdapter<CharSequence> termAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.term_array, R.layout.spinner_row_zero);
                         levelAdapter.setDropDownViewResource(R.layout.spinner_row);
@@ -99,25 +103,26 @@ public class LevelFragment extends Fragment {
                     mSelectLevel.setText(R.string.select_initial);
                     mLevelTermText.setText(R.string.initial_not_selected);
                     mSelectLevel.setOnClickListener(v -> {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AppTheme_LightDialog);
-                        builder.setView(R.layout.picker_initial);
-                        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                            if (mInitialPicker != null
-                                    && mViewModel.getTeachersInitialListener(mViewModel.getCampus(), mViewModel.getDepartment()).getValue() != null
-                                    && mViewModel.getTeachersInitialListener(mViewModel.getCampus(), mViewModel.getDepartment()).getValue().getData() != null) {
-                                mViewModel.updateInitial(mViewModel.getTeachersInitialListener(mViewModel.getCampus(), mViewModel.getDepartment()).getValue().getData().get(mInitialPicker.getSelectedItemPosition()));
-                            }
-                        });
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
+                        MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                                .customView(R.layout.picker_initial, false)
+                                .positiveText(android.R.string.ok)
+                                .onPositive((dialog1, which) -> {
+                                    if (mInitialPicker != null
+                                            && mViewModel.getTeachersInitialListener(mViewModel.getCampus(), mViewModel.getDepartment()).getValue() != null
+                                            && mViewModel.getTeachersInitialListener(mViewModel.getCampus(), mViewModel.getDepartment()).getValue().getData() != null) {
+                                        mViewModel.updateInitial(mViewModel.getTeachersInitialListener(mViewModel.getCampus(), mViewModel.getDepartment()).getValue().getData().get(mInitialPicker.getSelectedItemPosition()));
+                                    }
+                                })
+                                .build();
+                        materialDialog.show();
                         mViewModel.getTeachersInitialListener(
                                 mViewModel.getSelectedCampusListener().getValue(), "cse"
                         ).observe(getActivity(), listResource -> {
                             if (listResource != null) {
-                                mInitialPicker = dialog.findViewById(R.id.ip_picker);
-                                ImageView progressView = dialog.findViewById(R.id.ip_progress);
-                                ConstraintLayout holderView = dialog.findViewById(R.id.ip_view_holder);
-                                TextView errorView = dialog.findViewById(R.id.ip_error);
+                                mInitialPicker = materialDialog.getCustomView().findViewById(R.id.ip_picker);
+                                ImageView progressView = materialDialog.getCustomView().findViewById(R.id.ip_progress);
+                                ConstraintLayout holderView = materialDialog.getCustomView().findViewById(R.id.ip_view_holder);
+                                TextView errorView = materialDialog.getCustomView().findViewById(R.id.ip_error);
                                 if (holderView != null && progressView != null && errorView != null && mInitialPicker != null) {
                                     switch (listResource.getStatus()) {
                                         case LOADING:

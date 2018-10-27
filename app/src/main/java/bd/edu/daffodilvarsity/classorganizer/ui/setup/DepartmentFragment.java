@@ -1,14 +1,7 @@
 package bd.edu.daffodilvarsity.classorganizer.ui.setup;
 
 
-import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import com.google.android.material.button.MaterialButton;
-import androidx.fragment.app.Fragment;
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.AppCompatSpinner;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +9,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.material.button.MaterialButton;
+
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
 import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.utils.InputHelper;
 import bd.edu.daffodilvarsity.classorganizer.utils.ViewUtils;
@@ -63,23 +64,24 @@ public class DepartmentFragment extends Fragment {
 
 
         mSelectDept.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AppTheme_LightDialog);
-            builder.setView(R.layout.picker_department);
-            builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                if (mDepartmentPicker != null
-                        && mViewModel.getDepartmentListListener(mViewModel.getCampus()).getValue() != null
-                        && mViewModel.getDepartmentListListener(mViewModel.getCampus()).getValue().getData() != null) {
-                    mViewModel.updateDepartment (
-                            mViewModel.getDepartmentListListener(mViewModel.getCampus()).getValue().getData().get(mDepartmentPicker.getSelectedItemPosition())
-                    );
-                }
-            });
-            AlertDialog dialog = builder.create();
-            dialog.show();
-            ConstraintLayout holder = dialog.findViewById(R.id.dp_holder);
-            ImageView progress = dialog.findViewById(R.id.dp_progress);
-            TextView error = dialog.findViewById(R.id.dp_error);
-            mDepartmentPicker = dialog.findViewById(R.id.dp_picker);
+            MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                    .customView(R.layout.picker_department, false)
+                    .positiveText(android.R.string.ok)
+                    .onPositive((dialog1, which) -> {
+                        if (mDepartmentPicker != null
+                                && mViewModel.getDepartmentListListener(mViewModel.getCampus()).getValue() != null
+                                && mViewModel.getDepartmentListListener(mViewModel.getCampus()).getValue().getData() != null) {
+                            mViewModel.updateDepartment (
+                                    mViewModel.getDepartmentListListener(mViewModel.getCampus()).getValue().getData().get(mDepartmentPicker.getSelectedItemPosition())
+                            );
+                        }
+                    })
+                    .build();
+            materialDialog.show();
+            ConstraintLayout holder = materialDialog.getCustomView().findViewById(R.id.dp_holder);
+            ImageView progress = materialDialog.getCustomView().findViewById(R.id.dp_progress);
+            TextView error = materialDialog.getCustomView().findViewById(R.id.dp_error);
+            mDepartmentPicker = materialDialog.getCustomView().findViewById(R.id.dp_picker);
             if (holder != null && progress != null && error != null && mDepartmentPicker != null) {
                 mViewModel.getDepartmentListListener(mViewModel.getCampus()).observe(getActivity(), listResource -> {
                     if (listResource != null) {
@@ -119,25 +121,26 @@ public class DepartmentFragment extends Fragment {
                 mSelectProgram.setVisibility(View.VISIBLE);
                 mProgramText.setVisibility(View.VISIBLE);
                 mSelectProgram.setOnClickListener(v -> {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AppTheme_LightDialog);
-                    builder.setView(R.layout.picker_program);
-                    builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                        String program;
-                        if (mProgramPicker != null
-                                && mViewModel.getProgramListListener(mViewModel.getCampus(), mViewModel.getDepartment()).getValue() != null
-                                && mViewModel.getProgramListListener(mViewModel.getCampus(), mViewModel.getDepartment()).getValue().getData() != null) {
-                            mViewModel.updateProgram (
-                                    program = mViewModel.getProgramListListener(mViewModel.getCampus(), mViewModel.getDepartment()).getValue().getData().get(mProgramPicker.getSelectedItemPosition())
-                            );
-                            mProgramText.setText(getString(R.string.selected_program, InputHelper.capitalizeFirstLetter(program)));
-                        }
-                    });
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-                    ConstraintLayout holder = dialog.findViewById(R.id.pp_holder);
-                    ImageView progress = dialog.findViewById(R.id.pp_progress);
-                    TextView error = dialog.findViewById(R.id.pp_error);
-                    mProgramPicker = dialog.findViewById(R.id.pp_picker);
+                    MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                            .customView(R.layout.picker_program, false)
+                            .positiveText(android.R.string.ok)
+                            .onPositive((dialog12, which) -> {
+                                String program;
+                                if (mProgramPicker != null
+                                        && mViewModel.getProgramListListener(mViewModel.getCampus(), mViewModel.getDepartment()).getValue() != null
+                                        && mViewModel.getProgramListListener(mViewModel.getCampus(), mViewModel.getDepartment()).getValue().getData() != null) {
+                                    mViewModel.updateProgram (
+                                            program = mViewModel.getProgramListListener(mViewModel.getCampus(), mViewModel.getDepartment()).getValue().getData().get(mProgramPicker.getSelectedItemPosition())
+                                    );
+                                    mProgramText.setText(getString(R.string.selected_program, InputHelper.capitalizeFirstLetter(program)));
+                                }
+                            })
+                            .build();
+                    materialDialog.show();
+                    ConstraintLayout holder = materialDialog.getCustomView().findViewById(R.id.pp_holder);
+                    ImageView progress = materialDialog.getCustomView().findViewById(R.id.pp_progress);
+                    TextView error = materialDialog.getCustomView().findViewById(R.id.pp_error);
+                    mProgramPicker = materialDialog.getCustomView().findViewById(R.id.pp_picker);
                     if (holder != null && progress != null && error != null && mProgramPicker != null) {
                         mViewModel.getProgramListListener(mViewModel.getCampus(), mViewModel.getDepartment()).observe(getActivity(), listResource -> {
                             if (listResource != null) {

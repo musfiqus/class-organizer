@@ -1,13 +1,18 @@
 package bd.edu.daffodilvarsity.classorganizer.ui.setup;
 
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProviders;
+
+import android.app.AlertDialog;
 import android.os.Bundle;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.material.button.MaterialButton;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatSpinner;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,22 +73,24 @@ public class CampusFragment extends Fragment {
             }
         });
         mCampusButton.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AppTheme_LightDialog);
-            builder.setView(R.layout.picker_campus);
-            builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                if (mNumberPicker != null
-                        && mViewModel.getCampusListListener().getValue() != null
-                        && mViewModel.getCampusListListener().getValue().getData() != null) {
-                    mViewModel.updateCampus (
-                            mViewModel.getCampusListListener().getValue().getData().get(mNumberPicker.getSelectedItemPosition())
-                    );
-                }
-            });
-            AlertDialog dialog = builder.create();
-            dialog.show();
-            ImageView progress = dialog.findViewById(R.id.cp_progress);
-            ConstraintLayout holder = dialog.findViewById(R.id.cp_view_holder);
-            TextView error = dialog.findViewById(R.id.cp_error);
+            MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                    .customView(R.layout.picker_campus, false)
+                    .positiveText(android.R.string.ok)
+                    .onPositive((dialog1, which) -> {
+                        if (mNumberPicker != null
+                                && mViewModel.getCampusListListener().getValue() != null
+                                && mViewModel.getCampusListListener().getValue().getData() != null) {
+                            mViewModel.updateCampus (
+                                    mViewModel.getCampusListListener().getValue().getData().get(mNumberPicker.getSelectedItemPosition())
+                            );
+                        }
+                    })
+                    .build();
+            materialDialog.show();
+
+            ImageView progress = materialDialog.getCustomView().findViewById(R.id.cp_progress);
+            ConstraintLayout holder = materialDialog.getCustomView().findViewById(R.id.cp_view_holder);
+            TextView error = materialDialog.getCustomView().findViewById(R.id.cp_error);
             mViewModel.getCampusListListener().observe(this, listResource -> {
                 if (listResource != null) {
                     if (progress != null && holder != null && error != null) {
@@ -91,7 +98,7 @@ public class CampusFragment extends Fragment {
                             case SUCCESSFUL: {
                                 progress.setVisibility(View.INVISIBLE);
                                 holder.setVisibility(View.VISIBLE);
-                                mNumberPicker = dialog.findViewById(R.id.cp_picker);
+                                mNumberPicker = materialDialog.getCustomView().findViewById(R.id.cp_picker);
                                 if (listResource.getData() != null && mNumberPicker != null) {
                                     ArrayList<String> valuesToDisplay = new ArrayList<>();
                                     for (String s: listResource.getData()) {

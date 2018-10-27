@@ -4,6 +4,8 @@ package bd.edu.daffodilvarsity.classorganizer.ui.setup;
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.material.button.MaterialButton;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable;
@@ -66,23 +68,23 @@ public class SectionFragment extends Fragment {
                     mHolder.setVisibility(View.VISIBLE);
                     mFinishHolder.setVisibility(View.INVISIBLE);
                     mSelectSection.setOnClickListener(v -> {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.AppTheme_LightDialog);
-                        builder.setView(R.layout.picker_section);
-
-                        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                            String section;
-                            if (mSectionPicker != null &&
-                                    mViewModel.getSectionListListener(mViewModel.getCampus(), mViewModel.getDepartment(), mViewModel.getProgram(), mViewModel.getLevel(), mViewModel.getTerm()).getValue() != null
-                                    && mViewModel.getSectionListListener(mViewModel.getCampus(), mViewModel.getDepartment(), mViewModel.getProgram(), mViewModel.getLevel(), mViewModel.getTerm()).getValue().getData() != null) {
-                                mViewModel.updateSection(section = mViewModel.getSectionListListener(mViewModel.getCampus(), mViewModel.getDepartment(), mViewModel.getProgram(), mViewModel.getLevel(), mViewModel.getTerm()).getValue().getData().get(mSectionPicker.getSelectedItemPosition()));
-                            }
-                        });
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-                        mSectionPicker = dialog.findViewById(R.id.sp_picker);
-                        ImageView progressView = dialog.findViewById(R.id.sp_progress);
-                        ConstraintLayout holderView = dialog.findViewById(R.id.sp_view_holder);
-                        TextView errorView = dialog.findViewById(R.id.sp_error);
+                        MaterialDialog materialDialog = new MaterialDialog.Builder(getActivity())
+                                .customView(R.layout.picker_section, false)
+                                .positiveText(android.R.string.ok)
+                                .onPositive((dialog1, which) -> {
+                                    String section;
+                                    if (mSectionPicker != null &&
+                                            mViewModel.getSectionListListener(mViewModel.getCampus(), mViewModel.getDepartment(), mViewModel.getProgram(), mViewModel.getLevel(), mViewModel.getTerm()).getValue() != null
+                                            && mViewModel.getSectionListListener(mViewModel.getCampus(), mViewModel.getDepartment(), mViewModel.getProgram(), mViewModel.getLevel(), mViewModel.getTerm()).getValue().getData() != null) {
+                                        mViewModel.updateSection(section = mViewModel.getSectionListListener(mViewModel.getCampus(), mViewModel.getDepartment(), mViewModel.getProgram(), mViewModel.getLevel(), mViewModel.getTerm()).getValue().getData().get(mSectionPicker.getSelectedItemPosition()));
+                                    }
+                                })
+                                .build();
+                        materialDialog.show();
+                        mSectionPicker = materialDialog.getCustomView().findViewById(R.id.sp_picker);
+                        ImageView progressView = materialDialog.getCustomView().findViewById(R.id.sp_progress);
+                        ConstraintLayout holderView = materialDialog.getCustomView().findViewById(R.id.sp_view_holder);
+                        TextView errorView = materialDialog.getCustomView().findViewById(R.id.sp_error);
                         if (mSectionPicker != null && progressView != null && holderView != null && errorView != null) {
                             mViewModel.getSectionListListener(mViewModel.getCampus(), mViewModel.getDepartment(), mViewModel.getProgram(), mViewModel.getLevel(), mViewModel.getTerm()).observe(getActivity(), listResource -> {
                                 if (listResource != null) {

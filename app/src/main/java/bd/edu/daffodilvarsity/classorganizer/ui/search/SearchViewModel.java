@@ -147,6 +147,7 @@ public class SearchViewModel extends ViewModel {
                         if (isRoutineSearchFinished) {
                             getProgressListener().postValue(false);
                         }
+                        getTeacherInfoListener().postValue(null);
                     }
                 });
     }
