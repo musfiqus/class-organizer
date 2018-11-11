@@ -4,7 +4,7 @@
 **A simple and modern looking routine management app for Android.<br>
 Built for the students of Daffodil International University.**
 
-![Screenshots](./art/art.jpg?raw=true)
+![Screenshots](./art/art.png?raw=true)
 
 ## Download
 
