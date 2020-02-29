@@ -1,5 +1,6 @@
 package bd.edu.daffodilvarsity.classorganizer.ui.main;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import android.content.Intent;
@@ -22,7 +23,13 @@ import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.gms.dynamic.IFragmentWrapper;
+
 import bd.edu.daffodilvarsity.classorganizer.ClassOrganizer;
+import bd.edu.daffodilvarsity.classorganizer.R;
 import bd.edu.daffodilvarsity.classorganizer.data.Repository;
 import bd.edu.daffodilvarsity.classorganizer.model.Resource;
 import bd.edu.daffodilvarsity.classorganizer.model.Routine;
@@ -48,6 +55,7 @@ public class MainViewModel extends ViewModel {
     private MutableLiveData<Resource<Map<String, ArrayList<Routine>>>> routineListListener;
     private MutableLiveData<Boolean> classProgressListener;
     private MutableLiveData<Semester> semesterUpgradeDialogListener;
+    private MutableLiveData<Boolean> announcementListener;
 
     private Repository mRepository;
     private CompositeDisposable mDisposable;
@@ -89,6 +97,18 @@ public class MainViewModel extends ViewModel {
             semesterUpgradeDialogListener = new MutableLiveData<Semester>();
         }
         return semesterUpgradeDialogListener;
+    }
+
+    MutableLiveData<Boolean> getAnnouncementListener() {
+        if (announcementListener == null) {
+            announcementListener = new MutableLiveData<>();
+        }
+        if (!PreferenceGetter.isAnnouncementHidden() && PreferenceGetter.getOpenCount() >= 5) {
+            announcementListener.postValue(true);
+        } else {
+            PreferenceGetter.increaseOpenCount(1);
+        }
+        return announcementListener;
     }
 
     void loadRoutine() {
@@ -264,9 +284,9 @@ public class MainViewModel extends ViewModel {
                 .build();
         workManager.enqueueUniquePeriodicWork(UPDATE_CHECK_WORK, ExistingPeriodicWorkPolicy.REPLACE, periodicWorkRequest);
         OneTimeWorkRequest oneTimeWorkRequest = new OneTimeWorkRequest.Builder(OfflineUpdateWorker.class)
-                .setInitialDelay(5, TimeUnit.SECONDS)
+                .setInitialDelay(2, TimeUnit.SECONDS)
                 .build();
-        workManager.beginUniqueWork(OFFLINE_UPDATE_WORK, ExistingWorkPolicy.KEEP, oneTimeWorkRequest).enqueue();
+        workManager.enqueueUniqueWork(OFFLINE_UPDATE_WORK, ExistingWorkPolicy.KEEP, oneTimeWorkRequest);
     }
 
     private void checkForNewSemester() {
@@ -309,8 +329,6 @@ public class MainViewModel extends ViewModel {
         }
         mDisposable.add(disposable);
     }
-
-
 
     @Override
     protected void onCleared() {

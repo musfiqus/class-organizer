@@ -11,6 +11,10 @@
     <item android:title="@string/communicate">
         <menu>
             <item
+                android:id="@+id/nav_announcement"
+                android:icon="@drawable/ic_announcement_24dp"
+                android:title="@string/announcement_nav" />
+            <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_share_24dp"
                 android:title="@string/drawer_title_share" />

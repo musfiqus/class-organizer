@@ -41,7 +41,10 @@ public class PreferenceGetter {
     private static final String PREF_SEMESTER_ID = "current_semester_id";
     private static final String PREF_RAMADAN = "ramadan_preference";
     private static final String PREF_NOTIFICATION = "notification_preference";
-    public static final int SHIPPED_DATABASE_VERSION = 1;
+    private static final String PREF_OPEN_COUNT = "open_count";
+    private static final String PREF_ANNOUNCEMENT_COUNT = "announcement_count";
+    private static final String PREF_ANNOUNCEMENT_HIDDEN = "announcement_hidden";
+    public static final int SHIPPED_DATABASE_VERSION = 420;
 
 
     public static boolean isFirstTimeLaunch() {
@@ -263,10 +266,54 @@ public class PreferenceGetter {
         PreferenceHelper.set(PREF_DELETED_ROUTINE, null);
     }
 
+    public static int getOpenCount() {
+        int count = PreferenceHelper.getInt(PREF_OPEN_COUNT);
+        if (count <= 0) {
+            return 4;
+        } else {
+            return count;
+        }
+    }
+
+    public static void increaseOpenCount(int count) {
+        if (count == 0) {
+            PreferenceHelper.set(PREF_OPEN_COUNT, 1);
+        } else {
+            PreferenceHelper.set(PREF_OPEN_COUNT, getOpenCount()+count);
+        }
+    }
+
+    public static int getAnnouncementCount() {
+        int count = PreferenceHelper.getInt(PREF_ANNOUNCEMENT_COUNT);
+        if (count <= 0) {
+            return 0;
+        } else {
+            return count;
+        }
+    }
+
+    public static void increaseAnnouncementCount(int count) {
+        if (count == 0) {
+            PreferenceHelper.set(PREF_ANNOUNCEMENT_COUNT, 0);
+        } else {
+            PreferenceHelper.set(PREF_ANNOUNCEMENT_COUNT, getAnnouncementCount()+count);
+        }
+
+    }
+
+    public static void setAnnouncementHidden(boolean hidden) {
+        PreferenceHelper.set(PREF_ANNOUNCEMENT_HIDDEN, hidden);
+    }
+
+    public static boolean isAnnouncementHidden() {
+        return PreferenceHelper.getBoolean(PREF_ANNOUNCEMENT_HIDDEN);
+    }
+
     public static boolean isNotificationEnabled() {
         Log.e(TAG, "isNotificationEnabled: "+ PreferenceHelper.getBoolean(PREF_NOTIFICATION));
         return PreferenceHelper.getBoolean(PREF_NOTIFICATION);
     }
+
 
     public static void printPref() {
         Log.e(TAG, "printPref: User: "+getUserType()+

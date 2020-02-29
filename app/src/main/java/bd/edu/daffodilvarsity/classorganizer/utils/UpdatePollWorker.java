@@ -40,10 +40,10 @@ public class UpdatePollWorker extends Worker {
             if (updateResponse.getVersion() > PreferenceGetter.getDatabaseVersion()) {
                 showNotification();
             }
-            return Result.SUCCESS;
+            return Result.success();
         } catch (RuntimeException e) {
             e.printStackTrace();
-            return Result.RETRY;
+            return Result.failure();
         }
     }
 

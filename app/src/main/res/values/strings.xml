@@ -22,7 +22,7 @@
     <string name="friday">Friday</string>
     <string name="title_notifications">Notifications</string>
     <string name="slide_1_title">Welcome</string>
-    <string name="slide_1_desc">Thank you for choosing the best app to organize your campus life!</string>
+    <string name="slide_1_desc">This app will stop receiving updates after Fall 2019. Thank you for being a part of the journey!</string>
 
     <!-- Spinner label -->
     <string name="level_title">Select Level</string>
@@ -223,4 +223,9 @@
     <string name="mute_success">Notifications muted for %1$s</string>
     <string name="no_routine_text">Looks pretty empty in here (ಥ﹏ಥ)  Why don\'t we check if all the choices are correct?</string>
     <string name="enter_setup">Enter setup</string>
+    <string name="announcement">This app is no longer being maintained or updated. Thank you for being a part of the journey.<![CDATA[<br><b>Part of the journey is the end.<br> - Tony Stark</b>]]> </string>
+    <string name="announcement_title">Important Notice</string>
+    <string name="announcement_positive">I understand</string>
+    <string name="announcement_nav">Announcement</string>
+    <string name="announcement_neutral">Facebook</string>
 </resources>

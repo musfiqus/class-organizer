@@ -2,7 +2,11 @@ package bd.edu.daffodilvarsity.classorganizer.ui.main;
 
 import android.animation.Animator;
 import android.app.Activity;
+
+import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.lifecycle.ViewModelProviders;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -12,6 +16,9 @@ import android.os.PersistableBundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.GravityEnum;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.appbar.AppBarLayout;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -24,11 +31,21 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
+
+import android.text.Html;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.CompoundButton;
+import android.widget.ScrollView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -52,6 +69,7 @@ import bd.edu.daffodilvarsity.classorganizer.utils.PreferenceGetter;
 import bd.edu.daffodilvarsity.classorganizer.utils.ViewUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import es.dmoral.toasty.Toasty;
 
 public class MainActivity extends BaseDrawerActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -59,8 +77,6 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
 
     private static final int REQUEST_CODE_INTRO = 6060;
     public static final int REQUEST_CODE_REFRESHABLE_ACTIVITY = 4208;
-
-    private static final String CURRENT_PROMOTION = "Facebook_Page";
 
     private boolean isActivityRunning = false;
     private boolean updateDialogueBlocked = false;
@@ -83,6 +99,7 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
     MaterialButton mNoResultButton;
     @BindView(R.id.main_tabs)
     TabLayout mTabs;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +107,7 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
         setTheme(R.style.AppTheme_NoActionBar);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         if (Build.VERSION.SDK_INT >= 23) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimary));//status bar or the time bar at the top
@@ -197,7 +215,6 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
         return true;
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
@@ -213,6 +230,8 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
             startActivity(Intent.createChooser(shareIntent, getResources().getString(R.string.share_title)));
         } else if (id == R.id.nav_send) {
             composeEmail();
+        } else if (id == R.id.nav_announcement) {
+            showAnnouncement();
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -309,6 +328,11 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
                 showUpgradeDialog(semester);
             }
         });
+        mViewModel.getAnnouncementListener().observe(this, showDialog -> {
+            if (showDialog != null && showDialog) {
+                showAnnouncement();
+            }
+        });
     }
 
     private void showUpgradeDialog(Semester semester) {
@@ -383,36 +407,74 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
     }
 
 
-    private void showOneTimePromotionalDialog() {
-//        if (CURRENT_PROMOTION.equalsIgnoreCase(prefManager.getExpiredPromotion())) {
-//            return;
-//        }
-//        MaterialDialog dialog = new MaterialDialog.Builder(this)
-//                .title("Connect with us on Facebook!")
-//                .content("Did you know Class Organizer is now on Facebook?\n " +
-//                        "Like Class Organizer's Facebook page to get all the latest news and updates.")
-//                .positiveText("Visit Facebook")
-//                .negativeText("Cancel")
-//                .onPositive((dialog1, which) -> {
-//                    startActivity(getOpenFacebookIntent(this));
-//                    prefManager.setExpiredPromotion(CURRENT_PROMOTION);
-//                    dialog1.dismiss();
-//                })
-//                .onNegative((dialog12, which) -> dialog12.dismiss())
-//                .checkBoxPrompt("Don't remind me again", false, (buttonView, isChecked) -> {
-//                    if (isChecked) {
-//                        prefManager.setExpiredPromotion(CURRENT_PROMOTION);
-//                    }
-//                })
-//                .build();
-//        Handler handler = new Handler();
-//        handler.postDelayed(() -> {
-//            if (!dialog.isShowing() && isActivityRunning()) {
-//                dialog.show();
-//            }
-//        }, 1500);
-//
+    private void showAnnouncement() {
+        MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(this)
+                .customView(R.layout.layout_announcement, false)
+                .positiveText(MainActivity.this.getString(R.string.announcement_positive))
+                .autoDismiss(false)
+                .cancelable(false)
+                .canceledOnTouchOutside(false)
+                .negativeText(MainActivity.this.getString(R.string.announcement_neutral))
+                .onNegative((dialog, which) -> {
+                    String url = "http://bit.ly/classorganizerannouncement";
+                    CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+                    CustomTabsIntent customTabsIntent = builder.build();
+                    customTabsIntent.launchUrl(MainActivity.this, Uri.parse(url));
+                    Bundle params = new Bundle();
+                    params.putString("open_fb", "opened fb page");
+                    mFirebaseAnalytics.logEvent("announcement_popup", params);
+                })
+                .onAny((dialog, which) -> {
+                    PreferenceGetter.increaseAnnouncementCount(1);
+                    PreferenceGetter.increaseOpenCount(0);
+                    dialog.dismiss();
+                    Bundle params = new Bundle();
+                    params.putString("status", "has read");
+                    mFirebaseAnalytics.logEvent("announcement_popup", params);
+                })
+                .keyListener((dialog, keyCode, event) -> {
+                    if(keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+                        Toasty.error(MainActivity.this, "Close the announcement first!", Toast.LENGTH_SHORT, true).show();
+                        return true;
+                    }
+                    return false;
+                });
+        if (PreferenceGetter.getAnnouncementCount() > 7) {
+            dialogBuilder
+                    .neutralText("আর দেখাবেন না")
+                    .onNeutral((dialog, which) -> {
+                        PreferenceGetter.setAnnouncementHidden(true);
+                        Bundle params = new Bundle();
+                        params.putString("popup_hidden", "true");
+                        mFirebaseAnalytics.logEvent("announcement_popup", params);
+                    });
+        }
 
+        MaterialDialog dialog = dialogBuilder.build();
+        if (isActivityRunning()) {
+            Bundle params = new Bundle();
+            params.putString("popup_shown", "true");
+            mFirebaseAnalytics.logEvent("announcement_popup", params);
+            View dialogView = dialog.getCustomView();
+            if (dialogView != null)
+                ((TextView) dialogView.findViewById(R.id.announcement_body)).setText(Html.fromHtml(getString(R.string.announcement)));
+            dialog.show();
+        }
+        ScrollView scrollView = (ScrollView) dialog.getCustomView();
+        scrollView.getViewTreeObserver()
+                .addOnScrollChangedListener(() -> {
+                    if (!scrollView.canScrollVertically(1)) {
+                        // bottom of scroll view
+                        dialog.getActionButton(DialogAction.POSITIVE).setVisibility(View.VISIBLE);
+                        dialog.getActionButton(DialogAction.NEGATIVE).setVisibility(View.VISIBLE);
+                        dialog.getActionButton(DialogAction.NEUTRAL).setVisibility(View.VISIBLE);
+                    } else {
+                        dialog.getActionButton(DialogAction.POSITIVE).setVisibility(View.INVISIBLE);
+                        dialog.getActionButton(DialogAction.NEGATIVE).setVisibility(View.INVISIBLE);
+                        dialog.getActionButton(DialogAction.NEUTRAL).setVisibility(View.INVISIBLE);
+
+                    }
+                });
     }
 
     private void hideLoading() {
