@@ -416,7 +416,7 @@ public class MainActivity extends BaseDrawerActivity implements NavigationView.O
                 .canceledOnTouchOutside(false)
                 .negativeText(MainActivity.this.getString(R.string.announcement_neutral))
                 .onNegative((dialog, which) -> {
-                    String url = "http://bit.ly/classorganizerannouncement";
+                    String url = "https://github.com/musfiqus";
                     CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
                     CustomTabsIntent customTabsIntent = builder.build();
                     customTabsIntent.launchUrl(MainActivity.this, Uri.parse(url));

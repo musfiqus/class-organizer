@@ -227,5 +227,5 @@
     <string name="announcement_title">Important Notice</string>
     <string name="announcement_positive">I understand</string>
     <string name="announcement_nav">Announcement</string>
-    <string name="announcement_neutral">Facebook</string>
+    <string name="announcement_neutral">Github</string>
 </resources>
