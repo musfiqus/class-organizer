@@ -1,23 +1,16 @@
-buildscript {
-    repositories {
-    }
-
-    dependencies {
-    }
+plugins {
+    id 'com.android.application'
+    id 'com.google.firebase.crashlytics'
+    id 'com.google.gms.google-services'
 }
-apply plugin: 'com.android.application'
-apply plugin: 'com.google.firebase.crashlytics'
-// Create a variable called keystorePropertiesFile, and initialize it to your
-// keystore.properties file, in the rootProject folder.
-def keystorePropertiesFile = rootProject.file("keystore.properties")
-// Initialize a new Properties() object called keystoreProperties.
-def keystoreProperties = new Properties()
-// Load your keystore.properties file into the keystoreProperties object.
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-android {
 
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+android {
     namespace 'bd.edu.daffodilvarsity.classorganizer'
-    compileSdkVersion 34
+    compileSdk 34
 
     defaultConfig {
         applicationId "bd.edu.daffodilvarsity.classorganizer"
@@ -51,10 +44,6 @@ android {
     productFlavors {
     }
 
-//    compileOptions {
-//        sourceCompatibility JavaVersion.VERSION_1_8
-//        targetCompatibility JavaVersion.VERSION_1_8
-//    }
     dataBinding {
         enabled = true
     }
@@ -71,6 +60,7 @@ dependencies {
     })
 
     //All support lib
+    def supportLibVersion = "1.0.0"
     implementation "androidx.preference:preference:1.2.1"
     implementation "androidx.appcompat:appcompat:1.7.0"
     implementation "androidx.legacy:legacy-support-v13:$supportLibVersion"
@@ -90,7 +80,7 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 
     //GSON for saving objects
-    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
 
     //Do not update that shitty firebase
     implementation "com.google.firebase:firebase-core:21.1.1"
@@ -120,63 +110,27 @@ dependencies {
     //BRVAH
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
 
-
-    dependencies {
-        def room_version = "2.6.1"
-
-        implementation "androidx.room:room-runtime:$room_version"
-        annotationProcessor "androidx.room:room-compiler:$room_version" // use kapt for Kotlin
-
-        // optional - RxJava support for Room
-        implementation "androidx.room:room-rxjava2:$room_version"
-    }
+    def room_version = "2.6.1"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version" // use kapt for Kotlin
+    implementation "androidx.room:room-rxjava2:$room_version"
 
     //custom tabs
     implementation 'androidx.browser:browser:1.8.0'
 
+    def lifecycle_version = "2.2.0"
+    // ViewModel and LiveData
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-runtime:2.8.6"
+    implementation "androidx.lifecycle:lifecycle-common-java8:2.8.6"
+    implementation "androidx.lifecycle:lifecycle-reactivestreams:2.8.6" // use -ktx for Kotlin
 
-    dependencies {
-        def lifecycle_version = "2.2.0"
+    def lifecycle_arch_version = "1.1.1"
+    implementation "android.arch.lifecycle:extensions:$lifecycle_arch_version"
+    implementation "android.arch.lifecycle:common-java8:$lifecycle_arch_version"
+    implementation "android.arch.lifecycle:reactivestreams:$lifecycle_arch_version"
 
-        // ViewModel and LiveData
-        implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
-        // alternatively - Lifecycles only (no ViewModel or LiveData). Some UI
-        //     AndroidX libraries use this lightweight import for Lifecycle
-        implementation "androidx.lifecycle:lifecycle-runtime:2.6.2"
-
-        // alternately - if using Java8, use the following instead of lifecycle-compiler
-        implementation "androidx.lifecycle:lifecycle-common-java8:2.6.2"
-
-        // optional - ReactiveStreams support for LiveData
-        implementation "androidx.lifecycle:lifecycle-reactivestreams:$lifecycle_version" // use -ktx for Kotlin
-    }
-
-    dependencies {
-        def lifecycle_version = "1.1.1"
-
-        // ViewModel and LiveData
-        implementation "android.arch.lifecycle:extensions:$lifecycle_version"
-
-        // use kapt for Kotlin
-        // alternately - if using Java8, use the following instead of compiler
-        implementation "android.arch.lifecycle:common-java8:$lifecycle_version"
-
-        // optional - ReactiveStreams support for LiveData
-        implementation "android.arch.lifecycle:reactivestreams:$lifecycle_version"
-    }
-
-    dependencies {
-        def work_version = "2.9.1"
-
-        // (Java only)
-        implementation "androidx.work:work-runtime:$work_version"
-
-
-        // optional - RxJava2 support
-        implementation "androidx.work:work-rxjava2:$work_version"
-    }
+    def work_version = "2.9.1"
+    implementation "androidx.work:work-runtime:$work_version"
+    implementation "androidx.work:work-rxjava2:$work_version"
 }
-
-
-android.buildToolsVersion '34.0.0'
-apply plugin: 'com.google.gms.google-services'

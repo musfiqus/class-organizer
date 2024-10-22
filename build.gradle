@@ -1,44 +1,10 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.4'
-        classpath 'com.google.gms:google-services:4.3.10'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.7.1'
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle.kts files
-        // These docs use an open ended version so that our plugin
-        // can be updated quickly in response to Android tooling updates
-
-        // We recommend changing it to the latest version from our changelog:
-        // https://docs.fabric.io/android/changelog.html#fabric-gradle-plugin
-    }
-}
-
-allprojects {
-    repositories {
-        mavenCentral()
-        maven { url "https://jitpack.io" }
-        google()
-        flatDir {
-            dirs 'libs'
-        }
-    }
+plugins {
+    id 'com.android.application' version '8.7.1' apply false
+    id 'com.google.gms.google-services' version '4.4.2' apply false
+    id 'com.google.firebase.crashlytics' version '3.0.2' apply false
+    // Add other plugins as needed
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
-}
-ext {
-    compileSdkVersion = 34
-    buildToolsVersion = '34.0.0'
-    targetSdkVersion = compileSdkVersion
-    minSdkVersion = 21
-    supportLibVersion = '1.0.0'
-    firebaseLibVersion = '16.0.1'
 }

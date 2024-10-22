@@ -8,8 +8,6 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-//import io.fabric.sdk.android.Fabric;
-
 /**
  * Created by Mushfiqus Salehin on 4/2/2017.
  * musfiqus@gmail.com
@@ -24,13 +22,11 @@ public class ClassOrganizer extends Application {
         super.onCreate();
         instance = this;
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        //Disable crashlytics in debug builds
-        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG);
-
         FirebaseApp.initializeApp(this);
         FirebaseMessaging.getInstance().subscribeToTopic("update");
+        //Disable crashlytics in debug builds
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG);
         if (BuildConfig.DEBUG) FirebaseMessaging.getInstance().subscribeToTopic("debug");
-//        MobileAds.initialize(this, getResources().getString(R.string.admob_app_id));
     }
 
     public static ClassOrganizer getInstance() {
