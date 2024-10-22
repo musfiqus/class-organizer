@@ -7,11 +7,11 @@ buildscript {
         maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.1'
+        classpath 'com.android.tools.build:gradle:8.1.4'
         classpath 'com.google.gms:google-services:4.3.10'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.7.1'
         // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        // in the individual module build.gradle.kts files
         // These docs use an open ended version so that our plugin
         // can be updated quickly in response to Android tooling updates
 
@@ -35,10 +35,10 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 ext {
-    compileSdkVersion = 32
-    buildToolsVersion = '32.0.0'
+    compileSdkVersion = 34
+    buildToolsVersion = '34.0.0'
     targetSdkVersion = compileSdkVersion
-    minSdkVersion = 14
+    minSdkVersion = 21
     supportLibVersion = '1.0.0'
     firebaseLibVersion = '16.0.1'
 }

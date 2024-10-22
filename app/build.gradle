@@ -17,12 +17,12 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 android {
 
     namespace 'bd.edu.daffodilvarsity.classorganizer'
-    compileSdkVersion 32
+    compileSdkVersion 34
 
     defaultConfig {
         applicationId "bd.edu.daffodilvarsity.classorganizer"
-        minSdkVersion 16
-        targetSdkVersion 32
+        minSdkVersion 21
+        targetSdkVersion 34
         versionName '5.1.2'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -51,10 +51,10 @@ android {
     productFlavors {
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
+//    compileOptions {
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//        targetCompatibility JavaVersion.VERSION_1_8
+//    }
     dataBinding {
         enabled = true
     }
@@ -62,45 +62,44 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.google.firebase:firebase-crashlytics:17.2.1'
+
+    //material intro (Use compiled lib until a new release with fixes)
+    api project(':material_intro')
+    implementation 'com.google.firebase:firebase-crashlytics:19.2.1'
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0-alpha4', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    //material intro (Use compiled lib until a new release with fixes)
-    implementation(name: 'material-intro-release', ext: 'aar')
-
-
     //All support lib
-    implementation "androidx.preference:preference:$supportLibVersion"
-    implementation "androidx.appcompat:appcompat:1.0.2"
+    implementation "androidx.preference:preference:1.2.1"
+    implementation "androidx.appcompat:appcompat:1.7.0"
     implementation "androidx.legacy:legacy-support-v13:$supportLibVersion"
-    implementation "com.google.android.material:material:$supportLibVersion"
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation "com.google.android.material:material:1.12.0"
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation "androidx.cardview:cardview:$supportLibVersion"
     implementation "androidx.legacy:legacy-support-v4:$supportLibVersion"
-    implementation "androidx.vectordrawable:vectordrawable:1.0.1"
-    implementation "androidx.preference:preference:$supportLibVersion"
+    implementation "androidx.vectordrawable:vectordrawable:1.2.0"
+    implementation "androidx.preference:preference:1.2.1"
     implementation "androidx.legacy:legacy-preference-v14:$supportLibVersion"
-    implementation "androidx.recyclerview:recyclerview:$supportLibVersion"
+    implementation "androidx.recyclerview:recyclerview:1.3.2"
     implementation "androidx.legacy:legacy-support-v4:$supportLibVersion"
     implementation "androidx.asynclayoutinflater:asynclayoutinflater:$supportLibVersion"
-    implementation "androidx.core:core:1.0.2"
+    implementation "androidx.core:core:1.13.1"
 
     //Material dialogues
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 
     //GSON for saving objects
-    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.google.code.gson:gson:2.9.0'
 
     //Do not update that shitty firebase
-    implementation "com.google.firebase:firebase-core:16.0.4"
-    implementation "com.google.firebase:firebase-messaging:17.3.4"
+    implementation "com.google.firebase:firebase-core:21.1.1"
+    implementation "com.google.firebase:firebase-messaging:24.0.3"
 
     //Firebase admob
 
     //    implementation "com.google.firebase:firebase-ads:$firebaseLibVersion"
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.1'
 
     //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
@@ -108,7 +107,7 @@ dependencies {
 
     //RX JAVA
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.2'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.9'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
 
     //Toasty
@@ -119,11 +118,11 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
 
     //BRVAH
-    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.46'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
 
 
     dependencies {
-        def room_version = "2.4.0"
+        def room_version = "2.6.1"
 
         implementation "androidx.room:room-runtime:$room_version"
         annotationProcessor "androidx.room:room-compiler:$room_version" // use kapt for Kotlin
@@ -133,21 +132,20 @@ dependencies {
     }
 
     //custom tabs
-    implementation 'androidx.browser:browser:1.0.0'
+    implementation 'androidx.browser:browser:1.8.0'
 
 
     dependencies {
-        def lifecycle_version = "2.0.0"
+        def lifecycle_version = "2.2.0"
 
         // ViewModel and LiveData
-        implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+        implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
         // alternatively - Lifecycles only (no ViewModel or LiveData). Some UI
         //     AndroidX libraries use this lightweight import for Lifecycle
-        implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle_version"
+        implementation "androidx.lifecycle:lifecycle-runtime:2.6.2"
 
-        annotationProcessor "androidx.lifecycle:lifecycle-compiler:$lifecycle_version" // use kapt for Kotlin
         // alternately - if using Java8, use the following instead of lifecycle-compiler
-        implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+        implementation "androidx.lifecycle:lifecycle-common-java8:2.6.2"
 
         // optional - ReactiveStreams support for LiveData
         implementation "androidx.lifecycle:lifecycle-reactivestreams:$lifecycle_version" // use -ktx for Kotlin
@@ -159,7 +157,6 @@ dependencies {
         // ViewModel and LiveData
         implementation "android.arch.lifecycle:extensions:$lifecycle_version"
 
-        annotationProcessor "android.arch.lifecycle:compiler:$lifecycle_version"
         // use kapt for Kotlin
         // alternately - if using Java8, use the following instead of compiler
         implementation "android.arch.lifecycle:common-java8:$lifecycle_version"
@@ -169,7 +166,7 @@ dependencies {
     }
 
     dependencies {
-        def work_version = "2.7.1"
+        def work_version = "2.9.1"
 
         // (Java only)
         implementation "androidx.work:work-runtime:$work_version"
@@ -181,5 +178,5 @@ dependencies {
 }
 
 
-android.buildToolsVersion '31.0.0'
+android.buildToolsVersion '34.0.0'
 apply plugin: 'com.google.gms.google-services'
