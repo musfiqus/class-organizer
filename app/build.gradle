@@ -116,14 +116,14 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
 
     //BRVAH
-    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.42'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.46'
 
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
         transitive = true;
     }
 
     dependencies {
-        def room_version = "2.0.0"
+        def room_version = "2.4.0"
 
         implementation "androidx.room:room-runtime:$room_version"
         annotationProcessor "androidx.room:room-compiler:$room_version" // use kapt for Kotlin
