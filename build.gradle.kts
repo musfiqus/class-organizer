@@ -4,7 +4,3 @@ plugins {
     id("com.google.firebase.crashlytics") version "3.0.2" apply false
     // Add other plugins as needed
 }
-
-tasks.register<Delete>("clean") {
-    delete(rootProject.buildDir)
-}

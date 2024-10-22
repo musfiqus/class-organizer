@@ -120,7 +120,6 @@ dependencies {
     // Custom tabs
     implementation("androidx.browser:browser:1.8.0")
 
-    val lifecycleVersion = "2.2.0"
     implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation("androidx.lifecycle:lifecycle-runtime:2.8.6")
     implementation("androidx.lifecycle:lifecycle-common-java8:2.8.6")
