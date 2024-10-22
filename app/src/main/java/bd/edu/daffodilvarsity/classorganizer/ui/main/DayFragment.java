@@ -1,6 +1,8 @@
 package bd.edu.daffodilvarsity.classorganizer.ui.main;
 
-
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,6 +36,7 @@ public class DayFragment extends Fragment {
 
     private RoutineAdapter mAdapter;
     private MainViewModel mViewModel;
+    private ActivityResultLauncher<Intent> modifyActivityLauncher;
 
     @BindView(R.id.class_list)
     RecyclerView mRecyclerView;
@@ -42,85 +45,96 @@ public class DayFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-    @SuppressWarnings({"unchecked", "ConstantConditions"})
+        // Register the ActivityResultLauncher
+        modifyActivityLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (getActivity() != null) {
+                        MainActivity activity = (MainActivity) getActivity();
+                        activity.onActivityResult(
+                                MainActivity.REQUEST_CODE_REFRESHABLE_ACTIVITY,
+                                result.getResultCode(),
+                                result.getData()
+                        );
+                    }
+                }
+        );
+    }
+
+    @SuppressWarnings({"ConstantConditions"})
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.class_list, container, false);
         ButterKnife.bind(this, rootView);
         mViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
-        //Getting data from bundle
+
+        // Getting data from bundle
         Bundle bundle = getArguments();
         ArrayList<Routine> courseData = bundle.getParcelableArrayList("anyDay");
+        assert courseData != null;
+
+        // Setup RecyclerView
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecyclerView.setLayoutManager(layoutManager);
-        assert courseData != null;
+        mRecyclerView.setHasFixedSize(true);
+
+        // Setup Adapter
         mAdapter = new RoutineAdapter(courseData);
         mAdapter.setHasStableIds(true);
-        mRecyclerView.setHasFixedSize(true);
-        mAdapter.bindToRecyclerView(mRecyclerView);
-        mAdapter.setOnItemChildClickListener((adapter, view, position) -> {
-            switch (view.getId()) {
-                case R.id.item_class_notification_button:
-                    Routine originalRoutine = (Routine) adapter.getItem(position);
-                    mViewModel.modifyRoutine(originalRoutine);
-                    ImageView muteYes = (ImageView) adapter.getViewByPosition(position, R.id.item_class_mute_yes);
-                    ImageView muteNo = (ImageView) adapter.getViewByPosition(position, R.id.item_class_mute_no);
-                    ViewUtils.animateMute(muteYes, muteNo, !originalRoutine.isMuted());
-                    originalRoutine.setMuted(!originalRoutine.isMuted());
-                    MaterialProgressBar progressBar = (MaterialProgressBar) adapter.getViewByPosition(position, R.id.item_class_progress);
-                    mViewModel.getClassProgressListener().observe(getActivity(), aBoolean -> {
-                        if (aBoolean == null || !aBoolean) {
-                            progressBar.setVisibility(View.INVISIBLE);
-                        } else {
-                            progressBar.setVisibility(View.VISIBLE);
-                        }
-                    });
-                    break;
-                case R.id.item_class_more_button:
-                    //creating a popup menu
-                    PopupMenu popup = new PopupMenu(view.getContext(), view);
-                    //inflating menu from xml resource
-                    popup.inflate(R.menu.item_class_menu);
+        mRecyclerView.setAdapter(mAdapter);
 
-                    popup.setOnMenuItemClickListener(menuItem -> {
-                        switch (menuItem.getItemId()) {
-                            case R.id.delete_class:
-                                mViewModel.deleteRoutine((Routine) adapter.getItem(position));
-                                break;
-                            case R.id.edit_class:
-                                Intent intent = new Intent(getActivity(), ModifyActivity.class);
-                                intent.putExtra(ModifyActivity.KEY_EDIT_OBJECT, (Parcelable) adapter.getItem(position));
-                                startActivityForResult(intent, MainActivity.REQUEST_CODE_REFRESHABLE_ACTIVITY);
-                                break;
-                        }
-                        return false;
-                    });
-                    //displaying the popup
-                    popup.show();
-                    break;
-                default:
-                    Intent intent = new Intent(getActivity(), RoutineDetailActivity.class);
-                    intent.putExtra(RoutineDetailActivity.ROUTINE_DETAIL_TAG, (Parcelable) adapter.getItem(position));
-                    startActivity(intent);
-                    break;
+        // Setup click listener
+        mAdapter.setOnItemClickListener((view, position, routine) -> {
+            int viewId = view.getId();
+            if (viewId == R.id.item_class_notification_button) {
+                mViewModel.modifyRoutine(routine);
+                View itemView = mRecyclerView.findViewHolderForAdapterPosition(position).itemView;
+                ImageView muteYes = itemView.findViewById(R.id.item_class_mute_yes);
+                ImageView muteNo = itemView.findViewById(R.id.item_class_mute_no);
+                ViewUtils.animateMute(muteYes, muteNo, !routine.isMuted());
+                routine.setMuted(!routine.isMuted());
+                MaterialProgressBar progressBar = itemView.findViewById(R.id.item_class_progress);
+
+                mViewModel.getClassProgressListener().observe(getActivity(), aBoolean -> {
+                    if (aBoolean == null || !aBoolean) {
+                        progressBar.setVisibility(View.INVISIBLE);
+                    } else {
+                        progressBar.setVisibility(View.VISIBLE);
+                    }
+                });
+            } else if (viewId == R.id.item_class_more_button) {
+                PopupMenu popup = getPopupMenu(view, routine);
+                popup.show();
+            } else {
+                Intent intent = new Intent(getActivity(), RoutineDetailActivity.class);
+                intent.putExtra(RoutineDetailActivity.ROUTINE_DETAIL_TAG, (Parcelable) routine);
+                startActivity(intent);
             }
         });
-
 
         return rootView;
     }
 
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (getActivity() != null) {
-            MainActivity activity = (MainActivity) getActivity();
-            activity.onActivityResult(requestCode, resultCode, data);
-        }
+    private PopupMenu getPopupMenu(View view, Routine routine) {
+        PopupMenu popup = new PopupMenu(view.getContext(), view);
+        popup.inflate(R.menu.item_class_menu);
+        popup.setOnMenuItemClickListener(menuItem -> {
+            int itemId = menuItem.getItemId();
+            if (itemId == R.id.delete_class) {
+                mViewModel.deleteRoutine(routine);
+            } else if (itemId == R.id.edit_class) {
+                Intent intent = new Intent(getActivity(), ModifyActivity.class);
+                intent.putExtra(ModifyActivity.KEY_EDIT_OBJECT, (Parcelable) routine);
+                modifyActivityLauncher.launch(intent);
+            }
+            return false;
+        });
+        return popup;
     }
 
     @Override

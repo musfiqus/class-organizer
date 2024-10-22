@@ -71,7 +71,7 @@
                 android:layout_height="16dp"
                 android:layout_marginEnd="4dp"
                 android:layout_marginRight="4dp"
-                android:tint="?attr/colorPrimary"
+                app:tint="?attr/colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
                 app:layout_constraintTop_toTopOf="parent"
@@ -201,7 +201,7 @@
                 android:id="@+id/item_class_mute_yes"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:tint="@color/text_color_dark"
+                app:tint="@color/text_color_dark"
                 app:srcCompat="@drawable/ic_outline_notifications_off"
                 tools:ignore="ContentDescription" />
 
@@ -209,7 +209,7 @@
                 android:id="@+id/item_class_mute_no"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:tint="@color/text_color_dark"
+                app:tint="@color/text_color_dark"
                 app:srcCompat="@drawable/ic_outline_notifications"
                 tools:ignore="ContentDescription" />
 

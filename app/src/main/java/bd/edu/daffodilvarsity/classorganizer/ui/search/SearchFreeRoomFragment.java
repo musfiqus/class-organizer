@@ -1,6 +1,5 @@
 package bd.edu.daffodilvarsity.classorganizer.ui.search;
 
-
 import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -19,6 +18,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import bd.edu.daffodilvarsity.classorganizer.R;
+import bd.edu.daffodilvarsity.classorganizer.model.Routine;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
@@ -42,8 +42,6 @@ public class SearchFreeRoomFragment extends Fragment {
     private SearchViewModel mViewModel;
     private SearchResultAdapter mAdapter;
 
-
-
     public SearchFreeRoomFragment() {
         // Required empty public constructor
     }
@@ -62,7 +60,6 @@ public class SearchFreeRoomFragment extends Fragment {
                              Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_search, container, false);
         ButterKnife.bind(this, mView);
-        // Inflate the layout for this fragment
         setupView(inflater);
         return mView;
     }
@@ -82,6 +79,7 @@ public class SearchFreeRoomFragment extends Fragment {
         mAdapter = new SearchResultAdapter(new ArrayList<>(), SearchResultAdapter.RESULT_TYPE_FREE_CLASS);
         mResultView.setAdapter(mAdapter);
         mResultView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         mViewModel.getFreeRoomListListener().observe(getActivity(), listResource -> {
             if (listResource != null) {
                 switch (listResource.getStatus()) {
@@ -98,18 +96,33 @@ public class SearchFreeRoomFragment extends Fragment {
                         if (listResource.getData().size() > 0) {
                             mNoResultText.setVisibility(View.GONE);
                             mResultView.setVisibility(View.VISIBLE);
-                            mAdapter.replaceData(listResource.getData());
+                            mAdapter.setData(listResource.getData());
                         } else {
                             mResultView.setVisibility(View.GONE);
                             mNoResultText.setVisibility(View.VISIBLE);
                             mNoResultText.setText(getText(R.string.no_free_rooms));
                         }
-
                         break;
                 }
             }
         });
 
+        mAdapter.setOnItemClickListener(new SearchResultAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                // Handle the free room item click if needed
+            }
+
+            @Override
+            public void onDetailsClick(int position) {
+                // Handle details click if needed
+            }
+
+            @Override
+            public void onMoreClick(int position, View view1) {
+                // Handle more click if needed (e.g., showing a popup menu)
+            }
+        });
     }
 
     class RoomOptionsViewHolder {
@@ -117,10 +130,8 @@ public class SearchFreeRoomFragment extends Fragment {
         private View mOptionViewLayout;
         @BindView(R.id.lsfr_day_spinner)
         AppCompatSpinner mDaySpinner;
-
         @BindView(R.id.lsfr_time_spinner)
         AppCompatSpinner mTimeSpinner;
-
         @BindView(R.id.lsfr_search_button)
         MaterialButton mSearchButton;
 
@@ -151,28 +162,24 @@ public class SearchFreeRoomFragment extends Fragment {
                 }
             });
 
-            mSearchButton.setOnClickListener(v ->
-                    {
-                        if (mTimeSpinner.getSelectedItem() != null && mDaySpinner.getSelectedItem() != null) {
-                            mViewModel.searchFreeRooms(mTimeSpinner.getSelectedItem().toString(), mDaySpinner.getSelectedItem().toString());
-                        }
-                    }
-            );
-
+            mSearchButton.setOnClickListener(v -> {
+                if (mTimeSpinner.getSelectedItem() != null && mDaySpinner.getSelectedItem() != null) {
+                    mViewModel.searchFreeRooms(
+                            mTimeSpinner.getSelectedItem().toString(),
+                            mDaySpinner.getSelectedItem().toString()
+                    );
+                }
+            });
         }
 
         private void disableTimeSpinner() {
             mTimeSpinner.setEnabled(false);
             mSearchButton.setEnabled(false);
-
         }
 
         private void enableTimeSpinner() {
             mTimeSpinner.setEnabled(true);
             mSearchButton.setEnabled(true);
         }
-
     }
-
-
 }

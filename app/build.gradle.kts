@@ -109,9 +109,6 @@ dependencies {
     implementation("com.jakewharton:butterknife:10.1.0")
     annotationProcessor("com.jakewharton:butterknife-compiler:10.1.0")
 
-    // BRVAH
-    implementation("com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50")
-
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")

@@ -86,17 +86,13 @@ public class SearchTeachersFragment extends Fragment {
         View view = inflater.inflate(R.layout.layout_search_teacher, mOptionsContainer, true);
         mViewModel = ViewModelProviders.of(getActivity()).get(SearchViewModel.class);
         mViewModel.getProgressListener().observe(getActivity(), aBoolean -> {
-            if (aBoolean == null || !aBoolean) {
-                mProgress.setVisibility(View.GONE);
-            } else {
-                mProgress.setVisibility(View.VISIBLE);
-                mProgress.setIndeterminate(true);
-            }
+            mProgress.setVisibility(aBoolean != null && aBoolean ? View.VISIBLE : View.GONE);
         });
         TeacherOptionsViewHolder holder = new TeacherOptionsViewHolder(view);
         mAdapter = new SearchResultAdapter(new ArrayList<>(), SearchResultAdapter.RESULT_TYPE_TEACHER_CLASS);
         mResultView.setAdapter(mAdapter);
         mResultView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         mViewModel.getClassListByInitialListener().observe(getActivity(), listResource -> {
             if (listResource != null) {
                 switch (listResource.getStatus()) {
@@ -113,7 +109,7 @@ public class SearchTeachersFragment extends Fragment {
                         if (listResource.getData().size() > 0) {
                             mNoResultText.setVisibility(View.GONE);
                             mResultView.setVisibility(View.VISIBLE);
-                            mAdapter.replaceData(listResource.getData());
+                            mAdapter.setData(listResource.getData());
                         } else {
                             mResultView.setVisibility(View.GONE);
                             mNoResultText.setVisibility(View.VISIBLE);
@@ -123,47 +119,34 @@ public class SearchTeachersFragment extends Fragment {
                 }
             }
         });
-        mViewModel.getTeacherInfoListener().observe(getActivity(), teacher -> {
-            if (teacher != null && !InputHelper.isEmpty(teacher.getInitial()) && !InputHelper.isEmpty(teacher.getName())) {
-                mTeacherList.setVisibility(View.VISIBLE);
-                mTeacherList.setLayoutManager(new LinearLayoutManager(getActivity()));
-                List<Teacher> teachers = new ArrayList<>();
-                teachers.add(teacher);
-                SearchTeacherAdapter adapter = new SearchTeacherAdapter(teachers);
-                adapter.bindToRecyclerView(mTeacherList);
-            } else {
-                mTeacherList.setVisibility(View.GONE);
+
+        mAdapter.setOnItemClickListener(new SearchResultAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                startActivity(new Intent(getActivity(), RoutineDetailActivity.class)
+                        .putExtra(RoutineDetailActivity.ROUTINE_DETAIL_TAG, (Parcelable) mAdapter.getItem(position)));
+            }
+
+            @Override
+            public void onDetailsClick(int position) {
+                startActivity(new Intent(getActivity(), RoutineDetailActivity.class)
+                        .putExtra(RoutineDetailActivity.ROUTINE_DETAIL_TAG, (Parcelable) mAdapter.getItem(position)));
+            }
+
+            @Override
+            public void onMoreClick(int position, View view) {
+                PopupMenu popup = new PopupMenu(view.getContext(), view);
+                popup.inflate(R.menu.activity_search_menu);
+                popup.setOnMenuItemClickListener(menuItem -> {
+                    if (menuItem.getItemId() == R.id.search_save_menu) {
+                        mViewModel.saveRoutine(mAdapter.getItem(position));
+                        getActivity().setResult(Activity.RESULT_OK);
+                    }
+                    return true;
+                });
+                popup.show();
             }
         });
-
-        mAdapter.setOnItemChildClickListener((adapter, view1, position) -> {
-            switch (view1.getId()) {
-                case R.id.item_class_more_button:
-                    //creating a popup menu
-                    PopupMenu popup = new PopupMenu(view1.getContext(), view1);
-                    //inflating menu from xml resource
-                    popup.inflate(R.menu.activity_search_menu);
-
-                    popup.setOnMenuItemClickListener(menuItem -> {
-                        switch (menuItem.getItemId()) {
-                            case R.id.search_save_menu:
-                                mViewModel.saveRoutine((Routine) adapter.getItem(position));
-                                getActivity().setResult(Activity.RESULT_OK);
-                                break;
-                        }
-                        return true;
-                    });
-                    //displaying the popup
-                    popup.show();
-                    break;
-                default:
-                    Intent intent = new Intent(getActivity(), RoutineDetailActivity.class);
-                    intent.putExtra(RoutineDetailActivity.ROUTINE_DETAIL_TAG, (Parcelable) adapter.getItem(position));
-                    startActivity(intent);
-                    break;
-            }
-        });
-
     }
 
     class TeacherOptionsViewHolder {

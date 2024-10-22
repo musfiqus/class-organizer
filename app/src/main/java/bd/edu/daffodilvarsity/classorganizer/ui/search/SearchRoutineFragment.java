@@ -1,6 +1,5 @@
 package bd.edu.daffodilvarsity.classorganizer.ui.search;
 
-
 import android.app.Activity;
 import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -50,8 +49,6 @@ public class SearchRoutineFragment extends Fragment {
     private SearchViewModel mViewModel;
     private SearchResultAdapter mAdapter;
 
-
-
     public SearchRoutineFragment() {
         // Required empty public constructor
     }
@@ -87,8 +84,9 @@ public class SearchRoutineFragment extends Fragment {
         });
         RoutineOptionsViewHolder holder = new RoutineOptionsViewHolder(view);
         mAdapter = new SearchResultAdapter(new ArrayList<>(), SearchResultAdapter.RESULT_TYPE_SECTION_CLASS);
-        mAdapter.bindToRecyclerView(mResultView);
         mResultView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mResultView.setAdapter(mAdapter);
+
         mViewModel.getRoutineListListener().observe(getActivity(), listResource -> {
             if (listResource != null) {
                 switch (listResource.getStatus()) {
@@ -104,44 +102,50 @@ public class SearchRoutineFragment extends Fragment {
                     case SUCCESSFUL:
                         mNoResultText.setVisibility(View.GONE);
                         mResultView.setVisibility(View.VISIBLE);
-                        mAdapter.replaceData(listResource.getData());
+                        mAdapter.setData(listResource.getData());
                         break;
                 }
             }
         });
-        mAdapter.setOnItemChildClickListener((adapter, view1, position) -> {
-            switch (view1.getId()) {
-                case R.id.item_class_more_button:
-                    //creating a popup menu
-                    PopupMenu popup = new PopupMenu(view1.getContext(), view1);
-                    //inflating menu from xml resource
-                    popup.inflate(R.menu.activity_search_menu);
 
-                    popup.setOnMenuItemClickListener(menuItem -> {
-                        switch (menuItem.getItemId()) {
-                            case R.id.search_save_menu:
-                                mViewModel.saveRoutine((Routine) adapter.getItem(position));
-                                getActivity().setResult(Activity.RESULT_OK);
-                                break;
-                        }
-                        return true;
-                    });
-                    //displaying the popup
-                    popup.show();
-                    break;
-                default:
+        mAdapter.setOnItemClickListener(new SearchResultAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Routine routine = mAdapter.getItem(position);
+                if (routine != null) {
                     Intent intent = new Intent(getActivity(), RoutineDetailActivity.class);
-                    intent.putExtra(RoutineDetailActivity.ROUTINE_DETAIL_TAG, (Parcelable) adapter.getItem(position));
+                    intent.putExtra(RoutineDetailActivity.ROUTINE_DETAIL_TAG, (Parcelable) routine);
                     startActivity(intent);
-                    break;
+                }
+            }
+
+            @Override
+            public void onDetailsClick(int position) {
+                Routine routine = mAdapter.getItem(position);
+                // Handle the details click if needed
+            }
+
+            @Override
+            public void onMoreClick(int position, View view1) {
+                PopupMenu popup = new PopupMenu(view1.getContext(), view1);
+                popup.inflate(R.menu.activity_search_menu);
+
+                popup.setOnMenuItemClickListener(menuItem -> {
+                    switch (menuItem.getItemId()) {
+                        case R.id.search_save_menu:
+                            mViewModel.saveRoutine(mAdapter.getItem(position));
+                            getActivity().setResult(Activity.RESULT_OK);
+                            break;
+                    }
+                    return true;
+                });
+                popup.show();
             }
         });
-
     }
 
     class RoutineOptionsViewHolder implements AdapterView.OnItemSelectedListener {
         private int i;
-
         private View mOptionViewLayout;
         @BindView(R.id.lsrb_level_spinner)
         AppCompatSpinner mLevelSpinner;
@@ -187,8 +191,8 @@ public class SearchRoutineFragment extends Fragment {
 
             mSearchButton.setOnClickListener(v -> {
                 if (mLevelSpinner.getSelectedItem() != null &&
-                mTermSpinner.getSelectedItem() != null &&
-                mSectionSpinner.getSelectedItem() != null) {
+                        mTermSpinner.getSelectedItem() != null &&
+                        mSectionSpinner.getSelectedItem() != null) {
                     mViewModel.searchRoutines(
                             mLevelSpinner.getSelectedItemPosition(),
                             mTermSpinner.getSelectedItemPosition(),
@@ -196,13 +200,11 @@ public class SearchRoutineFragment extends Fragment {
                     );
                 }
             });
-
         }
 
         private void disableSectionSpinner() {
             mSectionSpinner.setEnabled(false);
             mSearchButton.setEnabled(false);
-
         }
 
         private void enableSectionSpinner() {
@@ -220,9 +222,7 @@ public class SearchRoutineFragment extends Fragment {
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
-
+            // No-op
         }
     }
-
-
 }
