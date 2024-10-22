@@ -1,14 +1,14 @@
 package bd.edu.daffodilvarsity.classorganizer;
 
 import android.app.Application;
+
 import androidx.appcompat.app.AppCompatDelegate;
 
-import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.core.CrashlyticsCore;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.messaging.FirebaseMessaging;
 
-import io.fabric.sdk.android.Fabric;
+//import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by Mushfiqus Salehin on 4/2/2017.
@@ -24,9 +24,8 @@ public class ClassOrganizer extends Application {
         super.onCreate();
         instance = this;
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-//        //Disable crashlytics in debug builds
-        CrashlyticsCore core = new CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build();
-        Fabric.with(this, new Crashlytics.Builder().core(core).build());
+        //Disable crashlytics in debug builds
+        FirebaseCrashlytics.getInstance().setCrashlyticsCollectionEnabled(!BuildConfig.DEBUG);
 
         FirebaseApp.initializeApp(this);
         FirebaseMessaging.getInstance().subscribeToTopic("update");

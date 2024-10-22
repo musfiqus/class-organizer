@@ -6,7 +6,7 @@ buildscript {
     }
 }
 apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.crashlytics'
 // Create a variable called keystorePropertiesFile, and initialize it to your
 // keystore.properties file, in the rootProject folder.
 def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -15,12 +15,12 @@ def keystoreProperties = new Properties()
 // Load your keystore.properties file into the keystoreProperties object.
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 android {
-    compileSdkVersion 29
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId "bd.edu.daffodilvarsity.classorganizer"
         minSdkVersion 16
-        targetSdkVersion 29
+        targetSdkVersion 31
         versionName '5.1.2'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -60,6 +60,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.google.firebase:firebase-crashlytics:17.2.1'
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0-alpha4', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -118,9 +119,6 @@ dependencies {
     //BRVAH
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.46'
 
-    implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
-        transitive = true;
-    }
 
     dependencies {
         def room_version = "2.4.0"
@@ -169,7 +167,7 @@ dependencies {
     }
 
     dependencies {
-        def work_version = "2.0.1"
+        def work_version = "2.7.1"
 
         // (Java only)
         implementation "androidx.work:work-runtime:$work_version"
@@ -181,5 +179,5 @@ dependencies {
 }
 
 
-android.buildToolsVersion '29.0.3'
+android.buildToolsVersion '31.0.0'
 apply plugin: 'com.google.gms.google-services'
